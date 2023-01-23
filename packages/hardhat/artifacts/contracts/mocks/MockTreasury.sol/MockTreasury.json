@@ -1,0 +1,10 @@
+{
+  "_format": "hh-sol-artifact-1",
+  "contractName": "MockTreasury",
+  "sourceName": "contracts/mocks/MockTreasury.sol",
+  "abi": [],
+  "bytecode": "0x6080604052348015600f57600080fd5b50603f80601d6000396000f3fe6080604052600080fdfea264697066735822122018492fc171fb114f3f3e65f015f486c04311d2060ff877955d9df73564cb89e764736f6c63430008110033",
+  "deployedBytecode": "0x6080604052600080fdfea264697066735822122018492fc171fb114f3f3e65f015f486c04311d2060ff877955d9df73564cb89e764736f6c63430008110033",
+  "linkReferences": {},
+  "deployedLinkReferences": {}
+}

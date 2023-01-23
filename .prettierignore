@@ -1,0 +1,7 @@
+node_modules
+**/.next/**
+**/_next/**
+**/dist/**
+packages/next/compiled/**
+contract.hbs
+lerna.json

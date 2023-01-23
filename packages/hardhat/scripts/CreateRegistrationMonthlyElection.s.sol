@@ -1,0 +1,46 @@
+// SPDX-License-Identifier: AGPL-3.0-only
+// Docgen-SOLC: 0.8.0
+pragma solidity ^0.8.0;
+
+import { Script } from "forge-std/Script.sol";
+import { GrantElections } from "../../contracts/core/dao/GrantElections.sol";
+
+bytes32 constant DEFAULT_REGION = 0xf2208c967df089f60420785795c0a9ba8896b0f6f1867fa7f1f12ad6f79c1a18; // World
+uint256 constant DAYS = 60 * 60 * 24;
+
+/// @notice Deploys all contracts needed for beneficiary governance and sets the admin functions
+/// Beneficiaries:
+/// 0 - Nomination Proposal
+/// No Takedowns so far
+/// 2,3 - Monthly Election
+/// 4,5 - Quarterly Election
+/// 6,7 - Yearly Election
+/// 8-18 - Unused
+contract CreateElection is Script {
+  GrantElections internal grantElection = GrantElections(0x3df8bB3119f37eb93921e1afFe8872bC95a5b013);
+  GrantElections.ElectionTerm ELECTION_TERM = GrantElections.ElectionTerm.Monthly;
+
+  function run() external {
+    vm.startBroadcast();
+    // TODO set config in coordination with Fan correct for testing
+    grantElection.setConfiguration(
+      ELECTION_TERM,
+      2, // ranking cutoff
+      5, // awardees cutoff
+      false, // VRF
+      1 * DAYS, // Registration period - default
+      15, // Voting period - default
+      15, // cooldown period - default
+      0, // bondAmount
+      false, // bond required
+      0, // finalization incentive
+      true, // enabled
+      GrantElections.ShareType.EqualWeight
+    );
+    grantElection.initialize(ELECTION_TERM, DEFAULT_REGION);
+    for (uint256 i = 2; i < 11; i++) {
+      grantElection.registerForElection(vm.addr(i + 1), uint256(ELECTION_TERM));
+    }
+    vm.stopBroadcast();
+  }
+}

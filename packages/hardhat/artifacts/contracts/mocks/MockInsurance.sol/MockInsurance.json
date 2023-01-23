@@ -1,0 +1,10 @@
+{
+  "_format": "hh-sol-artifact-1",
+  "contractName": "MockInsurance",
+  "sourceName": "contracts/mocks/MockInsurance.sol",
+  "abi": [],
+  "bytecode": "0x6080604052348015600f57600080fd5b50603f80601d6000396000f3fe6080604052600080fdfea2646970667358221220bcf2967d670e7daaeb69a38c3a5d93e87ac9d47f3aaff236ea96b4814b533ad564736f6c63430008110033",
+  "deployedBytecode": "0x6080604052600080fdfea2646970667358221220bcf2967d670e7daaeb69a38c3a5d93e87ac9d47f3aaff236ea96b4814b533ad564736f6c63430008110033",
+  "linkReferences": {},
+  "deployedLinkReferences": {}
+}

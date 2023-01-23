@@ -1,0 +1,73 @@
+{
+  "name": "@popcorn/workspace",
+  "private": true,
+  "workspaces": [
+    "packages/*"
+  ],
+  "scripts": {
+    "dev": "yarn lerna run --parallel dev",
+    "build": "yarn lerna run build",
+    "app:build": "cd packages/hardhat; yarn build; cd ../app; yarn build",
+    "grants:build": "cd packages/hardhat; yarn build; cd ../grants; yarn build",
+    "app:start": "yarn lerna run --scope @popcorn/app start",
+    "start": "yarn lerna run --scope @popcorn/app start",
+    "pretify": "prettier --write .",
+    "test": "yarn lerna run test",
+    "nuke": "rm -r node_modules; for d in packages/*/node_modules; do echo $d; rm -r $d; done; for d in packages/*/.next; do echo $d; rm -r $d; done",
+    "touch": " for d in packages/*/README.md; do echo '' >> $d; done",
+    "test:fork": "yarn lerna run test:fork",
+    "test:forge": "yarn lerna run test:forge",
+    "install:forge": "yarn lerna run install:forge",
+    "coverage": "yarn lerna run coverage",
+    "prepare": "husky install",
+    "circulating-supply": "yarn lerna run circulating-supply --stream",
+    "netlify-build": "cd packages/hardhat; yarn build; cd ../app; yarn build"
+  },
+  "lint-staged": {
+    "*.{sol,ts,tsx}": "prettier --write"
+  },
+  "dependencies": {
+    "lerna": "5.4.0",
+    "ts-node": "^10.9.1",
+    "typescript": "4.8.4",
+    "yarn": "1.22.17"
+  },
+  "devDependencies": {
+    "babel-plugin-module-resolver": "4.0.0",
+    "husky": "^8.0.0",
+    "lint-staged": "12.2.1",
+    "tsconfig-paths": "3.9.0"
+  },
+  "resolutions": {
+    "@walletconnect/ethereum-provider": "1.7.1",
+    "@web3-onboard/core": "2.2.7",
+    "@web3-onboard/common": "2.1.0",
+    "shell-quote": "^1.7.3",
+    "lodash": "^4.17.12",
+    "undici": "^5.8.0",
+    "async": "^2.6.4",
+    "node-fetch": "^2.6.7",
+    "@openzeppelin/contracts": "4.8.0",
+    "shelljs": "^0.8.5",
+    "nth-check": "^2.0.1",
+    "glob-parent": "^5.1.2",
+    "trim": "^0.0.3",
+    "underscore": "^1.12.1",
+    "merge": "^2.1.1",
+    "elliptic": "^6.5.4",
+    "got": "^11.8.5",
+    "nanoid": "^3.1.31",
+    "yargs-parser": "^21.1.1",
+    "parse-url": "8.1.0",
+    "minimatch": "3.0.5",
+    "trim-newlines": "^3.0.1",
+    "meow": "^8.0.0",
+    "webpack@>=4.43.0 <6.0.0, webpack@^5.9.0/enhanced-resolve": "5.10.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": ""
+  },
+  "license": "AGPL-3.0",
+  "version": "0.0.0"
+}

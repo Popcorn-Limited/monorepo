@@ -1,0 +1,116 @@
+# {{name}}
+{{{natspec.userdoc}}}
+***
+
+{{{natspec.devdoc}}}
+{{#if ownFunctions}}
+## Functions:
+{{#ownFunctions}}
+{{#if (or (eq visibility "public") (eq visibility "external"))}}
+- [`{{name}}()`](#{{toc_format name}})
+{{/if}}
+{{/ownFunctions}}
+{{/if}}
+
+{{#if ownEvents}}
+## Events:
+{{#ownEvents}}
+- [`{{name}}`](#{{toc_format name}})
+{{/ownEvents}}
+{{/if}}
+
+{{#if ownModifiers}}
+## Modifiers:
+{{#ownModifiers}}
+- [`{{name}}()`](#{{toc_format name}})
+{{/ownModifiers}}
+{{/if}}
+## Graphs:
+- [Dependency Graph](#dependency-graph)
+- [Inheritance Graph](#inheritance-graph)
+***
+
+## Function Definitions:
+{{#ownFunctions}}
+
+{{#if (or (eq visibility "public") (eq visibility "external"))}}
+
+###  {{name}}()
+
+```
+{{name}}({{args}}) {{visibility}} {{#if outputs}} returns ({{outputs}}){{/if}}
+```
+
+{{#if natspec.devdoc}}{{natspec.devdoc}}{{/if}}
+
+{{#if natspec.params}}
+[[linebreak]]
+| Parameter Name | Type | Description |
+|------------|-----| -------|
+{{#natspec.params}}
+| `{{param}}`| {{#lookup ../args.types @index}}{{/lookup}}| {{strip description}}|
+{{/natspec.params}}
+[[linebreak]]
+{{/if}}
+
+
+{{#if natspec.returns}}
+#### Return Values:
+[[linebreak]]
+| Return Name | Type | Description |
+|-------------|-------|------------|
+{{#natspec.returns}}
+|{{param}}| {{#lookup ../args.types @index}}{{/lookup}}|{{description}}|
+{{/natspec.returns}}
+[[linebreak]]
+{{/if}}
+{{/if}}
+{{/ownFunctions}}
+
+## Events
+{{#ownEvents}}
+### {{name}}
+```
+{{name}}({{args}})
+```
+
+{{#if natspec.devdoc}}
+{{natspec.devdoc}}
+`
+{{/if}}
+{{#if natspec.params}}
+## Parameters:
+{{#natspec.params}}
+- `{{param}}`: {{description}}
+{{/natspec.params}}
+{{/if}}
+{{/ownEvents}}
+
+
+{{#if ownModifiers}}
+## Modifiers
+{{#ownModifiers}}
+### `{{name}}()`
+```
+{{name}}({{args}})
+```
+
+{{#if natspec.devdoc}}
+{{natspec.devdoc}}
+
+{{/if}}
+{{#if natspec.params}}
+## Parameters:
+{{#natspec.params}}
+- `{{param}}`: {{description}}
+{{/natspec.params}}
+{{/if}}
+{{/ownModifiers}}
+{{/if}}
+
+## Graphs
+
+### Dependency Graph
+![Dependency Graph](/docs/images/{{name}}_dependency_graph.png)
+### Inheritance Graph
+![Inheritance Graph](/docs/images/{{name}}_inheritance_graph.png)

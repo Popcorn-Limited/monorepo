@@ -1,0 +1,77 @@
+{
+  "_format": "hh-sol-artifact-1",
+  "contractName": "KeeperIncentivized",
+  "sourceName": "contracts/core/utils/KeeperIncentivized.sol",
+  "abi": [
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "components": [
+            {
+              "internalType": "uint256",
+              "name": "minWithdrawalAmount",
+              "type": "uint256"
+            },
+            {
+              "internalType": "uint256",
+              "name": "incentiveVigBps",
+              "type": "uint256"
+            },
+            {
+              "internalType": "uint256",
+              "name": "keeperPayout",
+              "type": "uint256"
+            }
+          ],
+          "indexed": false,
+          "internalType": "struct KeeperConfig",
+          "name": "oldConfig",
+          "type": "tuple"
+        },
+        {
+          "components": [
+            {
+              "internalType": "uint256",
+              "name": "minWithdrawalAmount",
+              "type": "uint256"
+            },
+            {
+              "internalType": "uint256",
+              "name": "incentiveVigBps",
+              "type": "uint256"
+            },
+            {
+              "internalType": "uint256",
+              "name": "keeperPayout",
+              "type": "uint256"
+            }
+          ],
+          "indexed": false,
+          "internalType": "struct KeeperConfig",
+          "name": "newConfig",
+          "type": "tuple"
+        }
+      ],
+      "name": "KeeperConfigUpdated",
+      "type": "event"
+    },
+    {
+      "inputs": [],
+      "name": "KEEPER_INCENTIVE",
+      "outputs": [
+        {
+          "internalType": "bytes32",
+          "name": "",
+          "type": "bytes32"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    }
+  ],
+  "bytecode": "0x",
+  "deployedBytecode": "0x",
+  "linkReferences": {},
+  "deployedLinkReferences": {}
+}

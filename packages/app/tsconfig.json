@@ -1,0 +1,14 @@
+{
+  "extends": "../../tsconfig",
+  "compilerOptions": {
+    "baseUrl": ".",
+    "module": "esnext",
+    "noEmit": false,
+    "outDir": "dist",
+    "target": "ES2017",
+    "isolatedModules": true,
+    "incremental": true
+  },
+  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", "./index.d.ts"],
+  "exclude": ["node_modules"]
+}

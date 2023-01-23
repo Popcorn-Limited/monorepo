@@ -1,0 +1,21 @@
+<svg version="1.2" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 28 28" width="28" height="28">
+	<title>usdc</title>
+	<style>
+		tspan { white-space:pre } 
+		.t0 { font-size: 15px;fill: #000000;font-weight: 400;font-family: "YatraOne-Regular", "Yatra One" } 
+		.s1 { fill: none;stroke: #000000 } 
+	</style>
+	<text id="x" style="transform: matrix(1.375,0,0,1.222,2.552,24.081)" >
+		<tspan x="0" y="0" class="t0">x
+</tspan>
+	</text>
+	<text id="x copy 2" style="transform: matrix(1.375,0,0,1.222,14.552,24.081)" >
+		<tspan x="0" y="0" class="t0">x
+</tspan>
+	</text>
+	<text id="x copy" style="transform: matrix(1.375,0,0,1.222,8.552,10.081)" >
+		<tspan x="0" y="0" class="t0">x
+</tspan>
+	</text>
+	<circle id="Shape 1" class="s1" cx="14" cy="14" r="14"/>
+</svg>

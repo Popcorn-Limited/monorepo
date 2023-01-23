@@ -1,0 +1,41 @@
+{
+  "name": "@popcorn/foundry",
+  "version": "1.1.2",
+  "main": "index",
+  "private": true,
+  "scripts": {
+    "build": "forge build",
+    "clean": "rimraf ./out",
+    "compile": "yarn clean && forge build",
+    "test": "forge test",
+    "prettier": "prettier --write 'src/**/*.sol'",
+    "coverage": "utils/coverage.sh",
+    "prettify": "yarn lint-staged --allow-empty",
+    "anvil": "./script/anvil.sh",
+    "fund:seth": "./script/fundSEth.sh",
+    "deploy:vaults": "forge script ./script/DeployVault.s.sol --rpc-url http://localhost:8545 --broadcast",
+    "dev": "yarn fund:seth && yarn deploy:vaults"
+  },
+  "lint-staged": {
+    "*.{sol,ts,tsx}": "prettier --write"
+  },
+  "devDependencies": {
+    "rimraf": "3.0.2"
+  },
+  "dependencies": {
+    "@openzeppelin/contracts": "4.8.0",
+    "openzeppelin-upgradeable": "npm:@openzeppelin/contracts-upgradeable@4.7.1",
+    "prettier": "2.5.1",
+    "prettier-plugin-solidity": "1.0.0-beta.19",
+    "sinon": "^14.0.0",
+    "solc-0.6.0": "npm:solc@0.6.0",
+    "solc-0.6.12": "npm:solc@0.6.12",
+    "solc-0.8.0": "npm:solc@0.8.0",
+    "solc-0.8.1": "npm:solc@0.8.1",
+    "solc-0.8.10": "npm:solc@0.8.10",
+    "solc-0.8.17": "npm:solc@0.8.17",
+    "solidity-shell": "^0.1.0",
+    "surya": "0.4.5"
+  },
+  "license": "AGPL-3.0"
+}
