@@ -1,4 +1,4 @@
-import { BigNumber } from "ethers";
+import { BigNumber, Contract } from "ethers";
 import { apy } from "@popcorn/components/lib/Yearn";
 import { ChainId } from "@popcorn/utils";
 import QueryVaultByAsset from "./QueryVaultByAsset";
@@ -14,8 +14,15 @@ const URL_BY_CHAIN_ID = {
   default: DEFAULT_GRAPH_URL,
 };
 
-export const yearnAsset = async (address, chainId, rpc): Promise<{ value: BigNumber; decimals: number }> => {
-  const vaultAddress = await getMemoizedVault(address, chainId);
+export const yearnAsset = async (
+  address: string,
+  chainId: ChainId,
+  rpc,
+): Promise<{ value: BigNumber; decimals: number }> => {
+  chainId = chainId === ChainId.Localhost ? ChainId.Ethereum : chainId;
+  const vault = new Contract(address, ["function asset() external view returns (address)"], rpc);
+  const asset = (await vault.asset()).toLowerCase();
+  const vaultAddress = await getMemoizedVault(asset, chainId);
   return apy({ address: vaultAddress, chainId, rpc });
 };
 

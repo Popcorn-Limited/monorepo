@@ -83,4 +83,37 @@ pub fn cli() -> Command {
             .help(" input filepath - comma delimited list of deployment files to merge")
             .required(true)
     ))
+    .subcommand(  Command::new("mergefoundry")
+        .about("merges foundry generated deployment and namedAccounts into single deployment file")
+        .arg(
+            clap::Arg::new("network")
+                .short('n')
+                .long("network")
+                .help("network to use")
+                .required(true)
+        ).arg(
+            clap::Arg::new("out")
+                .short('o')
+                .long("out")
+                .help("path to output file")
+                .required(true)
+        ).arg(
+            clap::Arg::new("inputs")
+                .short('i')
+                .long("inputs")
+                .help(" input filepath - comma delimited list of deployment files to merge")
+                .required(true)
+        ).arg(
+            clap::Arg::new("abi")
+                .long("abi")
+                .help("include abi in output")
+                .required(false)
+        ).arg(
+          clap::Arg::new("chain_id")
+              .long("chain-id")
+              .short('c')
+              .help("chain id")
+              .required(true)
+      )
+    )
 }

@@ -13,7 +13,6 @@ import { networkLogos } from "@popcorn/utils";
 import { useIsConnected } from "@popcorn/app/hooks/useIsConnected";
 import { useMemo, useRef } from "react";
 import { useProductLinks } from "@popcorn/app/hooks/useProductLinks";
-import { useFeatures } from "@popcorn/components";
 
 export default function DesktopMenu(): JSX.Element {
   const { openConnectModal } = useConnectModal();

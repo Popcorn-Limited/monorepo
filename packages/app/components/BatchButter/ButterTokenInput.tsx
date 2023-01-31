@@ -8,6 +8,8 @@ import { useEffect, useRef, useState } from "react";
 import { CheckMarkToggleWithInfo } from "@popcorn/app/components/BatchButter/CheckMarkToggleWithInfo";
 import SelectToken from "@popcorn/app/components/BatchButter/SelectToken";
 
+import InputTokenWithError from "@popcorn/components/components/InputTokenWithError";
+
 export enum Pages {
   "butter",
   "instantButter",
@@ -106,77 +108,31 @@ const ButterTokenInput: React.FC<ButterTokenInputProps> = ({
         <div className="flex flex-row items-center justify-between mb-2">
           <p className="text-base font-medium text-primary">{withdrawMode ? "Redeem Amount" : "Deposit Amount"}</p>
         </div>
-        <div>
-          <div className="mt-1 relative flex items-center gap-2 md:gap-0 md:space-x-2">
-            <div
-              className={`w-full flex px-5 py-4 items-center rounded-lg border ${
-                depositDisabled?.disabled ? " border-customRed" : "border-customLightGray "
-              }`}
-            >
-              <input
-                name="tokenInput"
-                id="tokenInput"
-                className="block w-full p-0 border-0 text-primaryDark text-lg"
-                onChange={(e) => {
-                  onUpdate(e.target.value.replace(/,/g, "."));
-                }}
-                value={ref.current}
-                inputMode="decimal"
-                autoComplete="off"
-                autoCorrect="off"
-                // text-specific options
-                type="text"
-                pattern="^[0-9]*[.,]?[0-9]*$"
-                placeholder={"0.0"}
-                minLength={1}
-                maxLength={79}
-                spellCheck="false"
-              />
-              <SelectToken
-                chainId={chainId}
-                allowSelection={!withdrawMode}
-                selectedToken={selectedToken?.input}
-                options={options?.filter(
-                  (option) =>
-                    !(withdrawMode ? [addr.threeCrv, addr.usdc] : [addr.butter, addr.threeX]).includes(option.address),
-                )}
-                selectToken={selectToken}
-              />
-            </div>
-          </div>
-        </div>
-
-        {depositDisabled?.disabled && <p className="text-customRed pt-2 leading-6">{depositDisabled?.errorMessage}</p>}
-        <div className="flex justify-between items-center mt-2">
-          <div className="flex items-center">
-            <img
-              src="/images/wallet.svg"
-              alt="wallet balance of selected token"
-              width="13"
-              height="13"
-              className="mr-2"
-            />
-            <p className="text-secondaryLight">
-              {`${formatAndRoundBigNumber(
-                useUnclaimedDeposits ? selectedToken?.input?.claimableBalance : selectedToken?.input?.balance,
-                selectedToken?.input?.decimals,
-              )}`}
-            </p>
-          </div>
-          <button
-            className="w-9 h-6 flex items-center justify-center py-3 px-6 text-base leading-6 text-primary font-medium border border-primary rounded-lg cursor-pointer hover:bg-primary hover:text-white transition-all"
-            onClick={(e) => {
-              const maxAmount = useUnclaimedDeposits
-                ? selectedToken?.input?.claimableBalance
-                : selectedToken?.input?.balance;
-              calcOutputAmountsFromInput(maxAmount);
-              setDepositAmount(maxAmount);
-              ref.current = Number(formatEther(maxAmount)).toFixed(3);
-            }}
-          >
-            MAX
-          </button>
-        </div>
+        <InputTokenWithError
+          chainId={chainId}
+          name="tokenInput"
+          id="tokenInput"
+          onChange={(e) => {
+            onUpdate(e.currentTarget.value.replace(/,/g, "."));
+          }}
+          onMaxClick={() => {
+            const maxAmount = useUnclaimedDeposits
+              ? selectedToken?.input?.claimableBalance
+              : selectedToken?.input?.balance;
+            calcOutputAmountsFromInput(maxAmount);
+            setDepositAmount(maxAmount);
+            ref.current = Number(formatEther(maxAmount)).toFixed(3);
+          }}
+          errorMessage={depositDisabled?.disabled && depositDisabled?.errorMessage}
+          value={ref.current}
+          allowSelection={!withdrawMode}
+          selectedToken={selectedToken?.input}
+          tokenList={options?.filter(
+            (option) =>
+              !(withdrawMode ? [addr.threeCrv, addr.usdc] : [addr.butter, addr.threeX]).includes(option.address),
+          )}
+          onSelectToken={selectToken}
+        />
 
         {[Pages.threeX, Pages.butter].includes(page) && hasUnclaimedBalances && !useUnclaimedDepositsisDisabled() && (
           <CheckMarkToggleWithInfo

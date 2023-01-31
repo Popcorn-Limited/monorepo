@@ -1,5 +1,4 @@
 import type { BigNumber } from "ethers";
-import type { ReactNode } from "react";
 
 export namespace Pop {
   export type StdProps = BaseContractProps;
@@ -45,9 +44,9 @@ export namespace Pop {
 
   export interface NamedAccountsMetadata {
     isERC20?: boolean;
-    priceResolver?: "staking" | "set_token" | "pop" | "univ3" | "arrakis";
+    priceResolver?: "staking" | "set_token" | "pop" | "univ3" | "arrakis" | "vault";
     balanceResolver?: "escrowBalance";
-    apyResolver?: "synthetix";
+    apyResolver?: "synthetix" | "set_token" | "yearn" | "convex" | "yearnAsset";
     chainId?: string;
     address?: string;
     __alias?: string;
@@ -55,7 +54,6 @@ export namespace Pop {
     [key: string]: any;
   }
 }
-
 export interface BigNumberWithFormatted {
   value?: BigNumber;
   formatted?: string;

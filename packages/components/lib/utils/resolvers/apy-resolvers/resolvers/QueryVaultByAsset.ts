@@ -5,13 +5,10 @@ query VaultByAsset($assetAddress: String!) {
     first: 1
     orderBy: balanceTokens
     orderDirection: desc
-    where: {
-      token_contains: $assetAddress
-      classification_not: Experimental
-    }
-  ) {
+    where: {token_: {id: $assetAddress}}
+  ) 
+  {
     id
   }
 }
-
 ` as const;

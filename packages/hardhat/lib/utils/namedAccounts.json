@@ -474,6 +474,7 @@
       "name": "Staked POP",
       "symbol": "vlPOP",
       "priceResolver": "staking",
+      "apyResolver": "convex",
       "balanceOfAdapter": {
         "functionName": "lockedBalanceOf(address)",
         "functionAbi": [
@@ -640,12 +641,27 @@
       "apyResolver": "yearnAsset"
     }
   },
+  "sEthEthCrvLp": {
+    "addresses": {
+      "mainnet": "0x06325440d014e39736583c165c2963ba99faf14e"
+    },
+    "metadata": {
+      "name": "ETH/sETH LP",
+      "symbol": "ETH/sETH",
+      "icons": ["/images/tokens/crvSeth.png"]
+    }
+  },
   "sEthSweetVault": {
-    "addresses": {},
+    "addresses": {
+      "mainnet": "0x0c8e79f3534b00d9a3d4a856b665bf4ebc22f2ba",
+      "localhost": "0x0c8e79f3534b00d9a3d4a856b665bf4ebc22f2ba"
+    },
     "metadata": {
       "name": "ETH/sETH Vault",
       "symbol": "pop-ETH/sETH",
       "icons": ["/images/tokens/crvSeth.png"],
+      "apyResolver": "yearnAsset",
+      "priceResolver": "vault",
       "displayText": {
         "strategy": "Deposits LP token from Curve's sETH pool to Convex Finance to earn CRV and CVX (and any other available tokens). Earned tokens are harvested, sold for more sETH pool LP tokens and then deposited back into the strategy.",
         "token": "This token represents part ownership of a Curve liquidity pool. Holders earn fees from users trading in the pool, and can also deposit the LP to Curve's gauges to earn CRV emissions. This pool contains ETH and sETH, a synthetic ETH minted via the Synthetix platform."
@@ -656,6 +672,18 @@
   },
   "sEthSweetVaultStaking": {
     "addresses": {},
+    "metadata": null
+  },
+  "vaultRegistry": {
+    "addresses": {
+      "localhost": "0x82c6d3ed4cd33d8ec1e51d0b5cc1d822eaa0c3dc"
+    },
+    "metadata": null
+  },
+  "vaultRouter": {
+    "addresses": {
+      "localhost": "0x2a264f26859166c5bf3868a54593ee716aebc848"
+    },
     "metadata": null
   },
   "sGBP": {
@@ -784,7 +812,9 @@
       "rinkeby": "0x6eB155e648dc865a2687E81CFb73fff5dEbb0b56",
       "goerli": "0xc6dF6dE7A237049Fcd848845D01E4ecCc2Da8EF5"
     },
-    "metadata": null
+    "metadata": {
+      "contractName": "ACLRegistry"
+    }
   },
   "keeperIncentive": {
     "addresses": {
@@ -794,7 +824,7 @@
       "goerli": "0x3AB95d9b106D2150F27f0903127bf2010BDb0434"
     },
     "metadata": {
-      "contractName": "KeeperIncentive"
+      "contractName": "KeeperIncentiveV2"
     }
   },
   "contractRegistry": {
@@ -803,6 +833,9 @@
       "polygon": "0x078927eF642319963a976008A7B1161059b7E77a",
       "rinkeby": "0xe8af04AD759Ad790Aa5592f587D3cFB3ecC6A9dA",
       "goerli": "0x742998e5014d4a00848B585609C5B86cCb58749B"
+    },
+    "metadata": {
+      "contractName": "ContractRegistry"
     }
   },
   "usdc": {
@@ -931,7 +964,9 @@
     "addresses": {
       "goerli": "0x05D52Cf6F03501FD3501840432EAcc67d49277DC"
     },
-    "metadata": null
+    "metadata": {
+      "contractName": "BeneficiaryVaults"
+    }
   },
   "Region": {
     "addresses": {

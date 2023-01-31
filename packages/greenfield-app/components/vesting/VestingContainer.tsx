@@ -32,14 +32,14 @@ export default function VestingContainer({ selectedNetworks }: VestingContainerP
           image="/images/emptyRecord.svg"
         />
       </div>
-      {filteredNetworks.map((chain) => {
-        let props = {
-          chainId: chain,
-          addClaimable: add,
-          isNotAvailable: !loading && sum?.eq(constants.Zero),
-        };
-        return <Vesting key={chain + "Vesting"} {...props} />;
-      })}
+      {filteredNetworks.map((chain) => (
+        <Vesting
+          key={chain + "Vesting"}
+          chainId={chain}
+          addClaimable={add}
+          isNotAvailable={!loading && sum?.eq(constants.Zero)}
+        />
+      ))}
     </>
   );
 }

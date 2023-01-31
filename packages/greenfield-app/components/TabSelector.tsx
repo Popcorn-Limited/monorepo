@@ -5,11 +5,12 @@ interface TabSelectorProps {
   activeTab: any;
   setActiveTab: Dispatch<any>;
   availableTabs: any[];
+  className?: string;
 }
 
-const TabSelector: React.FC<TabSelectorProps> = ({ activeTab, setActiveTab, availableTabs }) => {
+const TabSelector: React.FC<TabSelectorProps> = ({ activeTab, setActiveTab, availableTabs, className }) => {
   return (
-    <div className="w-full flex flex-row">
+    <div className={`w-full flex flex-row ${className}`}>
       {availableTabs.map((tab) => (
         <div
           key={tab}

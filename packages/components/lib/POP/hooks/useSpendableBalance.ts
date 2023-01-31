@@ -10,7 +10,6 @@ export const useSpendableBalance: Pop.Hook<BigNumber> = ({ address, account, cha
     address,
     functionName: "spendableBalanceOf",
     args: [account],
-    cacheOnBlock: true,
     scopeKey: `useSpendableBalance:${chainId}:${address}:${account}`,
     chainId: Number(chainId),
     enabled: typeof enabled !== "undefined" ? !!enabled && _enabled : _enabled,

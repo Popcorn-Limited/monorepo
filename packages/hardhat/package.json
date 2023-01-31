@@ -8,6 +8,8 @@
     "dev": "yarn hardhat node --network hardhat --export ./lib/utils/exporter/out/hardhat-deployment.json",
     "dev-grants": "yarn hardhat node --tags beneficiary-governance,test-pop,region,rewards-manager,participation-reward,gov-staking,beneficiary-registry,beneficiary-governance-demo-data,export --network hardhat --export ./lib/utils/exporter/out/hardhat-deployment.json",
     "export": "cd lib/utils/exporter; /bin/sh export_all.sh",
+    "export-foundry-deployment": "cd lib/utils/exporter; /bin/sh export_all.sh foundry hardhat",
+    "export-foundry-deployment-goerli": "cd lib/utils/exporter; /bin/sh export_all.sh foundry goerli",
     "prettier": "prettier --write 'contracts/**/*.sol'",
     "clean": "rimraf ./cache & rimraf ./artifacts & rimraf ./typechain",
     "compile": "yarn clean && hardhat compile",

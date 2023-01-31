@@ -1,4 +1,4 @@
-import { defi_llama, set_token, staking, pop, arrakis, univ2 } from "./resolvers";
+import { defi_llama, set_token, staking, pop, arrakis, univ2, vault } from "./resolvers";
 import { PriceResolvers } from "./types";
 
 export * from "./types";
@@ -10,6 +10,7 @@ export const Resolvers: PriceResolvers = {
   pop,
   arrakis,
   univ2,
+  vault,
   default: defi_llama,
 };
 

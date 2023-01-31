@@ -21,7 +21,6 @@ export const useBalanceOf: Pop.Hook<BigNumberWithFormatted> = ({ chainId, addres
     abi,
     functionName,
     args: (!!account && [account]) || [],
-    cacheOnBlock: true,
     scopeKey: `balanceOf:${chainId}:${address}:${account}`,
     enabled: !disabled && enabled,
     select: (data) => {

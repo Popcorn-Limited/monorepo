@@ -8,6 +8,8 @@ echo "Using local exporter"
 EXPORTER=./target/release/exporter
 fi
 
+FOUNDRY_DEPLOYMENT=$3
+echo "$FOUNDRY_DEPLOYMENT"
 NAMED_ACCOUNTS=../namedAccounts.json
 OUT_DIR=out
 
@@ -28,15 +30,25 @@ $EXPORTER create-deployment --named-accounts $NAMED_ACCOUNTS -n optimism -c 10  
 # this merges mainnet namedAccounts into hardhat namedAccounts so that local deploys can use forked addresses
 $EXPORTER merge --inputs $NAMED_ACCOUNTS,$OUT_DIR/hardhat-deployment.json --network mainnet --out $OUT_DIR/hardhat-merge.json -c 1337
 
-
+if [ "$1" = "foundry" ]; then
+if [ -z $FOUNDRY_DEPLOYMENT ]; then 
+exit "path to foundry deployment file is not set, you must set it as an argument after the script like so `yarn export-foundry-deployment ../../../broadcast/ExampleDeployScript.s.sol/5/run-latest.json`"
+else
+if [ "$2" = "goerli" ]; then
+cargo run mergefoundry --inputs $NAMED_ACCOUNTS,$FOUNDRY_DEPLOYMENT --network goerli --out $OUT_DIR/goerli-merge.json -c 5
+else
+cargo run mergefoundry --inputs $NAMED_ACCOUNTS,$FOUNDRY_DEPLOYMENT --network hardhat --out $OUT_DIR/hardhat-merge.json -c 1337
+fi
+fi
+else
 $EXPORTER merge --inputs $NAMED_ACCOUNTS,$OUT_DIR/polygon-deployment.json --network polygon --out $OUT_DIR/polygon-merge.json -c 137
 $EXPORTER merge --inputs $NAMED_ACCOUNTS,$OUT_DIR/arbitrum-deployment.json --network arbitrum --out $OUT_DIR/arbitrum-merge.json -c 42161
-$EXPORTER merge --inputs $NAMED_ACCOUNTS,$OUT_DIR/mainnet-deployment.json --network mainnet --out $OUT_DIR/mainnet-merge.json -c 1
+$EXPORTER merge --inputs $NAMEDACCOUNTS,$OUT_DIR/mainnet-deployment.json --network mainnet --out $OUT_DIR/mainnet-merge.json -c 1
 $EXPORTER merge --inputs $NAMED_ACCOUNTS,$OUT_DIR/bsc-deployment.json --network bsc --out $OUT_DIR/bsc-merge.json -c 56
 $EXPORTER merge --inputs $NAMED_ACCOUNTS,$OUT_DIR/rinkeby-deployment.json --network rinkeby --out $OUT_DIR/rinkeby-merge.json -c 4
 $EXPORTER merge --inputs $NAMED_ACCOUNTS,$OUT_DIR/goerli-deployment.json --network goerli --out $OUT_DIR/goerli-merge.json -c 5
 $EXPORTER merge --inputs $NAMED_ACCOUNTS,$OUT_DIR/optimism-deployment.json --network optimism --out $OUT_DIR/optimism-merge.json -c 10
-
+fi
 
 $EXPORTER combine --inputs $OUT_DIR/hardhat-merge.json,$OUT_DIR/polygon-merge.json,$OUT_DIR/arbitrum-merge.json,$OUT_DIR/mainnet-merge.json,$OUT_DIR/bsc-merge.json,$OUT_DIR/rinkeby-merge.json,$OUT_DIR/optimism-merge.json,$OUT_DIR/goerli-merge.json --out $OUT_DIR/deployments.json
 

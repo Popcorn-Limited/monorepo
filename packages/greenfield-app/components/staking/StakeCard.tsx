@@ -11,6 +11,7 @@ import { useRouter } from "next/router";
 import ContentLoader from "react-content-loader";
 import { NetworkSticker } from "@popcorn/app/components/NetworkSticker";
 import { Tvl } from "@popcorn/components/lib/Contract";
+import { Staking, PopLocker } from "@popcorn/components/lib";
 
 interface StakeCardProps {
   stakingAddress: string;
@@ -104,8 +105,14 @@ const StakeCard: React.FC<StakeCardProps> = ({ stakingAddress, stakingType, chai
             <div className="w-full md:w-1/2 mt-6 md:mt-0">
               <p className="text-primaryLight leading-6">Token Emissions</p>
               <p className="text-primary text-2xl md:text-3xl leading-6 md:leading-8">
-                {formatAndRoundBigNumber(staking?.tokenEmission, staking?.stakingToken?.decimals)}{" "}
-                <span className=" text-tokenTextGray text-xl"> POP / day</span>
+                <span className=" text-tokenTextGray text-xl">
+                  {stakingType === StakingType.PopLocker ? (
+                    <PopLocker.TokenEmission chainId={chainId} address={stakingAddress} />
+                  ) : (
+                    <Staking.TokenEmission chainId={chainId} address={stakingAddress} />
+                  )}{" "}
+                  POP / day
+                </span>
               </p>
             </div>
           </div>

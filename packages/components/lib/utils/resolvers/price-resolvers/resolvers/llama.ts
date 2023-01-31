@@ -10,14 +10,13 @@ export const defi_llama: PriceResolver = async (address: string, chainId: number
   const result = await fetch(url);
   const parsed = await result.json();
   const token = parsed.coins[`${chainString}:${address}`];
-  const price = token?.price;
 
-  return (
-    (price && {
-      value: parseUnits(`${parsed.coins[`${chainString}:${address}`]?.price}`, token?.decimals),
-      decimals: token?.decimals,
-    }) || { value: constants.Zero, decimals: 0 }
-  );
+  return token?.price && token?.decimals
+    ? {
+        value: parseUnits(`${token.price}`, token.decimals),
+        decimals: token.decimals,
+      }
+    : { value: constants.Zero, decimals: 0 };
 };
 
 export default defi_llama;

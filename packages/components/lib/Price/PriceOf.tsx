@@ -3,13 +3,12 @@ import { BigNumberWithFormatted, Pop } from "../types";
 import withLoading from "../utils/hocs/withLoading";
 import { BigNumber } from "ethers";
 
-const eth_call =
-  (Component: Pop.FC<BigNumberWithFormatted>) =>
-  ({
+const eth_call = (Component: Pop.FC<BigNumberWithFormatted>) =>
+  function PriceOfWithLoading({
     ...props
   }: Pop.BaseContractProps & {
     withPrice?: (price: { price?: BigNumber; address?: string; chainId?: Number }) => React.ReactElement;
-  }) => {
+  }) {
     const { data, status } = usePrice({ ...props });
 
     if (props.withPrice) {

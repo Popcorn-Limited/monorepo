@@ -118,7 +118,7 @@ contract VaultControllerTest is Test {
   event RewardsClaimed(address indexed user, IERC20 rewardsToken, uint256 amount, bool escrowed);
 
   event VaultDeployed(address indexed vault, address indexed staking, address indexed adapter);
-  event ManagementFeeChanged(uint256 oldFee, uint256 newFee);
+  event PerformanceFeeChanged(uint256 oldFee, uint256 newFee);
   event HarvestCooldownChanged(uint256 oldCooldown, uint256 newCooldown);
   event LatestTemplateKeyChanged(bytes32 oldKey, bytes32 newKey);
 
@@ -256,7 +256,11 @@ contract VaultControllerTest is Test {
       );
   }
 
-  function setPermission(address target, bool endorsed, bool rejected) public {
+  function setPermission(
+    address target,
+    bool endorsed,
+    bool rejected
+  ) public {
     emit log_named_address("target", target);
     address[] memory targets = new address[](1);
     Permission[] memory permissions = new Permission[](1);
@@ -290,7 +294,7 @@ contract VaultControllerTest is Test {
     addTemplate("Adapter", templateId, adapterImpl, true, true);
     addTemplate("Strategy", "MockStrategy", strategyImpl, false, true);
     addTemplate("Vault", "V1", vaultImpl, true, true);
-    controller.setManagementFee(uint256(1000));
+    controller.setPerformanceFee(uint256(1000));
     controller.setHarvestCooldown(1 days);
     rewardToken.mint(address(this), 10 ether);
     rewardToken.approve(address(controller), 10 ether);
@@ -346,7 +350,7 @@ contract VaultControllerTest is Test {
     assertTrue(cloneRegistry.cloneExists(adapterClone));
     assertEq(MockAdapter(adapterClone).initValue(), 100);
     assertEq(IAdapter(adapterClone).harvestCooldown(), 1 days);
-    assertEq(IAdapter(adapterClone).managementFee(), 1000);
+    assertEq(IAdapter(adapterClone).performanceFee(), 1000);
     assertEq(IAdapter(adapterClone).strategy(), strategyClone);
     // Assert Strategy
     assertTrue(cloneRegistry.cloneExists(strategyClone));
@@ -372,7 +376,7 @@ contract VaultControllerTest is Test {
     addTemplate("Adapter", templateId, adapterImpl, true, true);
     addTemplate("Strategy", "MockStrategy", strategyImpl, false, true);
     addTemplate("Vault", "V1", vaultImpl, true, true);
-    controller.setManagementFee(uint256(1000));
+    controller.setPerformanceFee(uint256(1000));
     controller.setHarvestCooldown(1 days);
     rewardToken.mint(address(this), 10 ether);
     rewardToken.approve(address(controller), 10 ether);
@@ -413,7 +417,7 @@ contract VaultControllerTest is Test {
     addTemplate("Adapter", templateId, adapterImpl, true, true);
     addTemplate("Strategy", "MockStrategy", strategyImpl, false, true);
     addTemplate("Vault", "V1", vaultImpl, true, true);
-    controller.setManagementFee(uint256(1000));
+    controller.setPerformanceFee(uint256(1000));
     controller.setHarvestCooldown(1 days);
     rewardToken.mint(address(this), 10 ether);
     rewardToken.approve(address(controller), 10 ether);
@@ -462,7 +466,7 @@ contract VaultControllerTest is Test {
     addTemplate("Adapter", templateId, adapterImpl, true, true);
     addTemplate("Strategy", "MockStrategy", strategyImpl, false, true);
     addTemplate("Vault", "V1", vaultImpl, true, true);
-    controller.setManagementFee(uint256(1000));
+    controller.setPerformanceFee(uint256(1000));
     controller.setHarvestCooldown(1 days);
     rewardToken.mint(address(this), 10 ether);
     rewardToken.approve(address(controller), 10 ether);
@@ -507,7 +511,7 @@ contract VaultControllerTest is Test {
     assertTrue(cloneRegistry.cloneExists(adapterClone));
     assertEq(MockAdapter(adapterClone).initValue(), 300);
     assertEq(IAdapter(adapterClone).harvestCooldown(), 1 days);
-    assertEq(IAdapter(adapterClone).managementFee(), 1000);
+    assertEq(IAdapter(adapterClone).performanceFee(), 1000);
     assertEq(IAdapter(adapterClone).strategy(), address(0));
   }
 
@@ -515,7 +519,7 @@ contract VaultControllerTest is Test {
     addTemplate("Adapter", templateId, adapterImpl, true, true);
     addTemplate("Strategy", "MockStrategy", strategyImpl, false, true);
     addTemplate("Vault", "V1", vaultImpl, true, true);
-    controller.setManagementFee(uint256(1000));
+    controller.setPerformanceFee(uint256(1000));
     controller.setHarvestCooldown(1 days);
     rewardToken.mint(address(this), 10 ether);
     rewardToken.approve(address(controller), 10 ether);
@@ -573,7 +577,7 @@ contract VaultControllerTest is Test {
     addTemplate("Adapter", templateId, adapterImpl, true, true);
     addTemplate("Strategy", "MockStrategy", strategyImpl, false, true);
     addTemplate("Vault", "V1", vaultImpl, true, true);
-    controller.setManagementFee(uint256(1000));
+    controller.setPerformanceFee(uint256(1000));
     controller.setHarvestCooldown(1 days);
     rewardToken.mint(address(this), 10 ether);
     rewardToken.approve(address(controller), 10 ether);
@@ -638,7 +642,7 @@ contract VaultControllerTest is Test {
   function test__deployAdapter() public {
     addTemplate("Adapter", templateId, adapterImpl, true, true);
     addTemplate("Strategy", "MockStrategy", strategyImpl, false, true);
-    controller.setManagementFee(uint256(1000));
+    controller.setPerformanceFee(uint256(1000));
     controller.setHarvestCooldown(1 days);
     address adapterClone = 0xD6C5fA22BBE89db86245e111044a880213b35705;
     address strategyClone = 0xe8a41C57AB0019c403D35e8D54f2921BaE21Ed66;
@@ -652,7 +656,7 @@ contract VaultControllerTest is Test {
 
     assertEq(MockAdapter(adapterClone).initValue(), 100);
     assertEq(IAdapter(adapterClone).harvestCooldown(), 1 days);
-    assertEq(IAdapter(adapterClone).managementFee(), 1000);
+    assertEq(IAdapter(adapterClone).performanceFee(), 1000);
     assertEq(IAdapter(adapterClone).strategy(), strategyClone);
     assertTrue(cloneRegistry.cloneExists(adapterClone));
     assertTrue(cloneRegistry.cloneExists(strategyClone));
@@ -660,7 +664,7 @@ contract VaultControllerTest is Test {
 
   function test__deployAdapter_without_strategy() public {
     addTemplate("Adapter", templateId, adapterImpl, true, true);
-    controller.setManagementFee(uint256(1000));
+    controller.setPerformanceFee(uint256(1000));
     controller.setHarvestCooldown(1 days);
     address adapterClone = 0xe8a41C57AB0019c403D35e8D54f2921BaE21Ed66;
 
@@ -673,14 +677,14 @@ contract VaultControllerTest is Test {
 
     assertEq(MockAdapter(adapterClone).initValue(), 100);
     assertEq(IAdapter(adapterClone).harvestCooldown(), 1 days);
-    assertEq(IAdapter(adapterClone).managementFee(), 1000);
+    assertEq(IAdapter(adapterClone).performanceFee(), 1000);
     assertEq(IAdapter(adapterClone).strategy(), address(0));
     assertTrue(cloneRegistry.cloneExists(adapterClone));
   }
 
   function test__deployAdapter_with_initial_deposit() public {
     addTemplate("Adapter", templateId, adapterImpl, true, true);
-    controller.setManagementFee(uint256(1000));
+    controller.setPerformanceFee(uint256(1000));
     controller.setHarvestCooldown(1 days);
     asset.mint(address(this), 1 ether);
     asset.approve(address(controller), 1 ether);
@@ -1562,36 +1566,36 @@ contract VaultControllerTest is Test {
                         SET MANAGEMENT FEE
     //////////////////////////////////////////////////////////////*/
 
-  function test__setManagementFee() public {
-    controller.setManagementFee(1e16);
-    assertEq(controller.managementFee(), 1e16);
+  function test__setPerformanceFee() public {
+    controller.setPerformanceFee(1e16);
+    assertEq(controller.performanceFee(), 1e16);
   }
 
-  function testFail__setManagementFee_fee_out_of_bonds() public {
-    controller.setManagementFee(3e17);
+  function testFail__setPerformanceFee_fee_out_of_bonds() public {
+    controller.setPerformanceFee(3e17);
   }
 
-  function testFail__setManagementFee_nonOwner() public {
+  function testFail__setPerformanceFee_nonOwner() public {
     vm.prank(nonOwner);
-    controller.setManagementFee(1e16);
+    controller.setPerformanceFee(1e16);
   }
 
-  function test__setAdapterManagementFees() public {
+  function test__setAdapterPerformanceFees() public {
     address[] memory targets = new address[](1);
     addTemplate("Adapter", templateId, adapterImpl, true, true);
     address adapter = deployAdapter();
     targets[0] = adapter;
-    controller.setManagementFee(1e16);
+    controller.setPerformanceFee(1e16);
 
-    controller.setAdapterManagementFees(targets);
-    assertEq(IAdapter(adapter).managementFee(), 1e16);
+    controller.setAdapterPerformanceFees(targets);
+    assertEq(IAdapter(adapter).performanceFee(), 1e16);
   }
 
-  function testFail__setAdapterManagementFees_nonOwner() public {
+  function testFail__setAdapterPerformanceFees_nonOwner() public {
     address[] memory targets = new address[](1);
 
     vm.prank(nonOwner);
-    controller.setAdapterManagementFees(targets);
+    controller.setAdapterPerformanceFees(targets);
   }
 
   /*//////////////////////////////////////////////////////////////

@@ -15,5 +15,10 @@ yarn-error.log
 !.openzeppelin/goerli*.json
 !.openzeppelin/rinkeby*.json
 !.openzeppelin/mainnet*.json
+packages/hardhat/artifacts
+packages/hardhat/artifacts-ovm
+packages/hardhat/cache
+packages/hardhat/cache-ovm
+packages/hardhat/typechain
 **/.DS_Store
 .vercel

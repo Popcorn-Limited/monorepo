@@ -5,9 +5,9 @@ pragma solidity ^0.8.15;
 
 import { Test } from "forge-std/Test.sol";
 
-import { BeefyAdapter, SafeERC20, IERC20, IERC20Metadata, Math, IBeefyVault, IBeefyBooster, IBeefyBalanceCheck } from "../../../../src/vault/adapter/beefy/BeefyAdapter.sol";
+import { BeefyAdapter, SafeERC20, IERC20, IERC20Metadata, IBeefyVault, IBeefyBooster, IBeefyBalanceCheck } from "../../../../src/vault/adapter/beefy/BeefyAdapter.sol";
 import { BeefyTestConfigStorage, BeefyTestConfig } from "./BeefyTestConfigStorage.sol";
-import { AbstractAdapterTest, ITestConfigStorage, IAdapter } from "../abstract/AbstractAdapterTest.sol";
+import { AbstractAdapterTest, ITestConfigStorage, IAdapter, Math } from "../abstract/AbstractAdapterTest.sol";
 import { IPermissionRegistry, Permission } from "../../../../src/interfaces/vault/IPermissionRegistry.sol";
 import { PermissionRegistry } from "../../../../src/vault/PermissionRegistry.sol";
 
@@ -92,7 +92,11 @@ contract BeefyAdapterTest is AbstractAdapterTest {
     );
   }
 
-  function setPermission(address target, bool endorsed, bool rejected) public {
+  function setPermission(
+    address target,
+    bool endorsed,
+    bool rejected
+  ) public {
     address[] memory targets = new address[](1);
     Permission[] memory permissions = new Permission[](1);
     targets[0] = target;
@@ -174,7 +178,7 @@ contract BeefyAdapterTest is AbstractAdapterTest {
     uint256 shares2 = adapter.withdraw(defaultAmount - 1, bob, bob);
     vm.stopPrank();
 
-    assertApproxGeAbs(shares2, shares1, _delta_, testId);
+    assertGe(shares2, shares1, testId);
   }
 
   // NOTE - The beefy adapter suffers often from an off-by-one error which "steals" 1 wei from the user
@@ -186,6 +190,6 @@ contract BeefyAdapterTest is AbstractAdapterTest {
     uint256 shares = adapter.withdraw(assets - 1, bob, bob);
     vm.stopPrank();
 
-    assertApproxGeAbs(shares, defaultAmount, _delta_, testId);
+    assertGe(shares, defaultAmount, testId);
   }
 }

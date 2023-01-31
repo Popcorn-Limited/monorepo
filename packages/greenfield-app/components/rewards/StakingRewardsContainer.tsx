@@ -1,29 +1,30 @@
 import { NotAvailable } from "@popcorn/app/components/Rewards/NotAvailable";
-import useWeb3 from "@popcorn/app/hooks/useWeb3";
 import { ChainId } from "@popcorn/utils";
 import { constants } from "ethers";
 import useAllStakingAddresses from "hooks/staking/useAllStakingAddresses";
 import { useSum } from "@popcorn/components";
 import { useEffect, useState } from "react";
 import ClaimCard from "./ClaimCard";
+import { Address } from "wagmi";
 
 interface StakingRewardsContainerProps {
   selectedNetworks: ChainId[];
 }
 
 export default function StakingRewardsContainer({ selectedNetworks }: StakingRewardsContainerProps): JSX.Element {
-  const { account } = useWeb3();
   const stakingAddresses = useAllStakingAddresses();
   const [displayAddresses, setDisplayAddresses] = useState(stakingAddresses);
+  const [cachedSelectedNetworks, setCachedNetworks] = useState([]);
   const { loading, sum, add, reset } = useSum({ expected: displayAddresses.length });
 
   useEffect(() => {
     reset();
-  }, [account, selectedNetworks, reset]);
+  }, [selectedNetworks, reset]);
 
   useEffect(() => {
-    if (stakingAddresses && stakingAddresses.length > 0) {
+    if ((stakingAddresses && stakingAddresses.length > 0, cachedSelectedNetworks !== selectedNetworks)) {
       setDisplayAddresses(stakingAddresses?.filter((pool) => selectedNetworks.includes(pool.chainId)));
+      setCachedNetworks(selectedNetworks);
     }
   }, [selectedNetworks, stakingAddresses]);
 
@@ -37,15 +38,12 @@ export default function StakingRewardsContainer({ selectedNetworks }: StakingRew
         />
       </div>
       {displayAddresses.map((staking) => (
-        <div key={staking?.chainId + staking?.address}>
-          <ClaimCard
-            chainId={staking?.chainId}
-            stakingAddress={staking?.address}
-            stakingType={staking?.stakingType}
-            addEarned={add}
-            isNotAvailable={!loading && sum?.eq(constants.Zero)}
-          />
-        </div>
+        <ClaimCard
+          key={`${staking?.address}-${staking?.chainId}`}
+          chainId={staking?.chainId}
+          staking={staking?.address as Address}
+          addEarned={add}
+        />
       ))}
     </>
   );

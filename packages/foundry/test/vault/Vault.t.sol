@@ -110,7 +110,7 @@ contract VaultTest is Test {
     assertEq(management, 100);
     assertEq(performance, 100);
     assertEq(newVault.feeRecipient(), feeRecipient);
-    assertEq(newVault.vaultShareHWM(), 1 ether);
+    assertEq(newVault.highWaterMark(), 1 ether);
     assertEq(newVault.feesUpdatedAt(), callTime);
 
     assertEq(newVault.quitPeriod(), 3 days);
@@ -670,9 +670,7 @@ contract VaultTest is Test {
     assertEq(vault.balanceOf(feeRecipient), expectedFeeInShares);
 
     // High Water Mark should remain unchanged
-    assertEq(vault.vaultShareHWM(), 1 ether);
-    // AssetsCheckpoint should remain unchanged
-    assertEq(vault.assetsCheckpoint(), depositAmount);
+    assertEq(vault.highWaterMark(), 1 ether);
   }
 
   function test__performanceFee(uint128 amount) public {
@@ -699,9 +697,7 @@ contract VaultTest is Test {
     assertEq(vault.balanceOf(feeRecipient), expectedFeeInShares);
 
     // There should be a new High Water Mark
-    assertEq(vault.vaultShareHWM(), (depositAmount + amount).mulDivDown(depositAmount, depositAmount));
-    // AssetsCheckpoint should be advanced
-    assertEq(vault.assetsCheckpoint(), depositAmount + amount);
+    assertEq(vault.highWaterMark(), (depositAmount + amount).mulDivDown(depositAmount, depositAmount));
   }
 
   /*//////////////////////////////////////////////////////////////
@@ -841,8 +837,7 @@ contract VaultTest is Test {
     // Increase assets in asset Adapter to check hwm and assetCheckpoint later
     asset.mint(address(adapter), depositAmount);
     vault.takeManagementAndPerformanceFees();
-    uint256 oldHWM = vault.vaultShareHWM();
-    uint256 oldAssetCheckpoint = vault.assetsCheckpoint();
+    uint256 oldHWM = vault.highWaterMark();
 
     // Preparation to change the adapter
     vault.proposeAdapter(IERC4626(address(newAdapter)));
@@ -862,8 +857,7 @@ contract VaultTest is Test {
     assertEq(newAdapter.balanceOf(address(vault)), depositAmount * 2);
     assertEq(asset.allowance(address(vault), address(newAdapter)), type(uint256).max);
 
-    assertEq(vault.vaultShareHWM(), oldHWM);
-    assertEq(vault.assetsCheckpoint(), oldAssetCheckpoint);
+    assertEq(vault.highWaterMark(), oldHWM);
   }
 
   function testFail__changeAdapter_NonOwner() public {

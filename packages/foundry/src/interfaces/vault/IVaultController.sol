@@ -60,7 +60,11 @@ interface IVaultController {
     uint160[] memory rewardsSpeeds
   ) external;
 
-  function fundStakingRewards(address[] memory vaults, IERC20[] memory rewardTokens, uint256[] memory amounts) external;
+  function fundStakingRewards(
+    address[] memory vaults,
+    IERC20[] memory rewardTokens,
+    uint256[] memory amounts
+  ) external;
 
   function setEscrowTokenFees(IERC20[] memory tokens, uint256[] memory fees) external;
 
@@ -80,11 +84,11 @@ interface IVaultController {
 
   function acceptAdminProxyOwnership() external;
 
-  function setManagementFee(uint256 newFee) external;
+  function setPerformanceFee(uint256 newFee) external;
 
-  function setAdapterManagementFees(address[] calldata adapters) external;
+  function setAdapterPerformanceFees(address[] calldata adapters) external;
 
-  function managementFee() external view returns (uint256);
+  function performanceFee() external view returns (uint256);
 
   function setHarvestCooldown(uint256 newCooldown) external;
 

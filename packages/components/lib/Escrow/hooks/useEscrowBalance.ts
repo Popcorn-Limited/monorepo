@@ -31,7 +31,6 @@ export const useEscrowBalance: Pop.Hook<BigNumberWithFormatted> = ({
     functionName: "getEscrows(bytes32[])",
     chainId: Number(chainId),
     enabled: _enabled,
-    cacheOnBlock: true,
     scopeKey: `getEscrows:${chainId}:${address}:${account}`,
     args: (!!_enabled && [escrowIds]) || undefined,
     select: (data) => {

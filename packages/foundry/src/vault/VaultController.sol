@@ -117,10 +117,10 @@ contract VaultController is Owned {
   }
 
   /// @notice Deploys a new vault contract using the `activeTemplateId`.
-  function _deployVault(
-    VaultInitParams memory vaultData,
-    IDeploymentController _deploymentController
-  ) internal returns (address vault) {
+  function _deployVault(VaultInitParams memory vaultData, IDeploymentController _deploymentController)
+    internal
+    returns (address vault)
+  {
     vaultData.owner = address(adminProxy);
 
     (bool success, bytes memory returnData) = adminProxy.execute(
@@ -138,7 +138,11 @@ contract VaultController is Owned {
   }
 
   /// @notice Registers newly created vault metadata.
-  function _registerCreatedVault(address vault, address staking, VaultMetadata memory metadata) internal {
+  function _registerCreatedVault(
+    address vault,
+    address staking,
+    VaultMetadata memory metadata
+  ) internal {
     metadata.vault = vault;
     metadata.staking = staking;
     metadata.creator = msg.sender;
@@ -157,7 +161,11 @@ contract VaultController is Owned {
     addStakingRewardsTokens(vaultContracts, rewardsDatas);
   }
 
-  function _handleInitialDeposit(uint256 initialDeposit, IERC20 asset, IERC4626 target) internal {
+  function _handleInitialDeposit(
+    uint256 initialDeposit,
+    IERC20 asset,
+    IERC4626 target
+  ) internal {
     if (initialDeposit > 0) {
       asset.safeTransferFrom(msg.sender, address(this), initialDeposit);
       asset.approve(address(target), initialDeposit);
@@ -227,14 +235,14 @@ contract VaultController is Owned {
 
     adapter = abi.decode(returnData, (address));
 
-    adminProxy.execute(adapter, abi.encodeWithSelector(IAdapter.setManagementFee.selector, managementFee));
+    adminProxy.execute(adapter, abi.encodeWithSelector(IAdapter.setPerformanceFee.selector, performanceFee));
   }
 
   /// @notice Encodes adapter init call. Was moved into its own function to fix "stack too deep" error.
-  function _encodeAdapterData(
-    DeploymentArgs memory adapterData,
-    bytes memory baseAdapterData
-  ) internal returns (bytes memory) {
+  function _encodeAdapterData(DeploymentArgs memory adapterData, bytes memory baseAdapterData)
+    internal
+    returns (bytes memory)
+  {
     return
       abi.encodeWithSelector(
         IAdapter.initialize.selector,
@@ -245,10 +253,10 @@ contract VaultController is Owned {
   }
 
   /// @notice Deploys a new strategy contract.
-  function _deployStrategy(
-    DeploymentArgs memory strategyData,
-    IDeploymentController _deploymentController
-  ) internal returns (address strategy) {
+  function _deployStrategy(DeploymentArgs memory strategyData, IDeploymentController _deploymentController)
+    internal
+    returns (address strategy)
+  {
     (bool success, bytes memory returnData) = adminProxy.execute(
       address(_deploymentController),
       abi.encodeWithSelector(DEPLOY_SIG, STRATEGY, strategyData.id, "")
@@ -273,10 +281,10 @@ contract VaultController is Owned {
   }
 
   /// @notice Deploys a new staking contract using the activeTemplateId.
-  function _deployStaking(
-    IERC20 asset,
-    IDeploymentController _deploymentController
-  ) internal returns (address staking) {
+  function _deployStaking(IERC20 asset, IDeploymentController _deploymentController)
+    internal
+    returns (address staking)
+  {
     (bool success, bytes memory returnData) = adminProxy.execute(
       address(_deploymentController),
       abi.encodeWithSelector(
@@ -568,10 +576,10 @@ contract VaultController is Owned {
    * @param templateIds TemplateId of the template to endorse.
    * @dev See `TemplateRegistry` for more details.
    */
-  function toggleTemplateEndorsements(
-    bytes32[] calldata templateCategories,
-    bytes32[] calldata templateIds
-  ) external onlyOwner {
+  function toggleTemplateEndorsements(bytes32[] calldata templateCategories, bytes32[] calldata templateIds)
+    external
+    onlyOwner
+  {
     uint8 len = uint8(templateCategories.length);
     _verifyEqualArrayLength(len, templateIds.length);
 
@@ -728,37 +736,37 @@ contract VaultController is Owned {
                           MANAGEMENT FEE LOGIC
     //////////////////////////////////////////////////////////////*/
 
-  uint256 public managementFee;
+  uint256 public performanceFee;
 
-  event ManagementFeeChanged(uint256 oldFee, uint256 newFee);
+  event PerformanceFeeChanged(uint256 oldFee, uint256 newFee);
 
-  error InvalidManagementFee(uint256 fee);
+  error InvalidPerformanceFee(uint256 fee);
 
   /**
-   * @notice Set a new managementFee for all new adapters. Caller must be owner.
-   * @param newFee mangement fee in 1e18.
+   * @notice Set a new performanceFee for all new adapters. Caller must be owner.
+   * @param newFee performance fee in 1e18.
    * @dev Fees can be 0 but never more than 2e17 (1e18 = 100%, 1e14 = 1 BPS)
    * @dev Can be retroactively applied to existing adapters.
    */
-  function setManagementFee(uint256 newFee) external onlyOwner {
-    // Dont take more than 20% managementFee
-    if (newFee > 2e17) revert InvalidManagementFee(newFee);
+  function setPerformanceFee(uint256 newFee) external onlyOwner {
+    // Dont take more than 20% performanceFee
+    if (newFee > 2e17) revert InvalidPerformanceFee(newFee);
 
-    emit ManagementFeeChanged(managementFee, newFee);
+    emit PerformanceFeeChanged(performanceFee, newFee);
 
-    managementFee = newFee;
+    performanceFee = newFee;
   }
 
   /**
-   * @notice Set a new managementFee for existing adapters. Caller must be owner.
+   * @notice Set a new performanceFee for existing adapters. Caller must be owner.
    * @param adapters array of adapters to set the management fee for.
    */
-  function setAdapterManagementFees(address[] calldata adapters) external onlyOwner {
+  function setAdapterPerformanceFees(address[] calldata adapters) external onlyOwner {
     uint8 len = uint8(adapters.length);
     for (uint256 i = 0; i < len; i++) {
       (bool success, bytes memory returnData) = adminProxy.execute(
         adapters[i],
-        abi.encodeWithSelector(IAdapter.setManagementFee.selector, managementFee)
+        abi.encodeWithSelector(IAdapter.setPerformanceFee.selector, performanceFee)
       );
       if (!success) revert UnderlyingError(returnData);
     }

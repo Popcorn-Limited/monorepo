@@ -24,7 +24,6 @@ export default function DesktopMenu(): JSX.Element {
   const { address } = useAccount();
   const router = useRouter();
   const { chain, chains } = useNetwork();
-  console.log(chain, chains);
   const logo = useMemo(() => (address && chain?.id ? networkLogos[chain.id] : networkLogos["1"]), [chain?.id, address]);
   const chainName = useMemo(() => (address && chain?.name ? chain.name : "Ethereum"), [chain?.id, address]);
   const productLinks = useProductLinks();
@@ -60,26 +59,22 @@ export default function DesktopMenu(): JSX.Element {
             className={`text-gray-500 w-10 transform transition duration-500 relative focus:outline-none bg-white`}
             onClick={() => toggleMenu(!menuVisible)}
           >
-            <div className="block w-10 bg-white">
-              <span
-                aria-hidden="true"
-                className={`block h-1 w-8 bg-black ease-in-out rounded-3xl ${
-                  menuVisible ? "rotate-45 translate-y-1" : "-translate-y-2"
-                }`}
-              ></span>
-              <span
-                aria-hidden="true"
-                className={`block h-1 w-8 bg-black ease-in-out rounded-3xl ${
-                  menuVisible ? "opacity-0" : "opacity-100"
-                }`}
-              ></span>
-              <span
-                aria-hidden="true"
-                className={`block h-1 w-8 bg-black ease-in-out rounded-3xl ${
-                  menuVisible ? "-rotate-45 -translate-y-1" : "translate-y-2"
-                }`}
-              ></span>
-            </div>
+            <span
+              aria-hidden="true"
+              className={`block h-1 w-8 bg-black ease-in-out rounded-3xl ${
+                menuVisible ? "rotate-45 translate-y-1" : "-translate-y-2"
+              }`}
+            ></span>
+            <span
+              aria-hidden="true"
+              className={`block h-1 w-8 bg-black ease-in-out rounded-3xl ${menuVisible ? "opacity-0" : "opacity-100"}`}
+            ></span>
+            <span
+              aria-hidden="true"
+              className={`block h-1 w-8 bg-black ease-in-out rounded-3xl ${
+                menuVisible ? "-rotate-45 -translate-y-1" : "translate-y-2"
+              }`}
+            ></span>
           </button>
         </div>
       </div>

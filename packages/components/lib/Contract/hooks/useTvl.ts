@@ -21,7 +21,6 @@ export const useTvl: Pop.Hook<BigNumberWithFormatted> = ({ chainId, address, res
   const _priceResolver = resolver || metadata?.priceResolver;
   const _tvlResolver = metadata?.tvlResolver;
   const _enabled = typeof enabled !== "undefined" ? !!enabled && !!chainId && !!address : !!chainId && !!address;
-
   const { data: price, status: priceStatus } = usePrice({
     address,
     chainId,
