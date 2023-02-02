@@ -64,11 +64,7 @@ contract TemplateRegistry is Owned {
    * @param templateId Unique TemplateId of the new template.
    * @param template Contains the implementation address and necessary informations to clone the implementation.
    */
-  function addTemplate(
-    bytes32 templateCategory,
-    bytes32 templateId,
-    Template memory template
-  ) external onlyOwner {
+  function addTemplate(bytes32 templateCategory, bytes32 templateId, Template memory template) external onlyOwner {
     if (!templateCategoryExists[templateCategory]) revert KeyNotFound(templateCategory);
     if (templateExists[templateId]) revert TemplateExists(templateId);
 

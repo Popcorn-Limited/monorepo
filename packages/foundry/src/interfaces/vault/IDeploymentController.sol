@@ -13,11 +13,7 @@ interface IDeploymentController is ICloneFactory, ICloneRegistry {
 
   function templateExists(bytes32 templateId) external view returns (bool);
 
-  function addTemplate(
-    bytes32 templateCategory,
-    bytes32 templateId,
-    Template memory template
-  ) external;
+  function addTemplate(bytes32 templateCategory, bytes32 templateId, Template memory template) external;
 
   function addTemplateCategory(bytes32 templateCategory) external;
 
