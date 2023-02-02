@@ -16,11 +16,10 @@ contract AdminProxy is Owned {
   constructor(address _owner) Owned(_owner) {}
 
   /// @notice Execute arbitrary management functions.
-  function execute(address target, bytes calldata callData)
-    external
-    onlyOwner
-    returns (bool success, bytes memory returndata)
-  {
+  function execute(
+    address target,
+    bytes calldata callData
+  ) external onlyOwner returns (bool success, bytes memory returndata) {
     return target.call(callData);
   }
 }

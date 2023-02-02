@@ -117,10 +117,10 @@ contract VaultController is Owned {
   }
 
   /// @notice Deploys a new vault contract using the `activeTemplateId`.
-  function _deployVault(VaultInitParams memory vaultData, IDeploymentController _deploymentController)
-    internal
-    returns (address vault)
-  {
+  function _deployVault(
+    VaultInitParams memory vaultData,
+    IDeploymentController _deploymentController
+  ) internal returns (address vault) {
     vaultData.owner = address(adminProxy);
 
     (bool success, bytes memory returnData) = adminProxy.execute(
@@ -138,11 +138,7 @@ contract VaultController is Owned {
   }
 
   /// @notice Registers newly created vault metadata.
-  function _registerCreatedVault(
-    address vault,
-    address staking,
-    VaultMetadata memory metadata
-  ) internal {
+  function _registerCreatedVault(address vault, address staking, VaultMetadata memory metadata) internal {
     metadata.vault = vault;
     metadata.staking = staking;
     metadata.creator = msg.sender;
@@ -161,11 +157,7 @@ contract VaultController is Owned {
     addStakingRewardsTokens(vaultContracts, rewardsDatas);
   }
 
-  function _handleInitialDeposit(
-    uint256 initialDeposit,
-    IERC20 asset,
-    IERC4626 target
-  ) internal {
+  function _handleInitialDeposit(uint256 initialDeposit, IERC20 asset, IERC4626 target) internal {
     if (initialDeposit > 0) {
       asset.safeTransferFrom(msg.sender, address(this), initialDeposit);
       asset.approve(address(target), initialDeposit);
@@ -239,10 +231,10 @@ contract VaultController is Owned {
   }
 
   /// @notice Encodes adapter init call. Was moved into its own function to fix "stack too deep" error.
-  function _encodeAdapterData(DeploymentArgs memory adapterData, bytes memory baseAdapterData)
-    internal
-    returns (bytes memory)
-  {
+  function _encodeAdapterData(
+    DeploymentArgs memory adapterData,
+    bytes memory baseAdapterData
+  ) internal returns (bytes memory) {
     return
       abi.encodeWithSelector(
         IAdapter.initialize.selector,
@@ -253,10 +245,10 @@ contract VaultController is Owned {
   }
 
   /// @notice Deploys a new strategy contract.
-  function _deployStrategy(DeploymentArgs memory strategyData, IDeploymentController _deploymentController)
-    internal
-    returns (address strategy)
-  {
+  function _deployStrategy(
+    DeploymentArgs memory strategyData,
+    IDeploymentController _deploymentController
+  ) internal returns (address strategy) {
     (bool success, bytes memory returnData) = adminProxy.execute(
       address(_deploymentController),
       abi.encodeWithSelector(DEPLOY_SIG, STRATEGY, strategyData.id, "")
@@ -281,10 +273,10 @@ contract VaultController is Owned {
   }
 
   /// @notice Deploys a new staking contract using the activeTemplateId.
-  function _deployStaking(IERC20 asset, IDeploymentController _deploymentController)
-    internal
-    returns (address staking)
-  {
+  function _deployStaking(
+    IERC20 asset,
+    IDeploymentController _deploymentController
+  ) internal returns (address staking) {
     (bool success, bytes memory returnData) = adminProxy.execute(
       address(_deploymentController),
       abi.encodeWithSelector(
@@ -576,10 +568,10 @@ contract VaultController is Owned {
    * @param templateIds TemplateId of the template to endorse.
    * @dev See `TemplateRegistry` for more details.
    */
-  function toggleTemplateEndorsements(bytes32[] calldata templateCategories, bytes32[] calldata templateIds)
-    external
-    onlyOwner
-  {
+  function toggleTemplateEndorsements(
+    bytes32[] calldata templateCategories,
+    bytes32[] calldata templateIds
+  ) external onlyOwner {
     uint8 len = uint8(templateCategories.length);
     _verifyEqualArrayLength(len, templateIds.length);
 

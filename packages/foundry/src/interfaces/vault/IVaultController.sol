@@ -60,11 +60,7 @@ interface IVaultController {
     uint160[] memory rewardsSpeeds
   ) external;
 
-  function fundStakingRewards(
-    address[] memory vaults,
-    IERC20[] memory rewardTokens,
-    uint256[] memory amounts
-  ) external;
+  function fundStakingRewards(address[] memory vaults, IERC20[] memory rewardTokens, uint256[] memory amounts) external;
 
   function setEscrowTokenFees(IERC20[] memory tokens, uint256[] memory fees) external;
 

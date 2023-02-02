@@ -60,7 +60,7 @@ contract AbstractAdapterTest is PropertyTest {
     adapter = adapter_;
     externalRegistry = externalRegistry_;
 
-    defaultAmount = 10**IERC20Metadata(address(asset_)).decimals();
+    defaultAmount = 10 ** IERC20Metadata(address(asset_)).decimals();
 
     raise = defaultAmount * 100_000;
     maxAssets = defaultAmount * 1000;

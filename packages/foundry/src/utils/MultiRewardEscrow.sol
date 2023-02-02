@@ -85,13 +85,7 @@ contract MultiRewardEscrow is Owned {
    * @dev This creates a separate escrow structure which can later be iterated upon to unlock the escrowed funds.
    * @dev The Owner may decide to add a fee to the escrowed amount.
    */
-  function lock(
-    IERC20 token,
-    address account,
-    uint256 amount,
-    uint32 duration,
-    uint32 offset
-  ) external {
+  function lock(IERC20 token, address account, uint256 amount, uint32 duration, uint32 offset) external {
     if (token == IERC20(address(0))) revert ZeroAddress();
     if (account == address(0)) revert ZeroAddress();
     if (amount == 0) revert ZeroAmount();

@@ -21,11 +21,7 @@ contract VaultRouter {
 
   error NoStaking();
 
-  function depositAndStake(
-    IERC4626 vault,
-    uint256 assetAmount,
-    address receiver
-  ) external {
+  function depositAndStake(IERC4626 vault, uint256 assetAmount, address receiver) external {
     VaultMetadata memory metadata = vaultRegistry.getVault(address(vault));
     if (metadata.staking == address(0)) revert NoStaking();
 
@@ -34,12 +30,7 @@ contract VaultRouter {
     IERC4626(metadata.staking).deposit(shares, receiver);
   }
 
-  function redeemAndWithdraw(
-    IERC4626 vault,
-    uint256 burnAmount,
-    address receiver,
-    address owner
-  ) external {
+  function redeemAndWithdraw(IERC4626 vault, uint256 burnAmount, address receiver, address owner) external {
     VaultMetadata memory metadata = vaultRegistry.getVault(address(vault));
     if (metadata.staking == address(0)) revert NoStaking();
 

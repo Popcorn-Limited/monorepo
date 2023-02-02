@@ -256,11 +256,7 @@ contract VaultControllerTest is Test {
       );
   }
 
-  function setPermission(
-    address target,
-    bool endorsed,
-    bool rejected
-  ) public {
+  function setPermission(address target, bool endorsed, bool rejected) public {
     emit log_named_address("target", target);
     address[] memory targets = new address[](1);
     Permission[] memory permissions = new Permission[](1);

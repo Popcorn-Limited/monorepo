@@ -109,36 +109,6 @@ contract AaveV2AdapterTest is AbstractAdapterTest {
   }
 
   /*//////////////////////////////////////////////////////////////
-                              HARVEST
-    //////////////////////////////////////////////////////////////*/
-
-  function test__harvest() public override {
-    _mintFor(defaultAmount, bob);
-
-    vm.prank(bob);
-    adapter.deposit(defaultAmount, bob);
-
-    // Skip a year
-    vm.warp(block.timestamp + 365 days);
-
-    uint256 interest = getApy();
-    uint256 expectedFee = adapter.convertToShares((defaultAmount * 5e16) / 1e18);
-    uint256 callTime = block.timestamp;
-
-    if (address(strategy) != address(0)) {
-      vm.expectEmit(false, false, false, true, address(adapter));
-      emit StrategyExecuted();
-    }
-    vm.expectEmit(false, false, false, true, address(adapter));
-    emit Harvested();
-
-    adapter.harvest();
-
-    assertApproxEqAbs(adapter.highWaterMark(), defaultAmount + interest, _delta_, "highWaterMark");
-    assertApproxEqAbs(adapter.totalSupply(), defaultAmount + expectedFee, _delta_, "totalSupply");
-  }
-
-  /*//////////////////////////////////////////////////////////////
                           ROUNDTRIP TESTS
     //////////////////////////////////////////////////////////////*/
 

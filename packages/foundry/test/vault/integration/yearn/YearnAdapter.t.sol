@@ -13,6 +13,8 @@ contract YearnAdapterTest is AbstractAdapterTest {
   using Math for uint256;
 
   VaultAPI yearnVault;
+  address yearnDeployer = 0x50c1a2eA0a861A967D9d0FFE2AE4012c2E053804;
+  address yStrategy;
 
   function setUp() public {
     uint256 forkId = vm.createSelectFork(vm.rpcUrl("mainnet"));
@@ -30,11 +32,12 @@ contract YearnAdapterTest is AbstractAdapterTest {
   function _setUpTest(bytes memory testConfig) internal {
     createAdapter();
 
-    address _asset = abi.decode(testConfig, (address));
+    (address _asset, address _yStrategy) = abi.decode(testConfig, (address, address));
 
-    setUpBaseTest(IERC20(_asset), adapter, 0x50c1a2eA0a861A967D9d0FFE2AE4012c2E053804, 10, "Yearn ", false);
+    setUpBaseTest(IERC20(_asset), adapter, yearnDeployer, 10, "Yearn ", false);
 
     yearnVault = VaultAPI(IYearnRegistry(externalRegistry).latestVault(_asset));
+    yStrategy = _yStrategy;
 
     vm.label(address(yearnVault), "yearnVault");
     vm.label(address(asset), "asset");
@@ -52,11 +55,7 @@ contract YearnAdapterTest is AbstractAdapterTest {
   }
 
   function increasePricePerShare(uint256 amount) public override {
-    deal(
-      address(asset),
-      address(yearnVault),
-      asset.balanceOf(address(0x336600990ae039b4acEcE630667871AeDEa46E5E)) + amount
-    );
+    deal(address(asset), address(yearnVault), asset.balanceOf(yStrategy) + amount);
   }
 
   function iouBalance() public view override returns (uint256) {
@@ -82,7 +81,7 @@ contract YearnAdapterTest is AbstractAdapterTest {
       adapter.totalAssets(),
       iouBalance().mulDiv(
         yearnVault.pricePerShare(),
-        10**IERC20Metadata(address(adapter)).decimals(),
+        10 ** IERC20Metadata(address(adapter)).decimals(),
         Math.Rounding.Up
       ),
       _delta_,

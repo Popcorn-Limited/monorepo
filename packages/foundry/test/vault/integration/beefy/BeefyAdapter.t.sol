@@ -92,11 +92,7 @@ contract BeefyAdapterTest is AbstractAdapterTest {
     );
   }
 
-  function setPermission(
-    address target,
-    bool endorsed,
-    bool rejected
-  ) public {
+  function setPermission(address target, bool endorsed, bool rejected) public {
     address[] memory targets = new address[](1);
     Permission[] memory permissions = new Permission[](1);
     targets[0] = target;
