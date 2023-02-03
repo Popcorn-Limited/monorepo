@@ -38,7 +38,11 @@ contract CloneRegistry is Owned {
    * @param templateId Unique Id of the template to use.
    * @param clone Address of the clone to add.
    */
-  function addClone(bytes32 templateCategory, bytes32 templateId, address clone) external onlyOwner {
+  function addClone(
+    bytes32 templateCategory,
+    bytes32 templateId,
+    address clone
+  ) external onlyOwner {
     cloneExists[clone] = true;
     clones[templateCategory][templateId].push(clone);
     allClones.push(clone);
@@ -50,10 +54,11 @@ contract CloneRegistry is Owned {
                                 VIEWS
     //////////////////////////////////////////////////////////////*/
 
-  function getClonesByCategoryAndId(
-    bytes32 templateCategory,
-    bytes32 templateId
-  ) external view returns (address[] memory) {
+  function getClonesByCategoryAndId(bytes32 templateCategory, bytes32 templateId)
+    external
+    view
+    returns (address[] memory)
+  {
     return clones[templateCategory][templateId];
   }
 

@@ -6,7 +6,7 @@ pragma solidity ^0.8.15;
 import { AdapterBase, IERC20, IERC20Metadata, SafeERC20, ERC20, Math, IStrategy, IAdapter } from "../../abstracts/AdapterBase.sol";
 import { WithRewards, IWithRewards } from "../../abstracts/WithRewards.sol";
 import { ICToken, IComptroller } from "./ICompoundV2.sol";
-import { LibFuse, CToken } from "../../../../../lib/libcompound/src/LibFuse.sol";
+import { LibCompound } from "./LibCompound.sol";
 
 /**
  * @title   CompoundV2 Adapter
@@ -46,16 +46,16 @@ contract CompoundV2Adapter is AdapterBase, WithRewards {
   /**
    * @notice Initialize a new CompoundV2 Adapter.
    * @param adapterInitData Encoded data for the base adapter initialization.
+   * @param comptroller_ The Compound comptroller.
    * @param compoundV2InitData Encoded data for the beefy adapter initialization.
    * @dev `_cToken` - The underlying asset supplied to and wrapped by Compound.
-   * @dev `_comptroller` - The Compound comptroller.
    * @dev This function is called by the factory contract when deploying a new vault.
    */
   function initialize(
     bytes memory adapterInitData,
-    address,
+    address comptroller_,
     bytes memory compoundV2InitData
-  ) public {
+  ) external initializer {
     __AdapterBase_init(adapterInitData);
 
     _name = string.concat("Popcorn Compound", IERC20Metadata(asset()).name(), " Adapter");
@@ -66,7 +66,7 @@ contract CompoundV2Adapter is AdapterBase, WithRewards {
       if (cToken.underlying() != asset()) revert DifferentAssets(cToken.underlying(), asset());
     }
 
-    comptroller = IComptroller(cToken.comptroller());
+    comptroller = IComptroller(comptroller_);
 
     (bool isListed, , ) = comptroller.markets(address(cToken));
     if (isListed == false) revert InvalidAsset(address(cToken));
@@ -89,14 +89,16 @@ contract CompoundV2Adapter is AdapterBase, WithRewards {
                             ACCOUNTING LOGIC
     //////////////////////////////////////////////////////////////*/
 
-  function viewUnderlyingBalanceOf(address token, address user) public view override returns (uint256) {
-    CToken token = CToken(token);
-    return LibFuse.viewUnderlyingBalanceOf(token, user);
+  function _totalAssets() internal view override returns (uint256) {
+    uint256 underlyingBalance_ = underlyingBalance;
+    return
+      underlyingBalance_ == 0
+        ? 0
+        : underlyingBalance.mulDiv(LibCompound.viewExchangeRate(cToken), 1e18, Math.Rounding.Down);
   }
 
-  function totalAssets() public view override returns (uint256) {
-    return
-      paused() ? IERC20(asset()).balanceOf(address(this)) : viewUnderlyingBalanceOf(address(cToken), address(this));
+  function _underlyingBalance() internal view override returns (uint256) {
+    return cToken.balanceOf(address(this));
   }
 
   /// @notice The amount of compound shares to withdraw given an mount of adapter shares

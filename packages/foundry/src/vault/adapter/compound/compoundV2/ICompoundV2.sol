@@ -30,6 +30,20 @@ interface ICToken {
    * @dev Returns exchange rate from the underlying to the cToken.
    **/
   function exchangeRateStored() external view returns (uint256);
+
+  function getCash() external view returns (uint256);
+
+  function totalBorrows() external view returns (uint256);
+
+  function totalReserves() external view returns (uint256);
+
+  function borrowRatePerBlock() external view returns (uint256);
+
+  function reserveFactorMantissa() external view returns (uint256);
+
+  function totalSupply() external view returns (uint256);
+
+  function accrualBlockNumber() external view returns (uint256);
 }
 
 interface IComptroller {

@@ -3,10 +3,10 @@
 
 pragma solidity ^0.8.15;
 
-import { AbstractVaultIntegrationTest } from "../../abstract/AbstractVaultIntegrationTest.sol";
-import { CompoundV2Adapter, SafeERC20, IERC20, IERC20Metadata, Math, ICToken, IComptroller, IStrategy, IAdapter } from "../../../../../src/vault/adapter/compound/CompoundV2/CompoundV2Adapter.sol";
+import { AbstractVaultIntegrationTest } from "../abstract/AbstractVaultIntegrationTest.sol";
+import { CompoundV2Adapter, SafeERC20, IERC20, IERC20Metadata, Math, ICToken, IComptroller,IStrategy,IAdapter } from "../../../../src/vault/adapter/compound/compoundV2/CompoundV2Adapter.sol";
 import { CompoundV2TestConfigStorage, CompoundV2TestConfig, ITestConfigStorage } from "./CompoundV2TestConfigStorage.sol";
-import { MockStrategy } from "../../../../utils/mocks/MockStrategy.sol";
+import { MockStrategy } from "../../../utils/mocks/MockStrategy.sol";
 
 contract CompoundV2VaultTest is AbstractVaultIntegrationTest {
   using Math for uint256;

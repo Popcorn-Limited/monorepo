@@ -63,7 +63,11 @@ contract DeploymentController is Owned {
    * @param template New template (See ITemplateRegistry for more details)
    * @dev (See TemplateRegistry for more details)
    */
-  function addTemplate(bytes32 templateCategory, bytes32 templateId, Template calldata template) external {
+  function addTemplate(
+    bytes32 templateCategory,
+    bytes32 templateId,
+    Template calldata template
+  ) external {
     templateRegistry.addTemplate(templateCategory, templateId, template);
   }
 

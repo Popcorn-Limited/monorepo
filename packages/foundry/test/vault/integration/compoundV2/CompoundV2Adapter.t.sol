@@ -5,9 +5,9 @@ pragma solidity ^0.8.15;
 
 import { Test } from "forge-std/Test.sol";
 
-import { CompoundV2Adapter, SafeERC20, IERC20, IERC20Metadata, Math, ICToken, IComptroller } from "../../../../../src/vault/adapter/compound/compoundV2/CompoundV2Adapter.sol";
+import { CompoundV2Adapter, SafeERC20, IERC20, IERC20Metadata, Math, ICToken, IComptroller } from "../../../../src/vault/adapter/compound/compoundV2/CompoundV2Adapter.sol";
 import { CompoundV2TestConfigStorage, CompoundV2TestConfig } from "./CompoundV2TestConfigStorage.sol";
-import { AbstractAdapterTest, ITestConfigStorage, IAdapter } from "../../abstract/AbstractAdapterTest.sol";
+import { AbstractAdapterTest, ITestConfigStorage, IAdapter } from "../abstract/AbstractAdapterTest.sol";
 
 contract CompoundV2AdapterTest is AbstractAdapterTest {
   using Math for uint256;
@@ -109,6 +109,13 @@ contract CompoundV2AdapterTest is AbstractAdapterTest {
   /*//////////////////////////////////////////////////////////////
                               HARVEST
     //////////////////////////////////////////////////////////////*/
+
+  function test__cTokenDeposit() public {
+    _mintFor(defaultAmount, address(this));
+    asset.approve(address(cToken), defaultAmount);
+    cToken.mint(1e9);
+    emit log_uint(cToken.balanceOf(address(this)));
+  }
 
   function test__harvest() public override {
     _mintFor(defaultAmount, bob);
