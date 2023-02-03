@@ -33,7 +33,11 @@ interface ITemplateRegistry is IOwned {
 
   function getTemplateIds(bytes32 templateCategory) external view returns (bytes32[] memory);
 
-  function addTemplate(bytes32 templateType, bytes32 templateId, Template memory template) external;
+  function addTemplate(
+    bytes32 templateType,
+    bytes32 templateId,
+    Template memory template
+  ) external;
 
   function addTemplateCategory(bytes32 templateCategory) external;
 

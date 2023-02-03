@@ -60,7 +60,7 @@ contract AbstractAdapterTest is PropertyTest {
     adapter = adapter_;
     externalRegistry = externalRegistry_;
 
-    defaultAmount = 10 ** IERC20Metadata(address(asset_)).decimals();
+    defaultAmount = 10**IERC20Metadata(address(asset_)).decimals();
 
     raise = defaultAmount * 100_000;
     maxAssets = defaultAmount * 1000;
@@ -304,6 +304,8 @@ contract AbstractAdapterTest is PropertyTest {
       _mintFor(reqAssets, bob);
       vm.prank(bob);
       adapter.deposit(reqAssets, bob);
+      emit log_named_uint("ts",adapter.totalSupply());
+      emit log_named_uint("ta",adapter.totalAssets());
       prop_withdraw(bob, bob, amount, testId);
 
       _mintFor(reqAssets, bob);

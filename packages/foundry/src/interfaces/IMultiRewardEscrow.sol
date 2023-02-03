@@ -29,7 +29,13 @@ struct Fee {
 }
 
 interface IMultiRewardEscrow {
-  function lock(IERC20 token, address account, uint256 amount, uint32 duration, uint32 offset) external;
+  function lock(
+    IERC20 token,
+    address account,
+    uint256 amount,
+    uint32 duration,
+    uint32 offset
+  ) external;
 
   function setFees(IERC20[] memory tokens, uint256[] memory tokenFees) external;
 

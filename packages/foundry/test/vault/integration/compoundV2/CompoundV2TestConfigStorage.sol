@@ -5,19 +5,16 @@ pragma solidity ^0.8.15;
 
 import { ITestConfigStorage } from "../abstract/ITestConfigStorage.sol";
 
-struct YearnTestConfig {
+struct CompoundV2TestConfig {
   address asset;
 }
 
-contract YearnTestConfigStorage is ITestConfigStorage {
-  YearnTestConfig[] internal testConfigs;
+contract CompoundV2TestConfigStorage is ITestConfigStorage {
+  CompoundV2TestConfig[] internal testConfigs;
 
   constructor() {
-    // USDC
-    testConfigs.push(YearnTestConfig(0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48));
-
-    // WETH
-    // testConfigs.push(YearnTestConfig(0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2));
+    // Mainnet - cDAI
+    testConfigs.push(CompoundV2TestConfig(0x5d3a536E4D6DbD6114cc1Ead35777bAB948E3643));
   }
 
   function getTestConfig(uint256 i) public view returns (bytes memory) {
