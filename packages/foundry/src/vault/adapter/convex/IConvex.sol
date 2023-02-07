@@ -25,4 +25,6 @@ interface IConvexBooster {
 
 interface IBaseRewarder {
   function balanceOf(address addr) external view returns (uint256);
+
+  function stakingToken() external view returns (address);
 }

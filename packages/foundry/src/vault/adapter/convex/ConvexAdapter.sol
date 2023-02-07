@@ -49,8 +49,9 @@ contract ConvexAdapter is AdapterBase, WithRewards {
     address,
     bytes memory convexInitData
   ) public {
-    (address _booster, uint256 _pid) = abi.decode(convexInitData, (address, uint256));
     __AdapterBase_init(adapterInitData);
+
+    (address _booster, uint256 _pid) = abi.decode(convexInitData, (address, uint256));
 
     booster = IConvexBooster(_booster);
     pid = _pid;
