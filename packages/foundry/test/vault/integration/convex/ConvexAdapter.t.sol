@@ -37,15 +37,10 @@ contract ConvexAdapterTest is AbstractAdapterTest {
     booster = IConvexBooster(_booster);
     pid = _pid;
 
-    (address _asset, , , , , ) = booster.poolInfo(pid);
-    asset = IERC20(_asset);
-
-    (, , , address _baseRewarder, , ) = booster.poolInfo(pid);
+    (address _asset, , , address _baseRewarder, , ) = booster.poolInfo(pid);
     baseRewarder = IBaseRewarder(_baseRewarder);
 
-    // strategy = IStrategy(address(new MockStrategy()));
-
-    setUpBaseTest(IERC20(asset), adapter, address(booster), 10, "Convex", true);
+    setUpBaseTest(IERC20(_asset), adapter, address(0), 10, "Convex", true);
 
     vm.label(address(booster), "booster");
     vm.label(address(baseRewarder), "baseRewarder");

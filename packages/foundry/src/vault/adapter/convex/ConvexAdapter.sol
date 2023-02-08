@@ -36,6 +36,8 @@ contract ConvexAdapter is AdapterBase, WithRewards {
                             INITIALIZATION
     //////////////////////////////////////////////////////////////*/
 
+  error PING();
+
   /**
    * @notice Initialize a new Convex Adapter.
    * @param adapterInitData Encoded data for the base adapter initialization.
@@ -48,7 +50,7 @@ contract ConvexAdapter is AdapterBase, WithRewards {
     bytes memory adapterInitData,
     address,
     bytes memory convexInitData
-  ) public {
+  ) public initializer {
     __AdapterBase_init(adapterInitData);
 
     (address _booster, uint256 _pid) = abi.decode(convexInitData, (address, uint256));
@@ -56,13 +58,13 @@ contract ConvexAdapter is AdapterBase, WithRewards {
     booster = IConvexBooster(_booster);
     pid = _pid;
 
-    (, , , address _baseRewarder, , ) = booster.poolInfo(pid);
+    (address _asset, , , address _baseRewarder, , ) = booster.poolInfo(pid);
     baseRewarder = IBaseRewarder(_baseRewarder);
 
-    _name = string.concat("Popcorn Convex", IERC20Metadata(asset()).name(), " Adapter");
-    _symbol = string.concat("popB-", IERC20Metadata(asset()).symbol());
+    _name = string.concat("Popcorn Convex", IERC20Metadata(_asset).name(), " Adapter");
+    _symbol = string.concat("popB-", IERC20Metadata(_asset).symbol());
 
-    IERC20(asset()).approve(address(booster), type(uint256).max);
+    IERC20(_asset).approve(address(booster), type(uint256).max);
   }
 
   function name() public view override(IERC20Metadata, ERC20) returns (string memory) {
