@@ -52,12 +52,7 @@ contract AaveV2Adapter is AdapterBase, WithRewards {
    * @param aaveDataProvider Encoded data for the base adapter initialization.
    * @dev This function is called by the factory contract when deploying a new vault.
    */
-
-  function initialize(
-    bytes memory adapterInitData,
-    address aaveDataProvider,
-    bytes memory
-  ) public {
+  function initialize(bytes memory adapterInitData, address aaveDataProvider, bytes memory) external initializer {
     __AdapterBase_init(adapterInitData);
 
     _name = string.concat("Popcorn AaveV2", IERC20Metadata(asset()).name(), " Adapter");

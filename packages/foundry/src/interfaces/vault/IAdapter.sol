@@ -25,6 +25,8 @@ interface IAdapter is IERC4626, IOwned, IPermit, IPausable {
 
     function highWaterMark() external view returns (uint256);
 
+    function accruedPerformanceFee() external view returns (uint256);
+
     function harvest() external;
 
     function harvestCooldown() external view returns (uint256);

@@ -3,15 +3,16 @@
 
 pragma solidity ^0.8.15;
 
-import { ERC4626Upgradeable, IERC20Upgradeable as IERC20, IERC20MetadataUpgradeable as IERC20Metadata, ERC20Upgradeable as ERC20 } from "openzeppelin-contracts-upgradeable/token/ERC20/extensions/ERC4626Upgradeable.sol";
-import { SafeERC20Upgradeable as SafeERC20 } from "openzeppelin-contracts-upgradeable/token/ERC20/utils/SafeERC20Upgradeable.sol";
-import { MathUpgradeable as Math } from "openzeppelin-contracts-upgradeable/utils/math/MathUpgradeable.sol";
-import { PausableUpgradeable } from "openzeppelin-contracts-upgradeable/security/PausableUpgradeable.sol";
-import { IStrategy } from "../../../interfaces/vault/IStrategy.sol";
-import { IAdapter } from "../../../interfaces/vault/IAdapter.sol";
-import { EIP165 } from "../../../utils/EIP165.sol";
-import { OnlyStrategy } from "./OnlyStrategy.sol";
-import { OwnedUpgradeable } from "../../../utils/OwnedUpgradeable.sol";
+import {ERC4626Upgradeable, IERC20Upgradeable as IERC20, IERC20MetadataUpgradeable as IERC20Metadata, ERC20Upgradeable as ERC20} from "openzeppelin-contracts-upgradeable/token/ERC20/extensions/ERC4626Upgradeable.sol";
+import {SafeERC20Upgradeable as SafeERC20} from "openzeppelin-contracts-upgradeable/token/ERC20/utils/SafeERC20Upgradeable.sol";
+import {ReentrancyGuardUpgradeable} from "openzeppelin-contracts-upgradeable/security/ReentrancyGuardUpgradeable.sol";
+import {MathUpgradeable as Math} from "openzeppelin-contracts-upgradeable/utils/math/MathUpgradeable.sol";
+import {PausableUpgradeable} from "openzeppelin-contracts-upgradeable/security/PausableUpgradeable.sol";
+import {IStrategy} from "../../../interfaces/vault/IStrategy.sol";
+import {IAdapter} from "../../../interfaces/vault/IAdapter.sol";
+import {EIP165} from "../../../utils/EIP165.sol";
+import {OnlyStrategy} from "./OnlyStrategy.sol";
+import {OwnedUpgradeable} from "../../../utils/OwnedUpgradeable.sol";
 
 /**
  * @title   AdapterBase
@@ -23,187 +24,221 @@ import { OwnedUpgradeable } from "../../../utils/OwnedUpgradeable.sol";
  * All specific interactions for the underlying protocol need to be overriden in the actual implementation.
  * The adapter can be initialized with a strategy that can perform additional operations. (Leverage, Compounding, etc.)
  */
-abstract contract AdapterBase is ERC4626Upgradeable, PausableUpgradeable, OwnedUpgradeable, EIP165, OnlyStrategy {
-  using SafeERC20 for IERC20;
-  using Math for uint256;
+abstract contract AdapterBase is
+    ERC4626Upgradeable,
+    PausableUpgradeable,
+    OwnedUpgradeable,
+    ReentrancyGuardUpgradeable,
+    EIP165,
+    OnlyStrategy
+{
+    using SafeERC20 for IERC20;
+    using Math for uint256;
 
-  uint8 internal _decimals;
+    uint8 internal _decimals;
 
-  error StrategySetupFailed();
+    error StrategySetupFailed();
 
-  /**
-   * @notice Initialize a new Adapter.
-   * @param popERC4626InitData Encoded data for the base adapter initialization.
-   * @dev `asset` - The underlying asset
-   * @dev `_owner` - Owner of the contract. Controls management functions.
-   * @dev `_strategy` - An optional strategy to enrich the adapter with additional functionality.
-   * @dev `_harvestCooldown` - Cooldown period between harvests.
-   * @dev `_requiredSigs` - Function signatures required by the strategy (EIP-165)
-   * @dev `_strategyConfig` - Additional data which can be used by the strategy on `harvest()`
-   * @dev This function is called by the factory contract when deploying a new vault.
-   * @dev Each Adapter implementation should implement checks to make sure that the adapter is wrapping the underlying protocol correctly.
-   * @dev If a strategy is provided, it will be verified to make sure it implements the required functions.
-   */
-  function __AdapterBase_init(bytes memory popERC4626InitData) internal onlyInitializing {
-    (
-      address asset,
-      address _owner,
-      address _strategy,
-      uint256 _harvestCooldown,
-      bytes4[8] memory _requiredSigs,
-      bytes memory _strategyConfig
-    ) = abi.decode(popERC4626InitData, (address, address, address, uint256, bytes4[8], bytes));
-    __Owned_init(_owner);
-    __Pausable_init();
-    __ERC4626_init(IERC20Metadata(asset));
+    /**
+     * @notice Initialize a new Adapter.
+     * @param popERC4626InitData Encoded data for the base adapter initialization.
+     * @dev `asset` - The underlying asset
+     * @dev `_owner` - Owner of the contract. Controls management functions.
+     * @dev `_strategy` - An optional strategy to enrich the adapter with additional functionality.
+     * @dev `_harvestCooldown` - Cooldown period between harvests.
+     * @dev `_requiredSigs` - Function signatures required by the strategy (EIP-165)
+     * @dev `_strategyConfig` - Additional data which can be used by the strategy on `harvest()`
+     * @dev This function is called by the factory contract when deploying a new vault.
+     * @dev Each Adapter implementation should implement checks to make sure that the adapter is wrapping the underlying protocol correctly.
+     * @dev If a strategy is provided, it will be verified to make sure it implements the required functions.
+     */
+    function __AdapterBase_init(bytes memory popERC4626InitData)
+        internal
+        onlyInitializing
+    {
+        (
+            address asset,
+            address _owner,
+            address _strategy,
+            uint256 _harvestCooldown,
+            bytes4[8] memory _requiredSigs,
+            bytes memory _strategyConfig
+        ) = abi.decode(
+                popERC4626InitData,
+                (address, address, address, uint256, bytes4[8], bytes)
+            );
+        __Owned_init(_owner);
+        __Pausable_init();
+        __ERC4626_init(IERC20Metadata(asset));
 
-    INITIAL_CHAIN_ID = block.chainid;
-    INITIAL_DOMAIN_SEPARATOR = computeDomainSeparator();
+        INITIAL_CHAIN_ID = block.chainid;
+        INITIAL_DOMAIN_SEPARATOR = computeDomainSeparator();
 
-    _decimals = IERC20Metadata(asset).decimals();
+        _decimals = IERC20Metadata(asset).decimals();
 
-    strategy = IStrategy(_strategy);
-    strategyConfig = _strategyConfig;
-    harvestCooldown = _harvestCooldown;
+        strategy = IStrategy(_strategy);
+        strategyConfig = _strategyConfig;
+        harvestCooldown = _harvestCooldown;
 
-    if (_strategy != address(0)) _verifyAndSetupStrategy(_requiredSigs);
+        if (_strategy != address(0)) _verifyAndSetupStrategy(_requiredSigs);
 
-    highWaterMark = 1e18;
-    lastHarvest = block.timestamp;
-  }
+        highWaterMark = 1e18;
+        lastHarvest = block.timestamp;
+    }
 
-  function decimals() public view override(IERC20Metadata, ERC20) returns (uint8) {
-    return _decimals;
-  }
+    function decimals()
+        public
+        view
+        override(IERC20Metadata, ERC20)
+        returns (uint8)
+    {
+        return _decimals;
+    }
 
-  /*//////////////////////////////////////////////////////////////
+    /*//////////////////////////////////////////////////////////////
                         DEPOSIT/WITHDRAWAL LOGIC
     //////////////////////////////////////////////////////////////*/
 
-  error MaxError(uint256 amount);
-  error ZeroAmount();
+    error MaxError(uint256 amount);
+    error ZeroAmount();
 
-  /**
-   * @notice Deposits assets into the underlying protocol and mints vault shares to `receiver`.
-   * @param assets Amount of assets to deposit.
-   * @param receiver Receiver of the shares.
-   */
-  function deposit(uint256 assets, address receiver) public virtual override returns (uint256) {
-    if (assets > maxDeposit(receiver)) revert MaxError(assets);
+    /**
+     * @notice Deposits assets into the underlying protocol and mints vault shares to `receiver`.
+     * @param assets Amount of assets to deposit.
+     * @param receiver Receiver of the shares.
+     */
+    function deposit(uint256 assets, address receiver)
+        public
+        virtual
+        override
+        returns (uint256)
+    {
+        if (assets > maxDeposit(receiver)) revert MaxError(assets);
 
-    uint256 shares = _previewDeposit(assets);
-    _deposit(_msgSender(), receiver, assets, shares);
+        uint256 shares = _previewDeposit(assets);
+        _deposit(_msgSender(), receiver, assets, shares);
 
-    return shares;
-  }
-
-  /**
-   * @notice Mints vault shares to `receiver` and deposits assets into the underlying protocol.
-   * @param shares Amount of shares to mint.
-   * @param receiver Receiver of the shares.
-   */
-  function mint(uint256 shares, address receiver) public virtual override returns (uint256) {
-    if (shares > maxMint(receiver)) revert MaxError(shares);
-
-    uint256 assets = _previewMint(shares);
-    _deposit(_msgSender(), receiver, assets, shares);
-
-    return assets;
-  }
-
-  /**
-   * @notice Deposit `assets` into the underlying protocol and mints vault shares to `receiver`.
-   * @dev Executes harvest if `harvestCooldown` is passed since last invocation.
-   */
-  function _deposit(
-    address caller,
-    address receiver,
-    uint256 assets,
-    uint256 shares
-  ) internal virtual override {
-    IERC20(asset()).safeTransferFrom(caller, address(this), assets);
-
-    _protocolDeposit(assets, shares);
-    // Update the underlying balance to prevent inflation attacks
-    underlyingBalance = _underlyingBalance();
-
-    _mint(receiver, shares);
-
-    harvest();
-
-    emit Deposit(caller, receiver, assets, shares);
-  }
-
-  /**
-   * @notice Withdraws `assets` from the underlying protocol and burns vault shares from `owner`.
-   * @param assets Amount of assets to withdraw.
-   * @param receiver Receiver of the assets.
-   * @param owner Owner of the shares.
-   */
-  function withdraw(
-    uint256 assets,
-    address receiver,
-    address owner
-  ) public virtual override returns (uint256) {
-    if (assets > maxWithdraw(owner)) revert MaxError(assets);
-
-    uint256 shares = _previewWithdraw(assets);
-
-    _withdraw(_msgSender(), receiver, owner, assets, shares);
-
-    return shares;
-  }
-
-  /**
-   * @notice Burns vault shares from `owner` and withdraws `assets` from the underlying protocol.
-   * @param shares Amount of shares to burn.
-   * @param receiver Receiver of the assets.
-   * @param owner Owner of the shares.
-   */
-  function redeem(
-    uint256 shares,
-    address receiver,
-    address owner
-  ) public virtual override returns (uint256) {
-    if (shares > maxRedeem(owner)) revert MaxError(shares);
-
-    uint256 assets = _previewRedeem(shares);
-    _withdraw(_msgSender(), receiver, owner, assets, shares);
-
-    return assets;
-  }
-
-  /**
-   * @notice Withdraws `assets` from the underlying protocol and burns vault shares from `owner`.
-   * @dev Executes harvest if `harvestCooldown` is passed since last invocation.
-   */
-  function _withdraw(
-    address caller,
-    address receiver,
-    address owner,
-    uint256 assets,
-    uint256 shares
-  ) internal virtual override {
-    if (caller != owner) {
-      _spendAllowance(owner, caller, shares);
+        return shares;
     }
 
-    if (!paused()) {
-      _protocolWithdraw(assets, shares);
-      // Update the underlying balance to prevent inflation attacks
-      underlyingBalance = _underlyingBalance();
+    /**
+     * @notice Mints vault shares to `receiver` and deposits assets into the underlying protocol.
+     * @param shares Amount of shares to mint.
+     * @param receiver Receiver of the shares.
+     */
+    function mint(uint256 shares, address receiver)
+        public
+        virtual
+        override
+        returns (uint256)
+    {
+        if (shares > maxMint(receiver)) revert MaxError(shares);
+
+        uint256 assets = _previewMint(shares);
+        _deposit(_msgSender(), receiver, assets, shares);
+
+        return assets;
     }
 
-    _burn(owner, shares);
 
-    IERC20(asset()).safeTransfer(receiver, assets);
+    event log(uint256 a);
 
-    harvest();
+    /**
+     * @notice Deposit `assets` into the underlying protocol and mints vault shares to `receiver`.
+     * @dev Executes harvest if `harvestCooldown` is passed since last invocation.
+     */
+    function _deposit(
+        address caller,
+        address receiver,
+        uint256 assets,
+        uint256 shares
+    ) internal nonReentrant virtual override {
+        IERC20(asset()).safeTransferFrom(caller, address(this), assets);
+        
+        uint256 underlyingBalance_ = _underlyingBalance();
+        _protocolDeposit(assets, shares);
+        // Update the underlying balance to prevent inflation attacks
+        emit log(_underlyingBalance());
+        underlyingBalance += _underlyingBalance() - underlyingBalance_;
 
-    emit Withdraw(caller, receiver, owner, assets, shares);
-  }
+        _mint(receiver, shares);
 
-  /*//////////////////////////////////////////////////////////////
+        harvest();
+
+        emit Deposit(caller, receiver, assets, shares);
+    }
+
+    /**
+     * @notice Withdraws `assets` from the underlying protocol and burns vault shares from `owner`.
+     * @param assets Amount of assets to withdraw.
+     * @param receiver Receiver of the assets.
+     * @param owner Owner of the shares.
+     */
+    function withdraw(
+        uint256 assets,
+        address receiver,
+        address owner
+    ) public virtual override returns (uint256) {
+        if (assets > maxWithdraw(owner)) revert MaxError(assets);
+
+        uint256 shares = _previewWithdraw(assets);
+
+        _withdraw(_msgSender(), receiver, owner, assets, shares);
+
+        return shares;
+    }
+
+    /**
+     * @notice Burns vault shares from `owner` and withdraws `assets` from the underlying protocol.
+     * @param shares Amount of shares to burn.
+     * @param receiver Receiver of the assets.
+     * @param owner Owner of the shares.
+     */
+    function redeem(
+        uint256 shares,
+        address receiver,
+        address owner
+    ) public virtual override returns (uint256) {
+        if (shares > maxRedeem(owner)) revert MaxError(shares);
+
+        uint256 assets = _previewRedeem(shares);
+        _withdraw(_msgSender(), receiver, owner, assets, shares);
+
+        return assets;
+    }
+
+    /**
+     * @notice Withdraws `assets` from the underlying protocol and burns vault shares from `owner`.
+     * @dev Executes harvest if `harvestCooldown` is passed since last invocation.
+     */
+    function _withdraw(
+        address caller,
+        address receiver,
+        address owner,
+        uint256 assets,
+        uint256 shares
+    ) internal virtual override {
+        if (caller != owner) {
+            _spendAllowance(owner, caller, shares);
+        }
+
+        if (!paused()) {
+            uint256 underlyingBalance_ = _underlyingBalance();  
+            _protocolWithdraw(assets, shares);
+            // Update the underlying balance to prevent inflation attacks
+            underlyingBalance -= underlyingBalance_ - _underlyingBalance();
+        }
+
+        _burn(owner, shares);
+
+        IERC20(asset()).safeTransfer(receiver, assets);
+
+        harvest();
+
+        emit Withdraw(caller, receiver, owner, assets, shares);
+    }
+
+    /*//////////////////////////////////////////////////////////////
                             ACCOUNTING LOGIC
     //////////////////////////////////////////////////////////////*/
 
