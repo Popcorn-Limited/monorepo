@@ -14,8 +14,6 @@ contract ConvexAdapterTest is AbstractAdapterTest {
   IBaseRewarder baseRewarder;
   uint256 pid;
 
-  //   IStrategy strategy;
-
   function setUp() public {
     uint256 forkId = vm.createSelectFork(vm.rpcUrl("mainnet"));
     vm.selectFork(forkId);
@@ -62,10 +60,6 @@ contract ConvexAdapterTest is AbstractAdapterTest {
     deal(address(asset), address(baseRewarder), asset.balanceOf(address(baseRewarder)) + amount);
   }
 
-  //   function iouBalance() public view override returns (uint256) {
-  //     return aToken.balanceOf(address(adapter));
-  //   }
-
   // Verify that totalAssets returns the expected amount
   function verify_totalAssets() public override {
     // Make sure totalAssets isnt 0
@@ -100,60 +94,5 @@ contract ConvexAdapterTest is AbstractAdapterTest {
     );
 
     assertEq(asset.allowance(address(adapter), address(booster)), type(uint256).max, "allowance");
-  }
-
-  /*//////////////////////////////////////////////////////////////
-                              HARVEST
-    //////////////////////////////////////////////////////////////*/
-
-  function test__harvest() public override {
-    _mintFor(defaultAmount, bob);
-
-    vm.prank(bob);
-    adapter.deposit(defaultAmount, bob);
-
-    // Skip a year
-    vm.warp(block.timestamp + 365.25 days);
-
-    uint256 expectedFee = adapter.convertToShares((defaultAmount * 5e16) / 1e18);
-    uint256 callTime = block.timestamp;
-
-    if (address(strategy) != address(0)) {
-      vm.expectEmit(false, false, false, true, address(adapter));
-      emit StrategyExecuted();
-    }
-    vm.expectEmit(false, false, false, true, address(adapter));
-    emit Harvested();
-
-    adapter.harvest();
-
-    // assertApproxEqAbs(adapter.highWaterMark(), defaultAmount + interest, _delta_, "highWaterMark");
-    assertApproxEqAbs(adapter.totalSupply(), defaultAmount + expectedFee, _delta_, "totalSupply");
-  }
-
-  /*//////////////////////////////////////////////////////////////
-                          ROUNDTRIP TESTS
-    //////////////////////////////////////////////////////////////*/
-
-  function test__RT_deposit_withdraw() public override {
-    _mintFor(defaultAmount, bob);
-
-    vm.startPrank(bob);
-    uint256 shares1 = adapter.deposit(defaultAmount, bob);
-    uint256 shares2 = adapter.withdraw(defaultAmount - 1, bob, bob);
-    vm.stopPrank();
-
-    assertApproxGeAbs(shares2, shares1, _delta_, testId);
-  }
-
-  function test__RT_mint_withdraw() public override {
-    _mintFor(adapter.previewMint(defaultAmount), bob);
-
-    vm.startPrank(bob);
-    uint256 assets = adapter.mint(defaultAmount, bob);
-    uint256 shares = adapter.withdraw(assets - 1, bob, bob);
-    vm.stopPrank();
-
-    assertApproxGeAbs(shares, defaultAmount, _delta_, testId);
   }
 }

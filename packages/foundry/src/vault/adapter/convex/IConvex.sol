@@ -27,4 +27,6 @@ interface IBaseRewarder {
   function balanceOf(address addr) external view returns (uint256);
 
   function stakingToken() external view returns (address);
+
+  function withdrawAndUnwrap(uint256 amount, bool claim) external returns (bool);
 }

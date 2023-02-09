@@ -36,8 +36,6 @@ contract ConvexAdapter is AdapterBase, WithRewards {
                             INITIALIZATION
     //////////////////////////////////////////////////////////////*/
 
-  error PING();
-
   /**
    * @notice Initialize a new Convex Adapter.
    * @param adapterInitData Encoded data for the base adapter initialization.
@@ -85,33 +83,31 @@ contract ConvexAdapter is AdapterBase, WithRewards {
     return paused() ? IERC20(asset()).balanceOf(address(this)) : baseRewarder.balanceOf(address(this));
   }
 
-  /// @notice Calculates the total amount of underlying tokens the user holds.
-  /// @return The total amount of underlying tokens the user holds.
-  function balanceOfUnderlying(address account) public view returns (uint256) {
-    return convertToAssets(balanceOf(account));
-  }
-
   function previewWithdraw(uint256 assets) public view override returns (uint256) {
     return _convertToShares(assets, Math.Rounding.Up);
   }
 
   function previewRedeem(uint256 shares) public view override returns (uint256) {
-    return _convertToAssets(shares, Math.Rounding.Down);
+    return _convertToAssets(shares, Math.Rounding.Up);
   }
 
   /*//////////////////////////////////////////////////////////////
                           INTERNAL HOOKS LOGIC
     //////////////////////////////////////////////////////////////*/
 
-  /// @notice Deposit into Convex booster contract
+  /// @notice Deposit into Convex booster contract.
   function _protocolDeposit(uint256 amount, uint256) internal virtual override {
     booster.deposit(pid, amount, true);
   }
 
-  /// @notice Withdraw from Convex booster contract
+  /// @notice Withdraw from Convex baseRewarder contract.
   function _protocolWithdraw(uint256, uint256 shares) internal virtual override {
-    uint256 convexShares = convertToUnderlyingShares(0, shares);
-    booster.withdraw(pid, convexShares);
+    /**
+     * @dev No need to convert as Convex shares are 1:1 with Curve deposits.
+     * @param amount Amount of shares to withdraw.
+     * @param claim Claim rewards on withdraw?
+     */
+    baseRewarder.withdrawAndUnwrap(shares, false);
   }
 
   /*//////////////////////////////////////////////////////////////
