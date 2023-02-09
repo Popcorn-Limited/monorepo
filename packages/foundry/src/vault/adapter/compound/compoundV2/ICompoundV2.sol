@@ -44,6 +44,10 @@ interface ICToken {
   function totalSupply() external view returns (uint256);
 
   function accrualBlockNumber() external view returns (uint256);
+
+  function balanceOfUnderlying(address owner) external view returns (uint256);
+
+  function exchangeRateCurrent() external;
 }
 
 interface IComptroller {

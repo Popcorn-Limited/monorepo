@@ -145,7 +145,7 @@ contract AbstractVaultIntegrationTest is Test {
   // -  Its slightly worse for withdrawals as it fluctuates here between a delta of 1 and 2.
   // -> I am not happy with this but it also doesnt seem like an entire dealbreaker...
   //    ... Additionally this really depends on the underlying implementations of external protocols and adapters. Better protocols + adapter shouldnt run into these issues
-  function test__deposit_withdrawl_pps_stays_constant(uint80 fuzzAmount) public {
+  function test__deposit_withdrawl_pps_stays_constant(uint80 fuzzAmount) public virtual {
     uint256 amount = bound(uint256(fuzzAmount), defaultAmount, maxDeposit);
 
     uint256 pps1;
@@ -173,7 +173,7 @@ contract AbstractVaultIntegrationTest is Test {
     }
   }
 
-  function test__deposit_withdrawl_preview_resembles_actual(uint80 fuzzAmount) public {
+  function test__deposit_withdrawl_preview_resembles_actual(uint80 fuzzAmount) public virtual {
     uint256 amount = bound(uint256(fuzzAmount), defaultAmount, maxDeposit);
 
     uint256 len = Math.min(uint256(testConfigStorage.getTestConfigLength()), maxConfigs);
@@ -200,7 +200,7 @@ contract AbstractVaultIntegrationTest is Test {
                           MINT / REDEEM
     //////////////////////////////////////////////////////////////*/
 
-  function test__mint_redeem_pps_stays_constant(uint80 fuzzAmount) public {
+  function test__mint_redeem_pps_stays_constant(uint80 fuzzAmount) public virtual {
     uint256 amount = bound(uint256(fuzzAmount), defaultAmount, maxDeposit);
 
     uint256 pps1;
@@ -228,7 +228,7 @@ contract AbstractVaultIntegrationTest is Test {
     }
   }
 
-  function test__mint_redeem_preview_resembles_actual(uint80 fuzzAmount) public {
+  function test__mint_redeem_preview_resembles_actual(uint80 fuzzAmount) public virtual {
     uint256 amount = bound(uint256(fuzzAmount), defaultAmount, maxDeposit);
 
     uint256 len = Math.min(uint256(testConfigStorage.getTestConfigLength()), maxConfigs);

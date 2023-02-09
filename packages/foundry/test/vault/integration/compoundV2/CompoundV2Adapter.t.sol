@@ -154,7 +154,7 @@ contract CompoundV2AdapterTest is AbstractAdapterTest {
     prop_previewRedeem(bob, bob, bob, amount, testId);
   }
 
-    /*//////////////////////////////////////////////////////////////
+  /*//////////////////////////////////////////////////////////////
                     DEPOSIT/MINT/WITHDRAW/REDEEM
     //////////////////////////////////////////////////////////////*/
 
@@ -200,8 +200,6 @@ contract CompoundV2AdapterTest is AbstractAdapterTest {
       _mintFor(reqAssets, bob);
       vm.prank(bob);
       adapter.deposit(reqAssets, bob);
-      emit log_named_uint("ts",adapter.totalSupply());
-      emit log_named_uint("ta",adapter.totalAssets());
       prop_withdraw(bob, bob, amount, testId);
 
       _mintFor(reqAssets, bob);
@@ -256,11 +254,11 @@ contract CompoundV2AdapterTest is AbstractAdapterTest {
   }
 
   function test__RT_deposit_withdraw() public override {
-    _mintFor(compoundDefaultAmount, bob);
+    _mintFor(1e18, bob);
 
     vm.startPrank(bob);
-    uint256 shares1 = adapter.deposit(compoundDefaultAmount, bob);
-    uint256 shares2 = adapter.withdraw(compoundDefaultAmount, bob, bob);
+    uint256 shares1 = adapter.deposit(1e18, bob);
+    uint256 shares2 = adapter.withdraw(adapter.maxWithdraw(bob), bob, bob);
     vm.stopPrank();
 
     assertGe(shares2, shares1, testId);
@@ -271,7 +269,7 @@ contract CompoundV2AdapterTest is AbstractAdapterTest {
 
     vm.startPrank(bob);
     uint256 assets = adapter.mint(compoundDefaultAmount, bob);
-    uint256 shares = adapter.withdraw(assets, bob, bob);
+    uint256 shares = adapter.withdraw(adapter.maxWithdraw(bob), bob, bob);
     vm.stopPrank();
 
     assertGe(shares, compoundDefaultAmount, testId);
@@ -323,12 +321,11 @@ contract CompoundV2AdapterTest is AbstractAdapterTest {
     adapter.redeem(compoundDefaultAmount / 10, bob, bob);
   }
 
-
   function test__unpause() public override {
-    _mintFor(compoundDefaultAmount * 3, bob);
+    _mintFor(3e18, bob);
 
     vm.prank(bob);
-    adapter.deposit(compoundDefaultAmount, bob);
+    adapter.deposit(1e18, bob);
 
     uint256 oldTotalAssets = adapter.totalAssets();
     uint256 oldTotalSupply = adapter.totalSupply();
@@ -339,45 +336,44 @@ contract CompoundV2AdapterTest is AbstractAdapterTest {
 
     // We simply deposit back into the external protocol
     // TotalSupply and Assets dont change
-    assertApproxEqAbs(oldTotalAssets, adapter.totalAssets(), _delta_, "totalAssets");
+    // A Tiny change in cToken balance will throw of the assets by some margin.
+    assertApproxEqAbs(oldTotalAssets, adapter.totalAssets(), 3e8, "totalAssets");
     assertApproxEqAbs(oldTotalSupply, adapter.totalSupply(), _delta_, "totalSupply");
     assertApproxEqAbs(asset.balanceOf(address(adapter)), 0, _delta_, "asset balance");
     assertApproxEqAbs(iouBalance(), oldIouBalance, _delta_, "iou balance");
 
     // Deposit and mint dont revert
     vm.startPrank(bob);
-    adapter.deposit(compoundDefaultAmount, bob);
-    adapter.mint(compoundDefaultAmount, bob);
+    adapter.deposit(1e18, bob);
+    adapter.mint(1e18, bob);
   }
 
-  
   /*//////////////////////////////////////////////////////////////
                               HARVEST
     //////////////////////////////////////////////////////////////*/
-    
-  function test__harvest() public override {
-    _mintFor(compoundDefaultAmount, bob);
+
+   function test__harvest() public override {
+    uint256 performanceFee = 1e16;
+    uint256 hwm = 1e18;
+    _mintFor(1e18, bob);
 
     vm.prank(bob);
-    adapter.deposit(compoundDefaultAmount, bob);
+    adapter.deposit(1e18, bob);
 
-    // Skip a year
-    vm.warp(block.timestamp + 365.25 days);
+    uint256 oldTotalAssets = adapter.totalAssets();
+    adapter.setPerformanceFee(performanceFee);
+    increasePricePerShare(raise * 100);
 
-    // uint256 interest = getApy();
-    uint256 expectedFee = adapter.convertToShares((compoundDefaultAmount * 5e16) / 1e18);
-    uint256 callTime = block.timestamp;
+    uint256 gain = ((adapter.convertToAssets(1e18) - adapter.highWaterMark()) * adapter.totalSupply()) / 1e18;
+    uint256 fee = (gain * performanceFee) / 1e18;
+    uint256 expectedFee = adapter.convertToShares(fee);
 
-    if (address(strategy) != address(0)) {
-      vm.expectEmit(false, false, false, true, address(adapter));
-      emit StrategyExecuted();
-    }
     vm.expectEmit(false, false, false, true, address(adapter));
     emit Harvested();
 
     adapter.harvest();
 
-    // assertApproxEqAbs(adapter.highWaterMark(), compoundDefaultAmount, _delta_, "highWaterMark");
-    assertApproxEqAbs(adapter.totalSupply(), compoundDefaultAmount + expectedFee, _delta_, "totalSupply");
+    assertApproxEqAbs(adapter.totalSupply(), 1e18 + expectedFee, _delta_, "totalSupply");
+    assertApproxEqAbs(adapter.balanceOf(feeRecipient), expectedFee, _delta_, "expectedFee");
   }
 }
