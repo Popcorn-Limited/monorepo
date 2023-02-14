@@ -52,7 +52,11 @@ contract AaveV2Adapter is AdapterBase, WithRewards {
    * @param aaveDataProvider Encoded data for the base adapter initialization.
    * @dev This function is called by the factory contract when deploying a new vault.
    */
-  function initialize(bytes memory adapterInitData, address aaveDataProvider, bytes memory) external initializer {
+  function initialize(
+    bytes memory adapterInitData,
+    address aaveDataProvider,
+    bytes memory
+  ) external initializer {
     __AdapterBase_init(adapterInitData);
 
     _name = string.concat("Popcorn AaveV2", IERC20Metadata(asset()).name(), " Adapter");
@@ -89,15 +93,16 @@ contract AaveV2Adapter is AdapterBase, WithRewards {
   //////////////////////////////////////////////////////////////*/
 
   function _totalAssets() internal view override returns (uint256) {
-    uint256 underlyingBalance_ = underlyingBalance;
-    return
-      underlyingBalance_ == 0
-        ? 0
-        : (underlyingBalance * lendingPool.getReserveNormalizedIncome(asset()) + halfRAY) / RAY;
+    return aToken.balanceOf(address(this));
   }
 
-  function _underlyingBalance() internal view override returns (uint256) {
-    return aToken.scaledBalanceOf(address(this));
+  /// @notice The amount of aave shares to withdraw given an mount of adapter shares
+  function _convertToUnderlyingShares(
+    uint256,
+    uint256 shares,
+    uint256 supply
+  ) internal view override returns (uint256) {
+    return shares.mulDiv(aToken.balanceOf(address(this)), supply, Math.Rounding.Up);
   }
 
   /// @notice The token rewarded if the aave liquidity mining is active

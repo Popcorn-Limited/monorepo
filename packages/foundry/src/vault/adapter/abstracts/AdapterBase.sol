@@ -214,8 +214,6 @@ abstract contract AdapterBase is
                             ACCOUNTING LOGIC
     //////////////////////////////////////////////////////////////*/
 
-  uint256 internal underlyingBalance;
-
   /**
    * @notice Total amount of underlying `asset` token managed by adapter.
    * @dev Return assets held by adapter if paused.
@@ -226,22 +224,28 @@ abstract contract AdapterBase is
 
   /**
    * @notice Total amount of underlying `asset` token managed by adapter through the underlying protocol.
-   * @dev This should utilize `underlyingBalance` to return the currently held assets and prevent inflation attacks.
    */
   function _totalAssets() internal view virtual returns (uint256) {}
 
   /**
-   * @notice Total amount of underlying balance owned by the adapter.
-   * @dev This could be the balance of shares held by the adapter or a similar balance call to prevent inflation attacks.
-   * @dev It should NOT return the actual asset amount.
+   * @notice Convert either `assets` or `shares` into underlying shares.
+   * @dev This is an optional function for underlying protocols that require deposit/withdrawal amounts in their shares.
+   * @dev Returns shares if totalSupply is 0.
    */
-  function _underlyingBalance() internal view virtual returns (uint256) {}
+  function convertToUnderlyingShares(uint256 assets, uint256 shares) public view virtual returns (uint256) {
+    uint256 supply = totalSupply();
+    return supply == 0 ? shares : _convertToUnderlyingShares(assets, shares, supply);
+  }
 
   /**
-   * @notice Convert either `assets` or `shares` into underlying shares
-   * @dev This is an optional function for underlying protocols that require deposit/withdrawal amounts in their shares.
+   * @notice Convert 'shares' into underlying shares.
+   * @dev Conversion logic for convertToUnderlyingShares.
    */
-  function convertToUnderlyingShares(uint256 assets, uint256 shares) public view virtual returns (uint256) {}
+  function _convertToUnderlyingShares(
+    uint256 assets,
+    uint256 shares,
+    uint256 supply
+  ) internal view virtual returns (uint256) {}
 
   /// @notice See _previewDeposit natspec
   function previewDeposit(uint256 assets) public view virtual override returns (uint256) {
@@ -475,16 +479,12 @@ abstract contract AdapterBase is
   /// @notice Pause Deposits and withdraw all funds from the underlying protocol. Caller must be owner.
   function pause() external onlyOwner {
     _protocolWithdraw(totalAssets(), totalSupply());
-    // Update the underlying balance to prevent inflation attacks
-    underlyingBalance = 0;
     _pause();
   }
 
   /// @notice Unpause Deposits and deposit all funds into the underlying protocol. Caller must be owner.
   function unpause() external onlyOwner {
     _protocolDeposit(totalAssets(), totalSupply());
-    // Update the underlying balance to prevent inflation attacks
-    underlyingBalance = _underlyingBalance();
     _unpause();
   }
 
