@@ -27,14 +27,15 @@ export const useSupportedContracts = (selectedNetworks) => {
   ]);
   const contractsBnb = useNamedAccounts("56", ["pop", "xPop", "rewardsEscrow"]);
 
-  const contractsArbitrum = useNamedAccounts("42161", ["pop", "xPop", "rewardsEscrow"]);
+  const contractsArbitrum = useNamedAccounts("42161", ["pop", "xPop"]);
 
   const contractsOp = useNamedAccounts("10", ["pop", "popUsdcArrakisVault"]);
 
-  const allContracts = [...contractsEth, ...contractsPoly, ...contractsBnb, ...contractsArbitrum].flatMap(
+  let allContracts = [...contractsEth, ...contractsPoly, ...contractsBnb, ...contractsArbitrum].map(
     (network) => network,
-  ) as Pop.NamedAccountsMetadata[];
-
+  ) as any;
+  allContracts = allContracts.flat(1) as any as Pop.NamedAccountsMetadata[];
+  console.log(allContracts);
   const [selectedContracts, setSelectedContracts] = useState(allContracts);
 
   useEffect(() => {

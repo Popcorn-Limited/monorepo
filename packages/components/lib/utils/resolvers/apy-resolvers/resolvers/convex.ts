@@ -1,24 +1,24 @@
 import { BigNumber, Contract } from "ethers";
-import { parseEther } from "ethers/lib/utils";
+import { parseEther, parseUnits } from "ethers/lib/utils";
 import { useNamedAccounts } from "@popcorn/components/lib/utils/hooks";
 
 export async function convex(address, chainId, rpc?): Promise<{ value: BigNumber; decimals: number }> {
-  chainId = Number(chainId);
   const contract = new Contract(
     address,
     [
       "function rewardsDuration() external view returns (uint256)", // in seconds
       "function getRewardForDuration(address token) external view returns (uint256)",
       "function totalSupply() external view returns (uint256)",
+      "function stakingToken() external view returns (address)",
     ],
     rpc,
   );
 
-  const [pop] = useNamedAccounts(chainId.toString() as any, ["pop"]);
+  const pop = await contract.stakingToken();
 
   const [rewardsDuration, rewardForDuration, totalSupply] = await Promise.all([
     contract.rewardsDuration(),
-    contract.getRewardForDuration(pop.address),
+    contract.getRewardForDuration(pop),
     contract.totalSupply(),
   ]);
 

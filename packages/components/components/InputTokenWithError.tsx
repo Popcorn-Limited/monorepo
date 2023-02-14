@@ -29,9 +29,9 @@ function InputTokenWithError({
   captionText?: string;
 } & HTMLProps<HTMLInputElement>) {
   return (
-    <div>
+    <>
       {captionText && <p className="text-primary">{captionText}</p>}
-      <div className="mt-1 relative flex items-center gap-2 md:gap-0 md:space-x-2">
+      <div className="mt-1 relative flex items-center w-full">
         <div
           className={`w-full flex px-5 py-4 items-center rounded-lg border ${
             errorMessage ? "border-customRed" : "border-customLightGray"
@@ -48,11 +48,13 @@ function InputTokenWithError({
         </div>
       </div>
       {errorMessage && <p className="text-customRed pt-2 leading-6">{errorMessage}</p>}
-      <div className="flex justify-between items-center mt-2">
+      <div className="flex justify-between items-center mt-2 w-full">
         <div className="flex items-center gap-2">
-          <Image src="/images/wallet.svg" alt="wallet icon" width="13" height="13" />
+          <div className="mb-1">
+            <Image src="/images/wallet.svg" alt="wallet icon" width="13" height="13" />
+          </div>
           <p className="text-secondaryLight">
-            {`${formatAndRoundBigNumber(selectedToken?.balance || ZERO, selectedToken?.decimals || 0)}`}
+            {`${formatAndRoundBigNumber(selectedToken?.balance || ZERO, selectedToken?.decimals || 18)}`}
           </p>
         </div>
         <button
@@ -62,7 +64,7 @@ function InputTokenWithError({
           MAX
         </button>
       </div>
-    </div>
+    </>
   );
 }
 

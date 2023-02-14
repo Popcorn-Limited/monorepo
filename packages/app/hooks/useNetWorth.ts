@@ -1,15 +1,18 @@
 import { ChainId } from "@popcorn/utils";
 import { BigNumber, constants } from "ethers/lib/ethers";
 import { useCallback, useMemo } from "react";
-import useButterBatchData from "@popcorn/app/hooks/set/useButterBatchData";
-import useThreeXData from "@popcorn/app/hooks/set/useThreeXData";
-import usePopLocker from "@popcorn/app/hooks/staking/usePopLocker";
-import useStakingPool from "@popcorn/app/hooks/staking/useStakingPool";
-import useTokenBalance from "@popcorn/app/hooks/tokens/useTokenBalance";
-import { useDeployment } from "@popcorn/app/hooks/useDeployment";
-import { useGetUserEscrows } from "@popcorn/app/hooks/useGetUserEscrows";
-import useWeb3 from "@popcorn/app/hooks/useWeb3";
-import useTokenPrices from "./tokens/useTokenPrices";
+import { useAccount } from "wagmi";
+import { useNamedAccounts } from "@popcorn/components/lib/utils";
+import usePrice from "@popcorn/components/lib/Price/hooks/usePrice";
+import { useBalanceOf } from "@popcorn/components/lib/Erc20/hooks";
+import { useClaimableBalance } from "@popcorn/components/lib/PopLocker/hooks/useClaimableBalance";
+import { useLockedBalances } from "@popcorn/components/lib/PopLocker/hooks";
+import { useClaimableBalance as useClaimableBalanceStaking } from "@popcorn/components/lib/Staking/hooks/useClaimableBalance";
+import { useEscrowBalance } from "@popcorn/components/lib/Escrow/hooks/useEscrowBalance";
+import { useButterHoldings } from "@popcorn/components/lib/Butter/hooks/useButterHoldings";
+import { useButterRedeemHoldings } from "@popcorn/components/lib/Butter/hooks/useButterRedeemHoldings";
+import { useThreeXHoldings } from "@popcorn/components/lib/3X/hooks/useThreeXHoldings";
+import { useThreeXRedeemHoldings } from "@popcorn/components/lib/3X/hooks";
 
 function getHoldingValue(tokenAmount: BigNumber, tokenPrice: BigNumber): BigNumber {
   tokenAmount = tokenAmount?.gt(constants.Zero) ? tokenAmount : constants.Zero;
@@ -25,110 +28,236 @@ export default function useNetWorth(): {
   Arbitrum: BigNumber;
   totalNetWorth: BigNumber;
 } {
-  const { account } = useWeb3();
+  const { address: account } = useAccount();
   const { Ethereum, Polygon, BNB, Arbitrum } = ChainId;
   const useHoldingValue = useCallback(getHoldingValue, []);
 
-  const ethereum = useDeployment(Ethereum);
-  const polygon = useDeployment(Polygon);
-  const bnb = useDeployment(BNB);
-  const arbitrum = useDeployment(Arbitrum);
+  const ethereum = useNamedAccounts("1", [
+    "pop",
+    "popUsdcArrakisVault",
+    "popStaking",
+    "rewardsEscrow",
+    "butterStaking",
+    "threeXStaking",
+    "popUsdcArrakisVaultStaking",
+    "butter",
+    "threeCrv",
+    "threeX",
+    "usdc",
+    "butterBatch",
+  ]);
+  const [
+    ethereumPop,
+    ethereumPopUsdcArrakisVault,
+    ethereumPopStaking,
+    ethereumRewardsEscrow,
+    ethereumButterStaking,
+    ethereumThreeXStaking,
+    ethereumPopUsdcArrakisVaultStaking,
+    ethereumButter,
+    ethereumThreeCrv,
+    ethereumThreeX,
+  ] = ethereum;
+  const polygon = useNamedAccounts("137", [
+    "pop",
+    "popUsdcArrakisVault",
+    "popStaking",
+    "rewardsEscrow",
+    "popUsdcArrakisVaultStaking",
+  ]);
+  const [
+    polygonPop,
+    polygonPopUsdcArrakisVault,
+    polygonPopStaking,
+    polygonRewardsEscrow,
+    polygonPopUsdcArrakisVaultStaking,
+  ] = polygon;
+  const bnb = useNamedAccounts("56", ["pop", "rewardsEscrow"]);
+  const [bnbPop, bnbRewardsEscrow] = bnb;
+  const arbitrum = useNamedAccounts("42161", ["pop"]);
+  const [arbPop, arbRewardsEscrow] = arbitrum;
 
-  const { data: mainnetPriceData } = useTokenPrices([ethereum.pop, ethereum.popUsdcArrakisVault], Ethereum); // in 1e18
-  const popPrice = mainnetPriceData?.[ethereum.pop];
-  const mainnetLpPrice = mainnetPriceData?.[ethereum.popUsdcArrakisVault];
+  const { data: popPrice } = usePrice({ address: ethereumPop?.address, chainId: Ethereum });
+  const { data: mainnetLpPrice } = usePrice({ address: ethereumPopUsdcArrakisVault?.address, chainId: Ethereum });
+  const { data: polygonLpPrice } = usePrice({ address: polygonPopUsdcArrakisVault?.address, chainId: Polygon });
 
-  const { data: poylgonLpPriceData } = useTokenPrices([polygon.pop, polygon.popUsdcArrakisVault], Polygon); // in 1e18
-  const polygonLpPrice = poylgonLpPriceData?.[polygon.popUsdcArrakisVault];
+  const { data: polygonPopBalance } = useBalanceOf({ address: polygonPop.address, chainId: Polygon, account });
+  const { data: mainnetPopBalance } = useBalanceOf({ address: ethereumPop.address, chainId: Ethereum, account });
+  const { data: bnbPopBalance } = useBalanceOf({ address: bnbPop.address, account, chainId: BNB });
+  const { data: arbitrumPopBalance } = useBalanceOf({ address: arbPop.address, account, chainId: Arbitrum });
 
-  const { data: mainnetPopStaking } = usePopLocker(ethereum.popStaking, Ethereum);
-  const { data: polygonPopStaking } = usePopLocker(polygon.popStaking, Polygon);
-  const { data: butterStakingPool } = useStakingPool(ethereum.butterStaking, Ethereum);
-  const { data: butterBatchData } = useButterBatchData(Ethereum);
-  const { data: threeXStakingPool } = useStakingPool(ethereum.threeXStaking, Ethereum);
-  const { data: threeXBatchData } = useThreeXData(Ethereum);
-  const { data: polygonPopBalance } = useTokenBalance(polygon?.pop, account, Polygon);
-  const { data: mainnetPopBalance } = useTokenBalance(ethereum?.pop, account, Ethereum);
-  const { data: bnbPopBalance } = useTokenBalance(bnb.pop, account, BNB);
-  const { data: arbitrumPopBalance } = useTokenBalance(arbitrum.pop, account, Arbitrum);
-  const { data: mainnetEscrow } = useGetUserEscrows(ethereum.rewardsEscrow, account, Ethereum);
-  const { data: polygonEscrow } = useGetUserEscrows(polygon.rewardsEscrow, account, Polygon);
-  const { data: bnbEscrow } = useGetUserEscrows(bnb.rewardsEscrow, account, BNB);
-  const { data: arbitrumEscrow } = useGetUserEscrows(arbitrum.rewardsEscrow, account, Arbitrum);
+  const { data: mainnetEscrowClaimablePop } = useClaimableBalance({
+    chainId: Ethereum,
+    address: ethereumRewardsEscrow?.address,
+    account,
+  });
+  const { data: mainnetEscrowVestingPop } = useEscrowBalance({
+    chainId: Ethereum,
+    address: ethereumRewardsEscrow?.address,
+    account,
+  });
 
-  const { data: mainnetLpBalance } = useTokenBalance(polygon?.popUsdcArrakisVault, account, Ethereum);
-  const { data: polygonLpBalance } = useTokenBalance(ethereum?.popUsdcArrakisVault, account, Polygon);
-  const { data: mainnetLpStakingPool } = useStakingPool(ethereum.popUsdcArrakisVaultStaking, Ethereum);
-  const { data: polygonLpStakingPool } = useStakingPool(ethereum.popUsdcArrakisVaultStaking, Polygon);
-  const mainnetPopLpHoldings = useHoldingValue(mainnetLpBalance, mainnetLpPrice);
-  const polygonPopLpHoldings = useHoldingValue(polygonLpBalance, polygonLpPrice);
-  const mainnetPopLpStakingHoldings = useHoldingValue(mainnetLpStakingPool?.userStake, mainnetLpPrice);
-  const polygonPopLpStakingHoldings = useHoldingValue(polygonLpStakingPool?.userStake, polygonLpPrice);
+  const { data: polygonEscrowClaimablePop } = useClaimableBalance({
+    chainId: Polygon,
+    address: polygonRewardsEscrow?.address,
+    account,
+  });
+  const { data: polygonEscrowVestingPop } = useEscrowBalance({
+    chainId: Polygon,
+    address: polygonRewardsEscrow?.address,
+    account,
+  });
 
-  const { data: mainnetVaultEscrow } = useGetUserEscrows(ethereum.vaultsRewardsEscrow, account, Ethereum);
+  const { data: bnbEscrowClaimablePop } = useClaimableBalance({
+    chainId: BNB,
+    address: bnbRewardsEscrow?.address,
+    account,
+  });
+  const { data: bnbEscrowVestingPop } = useEscrowBalance({
+    chainId: BNB,
+    address: bnbRewardsEscrow?.address,
+    account,
+  });
 
-  const mainnetPopHoldings = useHoldingValue(mainnetPopBalance, popPrice);
-  const polygonPopHoldings = useHoldingValue(polygonPopBalance, popPrice);
-  const bnbPopHoldings = useHoldingValue(bnbPopBalance, popPrice);
-  const arbitrumPopHoldings = useHoldingValue(arbitrumPopBalance, popPrice);
-  const mainnetPopStakingHoldings = useHoldingValue(mainnetPopStaking?.userStake, popPrice);
-  const polygonPopStakingHoldings = useHoldingValue(polygonPopStaking?.userStake, popPrice);
+  const { data: arbitrumEscrowClaimablePop } = useClaimableBalance({
+    chainId: Arbitrum,
+    address: arbRewardsEscrow?.address,
+    account,
+  });
+  const { data: arbitrumEscrowVestingPop } = useEscrowBalance({
+    chainId: Arbitrum,
+    address: arbRewardsEscrow?.address,
+    account,
+  });
 
-  const mainnetPopStakingRewardsHoldings = useHoldingValue(mainnetPopStaking?.earned, popPrice);
-  const polygonPopStakingRewardsHoldings = useHoldingValue(polygonPopStaking?.earned, popPrice);
-  const butterStakingRewardsHoldings = useHoldingValue(butterStakingPool?.earned, popPrice);
-  const threeXStakingRewardsHoldings = useHoldingValue(threeXStakingPool?.earned, popPrice);
-  const mainnetLPStakingRewardsHoldings = useHoldingValue(mainnetLpStakingPool?.earned, popPrice);
-  const polygonLPStakingRewardsHoldings = useHoldingValue(polygonLpStakingPool?.earned, popPrice);
+  const { data: mainnetLpBalance } = useBalanceOf({
+    address: ethereumPopUsdcArrakisVault?.address,
+    account,
+    chainId: Ethereum,
+  });
+  const { data: polygonLpBalance } = useBalanceOf({
+    address: polygonPopUsdcArrakisVault?.address,
+    account,
+    chainId: Polygon,
+  });
+  const { data: mainnetLpStakingPoolBalance } = useBalanceOf({
+    address: ethereumPopUsdcArrakisVaultStaking?.address,
+    account,
+    chainId: Ethereum,
+  });
+  const { data: polygonLpStakingPoolBalance } = useBalanceOf({
+    address: polygonPopUsdcArrakisVaultStaking?.address,
+    account,
+    chainId: Polygon,
+  });
+
+  const mainnetPopLpHoldings = useHoldingValue(mainnetLpBalance?.value, mainnetLpPrice?.value);
+  const polygonPopLpHoldings = useHoldingValue(polygonLpBalance?.value, polygonLpPrice?.value);
+  const mainnetPopLpStakingHoldings = useHoldingValue(mainnetLpStakingPoolBalance?.value, mainnetLpPrice?.value); // Are  these variables meant to be the same thing?
+  const polygonPopLpStakingHoldings = useHoldingValue(polygonLpStakingPoolBalance?.value, polygonLpPrice?.value);
+
+  const mainnetPopHoldings = useHoldingValue(mainnetPopBalance?.value, popPrice?.value);
+  const polygonPopHoldings = useHoldingValue(polygonPopBalance?.value, popPrice?.value);
+  const bnbPopHoldings = useHoldingValue(bnbPopBalance?.value, popPrice?.value);
+  const arbitrumPopHoldings = useHoldingValue(arbitrumPopBalance?.value, popPrice?.value);
+
+  const { data: ethereumLockedBalances } = useLockedBalances({
+    address: ethereumPopStaking?.address,
+    chainId: Ethereum,
+    account,
+  });
+  const mainnetPopStakingHoldings = useHoldingValue(ethereumLockedBalances?.locked, popPrice?.value);
+
+  const { data: polygonLockedBalances2 } = useLockedBalances({
+    address: polygonPopStaking?.address,
+    chainId: Polygon,
+    account,
+  });
+  const polygonPopStakingHoldings = useHoldingValue(polygonLockedBalances2?.locked, popPrice?.value);
+
+  const { data: earnedMainnetPop } = useClaimableBalance({
+    address: ethereumPopStaking?.address,
+    account,
+    chainId: Ethereum,
+  });
+  const mainnetPopStakingRewardsHoldings = useHoldingValue(earnedMainnetPop?.value, popPrice?.value);
+
+  const { data: earnedPolygonPop } = useClaimableBalance({
+    address: polygonPopStaking?.address,
+    account,
+    chainId: Polygon,
+  });
+  const polygonPopStakingRewardsHoldings = useHoldingValue(earnedPolygonPop?.value, popPrice?.value);
+
+  const { data: earnedButterStaking } = useClaimableBalance({
+    address: ethereumButterStaking?.address,
+    account,
+    chainId: Ethereum,
+  });
+  const butterStakingRewardsHoldings = useHoldingValue(earnedButterStaking?.value, popPrice?.value);
+
+  const { data: earnedThreeX } = useClaimableBalance({
+    address: ethereumThreeXStaking?.address,
+    account,
+    chainId: Ethereum,
+  });
+  const threeXStakingRewardsHoldings = useHoldingValue(earnedThreeX?.value, popPrice?.value);
+
+  const { data: earnedEthereumPopUsdcStaking } = useClaimableBalance({
+    address: ethereumPopUsdcArrakisVault?.address,
+    account,
+    chainId: Ethereum,
+  });
+  const mainnetLPStakingRewardsHoldings = useHoldingValue(earnedEthereumPopUsdcStaking?.value, popPrice?.value);
+
+  const { data: earnedPolygonPopUsdcStaking } = useClaimableBalance({
+    address: polygonPopUsdcArrakisVault?.address,
+    account,
+    chainId: Polygon,
+  });
+  const polygonLPStakingRewardsHoldings = useHoldingValue(earnedPolygonPopUsdcStaking?.value, popPrice?.value);
 
   const polygonEscrowHoldings = useHoldingValue(
-    polygonEscrow?.totalClaimablePop?.add(polygonEscrow?.totalVestingPop),
-    popPrice,
+    polygonEscrowClaimablePop?.value.add(polygonEscrowVestingPop?.value),
+    popPrice?.value,
   );
-  const bnbEscrowHoldings = useHoldingValue(bnbEscrow?.totalClaimablePop?.add(bnbEscrow?.totalVestingPop), popPrice);
+  const bnbEscrowHoldings = useHoldingValue(
+    bnbEscrowClaimablePop?.value.add(bnbEscrowVestingPop?.value),
+    popPrice?.value,
+  );
   const arbitrumEscrowHoldings = useHoldingValue(
-    arbitrumEscrow?.totalClaimablePop?.add(arbitrumEscrow?.totalVestingPop),
-    popPrice,
-  );
-  const mainnetEscrowHoldings = useHoldingValue(
-    BigNumber.from("0")
-      .add(mainnetEscrow?.totalClaimablePop || "0")
-      .add(mainnetEscrow?.totalVestingPop || "0")
-      .add(mainnetVaultEscrow?.totalClaimablePop || "0")
-      .add(mainnetVaultEscrow?.totalVestingPop || "0"),
-    popPrice,
+    arbitrumEscrowClaimablePop?.value.add(arbitrumEscrowVestingPop?.value),
+    popPrice?.value,
   );
 
-  const butterHoldings = useMemo(() => {
-    if (!butterBatchData) return constants.Zero;
-    const butter = butterBatchData?.tokens.find((token) => token.address === ethereum.butter);
-    return getHoldingValue(butter?.balance?.add(butter?.claimableBalance), butter?.price);
-  }, [butterBatchData]);
-  const threeXHoldings = useMemo(() => {
-    if (!threeXBatchData) return constants.Zero;
-    const threeX = threeXBatchData?.tokens.find((token) => token.address === ethereum.threeX);
-    return getHoldingValue(threeX?.balance?.add(threeX?.claimableBalance), threeX?.price);
-  }, [threeXBatchData]);
-  const butterStakingHoldings = useMemo(() => {
-    if (!butterStakingPool || !butterBatchData) return constants.Zero;
-    const butter = butterBatchData?.tokens.find((token) => token.address === ethereum.butter);
-    return getHoldingValue(butterStakingPool?.userStake, butter?.price);
-  }, [butterStakingPool, butterBatchData]);
-  const threeXStakingHoldings = useMemo(() => {
-    if (!threeXStakingPool || !threeXBatchData) return constants.Zero;
-    const threeX = threeXBatchData?.tokens.find((token) => token.address === ethereum.threeX);
-    return getHoldingValue(threeXStakingPool?.userStake, threeX?.price);
-  }, [threeXStakingPool, threeXBatchData]);
-  const butterRedeemBatchHoldings = useMemo(() => {
-    if (!butterBatchData) return constants.Zero;
-    const threeCrv = butterBatchData?.tokens.find((token) => token.address === ethereum.threeCrv);
-    return getHoldingValue(threeCrv?.claimableBalance, threeCrv?.price);
-  }, [butterBatchData]);
-  const threeXRedeemBatchHoldings = useMemo(() => {
-    if (!threeXBatchData) return constants.Zero;
-    const usdc = threeXBatchData?.tokens.find((token) => token.address === ethereum.usdc);
-    return getHoldingValue(usdc?.claimableBalance, usdc?.price);
-  }, [threeXBatchData]);
+  const mainnetEscrowHoldings = useHoldingValue(
+    BigNumber.from("0")
+      .add(mainnetEscrowClaimablePop?.value || "0")
+      .add(mainnetEscrowVestingPop?.value || "0"),
+    popPrice?.value,
+  );
+
+  const { data: butterBalance } = useBalanceOf({ address: ethereumButter?.address, account, chainId: Ethereum });
+  const { data: butterPrice } = usePrice({ address: ethereumButter?.address, account, chainId: Ethereum });
+  const butterHoldings = useHoldingValue(butterBalance?.value, butterPrice?.value);
+
+  const { data: butterStaking } = useBalanceOf({
+    address: ethereumButterStaking?.address,
+    account,
+    chainId: Ethereum,
+  });
+  const butterStakingHoldings = useHoldingValue(butterStaking?.value, butterPrice?.value);
+
+  const { data: threeXBalance } = useBalanceOf({ address: ethereumThreeX?.address, account, chainId: Ethereum });
+  const { data: threeXPrice } = usePrice({ address: ethereumThreeX?.address, account, chainId: Ethereum });
+  const threeXHoldings = useHoldingValue(threeXBalance?.value, threeXPrice?.value);
+
+  const { data: threeXStaking } = useBalanceOf({
+    address: ethereumThreeXStaking?.address,
+    account,
+    chainId: Ethereum,
+  });
+  const threeXStakingHoldings = useHoldingValue(threeXStaking?.value, threeXPrice?.value);
 
   const calculateEthereumHoldings = (): BigNumber => {
     return [
@@ -139,8 +268,6 @@ export default function useNetWorth(): {
       butterStakingHoldings,
       threeXStakingHoldings,
       mainnetEscrowHoldings,
-      butterRedeemBatchHoldings,
-      threeXRedeemBatchHoldings,
       mainnetPopStakingRewardsHoldings,
       butterStakingRewardsHoldings,
       threeXStakingRewardsHoldings,

@@ -1,6 +1,6 @@
 import { useMemo } from "react";
 import { DeploymentChainIds, DeploymentContractsKeys, getNamedAccounts } from "@popcorn/utils";
-
+import { Pop } from "../../types";
 /**
  * useNamedAccounts retrieves contract metadata from namedAccounts.json
  * @returns contract metadata from namedAccounts.json
@@ -13,8 +13,8 @@ export const useNamedAccounts = <Chain extends DeploymentChainIds>(
   const mapping = useMemo(
     () =>
       (!!chainId &&
-        getNamedAccounts(chainId).reduce(
-          (contractMap, contract) => ({
+        getNamedAccounts(chainId).reduce((contractMap, contract) => {
+          return {
             ...contractMap,
             [chainId]: {
               ...contractMap[chainId],
@@ -22,20 +22,30 @@ export const useNamedAccounts = <Chain extends DeploymentChainIds>(
               [contract.address.toLowerCase()]: contract,
               [contract.__alias]: contract,
             },
-          }),
-          {} as Mapping,
-        )) ||
+          };
+        }, {} as Mapping)) ||
       {},
     [chainId],
   );
 
   return useMemo(
-    () => (!!chainId && !!contractAddresses && contractAddresses.map((contract) => mapping[chainId][contract])) || [],
+    () =>
+      (!!chainId &&
+        !!contractAddresses &&
+        contractAddresses.map((contract) => {
+          const existInLowKey = mapping[chainId][contract?.toLowerCase()];
+          if (existInLowKey) return existInLowKey;
+          return mapping[chainId][contract];
+        })) ||
+      [],
     [chainId, mapping, contractAddresses],
   );
 };
+
 export default useNamedAccounts;
 
 export interface Mapping {
-  [chainId: string]: { [contractAddressOrAlias: string]: any };
+  [chainId: string]: {
+    [contractAddressOrAlias: string]: Pop.NamedAccountsMetadata;
+  };
 }

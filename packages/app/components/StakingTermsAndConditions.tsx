@@ -15,13 +15,13 @@ const TermsAndConditions = ({
 }: TermsAndConditionsProps) => {
   return (
     <div>
-      <div className="relative flex items-start pb-10 pr-2">
+      <div className="relative flex items-start pb-10">
         <div className="flex items-center h-5 pt-2">
           {isDisabled ? (
             <input
               type="checkbox"
               disabled
-              className="ml-1 mr-4 focus:ring-gray-500 h-5 w-5 text-primaryDark border-customLightGray rounded"
+              className="mr-4 focus:ring-gray-500 h-5 w-5 text-primaryDark border-customLightGray rounded"
               readOnly
             />
           ) : (
@@ -31,11 +31,11 @@ const TermsAndConditions = ({
               onChange={() => {
                 setTermsAccepted(!termsAccepted);
               }}
-              className="ml-1 mr-4 focus:ring-blue-500 h-5 w-5 text-blue-600 border-customLightGray rounded"
+              className="mr-4 focus:ring-blue-500 h-5 w-5 text-blue-600 border-customLightGray rounded"
             />
           )}
         </div>
-        <div className="ml-2">
+        <div className="">
           <p className={` ${isDisabled ? "text-customLightGray" : "text-primaryDark"} pb-2`}>
             Accept reward terms and conditions:
           </p>

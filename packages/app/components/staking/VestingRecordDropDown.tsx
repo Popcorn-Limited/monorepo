@@ -21,7 +21,7 @@ export default function VestingRecordDropDown({
   return (
     <div className="relative w-auto justify-end" onMouseLeave={() => setDropdown(false)}>
       <div className="flex flex-row items-center justify-between mb-1">
-        <p className="text-base font-semibold text-gray-900">{label}</p>
+        <p className="text-primary">{label}</p>
       </div>
       <span
         className={`flex border-gray-200 border p-3.5 rounded-md flex-row items-center justify-between ${"cursor-pointer group"}`}

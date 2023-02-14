@@ -4,6 +4,7 @@ import useNetworkFilter from "hooks/useNetworkFilter";
 import { useChainsWithStaking } from "hooks/staking/useChainsWithStaking";
 import NetworkFilter from "@popcorn/components/components/NetworkFilter";
 import useAllStakingAddresses from "hooks/staking/useAllStakingAddresses";
+import NoSSR from "react-no-ssr";
 
 export default function StakingOverviewPage(): JSX.Element {
   const stakingAddresses = useAllStakingAddresses();
@@ -16,7 +17,7 @@ export default function StakingOverviewPage(): JSX.Element {
   );
 
   return (
-    <>
+    <NoSSR>
       <div className="grid grid-cols-12 mb-8">
         <div className="col-span-12 md:col-span-4">
           <h1 className=" text-5xl md:text-6xl leading-12">Staking</h1>
@@ -40,6 +41,6 @@ export default function StakingOverviewPage(): JSX.Element {
           </div>
         </div>
       </div>
-    </>
+    </NoSSR>
   );
 }

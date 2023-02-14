@@ -7,6 +7,7 @@ import { Toaster } from "react-hot-toast";
 import useTermsCheck from "@popcorn/components/hooks/useTermsCheck";
 import { useRouter } from "next/router";
 import classnames from "classnames";
+import NoSSR from "react-no-ssr";
 
 interface PageProps {
   children: JSX.Element;
@@ -24,7 +25,9 @@ export default function Page({ children }: PageProps) {
   return (
     <div className="w-full min-h-screen h-full font-khTeka flex flex-col justify-between">
       <div>
-        <Navbar />
+        <NoSSR>
+          <Navbar />
+        </NoSSR>
         <Toaster position="top-right" />
         <div
           className={classnames("pt-5 md:pt-10", {

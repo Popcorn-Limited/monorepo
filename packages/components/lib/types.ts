@@ -1,4 +1,5 @@
 import type { BigNumber } from "ethers";
+import type { useContractWrite } from "wagmi";
 
 export namespace Pop {
   export type StdProps = BaseContractProps;
@@ -61,4 +62,24 @@ export interface BigNumberWithFormatted {
 
 export interface BigNumberResponse {
   value?: BigNumber;
+}
+
+export type ContractWriteArgs = Partial<Parameters<typeof useContractWrite>[0]>;
+
+export interface Escrow {
+  id: string;
+  start: number;
+  lastUpdateTime: number;
+  end: number;
+  initialBalance: BigNumber;
+  balance: BigNumber;
+  account: string;
+  claimable: BigNumber;
+  vesting: BigNumber;
+}
+
+export interface LockedBalance {
+  amount: BigNumber;
+  boosted: BigNumber;
+  unlockTime: number;
 }

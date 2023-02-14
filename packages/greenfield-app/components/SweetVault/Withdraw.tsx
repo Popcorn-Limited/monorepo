@@ -1,89 +1,49 @@
 import type { Pop } from "@popcorn/components/lib/types";
-import { FormEventHandler, useMemo, useState } from "react";
-import { useAccount, useBalance } from "wagmi";
-import { utils } from "ethers";
-
-import { useRedeemVaultBalance } from "@popcorn/components/hooks/vaults";
-import { validateInput } from "./internals/input";
-
-import AssetInput from "./AssetInput";
-import toast from "react-hot-toast";
-import { ChainId } from "@popcorn/utils";
-import MainActionButton from "@popcorn/components/components/MainActionButton";
+import { Fragment } from "react";
+import { useAccount } from "wagmi";
+import { constants } from "ethers";
+import { useNamedAccounts } from "@popcorn/components/lib/utils";
+import AssetInputWithAction from "@popcorn/components/components/AssetInputWithAction";
 
 function Withdraw({
   vault,
-  vaultTokenAddress,
-  vaultTokenDecimals,
   chainId,
+  vaultTokenAddress,
 }: {
   vault: Pop.NamedAccountsMetadata;
   vaultTokenAddress: string;
-  vaultTokenDecimals: number;
   chainId: any;
 }) {
-  const [inputBalance, setInputBalance] = useState<number>();
+  const [vaultRouter] = useNamedAccounts(chainId, ["vaultRouter"]);
   const { address } = useAccount();
-
-  const { data: userBalance } = useBalance({
-    chainId,
-    address,
-    token: vault.address as any,
-    // Fetch in vault balance for user
-    watch: true,
-  });
-
-  const formattedInputBalance = useMemo(() => {
-    return utils.parseUnits(validateInput(inputBalance).formmatted, vaultTokenDecimals);
-  }, [inputBalance]);
-
-  const { write: withdrawBalance, isLoading } = useRedeemVaultBalance(
-    vault.address,
-    ChainId.Localhost,
-    formattedInputBalance,
-    {
-      onSuccess: () => {
-        toast.success("Transaction completed!", {
-          position: "top-center",
-        });
-        // reset input balance
-        setInputBalance("" as any);
-      },
-    },
-  );
-
-  async function handleWithdraw() {
-    if ((inputBalance || 0) == 0) return;
-    // Early exit if value is ZERO
-    withdrawBalance();
-  }
-
-  const handleChangeInput: FormEventHandler<HTMLInputElement> = ({ currentTarget: { value } }) => {
-    setInputBalance(validateInput(value).isValid ? (value as any) : 0);
-  };
-
-  const handleMaxClick = () => setInputBalance((userBalance?.formatted as any) || 0);
-
-  const errorMessage = useMemo(() => {
-    return inputBalance > Number(userBalance?.formatted) && "* Balance not available";
-  }, [inputBalance]);
-
-  const isEmptyBalance = formattedInputBalance.eq(0) || userBalance?.value.eq(0);
-
   return (
     <div className="flex flex-col gap-8">
-      <AssetInput
-        captionText="Withdraw Amount"
-        onMaxClick={handleMaxClick}
+      <AssetInputWithAction
+        assetAddress={vault.address}
+        target={vaultRouter.address}
         chainId={chainId}
-        value={inputBalance}
-        onChange={handleChangeInput}
-        vaultTokenAddress={vaultTokenAddress}
-        assetBalance={userBalance?.value}
-        errorMessage={errorMessage}
-      />
-      <div className="flex-grow" />
-      <MainActionButton disabled={isLoading || isEmptyBalance} handleClick={handleWithdraw} type="button" label="Withdraw"/>
+        action={(balance) => {
+          return {
+            label: "Withdraw",
+            abi: [
+              "function redeemAndWithdraw(address vault, uint256 burnAmount, address receiver, address owner) external",
+            ],
+            functionName: "redeemAndWithdraw",
+            successMessage: "Withdraw successful!",
+            args: [vault.address, balance, address, vaultTokenAddress],
+          };
+        }}
+        allowance={constants.MaxUint256}
+      >
+        {({ ActionableComponent }) => {
+          return (
+            <Fragment>
+              <div className="flex-grow" />
+              <ActionableComponent />
+            </Fragment>
+          );
+        }}
+      </AssetInputWithAction>
     </div>
   );
 }
