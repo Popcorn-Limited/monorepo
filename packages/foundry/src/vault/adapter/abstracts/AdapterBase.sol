@@ -36,7 +36,7 @@ abstract contract AdapterBase is
   using Math for uint256;
 
   uint8 internal _decimals;
-  uint8 internal constant decimalOffset = 9;
+  uint8 public constant decimalOffset = 9;
 
   error StrategySetupFailed();
 
