@@ -1,0 +1,3309 @@
+{
+  "name": "Furucombo",
+  "logoURI": "https://cdn.furucombo.app/assets/img/logo/logo-rounded-square.svg",
+  "timestamp": "2021-10-22T06:22:04.000+00:00",
+  "version": {
+    "major": 1,
+    "minor": 0,
+    "patch": 0
+  },
+  "keywords": ["furucombo", "interface", "aggregator", "transaction batching", "strategy", "defi legos"],
+  "tokens": [
+    {
+      "chainId": 1,
+      "address": "0x111111111117dC0aa78b770fA6A738034120C302",
+      "name": "1INCH Token",
+      "symbol": "1INCH",
+      "decimals": 18,
+      "logoURI": "https://cdn.furucombo.app/assets/img/token/1INCH.svg"
+    },
+    {
+      "chainId": 1,
+      "address": "0x6c3F90f043a72FA612cbac8115EE7e52BDe6E490",
+      "name": "Curve.fi DAI/USDC/USDT",
+      "symbol": "3Crv",
+      "decimals": 18,
+      "logoURI": "https://cdn.furucombo.app/assets/img/token/3Crv.png"
+    },
+    {
+      "chainId": 1,
+      "address": "0x7Fc66500c84A76Ad7e9c93437bFc5Ac33E2DDaE9",
+      "name": "Aave Token",
+      "symbol": "AAVE",
+      "decimals": 18,
+      "logoURI": "https://cdn.furucombo.app/assets/img/token/AAVE.svg"
+    },
+    {
+      "chainId": 1,
+      "address": "0xADE00C28244d5CE17D72E40330B1c318cD12B7c3",
+      "name": "AdEx Network",
+      "symbol": "ADX",
+      "decimals": 18,
+      "logoURI": "https://cdn.furucombo.app/assets/img/token/ADX.png"
+    },
+    {
+      "chainId": 1,
+      "address": "0x32353A6C91143bfd6C7d363B546e62a9A2489A20",
+      "name": "Adventure Gold",
+      "symbol": "AGLD",
+      "decimals": 18,
+      "logoURI": "https://cdn.furucombo.app/assets/img/token/AGLD.png"
+    },
+    {
+      "chainId": 1,
+      "address": "0x8Ab7404063Ec4DBcfd4598215992DC3F8EC853d7",
+      "name": "Akropolis",
+      "symbol": "AKRO",
+      "decimals": 18,
+      "logoURI": "https://cdn.furucombo.app/assets/img/token/AKRO.png"
+    },
+    {
+      "chainId": 1,
+      "address": "0x00a8b738E453fFd858a7edf03bcCfe20412f0Eb0",
+      "name": "AllianceBlock Token",
+      "symbol": "ALBT",
+      "decimals": 18,
+      "logoURI": "https://cdn.furucombo.app/assets/img/token/ALBT.png"
+    },
+    {
+      "chainId": 1,
+      "address": "0xdBdb4d16EdA451D0503b854CF79D55697F90c8DF",
+      "name": "Alchemix",
+      "symbol": "ALCX",
+      "decimals": 18,
+      "logoURI": "https://cdn.furucombo.app/assets/img/token/ALCX.png"
+    },
+    {
+      "chainId": 1,
+      "address": "0x27702a26126e0B3702af63Ee09aC4d1A084EF628",
+      "name": "aleph.im v2",
+      "symbol": "ALEPH",
+      "decimals": 18,
+      "logoURI": "https://cdn.furucombo.app/assets/img/token/ALEPH.png"
+    },
+    {
+      "chainId": 1,
+      "address": "0xa1faa113cbE53436Df28FF0aEe54275c13B40975",
+      "name": "AlphaToken",
+      "symbol": "ALPHA",
+      "decimals": 18,
+      "logoURI": "https://cdn.furucombo.app/assets/img/token/ALPHA.svg"
+    },
+    {
+      "chainId": 1,
+      "address": "0xD46bA6D942050d489DBd938a2C909A5d5039A161",
+      "name": "Ampleforth",
+      "symbol": "AMPL",
+      "decimals": 9,
+      "logoURI": "https://cdn.furucombo.app/assets/img/token/AMPL.svg"
+    },
+    {
+      "chainId": 1,
+      "address": "0xcD62b1C403fa761BAadFC74C525ce2B51780b184",
+      "name": "Aragon Network Juror",
+      "symbol": "ANJ",
+      "decimals": 18,
+      "logoURI": "https://cdn.furucombo.app/assets/img/token/ANJ.png"
+    },
+    {
+      "chainId": 1,
+      "address": "0xa117000000f279D81A1D3cc75430fAA017FA5A2e",
+      "name": "Aragon Network Token",
+      "symbol": "ANT",
+      "decimals": 18,
+      "logoURI": "https://cdn.furucombo.app/assets/img/token/ANT.svg"
+    },
+    {
+      "chainId": 1,
+      "address": "0xBB0E17EF65F82Ab018d8EDd776e8DD940327B28b",
+      "name": "Axie Infinity Shard",
+      "symbol": "AXS",
+      "decimals": 18,
+      "logoURI": "https://cdn.furucombo.app/assets/img/token/AXS.png"
+    },
+    {
+      "chainId": 1,
+      "address": "0x3449FC1Cd036255BA1EB19d65fF4BA2b8903A69a",
+      "name": "Basis Cash: BAC Token",
+      "symbol": "BAC",
+      "decimals": 18,
+      "logoURI": "https://cdn.furucombo.app/assets/img/token/BAC.svg"
+    },
+    {
+      "chainId": 1,
+      "address": "0x3472A5A71965499acd81997a54BBA8D852C6E53d",
+      "name": "Badger",
+      "symbol": "BADGER",
+      "decimals": 18,
+      "logoURI": "https://cdn.furucombo.app/assets/img/token/BADGER.png"
+    },
+    {
+      "chainId": 1,
+      "address": "0xba100000625a3754423978a60c9317c58a424e3D",
+      "name": "Balancer",
+      "symbol": "BAL",
+      "decimals": 18,
+      "logoURI": "https://cdn.furucombo.app/assets/img/token/BAL.png"
+    },
+    {
+      "chainId": 1,
+      "address": "0xBA11D00c5f74255f56a5E366F4F77f5A186d7f55",
+      "name": "Band Protocol",
+      "symbol": "BAND",
+      "decimals": 18,
+      "logoURI": "https://cdn.furucombo.app/assets/img/token/BAND.png"
+    },
+    {
+      "chainId": 1,
+      "address": "0xa7ED29B253D8B4E3109ce07c80fc570f81B63696",
+      "name": "Basis Cash: BAS Token",
+      "symbol": "BAS",
+      "decimals": 18,
+      "logoURI": "https://cdn.furucombo.app/assets/img/token/BAS.svg"
+    },
+    {
+      "chainId": 1,
+      "address": "0x68A118Ef45063051Eac49c7e647CE5Ace48a68a5",
+      "name": "BASED",
+      "symbol": "BASED",
+      "decimals": 18,
+      "logoURI": "https://cdn.furucombo.app/assets/img/token/BASED.png"
+    },
+    {
+      "chainId": 1,
+      "address": "0x0D8775F648430679A709E98d2b0Cb6250d2887EF",
+      "name": "Basic Attention Token",
+      "symbol": "BAT",
+      "decimals": 18,
+      "logoURI": "https://cdn.furucombo.app/assets/img/token/BAT.png"
+    },
+    {
+      "chainId": 1,
+      "address": "0x9BE89D2a4cd102D8Fecc6BF9dA793be995C22541",
+      "name": "Binance Wrapped BTC",
+      "symbol": "BBTC",
+      "decimals": 8,
+      "logoURI": "https://cdn.furucombo.app/assets/img/token/BBTC.png"
+    },
+    {
+      "chainId": 1,
+      "address": "0x35101c731b1548B5e48bb23F99eDBc2f5c341935",
+      "name": "BlackHoleSwap-Compound DAI/USDC v1",
+      "symbol": "BHSc",
+      "decimals": 18,
+      "logoURI": "https://cdn.furucombo.app/assets/img/token/BHSc.png"
+    },
+    {
+      "chainId": 1,
+      "address": "0x25e1474170c4c0aA64fa98123bdc8dB49D7802fa",
+      "name": "Bidao Chain",
+      "symbol": "BID",
+      "decimals": 18,
+      "logoURI": "https://cdn.furucombo.app/assets/img/token/BID.png"
+    },
+    {
+      "chainId": 1,
+      "address": "0x1A4b46696b2bB4794Eb3D4c26f1c55F9170fa4C5",
+      "name": "BitDAO",
+      "symbol": "BIT",
+      "decimals": 18,
+      "logoURI": "https://cdn.furucombo.app/assets/img/token/BIT.png"
+    },
+    {
+      "chainId": 1,
+      "address": "0x695106Ad73f506f9D0A9650a78019A93149AE07C",
+      "name": "BNS Token",
+      "symbol": "BNS",
+      "decimals": 8,
+      "logoURI": "https://cdn.furucombo.app/assets/img/token/BNS.png"
+    },
+    {
+      "chainId": 1,
+      "address": "0x668DbF100635f593A3847c0bDaF21f0a09380188",
+      "name": "bns.finance",
+      "symbol": "BNSD",
+      "decimals": 18,
+      "logoURI": "https://cdn.furucombo.app/assets/img/token/BNSD.png"
+    },
+    {
+      "chainId": 1,
+      "address": "0x1F573D6Fb3F13d689FF844B4cE37794d79a7FF1C",
+      "name": "Bancor",
+      "symbol": "BNT",
+      "decimals": 18,
+      "logoURI": "https://cdn.furucombo.app/assets/img/token/BNT.svg"
+    },
+    {
+      "chainId": 1,
+      "address": "0x0391D2021f89DC339F60Fff84546EA23E337750f",
+      "name": "BarnBridge Governance Token",
+      "symbol": "BOND",
+      "decimals": 18,
+      "logoURI": "https://cdn.furucombo.app/assets/img/token/BOND.png"
+    },
+    {
+      "chainId": 1,
+      "address": "0x0B498ff89709d3838a063f1dFA463091F9801c2b",
+      "name": "BTC 2x Flexible Leverage Index",
+      "symbol": "BTC2x-FLI",
+      "decimals": 18,
+      "logoURI": "https://cdn.furucombo.app/assets/img/token/BTC2x-FLI.png"
+    },
+    {
+      "chainId": 1,
+      "address": "0x4Fabb145d64652a948d72533023f6E7A623C7C53",
+      "name": "Binance USD",
+      "symbol": "BUSD",
+      "decimals": 18,
+      "logoURI": "https://cdn.furucombo.app/assets/img/token/BUSD.png"
+    },
+    {
+      "chainId": 1,
+      "address": "0x4807862AA8b2bF68830e4C8dc86D0e9A998e085a",
+      "name": "Curve.fi Factory USD Metapool: Binance USD",
+      "symbol": "BUSD3CRV-f",
+      "decimals": 18,
+      "logoURI": "https://cdn.furucombo.app/assets/img/token/BUSD3CRV-f.png"
+    },
+    {
+      "chainId": 1,
+      "address": "0x56d811088235F11C8920698a204A5010a788f4b3",
+      "name": "bZx Protocol Token",
+      "symbol": "BZRX",
+      "decimals": 18,
+      "logoURI": "https://cdn.furucombo.app/assets/img/token/BZRX.png"
+    },
+    {
+      "chainId": 1,
+      "address": "0xaaAEBE6Fe48E54f431b0C390CfaF0b017d09D42d",
+      "name": "Celsius",
+      "symbol": "CEL",
+      "decimals": 4,
+      "logoURI": "https://cdn.furucombo.app/assets/img/token/CEL.png"
+    },
+    {
+      "chainId": 1,
+      "address": "0xF5238462E7235c7B62811567E63Dd17d12C2EAA0",
+      "name": "CACHE Gold",
+      "symbol": "CGT",
+      "decimals": 8,
+      "logoURI": "https://cdn.furucombo.app/assets/img/token/CGT.png"
+    },
+    {
+      "chainId": 1,
+      "address": "0x69692D3345010a207b759a7D1af6fc7F38b35c5E",
+      "name": "Chads.vc",
+      "symbol": "CHADS",
+      "decimals": 18,
+      "logoURI": "https://cdn.furucombo.app/assets/img/token/CHADS.png"
+    },
+    {
+      "chainId": 1,
+      "address": "0x06AF07097C9Eeb7fD685c692751D5C66dB49c215",
+      "name": "Chai",
+      "symbol": "CHAI",
+      "decimals": 18,
+      "logoURI": "https://cdn.furucombo.app/assets/img/token/CHAI.png"
+    },
+    {
+      "chainId": 1,
+      "address": "0xC4C2614E694cF534D407Ee49F8E44D125E4681c4",
+      "name": "Chain Games",
+      "symbol": "CHAIN",
+      "decimals": 18,
+      "logoURI": "https://cdn.furucombo.app/assets/img/token/CHAIN.png"
+    },
+    {
+      "chainId": 1,
+      "address": "0x0000000000004946c0e9F43F4Dee607b0eF1fA1c",
+      "name": "Chi Gastoken by 1inch",
+      "symbol": "CHI",
+      "decimals": 0,
+      "logoURI": "https://cdn.furucombo.app/assets/img/token/CHI.png"
+    },
+    {
+      "chainId": 1,
+      "address": "0xfFffFffF2ba8F66D4e51811C5190992176930278",
+      "name": "Furucombo",
+      "symbol": "COMBO",
+      "decimals": 18,
+      "logoURI": "https://cdn.furucombo.app/assets/img/token/COMBO.svg"
+    },
+    {
+      "chainId": 1,
+      "address": "0xc00e94Cb662C3520282E6f5717214004A7f26888",
+      "name": "Compound",
+      "symbol": "COMP",
+      "decimals": 18,
+      "logoURI": "https://cdn.furucombo.app/assets/img/token/COMP.svg"
+    },
+    {
+      "chainId": 1,
+      "address": "0x62359Ed7505Efc61FF1D56fEF82158CcaffA23D7",
+      "name": "cVault Finance",
+      "symbol": "CORE",
+      "decimals": 18,
+      "logoURI": "https://cdn.furucombo.app/assets/img/token/CORE.png"
+    },
+    {
+      "chainId": 1,
+      "address": "0x2ba592F78dB6436527729929AAf6c908497cB200",
+      "name": "Cream",
+      "symbol": "CREAM",
+      "decimals": 18,
+      "logoURI": "https://cdn.furucombo.app/assets/img/token/CREAM.png"
+    },
+    {
+      "chainId": 1,
+      "address": "0xD533a949740bb3306d119CC777fa900bA034cd52",
+      "name": "Curve DAO Token",
+      "symbol": "CRV",
+      "decimals": 18,
+      "logoURI": "https://cdn.furucombo.app/assets/img/token/CRV.png"
+    },
+    {
+      "chainId": 1,
+      "address": "0x4e3FBD56CD56c3e72c1403e103b45Db9da5B9D2B",
+      "name": "Convex Token",
+      "symbol": "CVX",
+      "decimals": 18,
+      "logoURI": "https://cdn.furucombo.app/assets/img/token/CVX.png"
+    },
+    {
+      "chainId": 1,
+      "address": "0x6B175474E89094C44Da98b954EedeAC495271d0F",
+      "name": "Dai Stablecoin",
+      "symbol": "DAI",
+      "decimals": 18,
+      "logoURI": "https://cdn.furucombo.app/assets/img/token/DAI.png"
+    },
+    {
+      "chainId": 1,
+      "address": "0x78F225869c08d478c34e5f645d07A87d3fe8eb78",
+      "name": "PieDAO DEFI Large Cap",
+      "symbol": "DEFI+L",
+      "decimals": 18,
+      "logoURI": "https://cdn.furucombo.app/assets/img/token/DEFI+L.svg"
+    },
+    {
+      "chainId": 1,
+      "address": "0xaD6A626aE2B43DCb1B39430Ce496d2FA0365BA9C",
+      "name": "PieDAO DEFI Smal Cap",
+      "symbol": "DEFI+S",
+      "decimals": 18,
+      "logoURI": "https://cdn.furucombo.app/assets/img/token/DEFI+S.svg"
+    },
+    {
+      "chainId": 1,
+      "address": "0xfa6de2697D59E88Ed7Fc4dFE5A33daC43565ea41",
+      "name": "DEFI Top 5 Tokens Index",
+      "symbol": "DEFI5",
+      "decimals": 18,
+      "logoURI": "https://cdn.furucombo.app/assets/img/token/DEFI5.png"
+    },
+    {
+      "chainId": 1,
+      "address": "0x88EF27e69108B2633F8E1C184CC37940A075cC02",
+      "name": "Dego.finance",
+      "symbol": "DEGO",
+      "decimals": 18,
+      "logoURI": "https://cdn.furucombo.app/assets/img/token/DEGO.png"
+    },
+    {
+      "chainId": 1,
+      "address": "0x431ad2ff6a9C365805eBaD47Ee021148d6f7DBe0",
+      "name": "dForce",
+      "symbol": "DF",
+      "decimals": 18,
+      "logoURI": "https://cdn.furucombo.app/assets/img/token/DF.png"
+    },
+    {
+      "chainId": 1,
+      "address": "0xca1207647Ff814039530D7d35df0e1Dd2e91Fa84",
+      "name": "dHedge DAO Token",
+      "symbol": "DHT",
+      "decimals": 18,
+      "logoURI": "https://cdn.furucombo.app/assets/img/token/DHT.png"
+    },
+    {
+      "chainId": 1,
+      "address": "0x84cA8bc7997272c7CfB4D0Cd3D55cd942B3c9419",
+      "name": "DIA Token",
+      "symbol": "DIA",
+      "decimals": 18,
+      "logoURI": "https://cdn.furucombo.app/assets/img/token/DIA.png"
+    },
+    {
+      "chainId": 1,
+      "address": "0xEd91879919B71bB6905f23af0A68d231EcF87b14",
+      "name": "DMM Governance",
+      "symbol": "DMG",
+      "decimals": 18,
+      "logoURI": "https://cdn.furucombo.app/assets/img/token/DMG.png"
+    },
+    {
+      "chainId": 1,
+      "address": "0x43Dfc4159D86F3A37A5A4B3D4580b888ad7d4DDd",
+      "name": "DODO bird",
+      "symbol": "DODO",
+      "decimals": 18,
+      "logoURI": "https://cdn.furucombo.app/assets/img/token/DODO.png"
+    },
+    {
+      "chainId": 1,
+      "address": "0xad32A8e6220741182940c5aBF610bDE99E737b2D",
+      "name": "PieDAO DOUGH v2",
+      "symbol": "DOUGH",
+      "decimals": 18,
+      "logoURI": "https://cdn.furucombo.app/assets/img/token/DOUGH.png"
+    },
+    {
+      "chainId": 1,
+      "address": "0x1494CA1F11D487c2bBe4543E90080AeBa4BA3C2b",
+      "name": "DefiPulse Index",
+      "symbol": "DPI",
+      "decimals": 18,
+      "logoURI": "https://cdn.furucombo.app/assets/img/token/DPI.png"
+    },
+    {
+      "chainId": 1,
+      "address": "0x5BC25f649fc4e26069dDF4cF4010F9f706c23831",
+      "name": "DefiDollar",
+      "symbol": "DUSD",
+      "decimals": 18,
+      "logoURI": "https://cdn.furucombo.app/assets/img/token/DUSD.png"
+    },
+    {
+      "chainId": 1,
+      "address": "0x92D6C1e31e14520e676a687F0a93788B716BEff5",
+      "name": "dYdX",
+      "symbol": "DYDX",
+      "decimals": 18,
+      "logoURI": "https://cdn.furucombo.app/assets/img/token/DYDX.png"
+    },
+    {
+      "chainId": 1,
+      "address": "0x1559FA1b8F28238FD5D76D9f434ad86FD20D1559",
+      "name": "Eden",
+      "symbol": "EDEN",
+      "decimals": 18,
+      "logoURI": "https://cdn.furucombo.app/assets/img/token/EDEN.png"
+    },
+    {
+      "chainId": 1,
+      "address": "0xbf2179859fc6D5BEE9Bf9158632Dc51678a4100e",
+      "name": "aelf",
+      "symbol": "ELF",
+      "decimals": 18,
+      "logoURI": "https://cdn.furucombo.app/assets/img/token/ELF.png"
+    },
+    {
+      "chainId": 1,
+      "address": "0xF629cBd94d3791C9250152BD8dfBDF380E2a3B9c",
+      "name": "Enjin",
+      "symbol": "ENJ",
+      "decimals": 18,
+      "logoURI": "https://cdn.furucombo.app/assets/img/token/ENJ.svg"
+    },
+    {
+      "chainId": 1,
+      "address": "0x36F3FD68E7325a35EB768F1AedaAe9EA0689d723",
+      "name": "Empty Set Dollar",
+      "symbol": "ESD",
+      "decimals": 18,
+      "logoURI": "https://cdn.furucombo.app/assets/img/token/ESD.png"
+    },
+    {
+      "chainId": 1,
+      "address": "0xAa6E8127831c9DE45ae56bB1b0d4D4Da6e5665BD",
+      "name": "ETH 2x Flexible Leverage Index",
+      "symbol": "ETH2x-FLI",
+      "decimals": 18,
+      "logoURI": "https://cdn.furucombo.app/assets/img/token/ETH2x-FLI.png"
+    },
+    {
+      "chainId": 1,
+      "address": "0xdB25f211AB05b1c97D595516F45794528a807ad8",
+      "name": "STASIS EURS Token",
+      "symbol": "EURS",
+      "decimals": 2,
+      "logoURI": "https://cdn.furucombo.app/assets/img/token/EURS.svg"
+    },
+    {
+      "chainId": 1,
+      "address": "0xC581b735A1688071A1746c968e0798D642EDE491",
+      "name": "Euro Tether",
+      "symbol": "EURT",
+      "decimals": 6,
+      "logoURI": "https://cdn.furucombo.app/assets/img/token/EURT.png"
+    },
+    {
+      "chainId": 1,
+      "address": "0xFD5dB7463a3aB53fD211b4af195c5BCCC1A03890",
+      "name": "Curve.fi Factory Plain Pool: Euro Tether",
+      "symbol": "EURT-f",
+      "decimals": 18,
+      "logoURI": "https://cdn.furucombo.app/assets/img/token/EURT-f.png"
+    },
+    {
+      "chainId": 1,
+      "address": "0xa0246c9032bC3A600820415aE600c6388619A14D",
+      "name": "FARM Reward Token",
+      "symbol": "FARM",
+      "decimals": 18,
+      "logoURI": "https://cdn.furucombo.app/assets/img/token/FARM.png"
+    },
+    {
+      "chainId": 1,
+      "address": "0x956F47F50A910163D8BF957Cf5846D573E7f87CA",
+      "name": "Fei USD",
+      "symbol": "FEI",
+      "decimals": 18,
+      "logoURI": "https://cdn.furucombo.app/assets/img/token/FEI.png"
+    },
+    {
+      "chainId": 1,
+      "address": "0x4946Fcea7C692606e8908002e55A582af44AC121",
+      "name": "FOAM Token",
+      "symbol": "FOAM",
+      "decimals": 18,
+      "logoURI": "https://cdn.furucombo.app/assets/img/token/FOAM.png"
+    },
+    {
+      "chainId": 1,
+      "address": "0xc770EEfAd204B5180dF6a14Ee197D99d808ee52d",
+      "name": "FOX",
+      "symbol": "FOX",
+      "decimals": 18,
+      "logoURI": "https://cdn.furucombo.app/assets/img/token/FOX.png"
+    },
+    {
+      "chainId": 1,
+      "address": "0x853d955aCEf822Db058eb8505911ED77F175b99e",
+      "name": "Frax",
+      "symbol": "FRAX",
+      "decimals": 18,
+      "logoURI": "https://cdn.furucombo.app/assets/img/token/FRAX.png"
+    },
+    {
+      "chainId": 1,
+      "address": "0xd632f22692FaC7611d2AA1C0D552930D43CAEd3B",
+      "name": "Curve.fi Factory USD Metapool: Frax",
+      "symbol": "FRAX3CRV-f",
+      "decimals": 18,
+      "logoURI": "https://cdn.furucombo.app/assets/img/token/FRAX3CRV-f.png"
+    },
+    {
+      "chainId": 1,
+      "address": "0xf8C3527CC04340b208C854E985240c02F7B7793f",
+      "name": "Frontier Token",
+      "symbol": "FRONT",
+      "decimals": 18,
+      "logoURI": "https://cdn.furucombo.app/assets/img/token/FRONT.png"
+    },
+    {
+      "chainId": 1,
+      "address": "0xfffffffFf15AbF397dA76f1dcc1A1604F45126DB",
+      "name": "FalconSwap",
+      "symbol": "FSW",
+      "decimals": 18,
+      "logoURI": "https://cdn.furucombo.app/assets/img/token/FSW.png"
+    },
+    {
+      "chainId": 1,
+      "address": "0x970B9bB2C0444F5E81e9d0eFb84C8ccdcdcAf84d",
+      "name": "Fuse Toke",
+      "symbol": "FUSE",
+      "decimals": 18,
+      "logoURI": "https://cdn.furucombo.app/assets/img/token/FUSE.svg"
+    },
+    {
+      "chainId": 1,
+      "address": "0x3432B6A60D23Ca0dFCa7761B7ab56459D9C964D0",
+      "name": "FraxShare",
+      "symbol": "FXS",
+      "decimals": 18,
+      "logoURI": "https://cdn.furucombo.app/assets/img/token/FXS.png"
+    },
+    {
+      "chainId": 1,
+      "address": "0x3F382DbD960E3a9bbCeaE22651E88158d2791550",
+      "name": "Aavegotchi GHST Token",
+      "symbol": "GHST",
+      "decimals": 18,
+      "logoURI": "https://cdn.furucombo.app/assets/img/token/GHST.png"
+    },
+    {
+      "chainId": 1,
+      "address": "0x6810e776880C02933D47DB1b9fc05908e5386b96",
+      "name": "Gnosis",
+      "symbol": "GNO",
+      "decimals": 18,
+      "logoURI": "https://cdn.furucombo.app/assets/img/token/GNO.png"
+    },
+    {
+      "chainId": 1,
+      "address": "0x09e64c2B61a5f1690Ee6fbeD9baf5D6990F8dFd0",
+      "name": "Growth",
+      "symbol": "GRO",
+      "decimals": 18,
+      "logoURI": "https://cdn.furucombo.app/assets/img/token/GRO.png"
+    },
+    {
+      "chainId": 1,
+      "address": "0xc944E90C64B2c07662A292be6244BDf05Cda44a7",
+      "name": "Graph Token",
+      "symbol": "GRT",
+      "decimals": 18,
+      "logoURI": "https://cdn.furucombo.app/assets/img/token/GRT.png"
+    },
+    {
+      "chainId": 1,
+      "address": "0x0000000000b3F879cb30FE243b4Dfee438691c04",
+      "name": "Gastoken.io",
+      "symbol": "GST2",
+      "decimals": 2,
+      "logoURI": "https://cdn.furucombo.app/assets/img/token/GST2.png"
+    },
+    {
+      "chainId": 1,
+      "address": "0xDe30da39c46104798bB5aA3fe8B9e0e1F348163F",
+      "name": "Gitcoin",
+      "symbol": "GTC",
+      "decimals": 18,
+      "logoURI": "https://cdn.furucombo.app/assets/img/token/GTC.png"
+    },
+    {
+      "chainId": 1,
+      "address": "0x056Fd409E1d7A124BD7017459dFEa2F387b6d5Cd",
+      "name": "Gemini dollar",
+      "symbol": "GUSD",
+      "decimals": 2,
+      "logoURI": "https://cdn.furucombo.app/assets/img/token/GUSD.png"
+    },
+    {
+      "chainId": 1,
+      "address": "0x0E29e5AbbB5FD88e28b2d355774e73BD47dE3bcd",
+      "name": "Hakka Finance",
+      "symbol": "HAKKA",
+      "decimals": 18,
+      "logoURI": "https://cdn.furucombo.app/assets/img/token/HAKKA.png"
+    },
+    {
+      "chainId": 1,
+      "address": "0x0316EB71485b0Ab14103307bf65a021042c6d380",
+      "name": "Huobi BTC",
+      "symbol": "HBTC",
+      "decimals": 18,
+      "logoURI": "https://cdn.furucombo.app/assets/img/token/HBTC.png"
+    },
+    {
+      "chainId": 1,
+      "address": "0x584bC13c7D411c00c01A62e8019472dE68768430",
+      "name": "Hegic",
+      "symbol": "HEGIC",
+      "decimals": 18,
+      "logoURI": "https://cdn.furucombo.app/assets/img/token/HEGIC.png"
+    },
+    {
+      "chainId": 1,
+      "address": "0xDea67845A51E24461D5fED8084E69B426AF3D5Db",
+      "name": "HodlTree",
+      "symbol": "HTRE",
+      "decimals": 18,
+      "logoURI": "https://cdn.furucombo.app/assets/img/token/HTRE.png"
+    },
+    {
+      "chainId": 1,
+      "address": "0xdF574c24545E5FfEcb9a659c229253D4111d87e1",
+      "name": "HUSD",
+      "symbol": "HUSD",
+      "decimals": 8,
+      "logoURI": "https://cdn.furucombo.app/assets/img/token/HUSD.svg"
+    },
+    {
+      "chainId": 1,
+      "address": "0x767FE9EDC9E0dF98E07454847909b5E959D7ca0E",
+      "name": "Illuvium",
+      "symbol": "ILV",
+      "decimals": 18,
+      "logoURI": "https://cdn.furucombo.app/assets/img/token/ILV.png"
+    },
+    {
+      "chainId": 1,
+      "address": "0x0954906da0Bf32d5479e25f46056d22f08464cab",
+      "name": "Index",
+      "symbol": "INDEX",
+      "decimals": 18,
+      "logoURI": "https://cdn.furucombo.app/assets/img/token/INDEX.png"
+    },
+    {
+      "chainId": 1,
+      "address": "0x6f40d4A6237C257fff2dB00FA0510DeEECd303eb",
+      "name": "Instadapp",
+      "symbol": "INST",
+      "decimals": 18,
+      "logoURI": "https://cdn.furucombo.app/assets/img/token/INST.png"
+    },
+    {
+      "chainId": 1,
+      "address": "0xD9Ec3ff1f8be459Bb9369b4E79e9Ebcf7141C093",
+      "name": "KardiaChain Token",
+      "symbol": "KAI",
+      "decimals": 18,
+      "logoURI": "https://cdn.furucombo.app/assets/img/token/KAI.png"
+    },
+    {
+      "chainId": 1,
+      "address": "0x85Eee30c52B0b379b046Fb0F85F4f3Dc3009aFEC",
+      "name": "Keep.network",
+      "symbol": "KEEP",
+      "decimals": 18,
+      "logoURI": "https://cdn.furucombo.app/assets/img/token/KEEP.png"
+    },
+    {
+      "chainId": 1,
+      "address": "0x4Cd988AfBad37289BAAf53C13e98E2BD46aAEa8c",
+      "name": "KEY",
+      "symbol": "KEY",
+      "decimals": 18,
+      "logoURI": "https://cdn.furucombo.app/assets/img/token/KEY.png"
+    },
+    {
+      "chainId": 1,
+      "address": "0x177BA0cac51bFC7eA24BAd39d81dcEFd59d74fAa",
+      "name": "Kitten Finance",
+      "symbol": "KIF",
+      "decimals": 18,
+      "logoURI": "https://cdn.furucombo.app/assets/img/token/KIF.png"
+    },
+    {
+      "chainId": 1,
+      "address": "0xdd974D5C2e2928deA5F71b9825b8b646686BD200",
+      "name": "Kyber Network Crystal Legacy",
+      "symbol": "KNCL",
+      "decimals": 18,
+      "logoURI": "https://cdn.furucombo.app/assets/img/token/KNCL.png"
+    },
+    {
+      "chainId": 1,
+      "address": "0x1cEB5cB57C4D4E2b2433641b95Dd330A33185A44",
+      "name": "Keep3rV1",
+      "symbol": "KP3R",
+      "decimals": 18,
+      "logoURI": "https://cdn.furucombo.app/assets/img/token/KP3R.png"
+    },
+    {
+      "chainId": 1,
+      "address": "0x80fB784B7eD66730e8b1DBd9820aFD29931aab03",
+      "name": "Aave",
+      "symbol": "LEND",
+      "decimals": 18,
+      "logoURI": "https://cdn.furucombo.app/assets/img/token/LEND.png"
+    },
+    {
+      "chainId": 1,
+      "address": "0x0417912b3a7AF768051765040A55BB0925D4DDcF",
+      "name": "Liquidity Dividends Protocol",
+      "symbol": "LID",
+      "decimals": 18,
+      "logoURI": "https://cdn.furucombo.app/assets/img/token/LID.png"
+    },
+    {
+      "chainId": 1,
+      "address": "0x514910771AF9Ca656af840dff83E8264EcF986CA",
+      "name": "Chainlink",
+      "symbol": "LINK",
+      "decimals": 18,
+      "logoURI": "https://cdn.furucombo.app/assets/img/token/LINK.png"
+    },
+    {
+      "chainId": 1,
+      "address": "0x0E2EC54fC0B509F445631Bf4b91AB8168230C752",
+      "name": "LINKUSD",
+      "symbol": "LINKUSD",
+      "decimals": 18,
+      "logoURI": "https://cdn.furucombo.app/assets/img/token/LINKUSD.png"
+    },
+    {
+      "chainId": 1,
+      "address": "0x0000000000095413afC295d19EDeb1Ad7B71c952",
+      "name": "LON Token",
+      "symbol": "LON",
+      "decimals": 18,
+      "logoURI": "https://cdn.furucombo.app/assets/img/token/LON.png"
+    },
+    {
+      "chainId": 1,
+      "address": "0xBBbbCA6A901c926F240b89EacB641d8Aec7AEafD",
+      "name": "Loopring",
+      "symbol": "LRC",
+      "decimals": 18,
+      "logoURI": "https://cdn.furucombo.app/assets/img/token/LRC.svg"
+    },
+    {
+      "chainId": 1,
+      "address": "0xB1f66997A5760428D3a87D68b90BfE0aE64121cC",
+      "name": "Lua Token",
+      "symbol": "LUA",
+      "decimals": 18,
+      "logoURI": "https://cdn.furucombo.app/assets/img/token/LUA.png"
+    },
+    {
+      "chainId": 1,
+      "address": "0xd2877702675e6cEb975b4A1dFf9fb7BAF4C91ea9",
+      "name": "Wrapped LUNA Token",
+      "symbol": "LUNA",
+      "decimals": 18,
+      "logoURI": "https://cdn.furucombo.app/assets/img/token/LUNA.png"
+    },
+    {
+      "chainId": 1,
+      "address": "0x5f98805A4E8be255a32880FDeC7F6728C6568bA0",
+      "name": "LUSD Stablecoin",
+      "symbol": "LUSD",
+      "decimals": 18,
+      "logoURI": "https://cdn.furucombo.app/assets/img/token/LUSD.png"
+    },
+    {
+      "chainId": 1,
+      "address": "0xEd279fDD11cA84bEef15AF5D39BB4d4bEE23F0cA",
+      "name": "Curve.fi Factory USD Metapool: Liquity",
+      "symbol": "LUSD3CRV-f",
+      "decimals": 18,
+      "logoURI": "https://cdn.furucombo.app/assets/img/token/LUSD3CRV-f.png"
+    },
+    {
+      "chainId": 1,
+      "address": "0x6D65b498cb23deAba52db31c93Da9BFFb340FB8F",
+      "name": "Curve.fi LinkUSD/DAI/USDC/USDT",
+      "symbol": "LinkUSD3CRV",
+      "decimals": 18,
+      "logoURI": "https://cdn.furucombo.app/assets/img/token/LinkUSD3CRV.png"
+    },
+    {
+      "chainId": 1,
+      "address": "0x0F5D2fB29fb7d3CFeE444a200298f468908cC942",
+      "name": "Decentraland",
+      "symbol": "MANA",
+      "decimals": 18,
+      "logoURI": "https://cdn.furucombo.app/assets/img/token/MANA.png"
+    },
+    {
+      "chainId": 1,
+      "address": "0x67c597624B17b16fb77959217360B7cD18284253",
+      "name": "Benchmark",
+      "symbol": "MARK",
+      "decimals": 9,
+      "logoURI": "https://cdn.furucombo.app/assets/img/token/MARK.png"
+    },
+    {
+      "chainId": 1,
+      "address": "0x7D1AfA7B718fb893dB30A3aBc0Cfc608AaCfeBB0",
+      "name": "Matic Token",
+      "symbol": "MATIC",
+      "decimals": 18,
+      "logoURI": "https://cdn.furucombo.app/assets/img/token/MATIC.png"
+    },
+    {
+      "chainId": 1,
+      "address": "0x4e352cF164E64ADCBad318C3a1e222E9EBa4Ce42",
+      "name": "MCDEX Token",
+      "symbol": "MCB",
+      "decimals": 18,
+      "logoURI": "https://cdn.furucombo.app/assets/img/token/MCB.png"
+    },
+    {
+      "chainId": 1,
+      "address": "0xd15eCDCF5Ea68e3995b2D0527A0aE0a3258302F8",
+      "name": "MachiX Token",
+      "symbol": "MCX",
+      "decimals": 18,
+      "logoURI": "https://cdn.furucombo.app/assets/img/token/MCX.png"
+    },
+    {
+      "chainId": 1,
+      "address": "0xD5525D397898e5502075Ea5E830d8914f6F0affe",
+      "name": "MEME",
+      "symbol": "MEME",
+      "decimals": 8,
+      "logoURI": "https://cdn.furucombo.app/assets/img/token/MEME.png"
+    },
+    {
+      "chainId": 1,
+      "address": "0xa3d58c4E56fedCae3a7c43A725aeE9A71F0ece4e",
+      "name": "Metronome",
+      "symbol": "MET",
+      "decimals": 18,
+      "logoURI": "https://cdn.furucombo.app/assets/img/token/MET.svg"
+    },
+    {
+      "chainId": 1,
+      "address": "0x99D8a9C45b2ecA8864373A26D1459e3Dff1e17F3",
+      "name": "Magic Internet Money",
+      "symbol": "MIM",
+      "decimals": 18,
+      "logoURI": "https://cdn.furucombo.app/assets/img/token/MIM.png"
+    },
+    {
+      "chainId": 1,
+      "address": "0x09a3EcAFa817268f77BE1283176B946C4ff2E608",
+      "name": "Wrapped MIR Token",
+      "symbol": "MIR",
+      "decimals": 18,
+      "logoURI": "https://cdn.furucombo.app/assets/img/token/MIR.png"
+    },
+    {
+      "chainId": 1,
+      "address": "0x9f8F72aA9304c8B593d555F12eF6589cC3A579A2",
+      "name": "Maker",
+      "symbol": "MKR",
+      "decimals": 18,
+      "logoURI": "https://cdn.furucombo.app/assets/img/token/MKR.png"
+    },
+    {
+      "chainId": 1,
+      "address": "0xec67005c4E498Ec7f55E092bd1d35cbC47C91892",
+      "name": "Melon Token",
+      "symbol": "MLN",
+      "decimals": 18,
+      "logoURI": "https://cdn.furucombo.app/assets/img/token/MLN.png"
+    },
+    {
+      "chainId": 1,
+      "address": "0xa3BeD4E1c75D00fa6f4E5E6922DB7261B5E9AcD2",
+      "name": "Meta",
+      "symbol": "MTA",
+      "decimals": 18,
+      "logoURI": "https://cdn.furucombo.app/assets/img/token/MTA.png"
+    },
+    {
+      "chainId": 1,
+      "address": "0xCc80C051057B774cD75067Dc48f8987C4Eb97A5e",
+      "name": "Ethfinex Nectar Token",
+      "symbol": "NEC",
+      "decimals": 18,
+      "logoURI": "https://cdn.furucombo.app/assets/img/token/NEC.png"
+    },
+    {
+      "chainId": 1,
+      "address": "0xB62132e35a6c13ee1EE0f84dC5d40bad8d815206",
+      "name": "Nexo",
+      "symbol": "NEXO",
+      "decimals": 18,
+      "logoURI": "https://cdn.furucombo.app/assets/img/token/NEXO.png"
+    },
+    {
+      "chainId": 1,
+      "address": "0x87d73E916D7057945c9BcD8cdd94e42A6F47f776",
+      "name": "NFTX",
+      "symbol": "NFTX",
+      "decimals": 18,
+      "logoURI": "https://cdn.furucombo.app/assets/img/token/NFTX.png"
+    },
+    {
+      "chainId": 1,
+      "address": "0x1776e1F26f98b1A5dF9cD347953a26dd3Cb46671",
+      "name": "Numeraire",
+      "symbol": "NMR",
+      "decimals": 18,
+      "logoURI": "https://cdn.furucombo.app/assets/img/token/NMR.png"
+    },
+    {
+      "chainId": 1,
+      "address": "0x967da4048cD07aB37855c090aAF366e4ce1b9F48",
+      "name": "Ocean Token",
+      "symbol": "OCEAN",
+      "decimals": 18,
+      "logoURI": "https://cdn.furucombo.app/assets/img/token/OCEAN.png"
+    },
+    {
+      "chainId": 1,
+      "address": "0x383518188C0C6d7730D91b2c03a03C837814a899",
+      "name": "Olympus",
+      "symbol": "OHM",
+      "decimals": 9,
+      "logoURI": "https://cdn.furucombo.app/assets/img/token/OHM.png"
+    },
+    {
+      "chainId": 1,
+      "address": "0x0258F474786DdFd37ABCE6df6BBb1Dd5dfC4434a",
+      "name": "Orion Protocol",
+      "symbol": "ORN",
+      "decimals": 8,
+      "logoURI": "https://cdn.furucombo.app/assets/img/token/ORN.png"
+    },
+    {
+      "chainId": 1,
+      "address": "0x2a7f709eE001069771ceB6D42e85035f7D18E736",
+      "name": "OWL Token",
+      "symbol": "OWL",
+      "decimals": 18,
+      "logoURI": "https://cdn.furucombo.app/assets/img/token/OWL.png"
+    },
+    {
+      "chainId": 1,
+      "address": "0x1BeEF31946fbbb40B877a72E4ae04a8D1A5Cee06",
+      "name": "Parachute",
+      "symbol": "PAR",
+      "decimals": 18,
+      "logoURI": "https://cdn.furucombo.app/assets/img/token/PAR.png"
+    },
+    {
+      "chainId": 1,
+      "address": "0x8E870D67F660D95d5be530380D0eC0bd388289E1",
+      "name": "Pax Dollar",
+      "symbol": "PAX",
+      "decimals": 18,
+      "logoURI": "https://cdn.furucombo.app/assets/img/token/PAX.png"
+    },
+    {
+      "chainId": 1,
+      "address": "0x45804880De22913dAFE09f4980848ECE6EcbAf78",
+      "name": "Paxos Gold",
+      "symbol": "PAXG",
+      "decimals": 18,
+      "logoURI": "https://cdn.furucombo.app/assets/img/token/PAXG.png"
+    },
+    {
+      "chainId": 1,
+      "address": "0xbC396689893D065F41bc2C6EcbeE5e0085233447",
+      "name": "Perpetual",
+      "symbol": "PERP",
+      "decimals": 18,
+      "logoURI": "https://cdn.furucombo.app/assets/img/token/PERP.png"
+    },
+    {
+      "chainId": 1,
+      "address": "0x429881672B9AE42b8EbA0E26cD9C73711b891Ca5",
+      "name": "Pickle Finance",
+      "symbol": "PICKLE",
+      "decimals": 18,
+      "logoURI": "https://cdn.furucombo.app/assets/img/token/PICKLE.png"
+    },
+    {
+      "chainId": 1,
+      "address": "0xD8912C10681D8B21Fd3742244f44658dBA12264E",
+      "name": "Pluton",
+      "symbol": "PLU",
+      "decimals": 18,
+      "logoURI": "https://cdn.furucombo.app/assets/img/token/PLU.png"
+    },
+    {
+      "chainId": 1,
+      "address": "0x93ED3FBe21207Ec2E8f2d3c3de6e058Cb73Bc04d",
+      "name": "Pinakion",
+      "symbol": "PNK",
+      "decimals": 18,
+      "logoURI": "https://cdn.furucombo.app/assets/img/token/PNK.svg"
+    },
+    {
+      "chainId": 1,
+      "address": "0x89Ab32156e46F46D02ade3FEcbe5Fc4243B9AAeD",
+      "name": "pNetwork Token",
+      "symbol": "PNT",
+      "decimals": 18,
+      "logoURI": "https://cdn.furucombo.app/assets/img/token/PNT.png"
+    },
+    {
+      "chainId": 1,
+      "address": "0x83e6f1E41cdd28eAcEB20Cb649155049Fac3D5Aa",
+      "name": "Polkastarter Token",
+      "symbol": "POLS",
+      "decimals": 18,
+      "logoURI": "https://cdn.furucombo.app/assets/img/token/POLS.png"
+    },
+    {
+      "chainId": 1,
+      "address": "0xD7B7d3C0bdA57723Fb54ab95Fd8F9EA033AF37f2",
+      "name": "PYLON",
+      "symbol": "PYLON",
+      "decimals": 18,
+      "logoURI": "https://cdn.furucombo.app/assets/img/token/PYLON.png"
+    },
+    {
+      "chainId": 1,
+      "address": "0x03ab458634910AaD20eF5f1C8ee96F1D6ac54919",
+      "name": "Rai Reflex Index",
+      "symbol": "RAI",
+      "decimals": 18,
+      "logoURI": "https://cdn.furucombo.app/assets/img/token/RAI.png"
+    },
+    {
+      "chainId": 1,
+      "address": "0xFca59Cd816aB1eaD66534D82bc21E7515cE441CF",
+      "name": "Rarible",
+      "symbol": "RARI",
+      "decimals": 18,
+      "logoURI": "https://cdn.furucombo.app/assets/img/token/RARI.png"
+    },
+    {
+      "chainId": 1,
+      "address": "0x6123B0049F904d730dB3C36a31167D9d4121fA6B",
+      "name": "Ribbon Finance",
+      "symbol": "RBN",
+      "decimals": 18,
+      "logoURI": "https://cdn.furucombo.app/assets/img/token/RBN.png"
+    },
+    {
+      "chainId": 1,
+      "address": "0xF970b8E36e23F7fC3FD752EeA86f8Be8D83375A6",
+      "name": "Ripio Credit Network",
+      "symbol": "RCN",
+      "decimals": 18,
+      "logoURI": "https://cdn.furucombo.app/assets/img/token/RCN.png"
+    },
+    {
+      "chainId": 1,
+      "address": "0x408e41876cCCDC0F92210600ef50372656052a38",
+      "name": "Republic",
+      "symbol": "REN",
+      "decimals": 18,
+      "logoURI": "https://cdn.furucombo.app/assets/img/token/REN.png"
+    },
+    {
+      "chainId": 1,
+      "address": "0x221657776846890989a759BA2973e427DfF5C9bB",
+      "name": "Reputation",
+      "symbol": "REPv2",
+      "decimals": 18,
+      "logoURI": "https://cdn.furucombo.app/assets/img/token/REPv2.png"
+    },
+    {
+      "chainId": 1,
+      "address": "0x8f8221aFbB33998d8584A2B05749bA73c37a938a",
+      "name": "Request Network",
+      "symbol": "REQ",
+      "decimals": 18,
+      "logoURI": "https://cdn.furucombo.app/assets/img/token/REQ.svg"
+    },
+    {
+      "chainId": 1,
+      "address": "0x9469D013805bFfB7D3DEBe5E7839237e535ec483",
+      "name": "Darwinia Network Native Token",
+      "symbol": "RING",
+      "decimals": 18,
+      "logoURI": "https://cdn.furucombo.app/assets/img/token/RING.png"
+    },
+    {
+      "chainId": 1,
+      "address": "0x607F4C5BB672230e8672085532f7e901544a7375",
+      "name": "iExec RLC",
+      "symbol": "RLC",
+      "decimals": 9,
+      "logoURI": "https://cdn.furucombo.app/assets/img/token/RLC.svg"
+    },
+    {
+      "chainId": 1,
+      "address": "0xf1f955016EcbCd7321c7266BccFB96c68ea5E49b",
+      "name": "Rally",
+      "symbol": "RLY",
+      "decimals": 18,
+      "logoURI": "https://cdn.furucombo.app/assets/img/token/RLY.png"
+    },
+    {
+      "chainId": 1,
+      "address": "0xE17f017475a709De58E976081eB916081ff4c9d5",
+      "name": "RMPL",
+      "symbol": "RMPL",
+      "decimals": 9,
+      "logoURI": "https://cdn.furucombo.app/assets/img/token/RMPL.png"
+    },
+    {
+      "chainId": 1,
+      "address": "0xCb5f72d37685C3D5aD0bB5F982443BC8FcdF570E",
+      "name": "Rootkit",
+      "symbol": "ROOT",
+      "decimals": 18,
+      "logoURI": "https://cdn.furucombo.app/assets/img/token/ROOT.png"
+    },
+    {
+      "chainId": 1,
+      "address": "0xB4EFd85c19999D84251304bDA99E90B92300Bd93",
+      "name": "Rocket Pool",
+      "symbol": "RPL",
+      "decimals": 18,
+      "logoURI": "https://cdn.furucombo.app/assets/img/token/RPL.png"
+    },
+    {
+      "chainId": 1,
+      "address": "0x8762db106B2c2A0bccB3A80d1Ed41273552616E8",
+      "name": "Reserve Rights",
+      "symbol": "RSR",
+      "decimals": 18,
+      "logoURI": "https://cdn.furucombo.app/assets/img/token/RSR.png"
+    },
+    {
+      "chainId": 1,
+      "address": "0x196f4727526eA7FB1e17b2071B3d8eAA38486988",
+      "name": "Reserve",
+      "symbol": "RSV",
+      "decimals": 18,
+      "logoURI": "https://cdn.furucombo.app/assets/img/token/RSV.png"
+    },
+    {
+      "chainId": 1,
+      "address": "0x3155BA85D5F96b2d030a4966AF206230e46849cb",
+      "name": "THORChain ETH.RUNE",
+      "symbol": "RUNE",
+      "decimals": 18,
+      "logoURI": "https://cdn.furucombo.app/assets/img/token/RUNE.png"
+    },
+    {
+      "chainId": 1,
+      "address": "0x3845badAde8e6dFF049820680d1F14bD3903a5d0",
+      "name": "Sandbox Game",
+      "symbol": "SAND",
+      "decimals": 18,
+      "logoURI": "https://cdn.furucombo.app/assets/img/token/SAND.png"
+    },
+    {
+      "chainId": 1,
+      "address": "0x73968b9a57c6E53d41345FD57a6E6ae27d6CDB2F",
+      "name": "Stake DAO Token",
+      "symbol": "SDT",
+      "decimals": 18,
+      "logoURI": "https://cdn.furucombo.app/assets/img/token/SDT.png"
+    },
+    {
+      "chainId": 1,
+      "address": "0xb753428af26E81097e7fD17f40c88aaA3E04902c",
+      "name": "Spice",
+      "symbol": "SFI",
+      "decimals": 18,
+      "logoURI": "https://cdn.furucombo.app/assets/img/token/SFI.png"
+    },
+    {
+      "chainId": 1,
+      "address": "0x95aD61b0a150d79219dCF64E1E6Cc01f0B64C4cE",
+      "name": "SHIBA INU",
+      "symbol": "SHIB",
+      "decimals": 18,
+      "logoURI": "https://cdn.furucombo.app/assets/img/token/SHIB.png"
+    },
+    {
+      "chainId": 1,
+      "address": "0xEd0439EACf4c4965AE4613D77a5C2Efe10e5f183",
+      "name": "Shroom.finance",
+      "symbol": "SHROOM",
+      "decimals": 18,
+      "logoURI": "https://cdn.furucombo.app/assets/img/token/SHROOM.png"
+    },
+    {
+      "chainId": 1,
+      "address": "0xfe9A29aB92522D14Fc65880d817214261D8479AE",
+      "name": "Snowswap",
+      "symbol": "SNOW",
+      "decimals": 18,
+      "logoURI": "https://cdn.furucombo.app/assets/img/token/SNOW.png"
+    },
+    {
+      "chainId": 1,
+      "address": "0x744d70FDBE2Ba4CF95131626614a1763DF805B9E",
+      "name": "Status",
+      "symbol": "SNT",
+      "decimals": 18,
+      "logoURI": "https://cdn.furucombo.app/assets/img/token/SNT.svg"
+    },
+    {
+      "chainId": 1,
+      "address": "0xC011a73ee8576Fb46F5E1c5751cA3B9Fe0af2a6F",
+      "name": "Synthetix Network Token",
+      "symbol": "SNX",
+      "decimals": 18,
+      "logoURI": "https://cdn.furucombo.app/assets/img/token/SNX.svg"
+    },
+    {
+      "chainId": 1,
+      "address": "0x23B608675a2B2fB1890d3ABBd85c5775c51691d5",
+      "name": "Unisocks Edition 0",
+      "symbol": "SOCKS",
+      "decimals": 18,
+      "logoURI": "https://cdn.furucombo.app/assets/img/token/SOCKS.png"
+    },
+    {
+      "chainId": 1,
+      "address": "0x42d6622deCe394b54999Fbd73D108123806f6a18",
+      "name": "SpankChain",
+      "symbol": "SPANK",
+      "decimals": 18,
+      "logoURI": "https://cdn.furucombo.app/assets/img/token/SPANK.png"
+    },
+    {
+      "chainId": 1,
+      "address": "0x090185f2135308BaD17527004364eBcC2D37e5F6",
+      "name": "Spell Token",
+      "symbol": "SPELL",
+      "decimals": 18,
+      "logoURI": "https://cdn.furucombo.app/assets/img/token/SPELL.png"
+    },
+    {
+      "chainId": 1,
+      "address": "0x476c5E26a75bd202a9683ffD34359C0CC15be0fF",
+      "name": "Serum",
+      "symbol": "SRM",
+      "decimals": 6,
+      "logoURI": "https://cdn.furucombo.app/assets/img/token/SRM.png"
+    },
+    {
+      "chainId": 1,
+      "address": "0x0Ae055097C6d159879521C384F1D2123D1f195e6",
+      "name": "Stake",
+      "symbol": "STAKE",
+      "decimals": 18,
+      "logoURI": "https://cdn.furucombo.app/assets/img/token/STAKE.png"
+    },
+    {
+      "chainId": 1,
+      "address": "0xB987D48Ed8f2C468D52D6405624EADBa5e76d723",
+      "name": "Stabilize Token",
+      "symbol": "STBZ",
+      "decimals": 18,
+      "logoURI": "https://cdn.furucombo.app/assets/img/token/STBZ.png"
+    },
+    {
+      "chainId": 1,
+      "address": "0xbE9375C6a420D2eEB258962efB95551A5b722803",
+      "name": "StormX",
+      "symbol": "STMX",
+      "decimals": 18,
+      "logoURI": "https://cdn.furucombo.app/assets/img/token/STMX.png"
+    },
+    {
+      "chainId": 1,
+      "address": "0x0763fdCCF1aE541A5961815C0872A8c5Bc6DE4d7",
+      "name": "SUKU",
+      "symbol": "SUKU",
+      "decimals": 18,
+      "logoURI": "https://cdn.furucombo.app/assets/img/token/SUKU.png"
+    },
+    {
+      "chainId": 1,
+      "address": "0xe53EC727dbDEB9E2d5456c3be40cFF031AB40A55",
+      "name": "SuperFarm",
+      "symbol": "SUPER",
+      "decimals": 18,
+      "logoURI": "https://cdn.furucombo.app/assets/img/token/SUPER.png"
+    },
+    {
+      "chainId": 1,
+      "address": "0x6B3595068778DD592e39A122f4f5a5cF09C90fE2",
+      "name": "Sushi Token",
+      "symbol": "SUSHI",
+      "decimals": 18,
+      "logoURI": "https://cdn.furucombo.app/assets/img/token/SUSHI.png"
+    },
+    {
+      "chainId": 1,
+      "address": "0xCC4304A31d09258b0029eA7FE63d032f52e44EFe",
+      "name": "TrustSwap Token",
+      "symbol": "SWAP",
+      "decimals": 18,
+      "logoURI": "https://cdn.furucombo.app/assets/img/token/SWAP.png"
+    },
+    {
+      "chainId": 1,
+      "address": "0xBa21Ef4c9f433Ede00badEFcC2754B8E74bd538A",
+      "name": "Swapfolio",
+      "symbol": "SWFL",
+      "decimals": 18,
+      "logoURI": "https://cdn.furucombo.app/assets/img/token/SWFL.png"
+    },
+    {
+      "chainId": 1,
+      "address": "0xB8BAa0e4287890a5F79863aB62b7F175ceCbD433",
+      "name": "Swerve DAO Token",
+      "symbol": "SWRV",
+      "decimals": 18,
+      "logoURI": "https://cdn.furucombo.app/assets/img/token/SWRV.png"
+    },
+    {
+      "chainId": 1,
+      "address": "0x8dAEBADE922dF735c38C80C7eBD708Af50815fAa",
+      "name": "tBTC",
+      "symbol": "TBTC",
+      "decimals": 18,
+      "logoURI": "https://cdn.furucombo.app/assets/img/token/TBTC.png"
+    },
+    {
+      "chainId": 1,
+      "address": "0xaAAf91D9b90dF800Df4F55c205fd6989c977E73a",
+      "name": "Monolith",
+      "symbol": "TKN",
+      "decimals": 8,
+      "logoURI": "https://cdn.furucombo.app/assets/img/token/TKN.png"
+    },
+    {
+      "chainId": 1,
+      "address": "0x05D3606d5c81EB9b7B18530995eC9B29da05FaBa",
+      "name": "Tomo Chain",
+      "symbol": "TOMOE",
+      "decimals": 18,
+      "logoURI": "https://cdn.furucombo.app/assets/img/token/TOMOE.png"
+    },
+    {
+      "chainId": 1,
+      "address": "0x6F87D756DAf0503d08Eb8993686c7Fc01Dc44fB1",
+      "name": "UniTrade",
+      "symbol": "TRADE",
+      "decimals": 18,
+      "logoURI": "https://cdn.furucombo.app/assets/img/token/TRADE.png"
+    },
+    {
+      "chainId": 1,
+      "address": "0x88dF592F8eb5D7Bd38bFeF7dEb0fBc02cf3778a0",
+      "name": "Tellor Tributes",
+      "symbol": "TRB",
+      "decimals": 18,
+      "logoURI": "https://cdn.furucombo.app/assets/img/token/TRB.png"
+    },
+    {
+      "chainId": 1,
+      "address": "0xc7283b66Eb1EB5FB86327f08e1B5816b0720212B",
+      "name": "Tribe",
+      "symbol": "TRIBE",
+      "decimals": 18,
+      "logoURI": "https://cdn.furucombo.app/assets/img/token/TRIBE.png"
+    },
+    {
+      "chainId": 1,
+      "address": "0x4C19596f5aAfF459fA38B0f7eD92F11AE6543784",
+      "name": "TrustToken",
+      "symbol": "TRU",
+      "decimals": 8,
+      "logoURI": "https://cdn.furucombo.app/assets/img/token/TRU.svg"
+    },
+    {
+      "chainId": 1,
+      "address": "0x2C537E5624e4af88A7ae4060C022609376C8D0EB",
+      "name": "BiLira",
+      "symbol": "TRYB",
+      "decimals": 6,
+      "logoURI": "https://cdn.furucombo.app/assets/img/token/TRYB.png"
+    },
+    {
+      "chainId": 1,
+      "address": "0x0000000000085d4780B73119b644AE5ecd22b376",
+      "name": "TrueUSD",
+      "symbol": "TUSD",
+      "decimals": 18,
+      "logoURI": "https://cdn.furucombo.app/assets/img/token/TUSD.png"
+    },
+    {
+      "chainId": 1,
+      "address": "0xEcd5e75AFb02eFa118AF914515D6521aaBd189F1",
+      "name": "Curve.fi Factory USD Metapool: TrueUSD",
+      "symbol": "TUSD3CRV-f",
+      "decimals": 18,
+      "logoURI": "https://cdn.furucombo.app/assets/img/token/TUSD3CRV-f.png"
+    },
+    {
+      "chainId": 1,
+      "address": "0x8400D94A5cb0fa0D041a3788e395285d61c9ee5e",
+      "name": "UniBright",
+      "symbol": "UBT",
+      "decimals": 8,
+      "logoURI": "https://cdn.furucombo.app/assets/img/token/UBT.png"
+    },
+    {
+      "chainId": 1,
+      "address": "0x04Fa0d235C4abf4BcF4787aF4CF447DE572eF828",
+      "name": "UMA Voting Token v1",
+      "symbol": "UMA",
+      "decimals": 18,
+      "logoURI": "https://cdn.furucombo.app/assets/img/token/UMA.png"
+    },
+    {
+      "chainId": 1,
+      "address": "0x1f9840a85d5aF5bf1D1762F925BDADdC4201F984",
+      "name": "Uniswap Token",
+      "symbol": "UNI",
+      "decimals": 18,
+      "logoURI": "https://cdn.furucombo.app/assets/img/token/UNI.png"
+    },
+    {
+      "chainId": 1,
+      "address": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
+      "name": "USD Coin",
+      "symbol": "USDC",
+      "decimals": 6,
+      "logoURI": "https://cdn.furucombo.app/assets/img/token/USDC.png"
+    },
+    {
+      "chainId": 1,
+      "address": "0x1c48f86ae57291F7686349F12601910BD8D470bb",
+      "name": "USDK",
+      "symbol": "USDK",
+      "decimals": 18,
+      "logoURI": "https://cdn.furucombo.app/assets/img/token/USDK.png"
+    },
+    {
+      "chainId": 1,
+      "address": "0x674C6Ad92Fd080e4004b2312b45f796a192D27a0",
+      "name": "Neutrino USD",
+      "symbol": "USDN",
+      "decimals": 18,
+      "logoURI": "https://cdn.furucombo.app/assets/img/token/USDN.png"
+    },
+    {
+      "chainId": 1,
+      "address": "0x1456688345527bE1f37E9e627DA0837D6f08C925",
+      "name": "USDP Stablecoin",
+      "symbol": "USDP",
+      "decimals": 18,
+      "logoURI": "https://cdn.furucombo.app/assets/img/token/USDP.png"
+    },
+    {
+      "chainId": 1,
+      "address": "0xdAC17F958D2ee523a2206206994597C13D831ec7",
+      "name": "Tether USD",
+      "symbol": "USDT",
+      "decimals": 6,
+      "logoURI": "https://cdn.furucombo.app/assets/img/token/USDT.png"
+    },
+    {
+      "chainId": 1,
+      "address": "0xa47c8bf37f92aBed4A126BDA807A7b7498661acD",
+      "name": "Wrapped UST Token",
+      "symbol": "UST",
+      "decimals": 18,
+      "logoURI": "https://cdn.furucombo.app/assets/img/token/UST.png"
+    },
+    {
+      "chainId": 1,
+      "address": "0x49E833337ECe7aFE375e44F4E3e8481029218E5c",
+      "name": "Value Liquidity",
+      "symbol": "VALUE",
+      "decimals": 18,
+      "logoURI": "https://cdn.furucombo.app/assets/img/token/VALUE.png"
+    },
+    {
+      "chainId": 1,
+      "address": "0xfeF4185594457050cC9c23980d301908FE057Bb1",
+      "name": "VIDT Datalink",
+      "symbol": "VIDT",
+      "decimals": 18,
+      "logoURI": "https://cdn.furucombo.app/assets/img/token/VIDT.png"
+    },
+    {
+      "chainId": 1,
+      "address": "0x2260FAC5E5542a773Aa44fBCfeDf7C193bc2C599",
+      "name": "Wrapped BTC",
+      "symbol": "WBTC",
+      "decimals": 8,
+      "logoURI": "https://cdn.furucombo.app/assets/img/token/WBTC.png"
+    },
+    {
+      "chainId": 1,
+      "address": "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2",
+      "name": "Wrapped Ether",
+      "symbol": "WETH",
+      "decimals": 18,
+      "logoURI": "https://cdn.furucombo.app/assets/img/token/WETH.svg"
+    },
+    {
+      "chainId": 1,
+      "address": "0x66a0f676479Cee1d7373f3DC2e2952778BfF5bd6",
+      "name": "Wise Token",
+      "symbol": "WISE",
+      "decimals": 18,
+      "logoURI": "https://cdn.furucombo.app/assets/img/token/WISE.png"
+    },
+    {
+      "chainId": 1,
+      "address": "0x4691937a7508860F876c9c0a2a617E7d9E945D4B",
+      "name": "Wootrade Network",
+      "symbol": "WOO",
+      "decimals": 18,
+      "logoURI": "https://cdn.furucombo.app/assets/img/token/WOO.png"
+    },
+    {
+      "chainId": 1,
+      "address": "0x5BEfBB272290dD5b8521D4a938f6c4757742c430",
+      "name": "Xfinance",
+      "symbol": "XFI",
+      "decimals": 18,
+      "logoURI": "https://cdn.furucombo.app/assets/img/token/XFI.png"
+    },
+    {
+      "chainId": 1,
+      "address": "0x0f7F961648aE6Db43C75663aC7E5414Eb79b5704",
+      "name": "XIO Network",
+      "symbol": "XIO",
+      "decimals": 18,
+      "logoURI": "https://cdn.furucombo.app/assets/img/token/XIO.png"
+    },
+    {
+      "chainId": 1,
+      "address": "0x40FD72257597aA14C7231A7B1aaa29Fce868F677",
+      "name": "Sora Token",
+      "symbol": "XOR",
+      "decimals": 18,
+      "logoURI": "https://cdn.furucombo.app/assets/img/token/XOR.png"
+    },
+    {
+      "chainId": 1,
+      "address": "0x0bc529c00C6401aEF6D220BE8C6Ea1667F6Ad93e",
+      "name": "yearn.finance",
+      "symbol": "YFI",
+      "decimals": 18,
+      "logoURI": "https://cdn.furucombo.app/assets/img/token/YFI.png"
+    },
+    {
+      "chainId": 1,
+      "address": "0xa1d0E215a23d7030842FC67cE582a6aFa3CCaB83",
+      "name": "YFII.finance",
+      "symbol": "YFII",
+      "decimals": 18,
+      "logoURI": "https://cdn.furucombo.app/assets/img/token/YFII.png"
+    },
+    {
+      "chainId": 1,
+      "address": "0x28cb7e841ee97947a86B06fA4090C8451f64c0be",
+      "name": "YFLink",
+      "symbol": "YFL",
+      "decimals": 18,
+      "logoURI": "https://cdn.furucombo.app/assets/img/token/YFL.png"
+    },
+    {
+      "chainId": 1,
+      "address": "0x25f8087EAD173b73D6e8B84329989A8eEA16CF73",
+      "name": "Yield Guild Games",
+      "symbol": "YGG",
+      "decimals": 18,
+      "logoURI": "https://cdn.furucombo.app/assets/img/token/YGG.png"
+    },
+    {
+      "chainId": 1,
+      "address": "0xE41d2489571d322189246DaFA5ebDe1F4699F498",
+      "name": "0x",
+      "symbol": "ZRX",
+      "decimals": 18,
+      "logoURI": "https://cdn.furucombo.app/assets/img/token/ZRX.png"
+    },
+    {
+      "chainId": 1,
+      "address": "0xFd2a8fA60Abd58Efe3EeE34dd494cD491dC14900",
+      "name": "Curve.fi aDAI/aUSDC/aUSDT",
+      "symbol": "a3CRV",
+      "decimals": 18,
+      "logoURI": "https://cdn.furucombo.app/assets/img/token/a3CRV.png"
+    },
+    {
+      "chainId": 1,
+      "address": "0xFFC97d72E13E01096502Cb8Eb52dEe56f74DAD7B",
+      "name": "Aave interest bearing AAVE",
+      "symbol": "aAAVE",
+      "decimals": 18,
+      "logoURI": "https://cdn.furucombo.app/assets/img/token/aAAVE.svg"
+    },
+    {
+      "chainId": 1,
+      "address": "0xba3D9687Cf50fE253cd2e1cFeEdE1d6787344Ed5",
+      "name": "Aave V1 Interest bearing AAVE",
+      "symbol": "aAAVEv1",
+      "decimals": 18,
+      "logoURI": "https://cdn.furucombo.app/assets/img/token/aAAVEv1.svg"
+    },
+    {
+      "chainId": 1,
+      "address": "0x1E6bb68Acec8fefBD87D192bE09bb274170a0548",
+      "name": "Aave interest bearing AMPL",
+      "symbol": "aAMPL",
+      "decimals": 9,
+      "logoURI": "https://cdn.furucombo.app/assets/img/token/aAMPL.png"
+    },
+    {
+      "chainId": 1,
+      "address": "0x272F97b7a56a387aE942350bBC7Df5700f8a4576",
+      "name": "Aave V2 interest bearing BAL",
+      "symbol": "aBAL",
+      "decimals": 18,
+      "logoURI": "https://cdn.furucombo.app/assets/img/token/aBAL.svg"
+    },
+    {
+      "chainId": 1,
+      "address": "0x05Ec93c0365baAeAbF7AefFb0972ea7ECdD39CF1",
+      "name": "Aave interest bearing BAT",
+      "symbol": "aBAT",
+      "decimals": 18,
+      "logoURI": "https://cdn.furucombo.app/assets/img/token/aBAT.svg"
+    },
+    {
+      "chainId": 1,
+      "address": "0xE1BA0FB44CCb0D11b80F92f4f8Ed94CA3fF51D00",
+      "name": "Aave V1 Interest bearing BAT",
+      "symbol": "aBATv1",
+      "decimals": 18,
+      "logoURI": "https://cdn.furucombo.app/assets/img/token/aBATv1.svg"
+    },
+    {
+      "chainId": 1,
+      "address": "0xA361718326c15715591c299427c62086F69923D9",
+      "name": "Aave interest bearing BUSD",
+      "symbol": "aBUSD",
+      "decimals": 18,
+      "logoURI": "https://cdn.furucombo.app/assets/img/token/aBUSD.svg"
+    },
+    {
+      "chainId": 1,
+      "address": "0x6Ee0f7BB50a54AB5253dA0667B0Dc2ee526C30a8",
+      "name": "Aave V1 Interest bearing BUSD",
+      "symbol": "aBUSDv1",
+      "decimals": 18,
+      "logoURI": "https://cdn.furucombo.app/assets/img/token/aBUSDv1.svg"
+    },
+    {
+      "chainId": 1,
+      "address": "0x8dAE6Cb04688C62d939ed9B68d32Bc62e49970b1",
+      "name": "Aave interest bearing CRV",
+      "symbol": "aCRV",
+      "decimals": 18,
+      "logoURI": "https://cdn.furucombo.app/assets/img/token/aCRV.svg"
+    },
+    {
+      "chainId": 1,
+      "address": "0x028171bCA77440897B824Ca71D1c56caC55b68A3",
+      "name": "Aave interest bearing DAI",
+      "symbol": "aDAI",
+      "decimals": 18,
+      "logoURI": "https://cdn.furucombo.app/assets/img/token/aDAI.svg"
+    },
+    {
+      "chainId": 1,
+      "address": "0xfC1E690f61EFd961294b3e1Ce3313fBD8aa4f85d",
+      "name": "Aave V1 Interest bearing DAI",
+      "symbol": "aDAIv1",
+      "decimals": 18,
+      "logoURI": "https://cdn.furucombo.app/assets/img/token/aDAIv1.svg"
+    },
+    {
+      "chainId": 1,
+      "address": "0xaC6Df26a590F08dcC95D5a4705ae8abbc88509Ef",
+      "name": "Aave interest bearing ENJ",
+      "symbol": "aENJ",
+      "decimals": 18,
+      "logoURI": "https://cdn.furucombo.app/assets/img/token/aENJ.svg"
+    },
+    {
+      "chainId": 1,
+      "address": "0x712DB54daA836B53Ef1EcBb9c6ba3b9Efb073F40",
+      "name": "Aave V1 Interest bearing ENJ",
+      "symbol": "aENJv1",
+      "decimals": 18,
+      "logoURI": "https://cdn.furucombo.app/assets/img/token/aENJv1.svg"
+    },
+    {
+      "chainId": 1,
+      "address": "0x3a3A65aAb0dd2A17E3F1947bA16138cd37d08c04",
+      "name": "Aave V1 Interest bearing ETH",
+      "symbol": "aETHv1",
+      "decimals": 18,
+      "logoURI": "https://cdn.furucombo.app/assets/img/token/aETHv1.svg"
+    },
+    {
+      "chainId": 1,
+      "address": "0xD37EE7e4f452C6638c96536e68090De8cBcdb583",
+      "name": "Aave interest bearing GUSD",
+      "symbol": "aGUSD",
+      "decimals": 2,
+      "logoURI": "https://cdn.furucombo.app/assets/img/token/aGUSD.svg"
+    },
+    {
+      "chainId": 1,
+      "address": "0x39C6b3e42d6A679d7D776778Fe880BC9487C2EDA",
+      "name": "Aave interest bearing KNCL",
+      "symbol": "aKNCL",
+      "decimals": 18,
+      "logoURI": "https://cdn.furucombo.app/assets/img/token/aKNCL.png"
+    },
+    {
+      "chainId": 1,
+      "address": "0x9D91BE44C06d373a8a226E1f3b146956083803eB",
+      "name": "Aave V1 Interest bearing KNCL",
+      "symbol": "aKNCLv1",
+      "decimals": 18,
+      "logoURI": "https://cdn.furucombo.app/assets/img/token/aKNCLv1.png"
+    },
+    {
+      "chainId": 1,
+      "address": "0xa06bC25B5805d5F8d82847D191Cb4Af5A3e873E0",
+      "name": "Aave interest bearing LINK",
+      "symbol": "aLINK",
+      "decimals": 18,
+      "logoURI": "https://cdn.furucombo.app/assets/img/token/aLINK.svg"
+    },
+    {
+      "chainId": 1,
+      "address": "0xA64BD6C70Cb9051F6A9ba1F163Fdc07E0DfB5F84",
+      "name": "Aave V1 Interest bearing LINK",
+      "symbol": "aLINKv1",
+      "decimals": 18,
+      "logoURI": "https://cdn.furucombo.app/assets/img/token/aLINKv1.svg"
+    },
+    {
+      "chainId": 1,
+      "address": "0xa685a61171bb30d4072B338c80Cb7b2c865c873E",
+      "name": "Aave interest bearing MANA",
+      "symbol": "aMANA",
+      "decimals": 18,
+      "logoURI": "https://cdn.furucombo.app/assets/img/token/aMANA.svg"
+    },
+    {
+      "chainId": 1,
+      "address": "0x6FCE4A401B6B80ACe52baAefE4421Bd188e76F6f",
+      "name": "Aave V1 Interest bearing MANA",
+      "symbol": "aMANAv1",
+      "decimals": 18,
+      "logoURI": "https://cdn.furucombo.app/assets/img/token/aMANAv1.svg"
+    },
+    {
+      "chainId": 1,
+      "address": "0xc713e5E149D5D0715DcD1c156a020976e7E56B88",
+      "name": "Aave interest bearing MKR",
+      "symbol": "aMKR",
+      "decimals": 18,
+      "logoURI": "https://cdn.furucombo.app/assets/img/token/aMKR.svg"
+    },
+    {
+      "chainId": 1,
+      "address": "0x7deB5e830be29F91E298ba5FF1356BB7f8146998",
+      "name": "Aave V1 Interest bearing MKR",
+      "symbol": "aMKRv1",
+      "decimals": 18,
+      "logoURI": "https://cdn.furucombo.app/assets/img/token/aMKRv1.svg"
+    },
+    {
+      "chainId": 1,
+      "address": "0x2e8F4bdbE3d47d7d7DE490437AeA9915D930F1A3",
+      "name": "Aave interest bearing PAX",
+      "symbol": "aPAX",
+      "decimals": 18,
+      "logoURI": "https://cdn.furucombo.app/assets/img/token/aPAX.png"
+    },
+    {
+      "chainId": 1,
+      "address": "0xc9BC48c72154ef3e5425641a3c747242112a46AF",
+      "name": "Aave interest bearing RAI",
+      "symbol": "aRAI",
+      "decimals": 18,
+      "logoURI": "https://cdn.furucombo.app/assets/img/token/aRAI.svg"
+    },
+    {
+      "chainId": 1,
+      "address": "0xCC12AbE4ff81c9378D670De1b57F8e0Dd228D77a",
+      "name": "Aave interest bearing REN",
+      "symbol": "aREN",
+      "decimals": 18,
+      "logoURI": "https://cdn.furucombo.app/assets/img/token/aREN.svg"
+    },
+    {
+      "chainId": 1,
+      "address": "0x514cd6756CCBe28772d4Cb81bC3156BA9d1744aa",
+      "name": "Aave V2 interest bearing RENFIL",
+      "symbol": "aRENFIL",
+      "decimals": 18,
+      "logoURI": "https://cdn.furucombo.app/assets/img/token/aRENFIL.png"
+    },
+    {
+      "chainId": 1,
+      "address": "0x69948cC03f478B95283F7dbf1CE764d0fc7EC54C",
+      "name": "Aave V1 Interest bearing REN",
+      "symbol": "aRENv1",
+      "decimals": 18,
+      "logoURI": "https://cdn.furucombo.app/assets/img/token/aRENv1.svg"
+    },
+    {
+      "chainId": 1,
+      "address": "0x35f6B052C598d933D69A4EEC4D04c73A191fE6c2",
+      "name": "Aave interest bearing SNX",
+      "symbol": "aSNX",
+      "decimals": 18,
+      "logoURI": "https://cdn.furucombo.app/assets/img/token/aSNX.svg"
+    },
+    {
+      "chainId": 1,
+      "address": "0x328C4c80BC7aCa0834Db37e6600A6c49E12Da4DE",
+      "name": "Aave V1 Interest bearing SNX",
+      "symbol": "aSNXv1",
+      "decimals": 18,
+      "logoURI": "https://cdn.furucombo.app/assets/img/token/aSNXv1.svg"
+    },
+    {
+      "chainId": 1,
+      "address": "0x6C5024Cd4F8A59110119C56f8933403A539555EB",
+      "name": "Aave interest bearing SUSD",
+      "symbol": "aSUSD",
+      "decimals": 18,
+      "logoURI": "https://cdn.furucombo.app/assets/img/token/aSUSD.svg"
+    },
+    {
+      "chainId": 1,
+      "address": "0x625aE63000f46200499120B906716420bd059240",
+      "name": "Aave V1 Interest bearing sUSD",
+      "symbol": "aSUSDv1",
+      "decimals": 18,
+      "logoURI": "https://cdn.furucombo.app/assets/img/token/aSUSDv1.svg"
+    },
+    {
+      "chainId": 1,
+      "address": "0x101cc05f4A51C0319f570d5E146a8C625198e636",
+      "name": "Aave interest bearing TUSD",
+      "symbol": "aTUSD",
+      "decimals": 18,
+      "logoURI": "https://cdn.furucombo.app/assets/img/token/aTUSD.svg"
+    },
+    {
+      "chainId": 1,
+      "address": "0x4DA9b813057D04BAef4e5800E36083717b4a0341",
+      "name": "Aave V1 Interest bearing TUSD",
+      "symbol": "aTUSDv1",
+      "decimals": 18,
+      "logoURI": "https://cdn.furucombo.app/assets/img/token/aTUSDv1.svg"
+    },
+    {
+      "chainId": 1,
+      "address": "0xB9D7CB55f463405CDfBe4E90a6D2Df01C2B92BF1",
+      "name": "Aave interest bearing UNI",
+      "symbol": "aUNI",
+      "decimals": 18,
+      "logoURI": "https://cdn.furucombo.app/assets/img/token/aUNI.svg"
+    },
+    {
+      "chainId": 1,
+      "address": "0xB124541127A0A657f056D9Dd06188c4F1b0e5aab",
+      "name": "Aave V1 Interest bearing UNI",
+      "symbol": "aUNIv1",
+      "decimals": 18,
+      "logoURI": "https://cdn.furucombo.app/assets/img/token/aUNIv1.svg"
+    },
+    {
+      "chainId": 1,
+      "address": "0xBcca60bB61934080951369a648Fb03DF4F96263C",
+      "name": "Aave interest bearing USDC",
+      "symbol": "aUSDC",
+      "decimals": 6,
+      "logoURI": "https://cdn.furucombo.app/assets/img/token/aUSDC.svg"
+    },
+    {
+      "chainId": 1,
+      "address": "0x9bA00D6856a4eDF4665BcA2C2309936572473B7E",
+      "name": "Aave V1 Interest bearing USDC",
+      "symbol": "aUSDCv1",
+      "decimals": 6,
+      "logoURI": "https://cdn.furucombo.app/assets/img/token/aUSDCv1.svg"
+    },
+    {
+      "chainId": 1,
+      "address": "0x3Ed3B47Dd13EC9a98b44e6204A523E766B225811",
+      "name": "Aave interest bearing USDT",
+      "symbol": "aUSDT",
+      "decimals": 6,
+      "logoURI": "https://cdn.furucombo.app/assets/img/token/aUSDT.svg"
+    },
+    {
+      "chainId": 1,
+      "address": "0x71fc860F7D3A592A4a98740e39dB31d25db65ae8",
+      "name": "Aave V1 Interest bearing USDT",
+      "symbol": "aUSDTv1",
+      "decimals": 6,
+      "logoURI": "https://cdn.furucombo.app/assets/img/token/aUSDTv1.svg"
+    },
+    {
+      "chainId": 1,
+      "address": "0x9ff58f4fFB29fA2266Ab25e75e2A8b3503311656",
+      "name": "Aave interest bearing WBTC",
+      "symbol": "aWBTC",
+      "decimals": 8,
+      "logoURI": "https://cdn.furucombo.app/assets/img/token/aWBTC.svg"
+    },
+    {
+      "chainId": 1,
+      "address": "0xFC4B8ED459e00e5400be803A9BB3954234FD50e3",
+      "name": "Aave V1 Interest bearing WBTC",
+      "symbol": "aWBTCv1",
+      "decimals": 8,
+      "logoURI": "https://cdn.furucombo.app/assets/img/token/aWBTCv1.svg"
+    },
+    {
+      "chainId": 1,
+      "address": "0x030bA81f1c18d280636F32af80b9AAd02Cf0854e",
+      "name": "Aave interest bearing WETH",
+      "symbol": "aWETH",
+      "decimals": 18,
+      "logoURI": "https://cdn.furucombo.app/assets/img/token/aWETH.svg"
+    },
+    {
+      "chainId": 1,
+      "address": "0xF256CC7847E919FAc9B808cC216cAc87CCF2f47a",
+      "name": "Aave interest bearing xSUSHI",
+      "symbol": "aXSUSHI",
+      "decimals": 18,
+      "logoURI": "https://cdn.furucombo.app/assets/img/token/aXSUSHI.png"
+    },
+    {
+      "chainId": 1,
+      "address": "0x5165d24277cD063F5ac44Efd447B27025e888f37",
+      "name": "Aave interest bearing YFI",
+      "symbol": "aYFI",
+      "decimals": 18,
+      "logoURI": "https://cdn.furucombo.app/assets/img/token/aYFI.svg"
+    },
+    {
+      "chainId": 1,
+      "address": "0x12e51E77DAAA58aA0E9247db7510Ea4B46F9bEAd",
+      "name": "Aave V1 interest bearing YFI",
+      "symbol": "aYFIv1",
+      "decimals": 18,
+      "logoURI": "https://cdn.furucombo.app/assets/img/token/aYFIv1.svg"
+    },
+    {
+      "chainId": 1,
+      "address": "0xDf7FF54aAcAcbFf42dfe29DD6144A69b629f8C9e",
+      "name": "Aave interest bearing ZRX",
+      "symbol": "aZRX",
+      "decimals": 18,
+      "logoURI": "https://cdn.furucombo.app/assets/img/token/aZRX.svg"
+    },
+    {
+      "chainId": 1,
+      "address": "0x6Fb0855c404E09c47C3fBCA25f08d4E41f9F062f",
+      "name": "Aave V1 Interest bearing ZRX",
+      "symbol": "aZRXv1",
+      "decimals": 18,
+      "logoURI": "https://cdn.furucombo.app/assets/img/token/aZRXv1.svg"
+    },
+    {
+      "chainId": 1,
+      "address": "0xBC6DA0FE9aD5f3b0d58160288917AA56653660E9",
+      "name": "Alchemix USD",
+      "symbol": "alUSD",
+      "decimals": 18,
+      "logoURI": "https://cdn.furucombo.app/assets/img/token/alUSD.png"
+    },
+    {
+      "chainId": 1,
+      "address": "0x43b4FdFD4Ff969587185cDB6f0BD875c5Fc83f8c",
+      "name": "Curve.fi Factory USD Metapool: Alchemix USD",
+      "symbol": "alUSD3CRV-f",
+      "decimals": 18,
+      "logoURI": "https://cdn.furucombo.app/assets/img/token/alUSD3CRV-f.png"
+    },
+    {
+      "chainId": 1,
+      "address": "0xaA17A236F2bAdc98DDc0Cf999AbB47D47Fc0A6Cf",
+      "name": "Curve.fi ETH/aETH",
+      "symbol": "ankrCRV",
+      "decimals": 18,
+      "logoURI": "https://cdn.furucombo.app/assets/img/token/ankrCRV.png"
+    },
+    {
+      "chainId": 1,
+      "address": "0xE95A203B1a91a908F9B9CE46459d101078c2c3cb",
+      "name": "Ankr Eth2 Reward Bearing Bond",
+      "symbol": "ankrETH",
+      "decimals": 18,
+      "logoURI": "https://cdn.furucombo.app/assets/img/token/ankrETH.png"
+    },
+    {
+      "chainId": 1,
+      "address": "0x3B3Ac5386837Dc563660FB6a0937DFAa5924333B",
+      "name": "Curve.fi yDAI/yUSDC/yUSDT/yBUSD",
+      "symbol": "bCRV",
+      "decimals": 18,
+      "logoURI": "https://cdn.furucombo.app/assets/img/token/bCRV.png"
+    },
+    {
+      "chainId": 1,
+      "address": "0xe65cdB6479BaC1e22340E4E755fAE7E509EcD06c",
+      "name": "Compound AAVE Token",
+      "symbol": "cAAVE",
+      "decimals": 8,
+      "logoURI": "https://cdn.furucombo.app/assets/img/token/cAAVE.svg"
+    },
+    {
+      "chainId": 1,
+      "address": "0x6C8c6b02E7b2BE14d4fA6022Dfd6d75921D90E4E",
+      "name": "Compound Basic Attention Token",
+      "symbol": "cBAT",
+      "decimals": 8,
+      "logoURI": "https://cdn.furucombo.app/assets/img/token/cBAT.svg"
+    },
+    {
+      "chainId": 1,
+      "address": "0x70e36f6BF80a52b3B46b3aF8e106CC0ed743E8e4",
+      "name": "Compound Collateral",
+      "symbol": "cCOMP",
+      "decimals": 8,
+      "logoURI": "https://cdn.furucombo.app/assets/img/token/cCOMP.svg"
+    },
+    {
+      "chainId": 1,
+      "address": "0x845838DF265Dcd2c412A1Dc9e959c7d08537f8a2",
+      "name": "Curve.fi cDAI/cUSDC",
+      "symbol": "cCRV",
+      "decimals": 18,
+      "logoURI": "https://cdn.furucombo.app/assets/img/token/cCRV.png"
+    },
+    {
+      "chainId": 1,
+      "address": "0x5d3a536E4D6DbD6114cc1Ead35777bAB948E3643",
+      "name": "Compound Dai",
+      "symbol": "cDAI",
+      "decimals": 8,
+      "logoURI": "https://cdn.furucombo.app/assets/img/token/cDAI.svg"
+    },
+    {
+      "chainId": 1,
+      "address": "0x4Ddc2D193948926D02f9B1fE9e1daa0718270ED5",
+      "name": "Compound Ether",
+      "symbol": "cETH",
+      "decimals": 8,
+      "logoURI": "https://cdn.furucombo.app/assets/img/token/cETH.svg"
+    },
+    {
+      "chainId": 1,
+      "address": "0xFAce851a4921ce59e912d19329929CE6da6EB0c7",
+      "name": "Compound LINK Coin",
+      "symbol": "cLINK",
+      "decimals": 8,
+      "logoURI": "https://cdn.furucombo.app/assets/img/token/cLINK.svg"
+    },
+    {
+      "chainId": 1,
+      "address": "0x95b4eF2869eBD94BEb4eEE400a99824BF5DC325b",
+      "name": "Compound Maker",
+      "symbol": "cMKR",
+      "decimals": 8,
+      "logoURI": "https://cdn.furucombo.app/assets/img/token/cMKR.svg"
+    },
+    {
+      "chainId": 1,
+      "address": "0x4B0181102A0112A2ef11AbEE5563bb4a3176c9d7",
+      "name": "Compound SUSHI Token",
+      "symbol": "cSUSHI",
+      "decimals": 8,
+      "logoURI": "https://cdn.furucombo.app/assets/img/token/cSUSHI.svg"
+    },
+    {
+      "chainId": 1,
+      "address": "0x12392F67bdf24faE0AF363c24aC620a2f67DAd86",
+      "name": "Compound TUSD Coin",
+      "symbol": "cTUSD",
+      "decimals": 8,
+      "logoURI": "https://cdn.furucombo.app/assets/img/token/cTUSD.svg"
+    },
+    {
+      "chainId": 1,
+      "address": "0x35A18000230DA775CAc24873d00Ff85BccdeD550",
+      "name": "Compound UNI",
+      "symbol": "cUNI",
+      "decimals": 8,
+      "logoURI": "https://cdn.furucombo.app/assets/img/token/cUNI.svg"
+    },
+    {
+      "chainId": 1,
+      "address": "0x39AA39c021dfbaE8faC545936693aC917d5E7563",
+      "name": "Compound USD Coin",
+      "symbol": "cUSDC",
+      "decimals": 8,
+      "logoURI": "https://cdn.furucombo.app/assets/img/token/cUSDC.svg"
+    },
+    {
+      "chainId": 1,
+      "address": "0xf650C3d88D12dB855b8bf7D11Be6C55A4e07dCC9",
+      "name": "Compound USDT",
+      "symbol": "cUSDT",
+      "decimals": 8,
+      "logoURI": "https://cdn.furucombo.app/assets/img/token/cUSDT.svg"
+    },
+    {
+      "chainId": 1,
+      "address": "0xccF4429DB6322D5C611ee964527D42E5d685DD6a",
+      "name": "Compound Wrapped BTC",
+      "symbol": "cWBTC",
+      "decimals": 8,
+      "logoURI": "https://cdn.furucombo.app/assets/img/token/cWBTC.svg"
+    },
+    {
+      "chainId": 1,
+      "address": "0x80a2AE356fc9ef4305676f7a3E2Ed04e12C33946",
+      "name": "Compound yearn.finance",
+      "symbol": "cYFI",
+      "decimals": 8,
+      "logoURI": "https://cdn.furucombo.app/assets/img/token/cYFI.svg"
+    },
+    {
+      "chainId": 1,
+      "address": "0xB3319f5D18Bc0D84dD1b4825Dcde5d5f7266d407",
+      "name": "Compound 0x",
+      "symbol": "cZRX",
+      "decimals": 8,
+      "logoURI": "https://cdn.furucombo.app/assets/img/token/cZRX.svg"
+    },
+    {
+      "chainId": 1,
+      "address": "0xc4AD29ba4B3c580e6D59105FFf484999997675Ff",
+      "name": "Curve.fi USD-BTC-ETH",
+      "symbol": "crv3crypto",
+      "decimals": 18,
+      "logoURI": "https://cdn.furucombo.app/assets/img/token/crv3crypto.png"
+    },
+    {
+      "chainId": 1,
+      "address": "0xcA3d75aC011BF5aD07a98d02f18225F9bD9A6BDF",
+      "name": "Curve.fi USD-BTC-ETH (V1)",
+      "symbol": "crvTricrypto",
+      "decimals": 18,
+      "logoURI": "https://cdn.furucombo.app/assets/img/token/crvTricrypto.png"
+    },
+    {
+      "chainId": 1,
+      "address": "0x62B9c7356A2Dc64a1969e19C23e4f579F9810Aa7",
+      "name": "Convex CRV",
+      "symbol": "cvxCRV",
+      "decimals": 18,
+      "logoURI": "https://cdn.furucombo.app/assets/img/token/cvxCRV.png"
+    },
+    {
+      "chainId": 1,
+      "address": "0x3a664Ab939FD8482048609f652f9a0B0677337B9",
+      "name": "Curve.fi DUSD/DAI/USDC/USDT",
+      "symbol": "dusd3CRV",
+      "decimals": 18,
+      "logoURI": "https://cdn.furucombo.app/assets/img/token/dusd3CRV.png"
+    },
+    {
+      "chainId": 1,
+      "address": "0x194eBd173F6cDacE046C53eACcE9B953F28411d1",
+      "name": "Curve.fi EURS/sEUR",
+      "symbol": "eursCRV",
+      "decimals": 18,
+      "logoURI": "https://cdn.furucombo.app/assets/img/token/eursCRV.png"
+    },
+    {
+      "chainId": 1,
+      "address": "0xD2967f45c4f384DEEa880F807Be904762a3DeA07",
+      "name": "Curve.fi GUSD/DAI/USDC/USDT",
+      "symbol": "gusd3CRV",
+      "decimals": 18,
+      "logoURI": "https://cdn.furucombo.app/assets/img/token/gusd3CRV.png"
+    },
+    {
+      "chainId": 1,
+      "address": "0xb19059ebb43466C323583928285a49f558E572Fd",
+      "name": "Curve.fi hBTC/wBTC",
+      "symbol": "hbtcCRV",
+      "decimals": 18,
+      "logoURI": "https://cdn.furucombo.app/assets/img/token/hbtcCRV.png"
+    },
+    {
+      "chainId": 1,
+      "address": "0x5B5CFE992AdAC0C9D48E05854B2d91C73a003858",
+      "name": "Curve.fi HUSD/DAI/USDC/USDT",
+      "symbol": "husd3CRV",
+      "decimals": 18,
+      "logoURI": "https://cdn.furucombo.app/assets/img/token/husd3CRV.png"
+    },
+    {
+      "chainId": 1,
+      "address": "0xA9859874e1743A32409f75bB11549892138BBA1E",
+      "name": "Synth iETH",
+      "symbol": "iETH",
+      "decimals": 18,
+      "logoURI": "https://cdn.furucombo.app/assets/img/token/iETH.svg"
+    },
+    {
+      "chainId": 1,
+      "address": "0x5282a4eF67D9C33135340fB3289cc1711c13638C",
+      "name": "Curve.fi cyDAI/cyUSDC/cyUSDT",
+      "symbol": "ib3CRV",
+      "decimals": 18,
+      "logoURI": "https://cdn.furucombo.app/assets/img/token/ib3CRV.png"
+    },
+    {
+      "chainId": 1,
+      "address": "0xc4E15973E6fF2A35cC804c2CF9D2a1b817a8b40F",
+      "name": "Interest-Bearing BTC",
+      "symbol": "ibBTC",
+      "decimals": 18,
+      "logoURI": "https://cdn.furucombo.app/assets/img/token/ibBTC.png"
+    },
+    {
+      "chainId": 1,
+      "address": "0xcee60cFa923170e4f8204AE08B4fA6A3F5656F3a",
+      "name": "Curve.fi LINK/sLINK",
+      "symbol": "linkCRV",
+      "decimals": 18,
+      "logoURI": "https://cdn.furucombo.app/assets/img/token/linkCRV.png"
+    },
+    {
+      "chainId": 1,
+      "address": "0xe2f2a5C287993345a840Db3B0845fbC70f5935a5",
+      "name": "mStable USD",
+      "symbol": "mUSD",
+      "decimals": 18,
+      "logoURI": "https://cdn.furucombo.app/assets/img/token/mUSD.png"
+    },
+    {
+      "chainId": 1,
+      "address": "0x1AEf73d49Dedc4b1778d0706583995958Dc862e6",
+      "name": "Curve.fi MUSD/DAI/USDC/USDT",
+      "symbol": "musd3CRV",
+      "decimals": 18,
+      "logoURI": "https://cdn.furucombo.app/assets/img/token/musd3CRV.png"
+    },
+    {
+      "chainId": 1,
+      "address": "0x8064d9Ae6cDf087b1bcd5BDf3531bD5d8C537a68",
+      "name": "BoringDAO BTC",
+      "symbol": "oBTC",
+      "decimals": 18,
+      "logoURI": "https://cdn.furucombo.app/assets/img/token/oBTC.png"
+    },
+    {
+      "chainId": 1,
+      "address": "0x2fE94ea3d5d4a175184081439753DE15AeF9d614",
+      "name": "Curve.fi oBTC/sbtcCRV",
+      "symbol": "obtcCRV",
+      "decimals": 18,
+      "logoURI": "https://cdn.furucombo.app/assets/img/token/obtcCRV.png"
+    },
+    {
+      "chainId": 1,
+      "address": "0x5228a22e72ccC52d415EcFd199F99D0665E7733b",
+      "name": "pTokens BTC",
+      "symbol": "pBTC",
+      "decimals": 18,
+      "logoURI": "https://cdn.furucombo.app/assets/img/token/pBTC.svg"
+    },
+    {
+      "chainId": 1,
+      "address": "0xDE5331AC4B3630f94853Ff322B66407e0D6331E8",
+      "name": "Curve.fi pBTC/sbtcCRV",
+      "symbol": "pbtcCRV",
+      "decimals": 18,
+      "logoURI": "https://cdn.furucombo.app/assets/img/token/pbtcCRV.png"
+    },
+    {
+      "chainId": 1,
+      "address": "0x2DaDc3582C0655E8D21b1519baC30Bc40Ab14E9A",
+      "name": "Furucombo IOU COMBO Token",
+      "symbol": "rCOMBO",
+      "decimals": 18,
+      "logoURI": "https://cdn.furucombo.app/assets/img/token/rCOMBO.svg"
+    },
+    {
+      "chainId": 1,
+      "address": "0x53a901d48795C58f485cBB38df08FA96a24669D5",
+      "name": "Curve.fi ETH/rETH",
+      "symbol": "rCRV",
+      "decimals": 18,
+      "logoURI": "https://cdn.furucombo.app/assets/img/token/rCRV.png"
+    },
+    {
+      "chainId": 1,
+      "address": "0x9559Aaa82d9649C7A7b220E7c461d2E74c9a3593",
+      "name": "StaFi",
+      "symbol": "rETH",
+      "decimals": 18,
+      "logoURI": "https://cdn.furucombo.app/assets/img/token/rETH.svg"
+    },
+    {
+      "chainId": 1,
+      "address": "0xEB4C2781e4ebA804CE9a9803C67d0893436bB27D",
+      "name": "renBTC",
+      "symbol": "renBTC",
+      "decimals": 8,
+      "logoURI": "https://cdn.furucombo.app/assets/img/token/renBTC.png"
+    },
+    {
+      "chainId": 1,
+      "address": "0x49849C98ae39Fff122806C06791Fa73784FB3675",
+      "name": "Curve.fi renBTC/wBTC",
+      "symbol": "renCRV",
+      "decimals": 18,
+      "logoURI": "https://cdn.furucombo.app/assets/img/token/renCRV.png"
+    },
+    {
+      "chainId": 1,
+      "address": "0xD5147bc8e386d91Cc5DBE72099DAC6C9b99276F5",
+      "name": "renFIL",
+      "symbol": "renFIL",
+      "decimals": 18,
+      "logoURI": "https://cdn.furucombo.app/assets/img/token/renFIL.png"
+    },
+    {
+      "chainId": 1,
+      "address": "0xC2Ee6b0334C261ED60C72f6054450b61B8f18E35",
+      "name": "Curve.fi RSV/DAI/USDC/USDT",
+      "symbol": "rsv3CRV",
+      "decimals": 18,
+      "logoURI": "https://cdn.furucombo.app/assets/img/token/rsv3CRV.png"
+    },
+    {
+      "chainId": 1,
+      "address": "0xfE18be6b3Bd88A2D2A7f928d00292E7a9963CfC6",
+      "name": "Synth sBTC",
+      "symbol": "sBTC",
+      "decimals": 18,
+      "logoURI": "https://cdn.furucombo.app/assets/img/token/sBTC.svg"
+    },
+    {
+      "chainId": 1,
+      "address": "0xC25a3A3b969415c80451098fa907EC722572917F",
+      "name": "Curve.fi DAI/USDC/USDT/sUSD",
+      "symbol": "sCRV",
+      "decimals": 18,
+      "logoURI": "https://cdn.furucombo.app/assets/img/token/sCRV.png"
+    },
+    {
+      "chainId": 1,
+      "address": "0x5e74C9036fb86BD7eCdcb084a0673EFc32eA31cb",
+      "name": "Synth sETH",
+      "symbol": "sETH",
+      "decimals": 18,
+      "logoURI": "https://cdn.furucombo.app/assets/img/token/sETH.svg"
+    },
+    {
+      "chainId": 1,
+      "address": "0xFe2e637202056d30016725477c5da089Ab0A043A",
+      "name": "StakeWise Staked ETH2",
+      "symbol": "sETH2",
+      "decimals": 18,
+      "logoURI": "https://cdn.furucombo.app/assets/img/token/sETH2.png"
+    },
+    {
+      "chainId": 1,
+      "address": "0xD71eCFF9342A5Ced620049e616c5035F1dB98620",
+      "name": "Synth sEUR",
+      "symbol": "sEUR",
+      "decimals": 18,
+      "logoURI": "https://cdn.furucombo.app/assets/img/token/sEUR.svg"
+    },
+    {
+      "chainId": 1,
+      "address": "0xbBC455cb4F1B9e4bFC4B73970d360c8f032EfEE6",
+      "name": "Synth sLINK",
+      "symbol": "sLINK",
+      "decimals": 18,
+      "logoURI": "https://cdn.furucombo.app/assets/img/token/sLINK.svg"
+    },
+    {
+      "chainId": 1,
+      "address": "0x57Ab1ec28D129707052df4dF418D58a2D46d5f51",
+      "name": "Synth sUSD",
+      "symbol": "sUSD",
+      "decimals": 18,
+      "logoURI": "https://cdn.furucombo.app/assets/img/token/sUSD.svg"
+    },
+    {
+      "chainId": 1,
+      "address": "0x02d341CcB60fAaf662bC0554d13778015d1b285C",
+      "name": "Curve.fi aDAI/aSUSD",
+      "symbol": "saCRV",
+      "decimals": 18,
+      "logoURI": "https://cdn.furucombo.app/assets/img/token/saCRV.png"
+    },
+    {
+      "chainId": 1,
+      "address": "0x075b1bb99792c9E1041bA13afEf80C91a1e70fB3",
+      "name": "Curve.fi renBTC/wBTC/sBTC",
+      "symbol": "sbtcCRV",
+      "decimals": 18,
+      "logoURI": "https://cdn.furucombo.app/assets/img/token/sbtcCRV.png"
+    },
+    {
+      "chainId": 1,
+      "address": "0xae7ab96520DE3A18E5e111B5EaAb095312D7fE84",
+      "name": "Lido Staked Ether",
+      "symbol": "stETH",
+      "decimals": 18,
+      "logoURI": "https://cdn.furucombo.app/assets/img/token/stETH.svg"
+    },
+    {
+      "chainId": 1,
+      "address": "0x64eda51d3Ad40D56b9dFc5554E06F94e1Dd786Fd",
+      "name": "Curve.fi tBTC/sbtcCrv",
+      "symbol": "tbtcCRV",
+      "decimals": 18,
+      "logoURI": "https://cdn.furucombo.app/assets/img/token/tbtcCRV.png"
+    },
+    {
+      "chainId": 1,
+      "address": "0x97E2768e8E73511cA874545DC5Ff8067eB19B787",
+      "name": "Curve.fi USDK/DAI/USDC/USDT",
+      "symbol": "usdk3CRV",
+      "decimals": 18,
+      "logoURI": "https://cdn.furucombo.app/assets/img/token/usdk3CRV.png"
+    },
+    {
+      "chainId": 1,
+      "address": "0x4f3E8F405CF5aFC05D68142F3783bDfE13811522",
+      "name": "Curve.fi USDN/DAI/USDC/USDT",
+      "symbol": "usdn3CRV",
+      "decimals": 18,
+      "logoURI": "https://cdn.furucombo.app/assets/img/token/usdn3CRV.png"
+    },
+    {
+      "chainId": 1,
+      "address": "0x3383c5a8969Dc413bfdDc9656Eb80A1408E4bA20",
+      "name": "Wrapped ANATHA",
+      "symbol": "wANATHA",
+      "decimals": 18,
+      "logoURI": "https://cdn.furucombo.app/assets/img/token/wANATHA.png"
+    },
+    {
+      "chainId": 1,
+      "address": "0x0d438F3b5175Bebc262bF23753C1E53d03432bDE",
+      "name": "Wrapped NXM",
+      "symbol": "wNXM",
+      "decimals": 18,
+      "logoURI": "https://cdn.furucombo.app/assets/img/token/wNXM.png"
+    },
+    {
+      "chainId": 1,
+      "address": "0xECbF566944250ddE88322581024E611419715f7A",
+      "name": "xBTC",
+      "symbol": "xBTC",
+      "decimals": 9,
+      "logoURI": "https://cdn.furucombo.app/assets/img/token/xBTC.png"
+    },
+    {
+      "chainId": 1,
+      "address": "0x8798249c2E607446EfB7Ad49eC89dD1865Ff4272",
+      "name": "SushiBar",
+      "symbol": "xSUSHI",
+      "decimals": 18,
+      "logoURI": "https://cdn.furucombo.app/assets/img/token/xSUSHI.png"
+    },
+    {
+      "chainId": 1,
+      "address": "0x9cA85572E6A3EbF24dEDd195623F188735A5179f",
+      "name": "yearn v1 Curve 3pool yVault",
+      "symbol": "y3Crv",
+      "decimals": 18,
+      "logoURI": "https://cdn.furucombo.app/assets/img/token/y3Crv.png"
+    },
+    {
+      "chainId": 1,
+      "address": "0xdF5e0e81Dff6FAF3A7e52BA697820c5e32D806A8",
+      "name": "Curve.fi yDAI/yUSDC/yUSDT/yTUSD",
+      "symbol": "yCRV",
+      "decimals": 18,
+      "logoURI": "https://cdn.furucombo.app/assets/img/token/yCRV.png"
+    },
+    {
+      "chainId": 1,
+      "address": "0xACd43E627e64355f1861cEC6d3a6688B31a6F952",
+      "name": "yearn v1 DAI yVault",
+      "symbol": "yDAI",
+      "decimals": 18,
+      "logoURI": "https://cdn.furucombo.app/assets/img/token/yDAI.png"
+    },
+    {
+      "chainId": 1,
+      "address": "0xec0d8D3ED5477106c6D4ea27D90a60e594693C90",
+      "name": "yearn v1 GUSD yVault",
+      "symbol": "yGUSD",
+      "decimals": 2,
+      "logoURI": "https://cdn.furucombo.app/assets/img/token/yGUSD.png"
+    },
+    {
+      "chainId": 1,
+      "address": "0x881b06da56BB5675c54E4Ed311c21E54C5025298",
+      "name": "yearn v1 LINK yVault",
+      "symbol": "yLINK",
+      "decimals": 18,
+      "logoURI": "https://cdn.furucombo.app/assets/img/token/yLINK.png"
+    },
+    {
+      "chainId": 1,
+      "address": "0x37d19d1c4E1fa9DC47bD1eA12f742a0887eDa74a",
+      "name": "yearn v1 TrueUSD yVault",
+      "symbol": "yTUSD",
+      "decimals": 18,
+      "logoURI": "https://cdn.furucombo.app/assets/img/token/yTUSD.png"
+    },
+    {
+      "chainId": 1,
+      "address": "0x5dbcF33D8c2E976c6b560249878e6F1491Bca25c",
+      "name": "yearn v1 Curve YPool yVault",
+      "symbol": "yUSD",
+      "decimals": 18,
+      "logoURI": "https://cdn.furucombo.app/assets/img/token/yUSD.png"
+    },
+    {
+      "chainId": 1,
+      "address": "0x597aD1e0c13Bfe8025993D9e79C69E1c0233522e",
+      "name": "yearn v1 USDC yVault",
+      "symbol": "yUSDC",
+      "decimals": 6,
+      "logoURI": "https://cdn.furucombo.app/assets/img/token/yUSDC.png"
+    },
+    {
+      "chainId": 1,
+      "address": "0x2f08119C6f07c006695E079AAFc638b8789FAf18",
+      "name": "yearn v1 USDT yVault",
+      "symbol": "yUSDT",
+      "decimals": 6,
+      "logoURI": "https://cdn.furucombo.app/assets/img/token/yUSDT.png"
+    },
+    {
+      "chainId": 1,
+      "address": "0xe1237aA7f535b0CC33Fd973D66cBf830354D16c7",
+      "name": "yearn v1 WETH yVault",
+      "symbol": "yWETH",
+      "decimals": 18,
+      "logoURI": "https://cdn.furucombo.app/assets/img/token/yWETH.svg"
+    },
+    {
+      "chainId": 1,
+      "address": "0xBA2E7Fed597fd0E3e70f5130BcDbbFE06bB94fe1",
+      "name": "yearn v1 YFI yVault",
+      "symbol": "yYFI",
+      "decimals": 18,
+      "logoURI": "https://cdn.furucombo.app/assets/img/token/yYFI.png"
+    },
+    {
+      "chainId": 1,
+      "address": "0x29E240CFD7946BA20895a7a02eDb25C210f9f324",
+      "name": "yearn v1 aLINK yVault",
+      "symbol": "yaLINK",
+      "decimals": 18,
+      "logoURI": "https://cdn.furucombo.app/assets/img/token/yaLINK.png"
+    },
+    {
+      "chainId": 1,
+      "address": "0x7Ff566E1d69DEfF32a7b244aE7276b9f90e9D0f6",
+      "name": "yearn v1 Curve RenWSBTC yVault",
+      "symbol": "ycrvRenWSBTC",
+      "decimals": 18,
+      "logoURI": "https://cdn.furucombo.app/assets/img/token/ycrvRenWSBTC.png"
+    },
+    {
+      "chainId": 1,
+      "address": "0xD905e2eaeBe188fc92179b6350807D8bd91Db0D8",
+      "name": "Curve.fi DAI/USDC/USDT/PAX",
+      "symbol": "ypaxCrv",
+      "decimals": 18,
+      "logoURI": "https://cdn.furucombo.app/assets/img/token/ypaxCrv.png"
+    },
+    {
+      "chainId": 1,
+      "address": "0xB8C3B7A2A618C552C23B1E4701109a9E756Bab67",
+      "name": "yearn v2 1INCH yVault",
+      "symbol": "yv1INCH",
+      "decimals": 18,
+      "logoURI": "https://cdn.furucombo.app/assets/img/token/yv1INCH.png"
+    },
+    {
+      "chainId": 1,
+      "address": "0xd9788f3931Ede4D5018184E198699dC6d66C1915",
+      "name": "yearn v2 AAVE yVault",
+      "symbol": "yvAAVE",
+      "decimals": 18,
+      "logoURI": "https://cdn.furucombo.app/assets/img/token/yvAAVE.png"
+    },
+    {
+      "chainId": 1,
+      "address": "0x9d409a0A012CFbA9B15F6D4B36Ac57A46966Ab9a",
+      "name": "yearn v2 Compounding veCRV yVault",
+      "symbol": "yvBOOST",
+      "decimals": 18,
+      "logoURI": "https://cdn.furucombo.app/assets/img/token/yvBOOST.png"
+    },
+    {
+      "chainId": 1,
+      "address": "0x4A3FE75762017DB0eD73a71C9A06db7768DB5e66",
+      "name": "yearn v2 COMP yVault",
+      "symbol": "yvCOMP",
+      "decimals": 18,
+      "logoURI": "https://cdn.furucombo.app/assets/img/token/yvCOMP.png"
+    },
+    {
+      "chainId": 1,
+      "address": "0xE537B5cc158EB71037D4125BDD7538421981E6AA",
+      "name": "yearn v2 Curve 3Crypto Pool yVault",
+      "symbol": "yvCurve-3Crypto",
+      "decimals": 18,
+      "logoURI": "https://cdn.furucombo.app/assets/img/token/yvCurve-3Crypto.png"
+    },
+    {
+      "chainId": 1,
+      "address": "0x84E13785B5a27879921D6F685f041421C7F482dA",
+      "name": "yearn v2 Curve 3pool yVault",
+      "symbol": "yvCurve-3pool",
+      "decimals": 18,
+      "logoURI": "https://cdn.furucombo.app/assets/img/token/yvCurve-3pool.png"
+    },
+    {
+      "chainId": 1,
+      "address": "0x39CAF13a104FF567f71fd2A4c68C026FDB6E740B",
+      "name": "yearn v2 Curve Aave Pool yVault",
+      "symbol": "yvCurve-Aave",
+      "decimals": 18,
+      "logoURI": "https://cdn.furucombo.app/assets/img/token/yvCurve-Aave.png"
+    },
+    {
+      "chainId": 1,
+      "address": "0x8fA3A9ecd9EFb07A8CE90A6eb014CF3c0E3B32Ef",
+      "name": "yearn v2 Curve BBTC Pool yVault",
+      "symbol": "yvCurve-BBTC",
+      "decimals": 18,
+      "logoURI": "https://cdn.furucombo.app/assets/img/token/yvCurve-BBTC.png"
+    },
+    {
+      "chainId": 1,
+      "address": "0x6Ede7F19df5df6EF23bD5B9CeDb651580Bdf56Ca",
+      "name": "yearn v2 Curve BUSD Pool yVault",
+      "symbol": "yvCurve-BUSD",
+      "decimals": 18,
+      "logoURI": "https://cdn.furucombo.app/assets/img/token/yvCurve-BUSD.png"
+    },
+    {
+      "chainId": 1,
+      "address": "0xD6Ea40597Be05c201845c0bFd2e96A60bACde267",
+      "name": "yearn v2 Curve Compound Pool yVault",
+      "symbol": "yvCurve-Compound",
+      "decimals": 18,
+      "logoURI": "https://cdn.furucombo.app/assets/img/token/yvCurve-Compound.png"
+    },
+    {
+      "chainId": 1,
+      "address": "0x30FCf7c6cDfC46eC237783D94Fc78553E79d4E9C",
+      "name": "yearn v2 Curve DUSD Pool yVault",
+      "symbol": "yvCurve-DUSD",
+      "decimals": 18,
+      "logoURI": "https://cdn.furucombo.app/assets/img/token/yvCurve-DUSD.png"
+    },
+    {
+      "chainId": 1,
+      "address": "0x25212Df29073FfFA7A67399AcEfC2dd75a831A1A",
+      "name": "yearn v2 Curve EURS Pool yVault",
+      "symbol": "yvCurve-EURS",
+      "decimals": 18,
+      "logoURI": "https://cdn.furucombo.app/assets/img/token/yvCurve-EURS.png"
+    },
+    {
+      "chainId": 1,
+      "address": "0x0d4EA8536F9A13e4FBa16042a46c30f092b06aA5",
+      "name": "yearn v2 Curve EURT Pool yVault",
+      "symbol": "yvCurve-EURT",
+      "decimals": 18,
+      "logoURI": "https://cdn.furucombo.app/assets/img/token/yvCurve-EURT.png"
+    },
+    {
+      "chainId": 1,
+      "address": "0xB4AdA607B9d6b2c9Ee07A275e9616B84AC560139",
+      "name": "yearn v2 Curve FRAX Pool yVault",
+      "symbol": "yvCurve-FRAX",
+      "decimals": 18,
+      "logoURI": "https://cdn.furucombo.app/assets/img/token/yvCurve-FRAX.png"
+    },
+    {
+      "chainId": 1,
+      "address": "0x2a38B9B0201Ca39B17B460eD2f11e4929559071E",
+      "name": "yearn v2 Curve GUSD Pool yVault",
+      "symbol": "yvCurve-GUSD",
+      "decimals": 18,
+      "logoURI": "https://cdn.furucombo.app/assets/img/token/yvCurve-GUSD.png"
+    },
+    {
+      "chainId": 1,
+      "address": "0x625b7DF2fa8aBe21B0A976736CDa4775523aeD1E",
+      "name": "yearn v2 Curve HBTC Pool yVault",
+      "symbol": "yvCurve-HBTC",
+      "decimals": 18,
+      "logoURI": "https://cdn.furucombo.app/assets/img/token/yvCurve-HBTC.png"
+    },
+    {
+      "chainId": 1,
+      "address": "0x054AF22E1519b020516D72D749221c24756385C9",
+      "name": "yearn v2 Curve HUSD Pool yVault",
+      "symbol": "yvCurve-HUSD",
+      "decimals": 18,
+      "logoURI": "https://cdn.furucombo.app/assets/img/token/yvCurve-HUSD.png"
+    },
+    {
+      "chainId": 1,
+      "address": "0x27b7b1ad7288079A66d12350c828D3C00A6F07d7",
+      "name": "yearn v2 Curve Iron Bank Pool yVault",
+      "symbol": "yvCurve-IB",
+      "decimals": 18,
+      "logoURI": "https://cdn.furucombo.app/assets/img/token/yvCurve-IB.png"
+    },
+    {
+      "chainId": 1,
+      "address": "0xf2db9a7c0ACd427A680D640F02d90f6186E71725",
+      "name": "yearn v2 Curve LINK Pool yVault",
+      "symbol": "yvCurve-LINK",
+      "decimals": 18,
+      "logoURI": "https://cdn.furucombo.app/assets/img/token/yvCurve-LINK.png"
+    },
+    {
+      "chainId": 1,
+      "address": "0x5fA5B62c8AF877CB37031e0a3B2f34A78e3C56A6",
+      "name": "yearn v2 Curve LUSD Pool yVault",
+      "symbol": "yvCurve-LUSD",
+      "decimals": 18,
+      "logoURI": "https://cdn.furucombo.app/assets/img/token/yvCurve-LUSD.png"
+    },
+    {
+      "chainId": 1,
+      "address": "0xf8768814b88281DE4F532a3beEfA5b85B69b9324",
+      "name": "yearn v2 Curve TUSD Pool yVault",
+      "symbol": "yvCurve-TUSD",
+      "decimals": 18,
+      "logoURI": "https://cdn.furucombo.app/assets/img/token/yvCurve-TUSD.png"
+    },
+    {
+      "chainId": 1,
+      "address": "0x3B96d491f067912D18563d56858Ba7d6EC67a6fa",
+      "name": "yearn v2 Curve USDN Pool yVault",
+      "symbol": "yvCurve-USDN",
+      "decimals": 18,
+      "logoURI": "https://cdn.furucombo.app/assets/img/token/yvCurve-USDN.png"
+    },
+    {
+      "chainId": 1,
+      "address": "0xC4dAf3b5e2A9e93861c3FBDd25f1e943B8D87417",
+      "name": "yearn v2 Curve USDP Pool yVault",
+      "symbol": "yvCurve-USDP",
+      "decimals": 18,
+      "logoURI": "https://cdn.furucombo.app/assets/img/token/yvCurve-USDP.png"
+    },
+    {
+      "chainId": 1,
+      "address": "0x1C6a9783F812b3Af3aBbf7de64c3cD7CC7D1af44",
+      "name": "yearn v2 Curve UST Pool yVault",
+      "symbol": "yvCurve-UST",
+      "decimals": 18,
+      "logoURI": "https://cdn.furucombo.app/assets/img/token/yvCurve-UST.png"
+    },
+    {
+      "chainId": 1,
+      "address": "0xA74d4B67b3368E83797a35382AFB776bAAE4F5C8",
+      "name": "yearn v2 Curve alUSD Pool yVault",
+      "symbol": "yvCurve-alUSD",
+      "decimals": 18,
+      "logoURI": "https://cdn.furucombo.app/assets/img/token/yvCurve-alUSD.png"
+    },
+    {
+      "chainId": 1,
+      "address": "0x132d8D2C76Db3812403431fAcB00F3453Fc42125",
+      "name": "yearn v2 Curve ankrETH Pool yVault",
+      "symbol": "yvCurve-ankrETH",
+      "decimals": 18,
+      "logoURI": "https://cdn.furucombo.app/assets/img/token/yvCurve-ankrETH.png"
+    },
+    {
+      "chainId": 1,
+      "address": "0x8cc94ccd0f3841a468184aCA3Cc478D2148E1757",
+      "name": "yearn v2 Curve mUSD Pool yVault",
+      "symbol": "yvCurve-mUSD",
+      "decimals": 18,
+      "logoURI": "https://cdn.furucombo.app/assets/img/token/yvCurve-mUSD.png"
+    },
+    {
+      "chainId": 1,
+      "address": "0xe9Dc63083c464d6EDcCFf23444fF3CFc6886f6FB",
+      "name": "yearn v2 Curve oBTC Pool yVault",
+      "symbol": "yvCurve-oBTC",
+      "decimals": 18,
+      "logoURI": "https://cdn.furucombo.app/assets/img/token/yvCurve-oBTC.png"
+    },
+    {
+      "chainId": 1,
+      "address": "0x3c5DF3077BcF800640B5DAE8c91106575a4826E6",
+      "name": "yearn v2 Curve pBTC Pool yVault",
+      "symbol": "yvCurve-pBTC",
+      "decimals": 18,
+      "logoURI": "https://cdn.furucombo.app/assets/img/token/yvCurve-pBTC.png"
+    },
+    {
+      "chainId": 1,
+      "address": "0xBfedbcbe27171C418CDabC2477042554b1904857",
+      "name": "yearn v2 Curve rETH Pool yVault",
+      "symbol": "yvCurve-rETH",
+      "decimals": 18,
+      "logoURI": "https://cdn.furucombo.app/assets/img/token/yvCurve-rETH.png"
+    },
+    {
+      "chainId": 1,
+      "address": "0x7047F90229a057C13BF847C0744D646CFb6c9E1A",
+      "name": "yearn v2 Curve renBTC Pool yVault",
+      "symbol": "yvCurve-renBTC",
+      "decimals": 18,
+      "logoURI": "https://cdn.furucombo.app/assets/img/token/yvCurve-renBTC.png"
+    },
+    {
+      "chainId": 1,
+      "address": "0xb4D1Be44BfF40ad6e506edf43156577a3f8672eC",
+      "name": "yearn v2 Curve sAave Pool yVault",
+      "symbol": "yvCurve-sAave",
+      "decimals": 18,
+      "logoURI": "https://cdn.furucombo.app/assets/img/token/yvCurve-sAave.png"
+    },
+    {
+      "chainId": 1,
+      "address": "0x8414Db07a7F743dEbaFb402070AB01a4E0d2E45e",
+      "name": "yearn v2 Curve sBTC Pool yVault",
+      "symbol": "yvCurve-sBTC",
+      "decimals": 18,
+      "logoURI": "https://cdn.furucombo.app/assets/img/token/yvCurve-sBTC.png"
+    },
+    {
+      "chainId": 1,
+      "address": "0x986b4AFF588a109c09B50A03f42E4110E29D353F",
+      "name": "yearn v2 Curve sETH Pool yVault",
+      "symbol": "yvCurve-sETH",
+      "decimals": 18,
+      "logoURI": "https://cdn.furucombo.app/assets/img/token/yvCurve-sETH.png"
+    },
+    {
+      "chainId": 1,
+      "address": "0x5a770DbD3Ee6bAF2802D29a901Ef11501C44797A",
+      "name": "yearn v2 Curve sUSD Pool yVault",
+      "symbol": "yvCurve-sUSD",
+      "decimals": 18,
+      "logoURI": "https://cdn.furucombo.app/assets/img/token/yvCurve-sUSD.png"
+    },
+    {
+      "chainId": 1,
+      "address": "0xdCD90C7f6324cfa40d7169ef80b12031770B4325",
+      "name": "yearn v2 Curve stETH Pool yVault",
+      "symbol": "yvCurve-stETH",
+      "decimals": 18,
+      "logoURI": "https://cdn.furucombo.app/assets/img/token/yvCurve-stETH.png"
+    },
+    {
+      "chainId": 1,
+      "address": "0x23D3D0f1c697247d5e0a9efB37d8b0ED0C464f7f",
+      "name": "yearn v2 Curve tBTC Pool yVault",
+      "symbol": "yvCurve-tBTC",
+      "decimals": 18,
+      "logoURI": "https://cdn.furucombo.app/assets/img/token/yvCurve-tBTC.png"
+    },
+    {
+      "chainId": 1,
+      "address": "0x3D980E50508CFd41a13837A60149927a11c03731",
+      "name": "yearn v2 Curve triCrypto Pool yVault",
+      "symbol": "yvCurve-triCrypto",
+      "decimals": 18,
+      "logoURI": "https://cdn.furucombo.app/assets/img/token/yvCurve-triCrypto.png"
+    },
+    {
+      "chainId": 1,
+      "address": "0x8ee57c05741aA9DB947A744E713C15d4d19D8822",
+      "name": "yearn v2 Curve yBUSD Pool yVault",
+      "symbol": "yvCurve-yBUSD",
+      "decimals": 18,
+      "logoURI": "https://cdn.furucombo.app/assets/img/token/yvCurve-yBUSD.png"
+    },
+    {
+      "chainId": 1,
+      "address": "0x4B5BfD52124784745c1071dcB244C6688d2533d3",
+      "name": "yearn v2 Curve Y Pool yVault",
+      "symbol": "yvCurve-yUSD",
+      "decimals": 18,
+      "logoURI": "https://cdn.furucombo.app/assets/img/token/yvCurve-yUSD.png"
+    },
+    {
+      "chainId": 1,
+      "address": "0xdA816459F1AB5631232FE5e97a05BBBb94970c95",
+      "name": "yearn v2 DAI yVault",
+      "symbol": "yvDAI",
+      "decimals": 18,
+      "logoURI": "https://cdn.furucombo.app/assets/img/token/yvDAI.png"
+    },
+    {
+      "chainId": 1,
+      "address": "0xe11ba472F74869176652C35D30dB89854b5ae84D",
+      "name": "yearn v2 HEGIC yVault",
+      "symbol": "yvHEGIC",
+      "decimals": 18,
+      "logoURI": "https://cdn.furucombo.app/assets/img/token/yvHEGIC.png"
+    },
+    {
+      "chainId": 1,
+      "address": "0x671a912C10bba0CFA74Cfc2d6Fba9BA1ed9530B2",
+      "name": "yearn v2 LINK yVault",
+      "symbol": "yvLINK",
+      "decimals": 18,
+      "logoURI": "https://cdn.furucombo.app/assets/img/token/yvLINK.png"
+    },
+    {
+      "chainId": 1,
+      "address": "0x873fB544277FD7b977B196a826459a69E27eA4ea",
+      "name": "yearn v2 RAI yVault",
+      "symbol": "yvRAI",
+      "decimals": 18,
+      "logoURI": "https://cdn.furucombo.app/assets/img/token/yvRAI.png"
+    },
+    {
+      "chainId": 1,
+      "address": "0xF29AE508698bDeF169B89834F76704C3B205aedf",
+      "name": "yearn v2 SNX yVault",
+      "symbol": "yvSNX",
+      "decimals": 18,
+      "logoURI": "https://cdn.furucombo.app/assets/img/token/yvSNX.png"
+    },
+    {
+      "chainId": 1,
+      "address": "0x6d765CbE5bC922694afE112C140b8878b9FB0390",
+      "name": "yearn v2 SUSHI yVault",
+      "symbol": "yvSUSHI",
+      "decimals": 18,
+      "logoURI": "https://cdn.furucombo.app/assets/img/token/yvSUSHI.png"
+    },
+    {
+      "chainId": 1,
+      "address": "0xFD0877d9095789cAF24c98F7CCe092fa8E120775",
+      "name": "yearn v2 TUSD yVault",
+      "symbol": "yvTUSD",
+      "decimals": 18,
+      "logoURI": "https://cdn.furucombo.app/assets/img/token/yvTUSD.png"
+    },
+    {
+      "chainId": 1,
+      "address": "0xFBEB78a723b8087fD2ea7Ef1afEc93d35E8Bed42",
+      "name": "yearn v2 UNI yVault",
+      "symbol": "yvUNI",
+      "decimals": 18,
+      "logoURI": "https://cdn.furucombo.app/assets/img/token/yvUNI.png"
+    },
+    {
+      "chainId": 1,
+      "address": "0x5f18C75AbDAe578b483E5F43f12a39cF75b973a9",
+      "name": "yearn v2 USDC yVault",
+      "symbol": "yvUSDC",
+      "decimals": 6,
+      "logoURI": "https://cdn.furucombo.app/assets/img/token/yvUSDC.png"
+    },
+    {
+      "chainId": 1,
+      "address": "0x7Da96a3891Add058AdA2E826306D812C638D87a7",
+      "name": "yearn v2 USDT yVault",
+      "symbol": "yvUSDT",
+      "decimals": 6,
+      "logoURI": "https://cdn.furucombo.app/assets/img/token/yvUSDT.png"
+    },
+    {
+      "chainId": 1,
+      "address": "0xA696a63cc78DfFa1a63E9E50587C197387FF6C7E",
+      "name": "yearn v2 WBTC yVault",
+      "symbol": "yvWBTC",
+      "decimals": 8,
+      "logoURI": "https://cdn.furucombo.app/assets/img/token/yvWBTC.png"
+    },
+    {
+      "chainId": 1,
+      "address": "0xa258C4606Ca8206D8aA700cE2143D7db854D168c",
+      "name": "yearn v2 WETH yVault",
+      "symbol": "yvWETH",
+      "decimals": 18,
+      "logoURI": "https://cdn.furucombo.app/assets/img/token/yvWETH.png"
+    },
+    {
+      "chainId": 1,
+      "address": "0xE14d13d8B3b85aF791b2AADD661cDBd5E6097Db1",
+      "name": "yearn v2 YFI yVault",
+      "symbol": "yvYFI",
+      "decimals": 18,
+      "logoURI": "https://cdn.furucombo.app/assets/img/token/yvYFI.png"
+    },
+    {
+      "chainId": 1,
+      "address": "0x03403154afc09Ce8e44C3B185C82C6aD5f86b9ab",
+      "name": "yearn v1 Curve a3CRV yVault",
+      "symbol": "yva3CRV",
+      "decimals": 18,
+      "logoURI": "https://cdn.furucombo.app/assets/img/token/yva3CRV.png"
+    },
+    {
+      "chainId": 1,
+      "address": "0xE625F5923303f1CE7A43ACFEFd11fd12f30DbcA4",
+      "name": "yearn v1 Curve AnkrETH Pool yVault",
+      "symbol": "yvankrCRV",
+      "decimals": 18,
+      "logoURI": "https://cdn.furucombo.app/assets/img/token/yvankrCRV.png"
+    },
+    {
+      "chainId": 1,
+      "address": "0xA8B1Cb4ed612ee179BDeA16CCa6Ba596321AE52D",
+      "name": "yearn v1 Curve bBTC/sbtcCRV yVault",
+      "symbol": "yvbBTC-sbtcCRV",
+      "decimals": 18,
+      "logoURI": "https://cdn.furucombo.app/assets/img/token/yvbBTC-sbtcCRV.png"
+    },
+    {
+      "chainId": 1,
+      "address": "0x629c759D1E83eFbF63d84eb3868B564d9521C129",
+      "name": "yearn v1 Curve Compound Pool yVault",
+      "symbol": "yvcDAI+cUSDC",
+      "decimals": 18,
+      "logoURI": "https://cdn.furucombo.app/assets/img/token/yvcDAI+cUSDC.png"
+    },
+    {
+      "chainId": 1,
+      "address": "0x2994529C0652D127b7842094103715ec5299bBed",
+      "name": "yearn v1 Curve BUSD yVault",
+      "symbol": "yvcrvBUSD",
+      "decimals": 18,
+      "logoURI": "https://cdn.furucombo.app/assets/img/token/yvcrvBUSD.png"
+    },
+    {
+      "chainId": 1,
+      "address": "0x5334e150B938dd2b6bd040D9c4a03Cff0cED3765",
+      "name": "yearn v1 Curve RenWBTC yVault",
+      "symbol": "yvcrvRenWBTC",
+      "decimals": 18,
+      "logoURI": "https://cdn.furucombo.app/assets/img/token/yvcrvRenWBTC.png"
+    },
+    {
+      "chainId": 1,
+      "address": "0x5533ed0a3b83F70c3c4a1f69Ef5546D3D4713E44",
+      "name": "yearn v1 Curve sUSD Pool yVault",
+      "symbol": "yvcrvSUSD",
+      "decimals": 18,
+      "logoURI": "https://cdn.furucombo.app/assets/img/token/yvcrvSUSD.png"
+    },
+    {
+      "chainId": 1,
+      "address": "0x8e6741b456a074F0Bc45B8b82A755d4aF7E965dF",
+      "name": "yearn v1 Curve DUSD Pool yVault",
+      "symbol": "yvdusd3CRV",
+      "decimals": 18,
+      "logoURI": "https://cdn.furucombo.app/assets/img/token/yvdusd3CRV.png"
+    },
+    {
+      "chainId": 1,
+      "address": "0xc5bDdf9843308380375a611c18B50Fb9341f502A",
+      "name": "yearn v1 veCRV-DAO yVault",
+      "symbol": "yveCRV-DAO",
+      "decimals": 18,
+      "logoURI": "https://cdn.furucombo.app/assets/img/token/yveCRV-DAO.png"
+    },
+    {
+      "chainId": 1,
+      "address": "0x98B058b2CBacF5E99bC7012DF757ea7CFEbd35BC",
+      "name": "yearn v1 Curve EURS Pool yVault",
+      "symbol": "yveursCRV",
+      "decimals": 18,
+      "logoURI": "https://cdn.furucombo.app/assets/img/token/yveursCRV.png"
+    },
+    {
+      "chainId": 1,
+      "address": "0xcC7E70A958917cCe67B4B87a8C30E6297451aE98",
+      "name": "yearn v1 Curve GUSD Pool yVault",
+      "symbol": "yvgusd3CRV",
+      "decimals": 18,
+      "logoURI": "https://cdn.furucombo.app/assets/img/token/yvgusd3CRV.png"
+    },
+    {
+      "chainId": 1,
+      "address": "0x46AFc2dfBd1ea0c0760CAD8262A5838e803A37e5",
+      "name": "yearn v1 Curve hBTC Pool yVault",
+      "symbol": "yvhCRV",
+      "decimals": 18,
+      "logoURI": "https://cdn.furucombo.app/assets/img/token/yvhCRV.png"
+    },
+    {
+      "chainId": 1,
+      "address": "0x39546945695DCb1c037C836925B355262f551f55",
+      "name": "yearn v1 Curve HUSD Pool yVault",
+      "symbol": "yvhusd3CRV",
+      "decimals": 18,
+      "logoURI": "https://cdn.furucombo.app/assets/img/token/yvhusd3CRV.png"
+    },
+    {
+      "chainId": 1,
+      "address": "0x96Ea6AF74Af09522fCB4c28C269C26F59a31ced6",
+      "name": "yearn v1 Curve LINK Pool yVault",
+      "symbol": "yvlinkCRV",
+      "decimals": 18,
+      "logoURI": "https://cdn.furucombo.app/assets/img/token/yvlinkCRV.png"
+    },
+    {
+      "chainId": 1,
+      "address": "0xE0db48B4F71752C4bEf16De1DBD042B82976b8C7",
+      "name": "yearn v1 mStable USD yVault",
+      "symbol": "yvmUSD",
+      "decimals": 18,
+      "logoURI": "https://cdn.furucombo.app/assets/img/token/yvmUSD.png"
+    },
+    {
+      "chainId": 1,
+      "address": "0x0FCDAeDFb8A7DfDa2e9838564c5A1665d856AFDF",
+      "name": "yearn v1 Curve mUSD Pool yVault",
+      "symbol": "yvmusd3CRV",
+      "decimals": 18,
+      "logoURI": "https://cdn.furucombo.app/assets/img/token/yvmusd3CRV.png"
+    },
+    {
+      "chainId": 1,
+      "address": "0x7F83935EcFe4729c4Ea592Ab2bC1A32588409797",
+      "name": "yearn v1 Curve oBTC/sbtcCRV yVault",
+      "symbol": "yvoBTC-sbtcCRV",
+      "decimals": 18,
+      "logoURI": "https://cdn.furucombo.app/assets/img/token/yvoBTC-sbtcCRV.png"
+    },
+    {
+      "chainId": 1,
+      "address": "0x123964EbE096A920dae00Fb795FFBfA0c9Ff4675",
+      "name": "yearn v1 Curve pBTC/sbtcCRV yVault",
+      "symbol": "yvpBTC-sbtcCRV",
+      "decimals": 18,
+      "logoURI": "https://cdn.furucombo.app/assets/img/token/yvpBTC-sbtcCRV.png"
+    },
+    {
+      "chainId": 1,
+      "address": "0xa5cA62D95D24A4a350983D5B8ac4EB8638887396",
+      "name": "yearn v2 sUSD yVault",
+      "symbol": "yvsUSD",
+      "decimals": 18,
+      "logoURI": "https://cdn.furucombo.app/assets/img/token/yvsUSD.png"
+    },
+    {
+      "chainId": 1,
+      "address": "0xBacB69571323575C6a5A3b4F9EEde1DC7D31FBc1",
+      "name": "yearn v1 Curve saCRV yVault",
+      "symbol": "yvsaCRV",
+      "decimals": 18,
+      "logoURI": "https://cdn.furucombo.app/assets/img/token/yvsaCRV.png"
+    },
+    {
+      "chainId": 1,
+      "address": "0x07FB4756f67bD46B748b16119E802F1f880fb2CC",
+      "name": "yearn v1 Curve tbtc/sbtcCrv yVault",
+      "symbol": "yvtbtc-sbtcCrv",
+      "decimals": 18,
+      "logoURI": "https://cdn.furucombo.app/assets/img/token/yvtbtc-sbtcCrv.png"
+    },
+    {
+      "chainId": 1,
+      "address": "0xFe39Ce91437C76178665D64d7a2694B0f6f17fE3",
+      "name": "yearn v1 Curve USDN Pool yVault",
+      "symbol": "yvusdn3CRV",
+      "decimals": 18,
+      "logoURI": "https://cdn.furucombo.app/assets/img/token/yvusdn3CRV.png"
+    },
+    {
+      "chainId": 1,
+      "address": "0x1B5eb1173D2Bf770e50F10410C9a96F7a8eB6e75",
+      "name": "yearn v1 Curve USDP Pool yVault",
+      "symbol": "yvusdp3CRV",
+      "decimals": 18,
+      "logoURI": "https://cdn.furucombo.app/assets/img/token/yvusdp3CRV.png"
+    },
+    {
+      "chainId": 1,
+      "address": "0xF6C9E9AF314982A4b38366f4AbfAa00595C5A6fC",
+      "name": "yearn v1 Curve UST Pool yVault",
+      "symbol": "yvust3CRV",
+      "decimals": 18,
+      "logoURI": "https://cdn.furucombo.app/assets/img/token/yvust3CRV.png"
+    }
+  ]
+}
