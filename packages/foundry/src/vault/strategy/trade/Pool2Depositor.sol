@@ -3,6 +3,7 @@
 
 pragma solidity ^0.8.15;
 import { IUniswapRouterV2 } from "../../../interfaces/external/uni/IUniswapRouterV2.sol";
+import { IUniswapV2Pair } from "../../../interfaces/external/uni/IUniswapV2Pair.sol";
 
 contract UniV2TradeModule {
   function getAmountOut(
@@ -15,7 +16,8 @@ contract UniV2TradeModule {
     return amountsOut[len - 1];
   }
 
-  function trade(
+  function deposit(
+    address asset,
     uint256 amountIn,
     uint256 amountOut,
     address[] calldata tradePath,
@@ -23,11 +25,29 @@ contract UniV2TradeModule {
   ) external returns (uint256) {
     IERC20(tradePath[0]).transferFrom(msg.sender, address(this), amountIn);
 
+    // A - only one token
+    // B - both token but unbalanced
+    // C - both token but balanced
+
+    // 1. Check pair assets
+    // 2. Check pair balance and ratio
+    // 3. Compare balances and ratio
+    // 4. Trade larger balance for smaller balance to achieve ratio ---- this will change the ratio
+    // 5. Deposit to pool
+
+    address token0 = IUniswapV2Pair(asset).token0();
+    address token1 = IUniswapV2Pair(asset).token1();
+
+    uint256 bal0 = IERC20(token0).balanceOf(msg.sender);
+
     // TODO how do i need to set the deadline?
-    uint256[] memory amountsOut = IUniswapRouterV2(router).swapExactTokensForTokens(
-      amount,
-      amountOut,
-      tradePath,
+    IUniswapRouterV2(router).addLiquidity(
+      tokenA,
+      tokenB,
+      amountADesired,
+      amountBDesired,
+      amountAMin,
+      amountBMin,
       msg.sender,
       block.timestamp + 10
     );
