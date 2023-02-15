@@ -3,6 +3,7 @@
 
 pragma solidity ^0.8.15;
 import { IUniswapRouterV2 } from "../../../interfaces/external/uni/IUniswapRouterV2.sol";
+import { IERC20 } from "openzeppelin-contracts/token/ERC20/IERC20.sol";
 
 contract UniV2TradeModule {
   function getAmountOut(
@@ -23,13 +24,12 @@ contract UniV2TradeModule {
   ) external returns (uint256) {
     IERC20(tradePath[0]).transferFrom(msg.sender, address(this), amountIn);
 
-    // TODO how do i need to set the deadline?
     uint256[] memory amountsOut = IUniswapRouterV2(router).swapExactTokensForTokens(
-      amount,
+      amountIn,
       amountOut,
       tradePath,
       msg.sender,
-      block.timestamp + 10
+      block.timestamp
     );
 
     uint256 len = tradePath.length;
