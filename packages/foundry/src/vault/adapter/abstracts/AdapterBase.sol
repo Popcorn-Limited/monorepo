@@ -38,6 +38,7 @@ abstract contract AdapterBase is
   uint8 internal _decimals;
   uint8 public constant decimalOffset = 9;
 
+
   error StrategySetupFailed();
 
   /**
@@ -69,7 +70,7 @@ abstract contract AdapterBase is
     INITIAL_CHAIN_ID = block.chainid;
     INITIAL_DOMAIN_SEPARATOR = computeDomainSeparator();
 
-    _decimals = IERC20Metadata(asset).decimals() + decimalOffset; // Asset decimals + decimal offset to combat inflation attacks
+    _decimals = IERC20Metadata(asset).decimals(); // Asset decimals + decimal offset to combat inflation attacks
 
     strategy = IStrategy(_strategy);
     strategyConfig = _strategyConfig;
@@ -134,7 +135,10 @@ abstract contract AdapterBase is
   ) internal virtual override nonReentrant {
     IERC20(asset()).safeTransferFrom(caller, address(this), assets);
 
+    uint256 underlyingBalance_ = _underlyingBalance();
     _protocolDeposit(assets, shares);
+    // Update the underlying balance to prevent inflation attacks
+    underlyingBalance += _underlyingBalance() - underlyingBalance_;
 
     _mint(receiver, shares);
 
@@ -198,7 +202,10 @@ abstract contract AdapterBase is
     }
 
     if (!paused()) {
+      uint256 underlyingBalance_ = _underlyingBalance();
       _protocolWithdraw(assets, shares);
+      // Update the underlying balance to prevent inflation attacks
+      underlyingBalance -= underlyingBalance_ - _underlyingBalance();
     }
 
     _burn(owner, shares);
@@ -301,10 +308,6 @@ abstract contract AdapterBase is
     return _convertToAssets(shares, Math.Rounding.Down);
   }
 
-  /**
-   * @notice Amount of shares the vault would exchange for given amount of assets, in an ideal scenario.
-   * @dev Added totalAssets() check to prevent division by zero in case of rounding issues. (off-by-one issue)
-   */
   function _convertToShares(uint256 assets, Math.Rounding rounding)
     internal
     view
@@ -312,11 +315,12 @@ abstract contract AdapterBase is
     override
     returns (uint256 shares)
   {
-    return assets.mulDiv(totalSupply() + 10**decimalOffset, totalAssets() + 1, rounding);
-  }
-
-  function _convertToAssets(uint256 shares, Math.Rounding rounding) internal view virtual override returns (uint256) {
-    return shares.mulDiv(totalAssets() + 1, totalSupply() + 10**decimalOffset, rounding);
+    uint256 _totalSupply = totalSupply();
+    uint256 _totalAssets = totalAssets();
+    return
+      (assets == 0 || _totalSupply == 0 || _totalAssets == 0)
+        ? assets
+        : assets.mulDiv(_totalSupply, _totalAssets, rounding);
   }
 
   /*//////////////////////////////////////////////////////////////

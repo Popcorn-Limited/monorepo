@@ -12,12 +12,10 @@ const TABS = [TAB_DEPOSIT, TAB_WITHDRAW];
 function DepositWithdraw({
   vault,
   vaultTokenAddress,
-  vaultTokenDecimals,
   chainId,
 }: {
   vault: Pop.NamedAccountsMetadata;
   vaultTokenAddress: string;
-  vaultTokenDecimals: number;
   chainId: any;
 }) {
   const [activeTab, setActiveTab] = useState(TAB_DEPOSIT);
@@ -26,7 +24,6 @@ function DepositWithdraw({
   const sharedProps = {
     vault,
     vaultTokenAddress,
-    vaultTokenDecimals,
     chainId,
   };
 

@@ -5,7 +5,9 @@ import { useApy } from "./hooks";
 const eth_call = (Component: Pop.FC<BigNumberWithFormatted>) =>
   function ApyWithLoading({
     ...props
-  }: Pop.BaseContractProps & { render?: ({ data, status, ...props }) => React.ReactElement<any> }) {
+  }: Pop.BaseContractProps & {
+    render?: (props: { data?: BigNumberWithFormatted; status }) => React.ReactElement<any>;
+  }) {
     const { data, status } = useApy({ ...props });
     if (props.render) {
       return (

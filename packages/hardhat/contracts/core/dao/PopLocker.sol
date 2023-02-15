@@ -1,17 +1,15 @@
 // SPDX-License-Identifier: GPL-3.0
-// Docgen-SOLC: 0.6.12
+// Docgen-SOLC: 0.8.0
+pragma solidity ^0.8.0;
 
-import "openzeppelin-v3/token/ERC20/IERC20.sol";
-import "openzeppelin-v3/token/ERC20/SafeERC20.sol";
-import "openzeppelin-v3/math/Math.sol";
-import "openzeppelin-v3/access/Ownable.sol";
-import "openzeppelin-v3/utils/ReentrancyGuard.sol";
+import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
+import "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
+import "@openzeppelin/contracts/utils/math/Math.sol";
+import "@openzeppelin/contracts/access/Ownable.sol";
+import "@openzeppelin/contracts/security/ReentrancyGuard.sol";
 
 import "../libraries/BoringMath.sol";
 import "../interfaces/IRewardsEscrow.sol";
-
-pragma solidity 0.6.12;
-pragma experimental ABIEncoderV2;
 
 // POP locked in this contract will be entitled to voting rights for popcorn.network
 // Based on CVX Locking contract for https://www.convexfinance.com/
@@ -136,11 +134,7 @@ contract PopLocker is ReentrancyGuard, Ownable {
   /* ========== ADMIN CONFIGURATION ========== */
 
   // Add a new reward token to be distributed to stakers
-  function addReward(
-    address _rewardsToken,
-    address _distributor,
-    bool _useBoost
-  ) public onlyOwner {
+  function addReward(address _rewardsToken, address _distributor, bool _useBoost) public onlyOwner {
     require(rewardData[_rewardsToken].lastUpdateTime == 0);
     rewardTokens.push(_rewardsToken);
     rewardData[_rewardsToken].lastUpdateTime = uint40(block.timestamp);
@@ -150,21 +144,13 @@ contract PopLocker is ReentrancyGuard, Ownable {
   }
 
   // Modify approval for an address to call notifyRewardAmount
-  function approveRewardDistributor(
-    address _rewardsToken,
-    address _distributor,
-    bool _approved
-  ) external onlyOwner {
+  function approveRewardDistributor(address _rewardsToken, address _distributor, bool _approved) external onlyOwner {
     require(rewardData[_rewardsToken].lastUpdateTime > 0, "rewards token does not exist");
     rewardDistributors[_rewardsToken][_distributor] = _approved;
   }
 
   //set boost parameters
-  function setBoost(
-    uint256 _max,
-    uint256 _rate,
-    address _receivingAddress
-  ) external onlyOwner {
+  function setBoost(uint256 _max, uint256 _rate, address _receivingAddress) external onlyOwner {
     require(_max < 1500, "over max payment"); //max 15%
     require(_rate < 30000, "over max rate"); //max 3x
     require(_receivingAddress != address(0), "invalid address"); //must point somewhere valid
@@ -194,7 +180,7 @@ contract PopLocker is ReentrancyGuard, Ownable {
   //set approvals for rewards escrow
   function setApprovals() external {
     IERC20(stakingToken).safeApprove(address(rewardsEscrow), 0);
-    IERC20(stakingToken).safeApprove(address(rewardsEscrow), uint256(-1));
+    IERC20(stakingToken).safeApprove(address(rewardsEscrow), type(uint256).max);
   }
 
   /* ========== VIEWS ========== */
@@ -213,11 +199,7 @@ contract PopLocker is ReentrancyGuard, Ownable {
       );
   }
 
-  function _earned(
-    address _user,
-    address _rewardsToken,
-    uint256 _balance
-  ) internal view returns (uint256) {
+  function _earned(address _user, address _rewardsToken, uint256 _balance) internal view returns (uint256) {
     return
       _balance.mul(_rewardPerToken(_rewardsToken).sub(userRewardPerTokenPaid[_user][_rewardsToken])).div(1e18).add(
         rewards[_user][_rewardsToken]
@@ -395,16 +377,9 @@ contract PopLocker is ReentrancyGuard, Ownable {
   }
 
   // Information on a user's locked balances
-  function lockedBalances(address _user)
-    external
-    view
-    returns (
-      uint256 total,
-      uint256 unlockable,
-      uint256 locked,
-      LockedBalance[] memory lockData
-    )
-  {
+  function lockedBalances(
+    address _user
+  ) external view returns (uint256 total, uint256 unlockable, uint256 locked, LockedBalance[] memory lockData) {
     LockedBalance[] storage locks = userLocks[_user];
     Balances storage userBalance = balances[_user];
     uint256 nextUnlockIndex = userBalance.nextUnlockIndex;
@@ -461,11 +436,7 @@ contract PopLocker is ReentrancyGuard, Ownable {
   }
 
   // Locked tokens cannot be withdrawn for lockDuration and are eligible to receive stakingReward rewards
-  function lock(
-    address _account,
-    uint256 _amount,
-    uint256 _spendRatio
-  ) external nonReentrant {
+  function lock(address _account, uint256 _amount, uint256 _spendRatio) external nonReentrant {
     //pull tokens
     stakingToken.safeTransferFrom(msg.sender, address(this), _amount);
 
@@ -474,11 +445,7 @@ contract PopLocker is ReentrancyGuard, Ownable {
   }
 
   //lock tokens
-  function _lock(
-    address _account,
-    uint256 _amount,
-    uint256 _spendRatio
-  ) internal updateReward(_account) {
+  function _lock(address _account, uint256 _amount, uint256 _spendRatio) internal updateReward(_account) {
     require(_amount > 0, "Cannot stake 0");
     require(_spendRatio <= maximumBoostPayment, "over max spend");
     require(!isShutdown, "shutdown");
@@ -613,11 +580,10 @@ contract PopLocker is ReentrancyGuard, Ownable {
     }
   }
 
-  function _getDelayAdjustedReward(uint256 _checkDelay, LockedBalance storage lockedBalance)
-    internal
-    view
-    returns (uint256)
-  {
+  function _getDelayAdjustedReward(
+    uint256 _checkDelay,
+    LockedBalance storage lockedBalance
+  ) internal view returns (uint256) {
     uint256 currentEpoch = block.timestamp.sub(_checkDelay).div(rewardsDuration).mul(rewardsDuration);
     uint256 epochsover = currentEpoch.sub(uint256(lockedBalance.unlockTime)).div(rewardsDuration);
     uint256 rRate = Math.min(kickRewardPerEpoch.mul(epochsover + 1), denominator);
@@ -625,11 +591,7 @@ contract PopLocker is ReentrancyGuard, Ownable {
   }
 
   // Withdraw/relock all currently locked tokens where the unlock time has passed
-  function processExpiredLocks(
-    bool _relock,
-    uint256 _spendRatio,
-    address _withdrawTo
-  ) external nonReentrant {
+  function processExpiredLocks(bool _relock, uint256 _spendRatio, address _withdrawTo) external nonReentrant {
     _processExpiredLocks(msg.sender, _relock, _spendRatio, _withdrawTo, msg.sender, 0);
   }
 

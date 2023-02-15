@@ -43,7 +43,7 @@ fi
 else
 $EXPORTER merge --inputs $NAMED_ACCOUNTS,$OUT_DIR/polygon-deployment.json --network polygon --out $OUT_DIR/polygon-merge.json -c 137
 $EXPORTER merge --inputs $NAMED_ACCOUNTS,$OUT_DIR/arbitrum-deployment.json --network arbitrum --out $OUT_DIR/arbitrum-merge.json -c 42161
-$EXPORTER merge --inputs $NAMEDACCOUNTS,$OUT_DIR/mainnet-deployment.json --network mainnet --out $OUT_DIR/mainnet-merge.json -c 1
+$EXPORTER merge --inputs $NAMED_ACCOUNTS,$OUT_DIR/mainnet-deployment.json --network mainnet --out $OUT_DIR/mainnet-merge.json -c 1
 $EXPORTER merge --inputs $NAMED_ACCOUNTS,$OUT_DIR/bsc-deployment.json --network bsc --out $OUT_DIR/bsc-merge.json -c 56
 $EXPORTER merge --inputs $NAMED_ACCOUNTS,$OUT_DIR/rinkeby-deployment.json --network rinkeby --out $OUT_DIR/rinkeby-merge.json -c 4
 $EXPORTER merge --inputs $NAMED_ACCOUNTS,$OUT_DIR/goerli-deployment.json --network goerli --out $OUT_DIR/goerli-merge.json -c 5
