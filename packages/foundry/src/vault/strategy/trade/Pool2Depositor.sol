@@ -39,6 +39,9 @@ contract UniV2TradeModule {
     address token1 = IUniswapV2Pair(asset).token1();
 
     uint256 bal0 = IERC20(token0).balanceOf(msg.sender);
+    uint256 bal1 = IERC20(token1).balanceOf(msg.sender);
+
+    (uint112 reserve0, uint112 reserve1, uint32 blockTimestampLast) = IUniswapV2Pair(asset).getReserves();
 
     // TODO how do i need to set the deadline?
     IUniswapRouterV2(router).addLiquidity(
