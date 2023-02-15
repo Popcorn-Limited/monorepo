@@ -7,8 +7,6 @@ import { AdapterBase, IERC20, IERC20Metadata, SafeERC20, ERC20, Math, IStrategy,
 import { WithRewards, IWithRewards } from "../abstracts/WithRewards.sol";
 import { IMasterChef, IRewarder } from "./IMasterChef.sol";
 
-//import {IPermissionRegistry} from "../../../interfaces/vault/IPermissionRegistry.sol";
-
 /**
  * @title   MasterChef Adapter
  * @notice  ERC4626 wrapper for MasterChef Vaults.
@@ -47,13 +45,7 @@ contract MasterChefAdapter is AdapterBase, WithRewards {
 
     pid = _pid;
 
-    // masterChef = IMasterChef(_masterChef);
-
-    // (address _asset, , , address _rewarder, , ) = masterChef.poolInfo(pid);
-
     IMasterChef.PoolInfo memory info = masterChef.poolInfo(_pid);
-
-    // _rewarder = IRewarder(_rewarder);
 
     _name = string.concat("Popcorn MasterChef", IERC20Metadata(asset()).name(), " Adapter");
     _symbol = string.concat("popB-", IERC20Metadata(asset()).symbol());
@@ -75,6 +67,7 @@ contract MasterChefAdapter is AdapterBase, WithRewards {
 
   /// @notice Calculates the total amount of underlying tokens the Vault holds.
   /// @return The total amount of underlying tokens the Vault holds.
+
   //   function totalAssets() public view virtual override returns (uint256) {
   //     return paused() ? IERC20(asset()).balanceOf(address(this)) : rewards.balanceOf(address(this));
   //   }
