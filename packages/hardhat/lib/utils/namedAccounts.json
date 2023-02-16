@@ -549,7 +549,6 @@
   },
   "popUsdcLpStaking": {
     "addresses": {
-      "arbitrum": "0xfaAddC93baf78e89DCf37bA67943E1bE8F37Bb8c",
       "bsc": "0xfaAddC93baf78e89DCf37bA67943E1bE8F37Bb8c",
       "polygon": "0xe6f315f4e0dB78185239fFFb368D6d188f6b926C",
       "rinkeby": "0x2B2C9812A5561DC3B0d99bbeEd8690002191Ea4D"
