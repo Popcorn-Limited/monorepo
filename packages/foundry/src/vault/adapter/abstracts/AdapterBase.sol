@@ -120,8 +120,6 @@ abstract contract AdapterBase is
     return assets;
   }
 
-  event log(uint256 a);
-
   /**
    * @notice Deposit `assets` into the underlying protocol and mints vault shares to `receiver`.
    * @dev Executes harvest if `harvestCooldown` is passed since last invocation.
@@ -133,9 +131,7 @@ abstract contract AdapterBase is
     uint256 shares
   ) internal virtual override nonReentrant {
     IERC20(asset()).safeTransferFrom(caller, address(this), assets);
-    emit log(assets);
-    emit log(shares);
-
+    
     _protocolDeposit(assets, shares);
     _mint(receiver, shares);
 

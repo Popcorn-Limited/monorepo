@@ -101,10 +101,4 @@ contract AaveV2AdapterTest is AbstractAdapterTest {
 
     assertEq(asset.allowance(address(adapter), address(lendingPool)), type(uint256).max, "allowance");
   }
-
-  function getApy() public view returns (uint256) {
-    DataTypes.ReserveData memory data = lendingPool.getReserveData(address(asset));
-    uint128 supplyRate = data.currentLiquidityRate;
-    return uint256(supplyRate / 1e9);
-  }
 }

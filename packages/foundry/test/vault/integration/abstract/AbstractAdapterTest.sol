@@ -255,8 +255,6 @@ contract AbstractAdapterTest is PropertyTest {
   function test__previewRedeem(uint8 fuzzAmount) public virtual {
     uint256 amount = bound(uint256(fuzzAmount), minFuzz, maxShares);
 
-    emit log_named_uint("PING", adapter.previewMint(amount));
-
     uint256 reqAssets = (adapter.previewMint(amount) * 10) / 9;
     _mintFor(reqAssets, bob);
     vm.prank(bob);
@@ -311,8 +309,6 @@ contract AbstractAdapterTest is PropertyTest {
       _mintFor(reqAssets, bob);
       vm.prank(bob);
       adapter.deposit(reqAssets, bob);
-      emit log_named_uint("ts", adapter.totalSupply());
-      emit log_named_uint("ta", adapter.totalAssets());
       prop_withdraw(bob, bob, amount, testId);
 
       _mintFor(reqAssets, bob);
