@@ -31,6 +31,7 @@ contract AbstractAdapterTest is PropertyTest {
   uint256 defaultAmount;
   uint256 raise;
 
+  uint256 minFuzz = 1e10;
   uint256 maxAssets;
   uint256 maxShares;
 
@@ -60,9 +61,9 @@ contract AbstractAdapterTest is PropertyTest {
     adapter = adapter_;
     externalRegistry = externalRegistry_;
 
-    defaultAmount = 10**IERC20Metadata(address(asset_)).decimals();
+    defaultAmount = 10**IERC20Metadata(address(asset_)).decimals() * 1e9;
 
-    raise = defaultAmount * 100_000;
+    raise = defaultAmount;
     maxAssets = defaultAmount * 1000;
     maxShares = maxAssets / 2;
 
@@ -221,7 +222,7 @@ contract AbstractAdapterTest is PropertyTest {
                           PREVIEW VIEWS
     //////////////////////////////////////////////////////////////*/
   function test__previewDeposit(uint8 fuzzAmount) public virtual {
-    uint256 amount = bound(uint256(fuzzAmount), 10, maxAssets);
+    uint256 amount = bound(uint256(fuzzAmount), minFuzz, maxAssets);
 
     deal(address(asset), bob, maxAssets);
     vm.prank(bob);
@@ -231,7 +232,7 @@ contract AbstractAdapterTest is PropertyTest {
   }
 
   function test__previewMint(uint8 fuzzAmount) public virtual {
-    uint256 amount = bound(uint256(fuzzAmount), 10, maxShares);
+    uint256 amount = bound(uint256(fuzzAmount), minFuzz, maxShares);
 
     deal(address(asset), bob, maxAssets);
     vm.prank(bob);
@@ -241,7 +242,7 @@ contract AbstractAdapterTest is PropertyTest {
   }
 
   function test__previewWithdraw(uint8 fuzzAmount) public virtual {
-    uint256 amount = bound(uint256(fuzzAmount), 10, maxAssets);
+    uint256 amount = bound(uint256(fuzzAmount), minFuzz, maxAssets);
 
     uint256 reqAssets = (adapter.previewMint(adapter.previewWithdraw(amount)) * 10) / 9;
     _mintFor(reqAssets, bob);
@@ -252,7 +253,7 @@ contract AbstractAdapterTest is PropertyTest {
   }
 
   function test__previewRedeem(uint8 fuzzAmount) public virtual {
-    uint256 amount = bound(uint256(fuzzAmount), 10, maxShares);
+    uint256 amount = bound(uint256(fuzzAmount), minFuzz, maxShares);
 
     emit log_named_uint("PING", adapter.previewMint(amount));
 
@@ -269,7 +270,7 @@ contract AbstractAdapterTest is PropertyTest {
     //////////////////////////////////////////////////////////////*/
 
   function test__deposit(uint8 fuzzAmount) public virtual {
-    uint256 amount = bound(uint256(fuzzAmount), 10, maxAssets);
+    uint256 amount = bound(uint256(fuzzAmount), minFuzz, maxAssets);
     uint8 len = uint8(testConfigStorage.getTestConfigLength());
     for (uint8 i; i < len; i++) {
       if (i > 0) overrideSetup(testConfigStorage.getTestConfig(i));
@@ -285,7 +286,7 @@ contract AbstractAdapterTest is PropertyTest {
   }
 
   function test__mint(uint8 fuzzAmount) public virtual {
-    uint256 amount = bound(uint256(fuzzAmount), 10, maxShares);
+    uint256 amount = bound(uint256(fuzzAmount), minFuzz, maxShares);
     uint8 len = uint8(testConfigStorage.getTestConfigLength());
     for (uint8 i; i < len; i++) {
       if (i > 0) overrideSetup(testConfigStorage.getTestConfig(i));
@@ -301,7 +302,7 @@ contract AbstractAdapterTest is PropertyTest {
   }
 
   function test__withdraw(uint8 fuzzAmount) public virtual {
-    uint256 amount = bound(uint256(fuzzAmount), 10, maxAssets);
+    uint256 amount = bound(uint256(fuzzAmount), minFuzz, maxAssets);
     uint8 len = uint8(testConfigStorage.getTestConfigLength());
     for (uint8 i; i < len; i++) {
       if (i > 0) overrideSetup(testConfigStorage.getTestConfig(i));
@@ -327,7 +328,7 @@ contract AbstractAdapterTest is PropertyTest {
   }
 
   function test__redeem(uint8 fuzzAmount) public virtual {
-    uint256 amount = bound(uint256(fuzzAmount), 10, maxShares);
+    uint256 amount = bound(uint256(fuzzAmount), minFuzz, maxShares);
     uint8 len = uint8(testConfigStorage.getTestConfigLength());
     for (uint8 i; i < len; i++) {
       if (i > 0) overrideSetup(testConfigStorage.getTestConfig(i));
@@ -480,7 +481,7 @@ contract AbstractAdapterTest is PropertyTest {
 
   function test__harvest() public virtual {
     uint256 performanceFee = 1e16;
-    uint256 hwm = 1e18;
+    uint256 hwm = 1e9;
     _mintFor(defaultAmount, bob);
 
     vm.prank(bob);
@@ -488,7 +489,7 @@ contract AbstractAdapterTest is PropertyTest {
 
     uint256 oldTotalAssets = adapter.totalAssets();
     adapter.setPerformanceFee(performanceFee);
-    increasePricePerShare(raise * 100);
+    increasePricePerShare(raise);
 
     uint256 gain = ((adapter.convertToAssets(1e18) - adapter.highWaterMark()) * adapter.totalSupply()) / 1e18;
     uint256 fee = (gain * performanceFee) / 1e18;
@@ -499,7 +500,8 @@ contract AbstractAdapterTest is PropertyTest {
 
     adapter.harvest();
 
-    assertApproxEqAbs(adapter.totalSupply(), defaultAmount + expectedFee, _delta_, "totalSupply");
+    // Multiply with the decimal offset
+    assertApproxEqAbs(adapter.totalSupply(), defaultAmount * 1e9 + expectedFee, _delta_, "totalSupply");
     assertApproxEqAbs(adapter.balanceOf(feeRecipient), expectedFee, _delta_, "expectedFee");
   }
 
