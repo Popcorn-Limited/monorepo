@@ -36,6 +36,7 @@ abstract contract AdapterBase is
   using Math for uint256;
 
   uint8 internal _decimals;
+  uint8 public constant decimalOffset = 9;
 
   error StrategySetupFailed();
 
@@ -68,7 +69,7 @@ abstract contract AdapterBase is
     INITIAL_CHAIN_ID = block.chainid;
     INITIAL_DOMAIN_SEPARATOR = computeDomainSeparator();
 
-    _decimals = IERC20Metadata(asset).decimals(); // Asset decimals + decimal offset to combat inflation attacks
+    _decimals = IERC20Metadata(asset).decimals() + decimalOffset; // Asset decimals + decimal offset to combat inflation attacks
 
     strategy = IStrategy(_strategy);
     strategyConfig = _strategyConfig;
@@ -76,7 +77,7 @@ abstract contract AdapterBase is
 
     if (_strategy != address(0)) _verifyAndSetupStrategy(_requiredSigs);
 
-    highWaterMark = 1e18;
+    highWaterMark = 1e9;
     lastHarvest = block.timestamp;
   }
 
@@ -119,8 +120,6 @@ abstract contract AdapterBase is
     return assets;
   }
 
-  event log(uint256 a);
-
   /**
    * @notice Deposit `assets` into the underlying protocol and mints vault shares to `receiver`.
    * @dev Executes harvest if `harvestCooldown` is passed since last invocation.
@@ -132,12 +131,8 @@ abstract contract AdapterBase is
     uint256 shares
   ) internal virtual override nonReentrant {
     IERC20(asset()).safeTransferFrom(caller, address(this), assets);
-
-    uint256 underlyingBalance_ = _underlyingBalance();
+    
     _protocolDeposit(assets, shares);
-    // Update the underlying balance to prevent inflation attacks
-    underlyingBalance += _underlyingBalance() - underlyingBalance_;
-
     _mint(receiver, shares);
 
     harvest();
@@ -200,10 +195,7 @@ abstract contract AdapterBase is
     }
 
     if (!paused()) {
-      uint256 underlyingBalance_ = _underlyingBalance();
       _protocolWithdraw(assets, shares);
-      // Update the underlying balance to prevent inflation attacks
-      underlyingBalance -= underlyingBalance_ - _underlyingBalance();
     }
 
     _burn(owner, shares);
@@ -219,8 +211,6 @@ abstract contract AdapterBase is
                             ACCOUNTING LOGIC
     //////////////////////////////////////////////////////////////*/
 
-  uint256 internal underlyingBalance;
-
   /**
    * @notice Total amount of underlying `asset` token managed by adapter.
    * @dev Return assets held by adapter if paused.
@@ -231,22 +221,28 @@ abstract contract AdapterBase is
 
   /**
    * @notice Total amount of underlying `asset` token managed by adapter through the underlying protocol.
-   * @dev This should utilize `underlyingBalance` to return the currently held assets and prevent inflation attacks.
    */
   function _totalAssets() internal view virtual returns (uint256) {}
 
   /**
-   * @notice Total amount of underlying balance owned by the adapter.
-   * @dev This could be the balance of shares held by the adapter or a similar balance call to prevent inflation attacks.
-   * @dev It should NOT return the actual asset amount.
+   * @notice Convert either `assets` or `shares` into underlying shares.
+   * @dev This is an optional function for underlying protocols that require deposit/withdrawal amounts in their shares.
+   * @dev Returns shares if totalSupply is 0.
    */
-  function _underlyingBalance() internal view virtual returns (uint256) {}
+  function convertToUnderlyingShares(uint256 assets, uint256 shares) public view virtual returns (uint256) {
+    uint256 supply = totalSupply();
+    return supply == 0 ? shares : _convertToUnderlyingShares(assets, shares, supply);
+  }
 
   /**
-   * @notice Convert either `assets` or `shares` into underlying shares
-   * @dev This is an optional function for underlying protocols that require deposit/withdrawal amounts in their shares.
+   * @notice Convert 'shares' into underlying shares.
+   * @dev Conversion logic for convertToUnderlyingShares.
    */
-  function convertToUnderlyingShares(uint256 assets, uint256 shares) public view virtual returns (uint256) {}
+  function _convertToUnderlyingShares(
+    uint256 assets,
+    uint256 shares,
+    uint256 supply
+  ) internal view virtual returns (uint256) {}
 
   /// @notice See _previewDeposit natspec
   function previewDeposit(uint256 assets) public view virtual override returns (uint256) {
@@ -309,12 +305,11 @@ abstract contract AdapterBase is
     override
     returns (uint256 shares)
   {
-    uint256 _totalSupply = totalSupply();
-    uint256 _totalAssets = totalAssets();
-    return
-      (assets == 0 || _totalSupply == 0 || _totalAssets == 0)
-        ? assets
-        : assets.mulDiv(_totalSupply, _totalAssets, rounding);
+    return assets.mulDiv(totalSupply() + 10**decimalOffset, totalAssets() + 1, rounding);
+  }
+
+  function _convertToAssets(uint256 shares, Math.Rounding rounding) internal view virtual override returns (uint256) {
+    return shares.mulDiv(totalAssets() + 1, totalSupply() + 10**decimalOffset, rounding);
   }
 
   /*//////////////////////////////////////////////////////////////
@@ -477,16 +472,12 @@ abstract contract AdapterBase is
   /// @notice Pause Deposits and withdraw all funds from the underlying protocol. Caller must be owner.
   function pause() external onlyOwner {
     _protocolWithdraw(totalAssets(), totalSupply());
-    // Update the underlying balance to prevent inflation attacks
-    underlyingBalance = 0;
     _pause();
   }
 
   /// @notice Unpause Deposits and deposit all funds into the underlying protocol. Caller must be owner.
   function unpause() external onlyOwner {
     _protocolDeposit(totalAssets(), totalSupply());
-    // Update the underlying balance to prevent inflation attacks
-    underlyingBalance = _underlyingBalance();
     _unpause();
   }
 
