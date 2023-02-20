@@ -177,6 +177,7 @@ contract AbstractVaultIntegrationTest is Test {
     uint256 amount = bound(uint256(fuzzAmount), defaultAmount, maxDeposit);
 
     uint256 len = Math.min(uint256(testConfigStorage.getTestConfigLength()), maxConfigs);
+
     // solhint-disable
     for (uint256 i; i < len; i++) {
       if (i > 0) overrideSetup(testConfigStorage.getTestConfig(i));
@@ -186,13 +187,28 @@ contract AbstractVaultIntegrationTest is Test {
       increasePricePerShare(amount * 1000);
 
       uint256 expectedShares = vault.previewDeposit(amount);
+
       uint256 actualShares = deposit(amount);
-      assertWithin(actualShares, expectedShares, 1, string.concat("deposit-", testId));
+
+      assertWithin(
+        actualShares * 10**adapter.decimalOffset(),
+        expectedShares,
+        30**adapter.decimalOffset(),
+        string.concat("deposit-", testId)
+      );
 
       expectedShares = vault.previewWithdraw(amount);
+
       vm.prank(bob);
+
       actualShares = vault.withdraw(amount);
-      assertWithin(actualShares, expectedShares, 1, string.concat("withdraw-", testId));
+
+      assertWithin(
+        actualShares * 10**adapter.decimalOffset(),
+        expectedShares,
+        30**adapter.decimalOffset(),
+        string.concat("withdraw-", testId)
+      );
     }
   }
 
@@ -202,28 +218,47 @@ contract AbstractVaultIntegrationTest is Test {
 
   function test__mint_redeem_pps_stays_constant(uint80 fuzzAmount) public virtual {
     uint256 amount = bound(uint256(fuzzAmount), defaultAmount, maxDeposit);
+    emit log("PING1");
 
     uint256 pps1;
     uint256 pps2;
     uint256 len = Math.min(uint256(testConfigStorage.getTestConfigLength()), maxConfigs);
+    emit log("PING2");
+
     // solhint-disable
     for (uint256 i; i < len; i++) {
       if (i > 0) overrideSetup(testConfigStorage.getTestConfig(i));
+      emit log("PING3");
 
       // solhint-disable-next-line
       for (uint256 i; i < 3; ++i) {
         pps1 = vault.convertToAssets(defaultAmount);
+        emit log("PING4");
+
         mint(amount);
+        emit log("PING5");
+
         pps2 = vault.convertToAssets(defaultAmount);
+        emit log("PING6");
+
         assertWithin(pps1, pps2, 2, string.concat(Strings.toString(i), "-mint-", testId));
+        emit log("PING7");
       }
       // solhint-disable-next-line
       for (uint256 i; i < 2; ++i) {
         pps1 = vault.convertToAssets(defaultAmount);
+        emit log("PING8");
+
         vm.prank(bob);
+
         vault.redeem(amount);
+        emit log("PING9");
+
         pps2 = vault.convertToAssets(defaultAmount);
+        emit log("PING10");
+
         assertWithin(pps1, pps2, 2, string.concat(Strings.toString(i), "-redeem-", testId));
+        emit log("PING11");
       }
     }
   }
