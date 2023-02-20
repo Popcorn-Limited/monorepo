@@ -39,10 +39,7 @@ contract AaveV3Adapter is AdapterBase, WithRewards {
 
   /// @notice The Aave LendingPool contract
   ILendingPool public lendingPool;
-
-  uint256 internal constant RAY = 1e27;
-  uint256 internal constant halfRAY = RAY / 2;
-
+  
   /*//////////////////////////////////////////////////////////////
                             CONSTRUCTOR
     //////////////////////////////////////////////////////////////*/
@@ -96,15 +93,7 @@ contract AaveV3Adapter is AdapterBase, WithRewards {
   //////////////////////////////////////////////////////////////*/
 
   function _totalAssets() internal view override returns (uint256) {
-    uint256 underlyingBalance_ = underlyingBalance;
-    return
-      underlyingBalance_ == 0
-        ? 0
-        : (underlyingBalance * lendingPool.getReserveNormalizedIncome(asset()) + halfRAY) / RAY;
-  }
-
-  function _underlyingBalance() internal view override returns (uint256) {
-    return aToken.scaledBalanceOf(address(this));
+    return aToken.balanceOf(address(this));
   }
 
   /// @notice The token rewarded if the aave liquidity mining is active
