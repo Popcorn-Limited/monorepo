@@ -5,14 +5,17 @@ pragma solidity ^0.8.15;
 
 import { IWithRewards } from "../../interfaces/vault/IWithRewards.sol";
 import { IEIP165 } from "../../interfaces/IEIP165.sol";
+import { MathUpgradeable as Math } from "openzeppelin-contracts-upgradeable/utils/math/MathUpgradeable.sol";
 import { ERC4626Upgradeable as ERC4626, ERC20Upgradeable as ERC20 } from "openzeppelin-contracts-upgradeable/token/ERC20/extensions/ERC4626Upgradeable.sol";
 import { IUniswapRouterV2 } from "../../interfaces/external/uni/IUniswapRouterV2.sol";
 import { IAdapter } from "../../interfaces/vault/IAdapter.sol";
 import { IWithRewards } from "../../interfaces/vault/IWithRewards.sol";
 
 contract StrategyBase {
+  using Math for uint256;
+
   // Tokens used
-  address public immutable native;
+  address public native;
   address public lpPair;
   address public lpToken0;
   address public lpToken1;
@@ -20,6 +23,10 @@ contract StrategyBase {
   // Protocol contracts info (masterchefs, poolIds, etc.)
   address[] public protocolAddresses;
   uint256[] public protocolUints;
+
+  // Vault and Strategist
+  address public vault;
+  address public strategist;
 
   // Rewards and Routes
   address public router;
@@ -57,7 +64,7 @@ contract StrategyBase {
     //////////////////////////////////////////////////////////////*/
 
   // Setup for routes and allowances in constructor.
-  function _setUp() internal virtual {}
+  function _setUp(address[] memory _nativeToLp0Route, address[] memory _nativeToLp1Route) internal virtual {}
 
   // Give allowances necessary for deposit, withdraw, lpToken swaps, and addLiquidity.
   function _giveAllowances() internal virtual {}
@@ -66,7 +73,7 @@ contract StrategyBase {
   function giveRewardAllowances() public {
     uint256 len = rewardTokens.length;
     for (uint256 i; i < len; ++i) {
-      IERC20(rewardTokens[i]).safeApprove(router, type(uint256).max);
+      ERC20(rewardTokens[i]).approve(router, type(uint256).max);
     }
   }
 
@@ -103,7 +110,7 @@ contract StrategyBase {
 
   // Check to see that at least 1 reward is available.
   function _rewardsCheck() internal view virtual returns (bool) {
-    uint256[] rewards;
+    uint256[] memory rewards;
     rewards = rewardsAvailable();
 
     uint256 len = rewards.length;
@@ -118,7 +125,7 @@ contract StrategyBase {
 
   // Check to make sure all rewardTokens have correct respective routes.
   function _rewardRoutesCheck() internal view virtual returns (bool) {
-    uint256 len = rewards.length;
+    uint256 len = rewardTokens.length;
 
     for (uint256 i; i < len; ++i) {
       if (rewardTokens[i] != rewardRoutes[i][0] || native != rewardRoutes[i][rewardRoutes.length - 1]) return false;
@@ -134,7 +141,7 @@ contract StrategyBase {
 
   // Get rewardRoute at index.
   function getRewardRoute(uint256 rewardIndex) public view virtual returns (address[] memory) {
-    return rewardRoute[index];
+    return rewardRoutes[rewardIndex];
   }
 
   /*//////////////////////////////////////////////////////////////
