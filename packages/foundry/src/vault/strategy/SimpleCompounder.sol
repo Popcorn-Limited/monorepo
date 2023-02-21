@@ -51,13 +51,4 @@ contract SimpleCompounder is StrategyBase {
 
   // Return available rewards for all rewardTokens.
   function rewardsAvailable() public view override returns (uint256[] memory) {}
-
-  // Calculate the total underlaying 'want' held by the strat.
-  function balanceOf() public view override returns (uint256) {}
-
-  // Calculates how much 'want' this contract holds.
-  function balanceOfWant() public view override returns (uint256) {}
-
-  // Calculates how much 'want' the strategy has working in the farm.
-  function balanceOfPool() public view override returns (uint256) {}
 }
