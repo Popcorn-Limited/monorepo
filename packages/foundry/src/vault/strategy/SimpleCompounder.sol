@@ -12,6 +12,8 @@ contract SimpleCompounder is StrategyBase {
     address _lpPair,
     address _vault,
     address _strategist,
+    address[] memory _rewardTokens,
+    address[][] memory _rewardRoutes,
     address[] memory _nativeToLp0Route,
     address[] memory _nativeToLp1Route
   ) public {
@@ -19,6 +21,9 @@ contract SimpleCompounder is StrategyBase {
     lpPair = _lpPair;
     vault = _vault;
     strategist = _strategist;
+
+    rewardTokens = _rewardTokens;
+    rewardRoutes = _rewardRoutes;
 
     _setUp(_nativeToLp0Route, nativeToLp1Route);
   }
