@@ -37,9 +37,10 @@ contract MasterChefAdapter is AdapterBase, WithRewards {
     address registry,
     bytes memory masterchefInitData
   ) external initializer {
-    (address _masterChef, uint256 _pid) = abi.decode(masterchefInitData, (address, uint256));
+    //need to check that the poolID and the asset is correct
+    uint256 _pid = abi.decode(masterchefInitData, (uint256));
 
-    masterChef = IMasterChef(_masterChef);
+    masterChef = IMasterChef(registry);
 
     __AdapterBase_init(adapterInitData);
 
@@ -68,9 +69,9 @@ contract MasterChefAdapter is AdapterBase, WithRewards {
   /// @notice Calculates the total amount of underlying tokens the Vault holds.
   /// @return The total amount of underlying tokens the Vault holds.
 
-  //   function totalAssets() public view virtual override returns (uint256) {
-  //     return paused() ? IERC20(asset()).balanceOf(address(this)) : rewards.balanceOf(address(this));
-  //   }
+  function totalAssets() public view virtual override returns (uint256) {
+    return paused() ? IERC20(asset()).balanceOf(address(this)) : rewards.balanceOf(address(this));
+  }
 
   function previewWithdraw(uint256 assets) public view virtual override returns (uint256) {
     return _convertToShares(assets, Math.Rounding.Up);

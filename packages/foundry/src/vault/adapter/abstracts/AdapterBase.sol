@@ -131,7 +131,7 @@ abstract contract AdapterBase is
     uint256 shares
   ) internal virtual override nonReentrant {
     IERC20(asset()).safeTransferFrom(caller, address(this), assets);
-    
+
     _protocolDeposit(assets, shares);
     _mint(receiver, shares);
 
