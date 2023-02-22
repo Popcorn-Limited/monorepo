@@ -3,22 +3,17 @@
 
 pragma solidity ^0.8.15;
 
-import { IWithRewards } from "../../interfaces/vault/IWithRewards.sol";
-import { IEIP165 } from "../../interfaces/IEIP165.sol";
+import { IWithRewards } from "../../../interfaces/vault/IWithRewards.sol";
+import { IEIP165 } from "../../../interfaces/IEIP165.sol";
 import { MathUpgradeable as Math } from "openzeppelin-contracts-upgradeable/utils/math/MathUpgradeable.sol";
 import { ERC4626Upgradeable as ERC4626, ERC20Upgradeable as ERC20 } from "openzeppelin-contracts-upgradeable/token/ERC20/extensions/ERC4626Upgradeable.sol";
-import { IUniswapRouterV2 } from "../../interfaces/external/uni/IUniswapRouterV2.sol";
-import { IAdapter } from "../../interfaces/vault/IAdapter.sol";
-import { IWithRewards } from "../../interfaces/vault/IWithRewards.sol";
+import { IUniswapRouterV2 } from "../../../interfaces/external/uni/IUniswapRouterV2.sol";
+import { IAdapter } from "../../../interfaces/vault/IAdapter.sol";
+import { IWithRewards } from "../../../interfaces/vault/IWithRewards.sol";
 
-contract StrategyBase {
-  using Math for uint256;
-
-  // Tokens used
+contract CompounderStrategyBase {
+  // Native token on chain
   address public native;
-  address public lpPair;
-  address public lpToken0;
-  address public lpToken1;
 
   // Protocol contracts info (masterchefs, poolIds, etc.)
   address[] public protocolAddresses;
@@ -28,28 +23,18 @@ contract StrategyBase {
   address public vault;
   address public strategist;
 
-  // Rewards and Routes
-  address public router;
+  // Router and Routes
   /**
-   * @dev rewardToken index must match respective index in rewardRoutes.
+   * @dev rewardToken index must match respective index in rewardRoutes and pendingRewards.
    * @dev Routes follow this pattern: [rewardToken, ...hops, native]
    */
-  address[] public rewardTokens;
-  address[][] public rewardToNativeRoutes;
-  address[] public nativeToLp0Route;
-  address[] public nativeToLp1Route;
-
-  struct LpRoutes {
-      address[] public rewardTokens,
-  address[][] public rewardToNativeRoutes,
-  address[] public nativeToLp0Route,
-  address[] public nativeToLp1Route
-  }
+  address public router;
+  address[][] public rewardsToNativeRoutes;
 
   // Data management
   bool public isVaultFunctional;
-  bool public isAssetLiquidityPair;
   uint256 public lastHarvest;
+  address[] public rewardTokens;
   uint256[] public pendingRewards;
 
   // Events
@@ -72,13 +57,6 @@ contract StrategyBase {
   /*//////////////////////////////////////////////////////////////
                           SETUP
     //////////////////////////////////////////////////////////////*/
-
-  // Setup for routes and allowances in constructor.
-  function _setUp(
-    address[] memory _nativeToLp0Route,
-    address[] memory _nativeToLp1Route,
-    address[][] memory _rewardToNativeRoutes
-  ) internal virtual {}
 
   // Give allowances necessary for deposit, withdraw, lpToken swaps, and addLiquidity.
   function _giveAllowances() internal virtual {}
@@ -113,38 +91,17 @@ contract StrategyBase {
     emit Harvest();
   }
 
-  // Logic to claim rewards, swap rewards to native, charge fees, swap native to lpTokens, add liquidity, and re-deposit.
-  function _compound() internal virtual {
-    _claimRewards();
-
-    if (isAssetLiquidityPair == true) {
-      _swapRewardsToNative();
-      _swapNativeToLpTokens();
-      _addLiquidity();
-    } else {
-      _swapRewards();
-    }
-
-    _redeposit();
-  }
-
-  // Claim rewards from underlying protocol
-  function _claimRewards() internal virtual {}
-
-  // Swap rewards
-  function _swapRewards() internal virtual {}
+  // Logic to claim rewards, swap rewards to native, charge fees, swap native to deposit token, add liquidity (if necessary), and re-deposit.
+  function _compound() internal virtual {}
 
   // Swap all rewards to native token
   function _swapRewardsToNative() internal virtual {}
 
-  // Swap native tokens for lpTokens
-  function _swapNativeToLpTokens() internal virtual {}
+  // Claim rewards from underlying protocol
+  function _claimRewards() internal virtual {}
 
-  // Use lpTokens to create lpPair
-  function _addLiquidity() internal virtual {}
-
-  // redeposit lpPair into underlying protocol
-  function _redeposit() internal virtual {}
+  // deposit lpPair into underlying protocol
+  function _deposit() internal virtual {}
 
   /*//////////////////////////////////////////////////////////////
                           REWARDS AND ROUTES
@@ -152,6 +109,15 @@ contract StrategyBase {
 
   // Return available rewards for all rewardTokens.
   function rewardsAvailable() public virtual returns (uint256[] memory) {}
+
+  // Set rewards tokens according to rewardToNativeRoutes
+  function _setRewardTokens(address[][] memory _rewardsToNativeRoutes) internal virtual {
+    uint256 len = _rewardsToNativeRoutes.length;
+    for (uint256 i; i < len; ++i) {
+      if (_rewardsToNativeRoutes[i][_rewardsToNativeRoutes.length - 1] != native) revert InvalidRoute();
+      rewardTokens[i] = _rewardsToNativeRoutes[i][0];
+    }
+  }
 
   // Check to see that at least 1 reward is available.
   function _rewardsCheck() internal virtual returns (bool) {
@@ -173,8 +139,8 @@ contract StrategyBase {
 
     for (uint256 i; i < len; ++i) {
       if (
-        rewardTokens[i] != rewardToNativeRoutes[i][0] ||
-        native != rewardToNativeRoutes[i][rewardToNativeRoutes.length - 1]
+        rewardTokens[i] != rewardsToNativeRoutes[i][0] ||
+        native != rewardsToNativeRoutes[i][rewardsToNativeRoutes.length - 1]
       ) return false;
     }
 
@@ -183,12 +149,12 @@ contract StrategyBase {
 
   // Set rewardRoute at index.
   function setRewardRoute(uint256 rewardIndex, address[] calldata route) public virtual {
-    rewardToNativeRoutes[rewardIndex] = route;
+    rewardsToNativeRoutes[rewardIndex] = route;
   }
 
   // Get rewardRoute at index.
   function getRewardRoute(uint256 rewardIndex) public view virtual returns (address[] memory) {
-    return rewardToNativeRoutes[rewardIndex];
+    return rewardsToNativeRoutes[rewardIndex];
   }
 
   /*//////////////////////////////////////////////////////////////
@@ -214,31 +180,5 @@ contract StrategyBase {
     uint256 _amount
   ) internal {
     IUniswapRouterV2(router).swapExactTokensForTokens(_amount, 0, _route, address(this), block.timestamp + 60);
-  }
-
-  /*//////////////////////////////////////////////////////////////
-                          LIQUIDITY LOGIC
-    //////////////////////////////////////////////////////////////*/
-  // Add liquidity to UniswapV2-compatible protocol.
-  function _uniV2AddLiquidity(
-    address _router,
-    address _lpToken0,
-    address _lpToken1
-  ) internal {
-    uint256 lpToken0Amount = ERC20(_lpToken0).balanceOf(address(this));
-    uint256 lpToken1Amount = ERC20(_lpToken1).balanceOf(address(this));
-
-    if (lpToken0Amount > 0 && lpToken1Amount > 0) {
-      IUniswapRouterV2(_router).addLiquidity(
-        _lpToken0,
-        _lpToken1,
-        lpToken0Amount,
-        lpToken1Amount,
-        0,
-        0,
-        address(this),
-        block.timestamp + 60
-      );
-    }
   }
 }

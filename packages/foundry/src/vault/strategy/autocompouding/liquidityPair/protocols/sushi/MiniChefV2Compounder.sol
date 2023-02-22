@@ -2,27 +2,24 @@
 // Docgen-SOLC: 0.8.15
 
 pragma solidity ^0.8.15;
-import { StrategyBase, ERC20 } from "./StrategyBase2.sol";
-import { IUniswapRouterV2 } from "../../interfaces/external/uni/IUniswapRouterV2.sol";
-import { IUniswapV2Pair } from "../../interfaces/external/uni/IUniswapV2Pair.sol";
-import { IMiniChefV2 } from "../../interfaces/external/IMiniChefV2.sol";
-import { IRewarder } from "../../interfaces/external/IRewarder.sol";
+import { LiquidityPairBase, ERC20 } from "../../LiquidityPairBase.sol";
+import { IUniswapRouterV2 } from "../../../../../../interfaces/external/uni/IUniswapRouterV2.sol";
+import { IUniswapV2Pair } from "../../../../../../interfaces/external/uni/IUniswapV2Pair.sol";
+import { IMiniChefV2 } from "../../../../../../interfaces/external/IMiniChefV2.sol";
+import { IRewarder } from "../../../../../../interfaces/external/IRewarder.sol";
 
-contract SimpleSushiCompounder is StrategyBase {
+contract LiquidityPairCompounder is LiquidityPairBase {
   constructor(
-    bool _isLiquidityPair,
     address _native,
     address _lpPair,
     address _vault,
     address _strategist,
     address[] memory _protocolAddresses,
     uint256[] memory _protocolUints,
-    address[][] memory _rewardToNativeRoutes,
+    address[][] memory _rewardsToNativeRoutes,
     address[] memory _nativeToLp0Route,
     address[] memory _nativeToLp1Route
   ) public {
-    isAssetLiquidityPair = _isAssetLiquidityPair;
-
     native = _native;
     lpPair = _lpPair;
     vault = _vault;
@@ -31,9 +28,9 @@ contract SimpleSushiCompounder is StrategyBase {
     protocolAddresses = _protocolAddresses;
     protocolUints = _protocolUints;
 
-    rewardToNativeRoutes = _rewardToNativeRoutes;
+    rewardsToNativeRoutes = _rewardsToNativeRoutes;
 
-    _setUp(nativeToLp0Route, nativeToLp1Route, rewardToNativeRoutes);
+    _setUp(rewardsToNativeRoutes, nativeToLp0Route, nativeToLp1Route);
   }
 
   /*//////////////////////////////////////////////////////////////
@@ -42,9 +39,9 @@ contract SimpleSushiCompounder is StrategyBase {
 
   // Setup for routes and allowances in constructor.
   function _setUp(
+    address[][] memory _rewardsToNativeRoutes,
     address[] memory _nativeToLp0Route,
-    address[] memory _nativeToLp1Route,
-    address[][] memory _rewardToNativeRoutes
+    address[] memory _nativeToLp1Route
   ) internal override {
     lpToken0 = IUniswapV2Pair(lpPair).token0();
     if (_nativeToLp0Route[0] != native) revert InvalidRoute();
@@ -56,9 +53,10 @@ contract SimpleSushiCompounder is StrategyBase {
     if (_nativeToLp1Route[_nativeToLp1Route.length - 1] != lpToken1) revert InvalidRoute();
     nativeToLp1Route = _nativeToLp1Route;
 
-    uint256 len = rewardToNativeRoutes.length;
+    uint256 len = _rewardsToNativeRoutes.length;
     for (uint256 i; i < len; ++i) {
-      rewardTokens[i] = rewardToNativeRoutes[i][0];
+      if (_rewardsToNativeRoutes[i][_rewardsToNativeRoutes.length - 1] != native) revert InvalidRoute();
+      rewardTokens[i] = rewardsToNativeRoutes[i][0];
     }
 
     _giveInitialAllowances();
@@ -66,9 +64,9 @@ contract SimpleSushiCompounder is StrategyBase {
 
   // Give allowances for protocol deposit and rewardToken swaps.
   function _giveAllowances() internal override {
-    address minichef = protocolAddresses[0];
+    address chef = protocolAddresses[0];
 
-    ERC20(lpPair).approve(minichef, type(uint256).max);
+    ERC20(lpPair).approve(chef, type(uint256).max);
     ERC20(native).approve(router, type(uint256).max);
     ERC20(lpToken0).approve(router, type(uint256).max);
     ERC20(lpToken1).approve(router, type(uint256).max);
@@ -80,18 +78,18 @@ contract SimpleSushiCompounder is StrategyBase {
 
   // Claim rewards from underlying protocol
   function _claimRewards() internal override {
-    address minichef = protocolAddresses[0];
+    address chef = protocolAddresses[0];
     uint256 pid = protocolUints[0];
 
-    IMiniChefV2(minichef).harvest(pid, address(this));
+    IMiniChefV2(chef).harvest(pid, address(this));
   }
 
   // Swap all rewards to native token
   function _swapRewardsToNative() internal override {
-    uint256 len = rewardToNativeRoutes.length;
+    uint256 len = rewardsToNativeRoutes.length;
     for (uint256 i; i < len; ++i) {
-      address reward = rewardToNativeRoutes[i][0];
-      address[] memory rewardRoute = rewardToNativeRoutes[i];
+      address reward = rewardsToNativeRoutes[i][0];
+      address[] memory rewardRoute = rewardsToNativeRoutes[i];
       uint256 rewardAmount = ERC20(reward).balanceOf(address(this));
       if (rewardAmount > 0) {
         _uniV2Swap(router, rewardRoute, rewardAmount);
@@ -111,21 +109,21 @@ contract SimpleSushiCompounder is StrategyBase {
   }
 
   // redeposit lpPair into underlying protocol
-  function _redeposit() internal override {
-    address minichef = protocolAddresses[0];
+  function _deposit() internal override {
+    address chef = protocolAddresses[0];
     uint256 pid = protocolUints[0];
 
-    IMiniChefV2(minichef).deposit(pid, ERC20(lpPair).balanceOf(address(this)), address(this));
+    IMiniChefV2(chef).deposit(pid, ERC20(lpPair).balanceOf(address(this)), address(this));
   }
 
   // Return available rewards for all rewardTokens.
   function rewardsAvailable() public override returns (uint256[] memory) {
-    address minichef = protocolAddresses[0];
+    address chef = protocolAddresses[0];
     uint256 pid = protocolUints[0];
 
-    pendingRewards.push(IMiniChefV2(minichef).pendingSushi(pid, address(this)));
+    pendingRewards.push(IMiniChefV2(chef).pendingSushi(pid, address(this)));
 
-    address rewarder = IMiniChefV2(minichef).rewarder(pid);
+    address rewarder = IMiniChefV2(chef).rewarder(pid);
 
     (, uint256[] memory rewardAmounts) = IRewarder(rewarder).pendingTokens(pid, address(this), 0);
 
