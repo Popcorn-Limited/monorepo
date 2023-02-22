@@ -666,7 +666,7 @@ contract VaultController is Owned {
   /// @notice Verify that the caller is the creator of the vault or owner of `VaultController` (admin rights).
   function _verifyCreatorOrOwner(address vault) internal returns (VaultMetadata memory metadata) {
     metadata = vaultRegistry.getVault(vault);
-    if (msg.sender != metadata.creator || msg.sender != owner) revert NotSubmitterNorOwner(msg.sender);
+    if (msg.sender != metadata.creator && msg.sender != owner) revert NotSubmitterNorOwner(msg.sender);
   }
 
   /// @notice Verify that the caller is the creator of the vault.
