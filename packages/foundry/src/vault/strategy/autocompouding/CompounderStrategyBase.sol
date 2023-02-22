@@ -24,11 +24,11 @@ contract CompounderStrategyBase {
   address public strategist;
 
   // Router and Routes
+  address public swapRouter;
   /**
    * @dev rewardToken index must match respective index in rewardRoutes and pendingRewards.
    * @dev Routes follow this pattern: [rewardToken, ...hops, native]
    */
-  address public router;
   address[][] public rewardsToNativeRoutes;
 
   // Data management
@@ -65,7 +65,7 @@ contract CompounderStrategyBase {
   function giveRewardAllowances() public {
     uint256 len = rewardTokens.length;
     for (uint256 i; i < len; ++i) {
-      ERC20(rewardTokens[i]).approve(router, type(uint256).max);
+      ERC20(rewardTokens[i]).approve(swapRouter, type(uint256).max);
     }
   }
 
@@ -179,6 +179,6 @@ contract CompounderStrategyBase {
     address[] memory _route,
     uint256 _amount
   ) internal {
-    IUniswapRouterV2(router).swapExactTokensForTokens(_amount, 0, _route, address(this), block.timestamp + 60);
+    IUniswapRouterV2(_router).swapExactTokensForTokens(_amount, 0, _route, address(this), block.timestamp + 60);
   }
 }

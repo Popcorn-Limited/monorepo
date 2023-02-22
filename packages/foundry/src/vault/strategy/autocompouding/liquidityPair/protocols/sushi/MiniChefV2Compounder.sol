@@ -5,13 +5,14 @@ pragma solidity ^0.8.15;
 import { LiquidityPairBase, ERC20 } from "../../LiquidityPairBase.sol";
 import { IUniswapRouterV2 } from "../../../../../../interfaces/external/uni/IUniswapRouterV2.sol";
 import { IUniswapV2Pair } from "../../../../../../interfaces/external/uni/IUniswapV2Pair.sol";
-import { IMiniChefV2 } from "../../../../../../interfaces/external/IMiniChefV2.sol";
+import { IMiniChefV2 } from "../../../../../../interfaces/external/sushi/IMiniChefV2.sol";
 import { IRewarder } from "../../../../../../interfaces/external/IRewarder.sol";
 
 contract LiquidityPairCompounder is LiquidityPairBase {
   constructor(
     address _native,
     address _lpPair,
+    address _swapRouter,
     address _vault,
     address _strategist,
     address[] memory _protocolAddresses,
@@ -22,6 +23,8 @@ contract LiquidityPairCompounder is LiquidityPairBase {
   ) public {
     native = _native;
     lpPair = _lpPair;
+    swapRouter = _swapRouter;
+
     vault = _vault;
     strategist = _strategist;
 
@@ -67,9 +70,9 @@ contract LiquidityPairCompounder is LiquidityPairBase {
     address chef = protocolAddresses[0];
 
     ERC20(lpPair).approve(chef, type(uint256).max);
-    ERC20(native).approve(router, type(uint256).max);
-    ERC20(lpToken0).approve(router, type(uint256).max);
-    ERC20(lpToken1).approve(router, type(uint256).max);
+    ERC20(native).approve(swapRouter, type(uint256).max);
+    ERC20(lpToken0).approve(swapRouter, type(uint256).max);
+    ERC20(lpToken1).approve(swapRouter, type(uint256).max);
   }
 
   /*//////////////////////////////////////////////////////////////
@@ -92,20 +95,20 @@ contract LiquidityPairCompounder is LiquidityPairBase {
       address[] memory rewardRoute = rewardsToNativeRoutes[i];
       uint256 rewardAmount = ERC20(reward).balanceOf(address(this));
       if (rewardAmount > 0) {
-        _uniV2Swap(router, rewardRoute, rewardAmount);
+        _uniV2Swap(swapRouter, rewardRoute, rewardAmount);
       }
     }
   }
 
   // Swap native tokens for lpTokens
   function _swapNativeToLpTokens() internal override {
-    _uniV2Swap(router, nativeToLp0Route, ERC20(native).balanceOf(address(this)) / 2);
-    _uniV2Swap(router, nativeToLp1Route, ERC20(native).balanceOf(address(this)));
+    _uniV2Swap(swapRouter, nativeToLp0Route, ERC20(native).balanceOf(address(this)) / 2);
+    _uniV2Swap(swapRouter, nativeToLp1Route, ERC20(native).balanceOf(address(this)));
   }
 
   // Use lpTokens to create lpPair
   function _addLiquidity() internal override {
-    _uniV2AddLiquidity(router, lpToken0, lpToken1);
+    _uniV2AddLiquidity(swapRouter, lpToken0, lpToken1);
   }
 
   // redeposit lpPair into underlying protocol
