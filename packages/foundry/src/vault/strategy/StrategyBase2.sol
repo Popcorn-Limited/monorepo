@@ -35,12 +35,13 @@ contract StrategyBase {
    * @dev Paths follow this pattern: [rewardToken, ...hops, native]
    */
   address[] public rewardTokens;
-  address[][] public rewardRoutes;
+  address[][] public rewardToNativeRoutes;
   address[] public nativeToLp0Route;
   address[] public nativeToLp1Route;
 
   // Data management
   uint256 public lastHarvest;
+  uint256[] public pendingRewards;
 
   // Events
   event Harvest();
@@ -64,7 +65,11 @@ contract StrategyBase {
     //////////////////////////////////////////////////////////////*/
 
   // Setup for routes and allowances in constructor.
-  function _setUp(address[] memory _nativeToLp0Route, address[] memory _nativeToLp1Route) internal virtual {}
+  function _setUp(
+    address[] memory _nativeToLp0Route,
+    address[] memory _nativeToLp1Route,
+    address[][] memory _rewardToNativeRoutes
+  ) internal virtual {}
 
   // Give allowances necessary for deposit, withdraw, lpToken swaps, and addLiquidity.
   function _giveAllowances() internal virtual {}
@@ -99,23 +104,47 @@ contract StrategyBase {
   }
 
   // Logic to claim rewards, swap rewards to native, charge fees, swap native to lpTokens, add liquidity, and re-deposit.
-  function _compound() internal virtual {}
+  function _compound() internal virtual {
+    _claimRewards();
+    _swapRewardsToNative();
+    _chargeFees();
+    _swapNativeToLpTokens();
+    _addLiquidity();
+    _redeposit();
+  }
+
+  // Claim rewards from underlying protocol
+  function _claimRewards() internal virtual {}
+
+  // Swap all rewards to native token
+  function _swapRewardsToNative() internal virtual {}
+
+  // Charge fees for Popcorn
+  function _chargeFees() internal virtual {}
+
+  // Swap native tokens for lpTokens
+  function _swapNativeToLpTokens() internal virtual {}
+
+  // Use lpTokens to create lpPair
+  function _addLiquidity() internal virtual {}
+
+  // redeposit lpPair into underlying protocol
+  function _redeposit() internal virtual {}
 
   /*//////////////////////////////////////////////////////////////
                           REWARDS AND ROUTES
     //////////////////////////////////////////////////////////////*/
 
   // Return available rewards for all rewardTokens.
-  function rewardsAvailable() public view virtual returns (uint256[] memory) {}
+  function rewardsAvailable() public virtual returns (uint256[] memory) {}
 
   // Check to see that at least 1 reward is available.
-  function _rewardsCheck() internal view virtual returns (bool) {
-    uint256[] memory rewards;
-    rewards = rewardsAvailable();
+  function _rewardsCheck() internal virtual returns (bool) {
+    pendingRewards = rewardsAvailable();
 
-    uint256 len = rewards.length;
+    uint256 len = pendingRewards.length;
     for (uint256 i; i < len; ++i) {
-      if (rewards[i] > 0) {
+      if (pendingRewards[i] > 0) {
         return true;
       }
     }
@@ -128,7 +157,10 @@ contract StrategyBase {
     uint256 len = rewardTokens.length;
 
     for (uint256 i; i < len; ++i) {
-      if (rewardTokens[i] != rewardRoutes[i][0] || native != rewardRoutes[i][rewardRoutes.length - 1]) return false;
+      if (
+        rewardTokens[i] != rewardToNativeRoutes[i][0] ||
+        native != rewardToNativeRoutes[i][rewardToNativeRoutes.length - 1]
+      ) return false;
     }
 
     return true;
@@ -136,12 +168,12 @@ contract StrategyBase {
 
   // Set rewardRoute at index.
   function setRewardRoute(uint256 rewardIndex, address[] memory route) public virtual {
-    rewardRoutes[rewardIndex] = route;
+    rewardToNativeRoutes[rewardIndex] = route;
   }
 
   // Get rewardRoute at index.
   function getRewardRoute(uint256 rewardIndex) public view virtual returns (address[] memory) {
-    return rewardRoutes[rewardIndex];
+    return rewardToNativeRoutes[rewardIndex];
   }
 
   /*//////////////////////////////////////////////////////////////
@@ -156,4 +188,42 @@ contract StrategyBase {
 
   // Calculates how much 'want' the strategy has working in the farm.
   function balanceOfPool() public view virtual returns (uint256) {}
+
+  /*//////////////////////////////////////////////////////////////
+                          SWAPPING LOGIC
+    //////////////////////////////////////////////////////////////*/
+  // Swap compatible with UniswapV2 interface.
+  function _uniV2Swap(
+    address _router,
+    address[] memory _route,
+    uint256 _amount
+  ) internal {
+    IUniswapRouterV2(router).swapExactTokensForTokens(_amount, 0, _route, address(this), block.timestamp + 60);
+  }
+
+  /*//////////////////////////////////////////////////////////////
+                          LIQUIDITY LOGIC
+    //////////////////////////////////////////////////////////////*/
+  // Add liquidity to UniswapV2-compatible protocol.
+  function _uniV2AddLiquidity(
+    address _router,
+    address _lpToken0,
+    address _lpToken1
+  ) internal {
+    uint256 lpToken0Amount = ERC20(_lpToken0).balanceOf(address(this));
+    uint256 lpToken1Amount = ERC20(_lpToken1).balanceOf(address(this));
+
+    if (lpToken0Amount > 0 && lpToken1Amount > 0) {
+      IUniswapRouterV2(_router).addLiquidity(
+        _lpToken0,
+        _lpToken1,
+        lpToken0Amount,
+        lpToken1Amount,
+        0,
+        0,
+        address(this),
+        block.timestamp + 60
+      );
+    }
+  }
 }
