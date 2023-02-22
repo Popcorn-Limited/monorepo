@@ -68,7 +68,7 @@ contract StargateCompounder is SingleStakeBase {
   }
 
   /*//////////////////////////////////////////////////////////////
-                          HARVEST LOGIC
+                          COMPOUND LOGIC
     //////////////////////////////////////////////////////////////*/
 
   // Claim rewards from underlying protocol
