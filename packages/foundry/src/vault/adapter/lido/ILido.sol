@@ -4,6 +4,8 @@
 
 pragma solidity ^0.8.15;
 
+import { ERC4626Upgradeable as ERC4626, IERC20, IERC20Metadata, ERC20, SafeERC20, Math, IStrategy, IAdapter } from "../abstracts/AdapterBase.sol";
+
 /**
  * @title Liquid staking pool
  *
@@ -37,6 +39,8 @@ interface ILido {
    * @notice Resume pool routine operations
    */
   function resume() external;
+
+  function weth() external view returns (address);
 
   /**
    * @notice Stops accepting new Ether to the protocol
@@ -227,6 +231,8 @@ interface ILido {
    */
   function setELRewardsVault(address _executionLayerRewardsVault) external;
 
+  function token() external view returns (address);
+
   // The `executionLayerRewardsVault` was set as the execution layer rewards vault for Lido
   event ELRewardsVaultSet(address executionLayerRewardsVault);
 
@@ -287,4 +293,34 @@ interface ILido {
       uint256 beaconValidators,
       uint256 beaconBalance
     );
+}
+
+interface VaultAPI is IERC20 {
+  function deposit(uint256 amount) external returns (uint256);
+
+  function withdraw(uint256 maxShares) external returns (uint256);
+
+  function pricePerShare() external view returns (uint256);
+
+  function totalAssets() external view returns (uint256);
+
+  function totalSupply() external view returns (uint256);
+
+  function getTotalShares() external view returns (uint256);
+
+  function balanceOf(address _account) external view returns (uint256);
+
+  function depositLimit() external view returns (uint256);
+
+  function token() external view returns (address);
+
+  function weth() external view returns (address);
+
+  function lastReport() external view returns (uint256);
+
+  function lockedProfit() external view returns (uint256);
+
+  function lockedProfitDegradation() external view returns (uint256);
+
+  function totalDebt() external view returns (uint256);
 }
