@@ -35,7 +35,7 @@ contract SingleStakeBase is CompounderStrategyBase {
   ) internal virtual {}
 
   /*//////////////////////////////////////////////////////////////
-                          HARVEST LOGIC
+                          COMPOUND LOGIC
     //////////////////////////////////////////////////////////////*/
 
   // Logic to claim rewards, swap rewards to native, charge fees, swap native to lpTokens, add liquidity, and re-deposit.
