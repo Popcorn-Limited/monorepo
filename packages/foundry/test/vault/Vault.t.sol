@@ -765,6 +765,13 @@ contract VaultTest is Test {
     assertEq(withdrawal, 1);
     assertEq(management, 1);
     assertEq(performance, 1);
+    (uint256 propDeposit, uint256 propWithdrawal, uint256 propManagement, uint256 propPerformance) = vault
+      .proposedFees();
+    assertEq(propDeposit, 0);
+    assertEq(propWithdrawal, 0);
+    assertEq(propManagement, 0);
+    assertEq(propPerformance, 0);
+    assertEq(vault.proposedFeeTime(), 0);
   }
 
   function testFail__changeFees_NonOwner() public {
@@ -777,6 +784,10 @@ contract VaultTest is Test {
     vault.proposeFees(newVaultFees);
 
     // Didnt respect 3 days before propsal and change
+    vault.changeFees();
+  }
+
+  function testFail__changeFees_after_init() public {
     vault.changeFees();
   }
 
@@ -871,6 +882,9 @@ contract VaultTest is Test {
     assertEq(asset.allowance(address(vault), address(newAdapter)), type(uint256).max);
 
     assertEq(vault.highWaterMark(), oldHWM);
+
+    assertEq(vault.proposedAdapterTime(),0);
+    assertEq(address(vault.proposedAdapter()),address(0));
   }
 
   function testFail__changeAdapter_NonOwner() public {
@@ -884,6 +898,10 @@ contract VaultTest is Test {
     vault.proposeAdapter(IERC4626(address(newAdapter)));
 
     // Didnt respect 3 days before propsal and change
+    vault.changeAdapter();
+  }
+
+  function testFail__changeAdapter_after_init() public {
     vault.changeAdapter();
   }
 
