@@ -31,15 +31,23 @@ contract StrategyBase {
   // Rewards and Routes
   address public router;
   /**
-   * @dev rewardToken index must match respective path index.
-   * @dev Paths follow this pattern: [rewardToken, ...hops, native]
+   * @dev rewardToken index must match respective index in rewardRoutes.
+   * @dev Routes follow this pattern: [rewardToken, ...hops, native]
    */
   address[] public rewardTokens;
   address[][] public rewardToNativeRoutes;
   address[] public nativeToLp0Route;
   address[] public nativeToLp1Route;
 
+  struct LpRoutes {
+      address[] public rewardTokens,
+  address[][] public rewardToNativeRoutes,
+  address[] public nativeToLp0Route,
+  address[] public nativeToLp1Route
+  }
+
   // Data management
+  bool public isVaultFunctional;
   bool public isAssetLiquidityPair;
   uint256 public lastHarvest;
   uint256[] public pendingRewards;
@@ -100,6 +108,7 @@ contract StrategyBase {
     }
 
     lastHarvest = block.timestamp;
+    if (isVaultFunctional == false) isVaultFunctional = true;
 
     emit Harvest();
   }
