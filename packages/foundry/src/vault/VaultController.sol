@@ -235,7 +235,11 @@ contract VaultController is Owned {
 
     adapter = abi.decode(returnData, (address));
 
-    adminProxy.execute(adapter, abi.encodeWithSelector(IAdapter.setPerformanceFee.selector, performanceFee));
+    (success, returnData) = adminProxy.execute(
+      adapter,
+      abi.encodeWithSelector(IAdapter.setPerformanceFee.selector, performanceFee)
+    );
+    if (!success) revert UnderlyingError(returnData);
   }
 
   /// @notice Encodes adapter init call. Was moved into its own function to fix "stack too deep" error.
