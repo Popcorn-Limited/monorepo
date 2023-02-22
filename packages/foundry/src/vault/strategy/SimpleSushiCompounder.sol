@@ -8,8 +8,9 @@ import { IUniswapV2Pair } from "../../interfaces/external/uni/IUniswapV2Pair.sol
 import { IMiniChefV2 } from "../../interfaces/external/IMiniChefV2.sol";
 import { IRewarder } from "../../interfaces/external/IRewarder.sol";
 
-contract SimpleCompounder is StrategyBase {
+contract SimpleSushiCompounder is StrategyBase {
   constructor(
+    bool _isLiquidityPair,
     address _native,
     address _lpPair,
     address _vault,
@@ -20,6 +21,8 @@ contract SimpleCompounder is StrategyBase {
     address[] memory _nativeToLp0Route,
     address[] memory _nativeToLp1Route
   ) public {
+    isAssetLiquidityPair = _isAssetLiquidityPair;
+
     native = _native;
     lpPair = _lpPair;
     vault = _vault;
@@ -95,9 +98,6 @@ contract SimpleCompounder is StrategyBase {
       }
     }
   }
-
-  // Charge fees for Popcorn
-  function _chargeFees() internal override {}
 
   // Swap native tokens for lpTokens
   function _swapNativeToLpTokens() internal override {

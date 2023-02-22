@@ -40,6 +40,7 @@ contract StrategyBase {
   address[] public nativeToLp1Route;
 
   // Data management
+  bool public isAssetLiquidityPair;
   uint256 public lastHarvest;
   uint256[] public pendingRewards;
 
@@ -106,21 +107,26 @@ contract StrategyBase {
   // Logic to claim rewards, swap rewards to native, charge fees, swap native to lpTokens, add liquidity, and re-deposit.
   function _compound() internal virtual {
     _claimRewards();
-    _swapRewardsToNative();
-    _chargeFees();
-    _swapNativeToLpTokens();
-    _addLiquidity();
+
+    if (isAssetLiquidityPair == true) {
+      _swapRewardsToNative();
+      _swapNativeToLpTokens();
+      _addLiquidity();
+    } else {
+      _swapRewards();
+    }
+
     _redeposit();
   }
 
   // Claim rewards from underlying protocol
   function _claimRewards() internal virtual {}
 
+  // Swap rewards
+  function _swapRewards() internal virtual {}
+
   // Swap all rewards to native token
   function _swapRewardsToNative() internal virtual {}
-
-  // Charge fees for Popcorn
-  function _chargeFees() internal virtual {}
 
   // Swap native tokens for lpTokens
   function _swapNativeToLpTokens() internal virtual {}
@@ -167,7 +173,7 @@ contract StrategyBase {
   }
 
   // Set rewardRoute at index.
-  function setRewardRoute(uint256 rewardIndex, address[] memory route) public virtual {
+  function setRewardRoute(uint256 rewardIndex, address[] calldata route) public virtual {
     rewardToNativeRoutes[rewardIndex] = route;
   }
 
