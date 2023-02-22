@@ -173,6 +173,8 @@ contract MultiRewardStaking is ERC4626Upgradeable, OwnedUpgradeable {
 
       if (rewardAmount == 0) revert ZeroRewards(_rewardTokens[i]);
 
+      accruedRewards[user][_rewardTokens[i]] = 0;
+
       EscrowInfo memory escrowInfo = escrowInfos[_rewardTokens[i]];
 
       if (escrowInfo.escrowPercentage > 0) {
@@ -182,8 +184,6 @@ contract MultiRewardStaking is ERC4626Upgradeable, OwnedUpgradeable {
         _rewardTokens[i].transfer(user, rewardAmount);
         emit RewardsClaimed(user, _rewardTokens[i], rewardAmount, false);
       }
-
-      accruedRewards[user][_rewardTokens[i]] = 0;
     }
   }
 
