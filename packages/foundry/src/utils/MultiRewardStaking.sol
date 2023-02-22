@@ -124,7 +124,7 @@ contract MultiRewardStaking is ERC4626Upgradeable, OwnedUpgradeable {
     address owner,
     uint256 assets,
     uint256 shares
-  ) internal override accrueRewards(caller, receiver) {
+  ) internal override accrueRewards(owner, receiver) {
     if (caller != owner) _approve(owner, msg.sender, allowance(owner, msg.sender) - shares);
 
     _burn(owner, shares);
