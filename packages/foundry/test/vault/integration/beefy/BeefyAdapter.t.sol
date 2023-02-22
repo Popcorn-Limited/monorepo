@@ -43,6 +43,10 @@ contract BeefyAdapterTest is AbstractAdapterTest {
     // Endorse Beefy Vault
     permissionRegistry = IPermissionRegistry(address(new PermissionRegistry(address(this))));
     setPermission(_beefyVault, true, false);
+    if (_beefyBooster != address(0)) {
+      // Endorse Beefy Booster
+      setPermission(_beefyBooster, true, false);
+    }
 
     setUpBaseTest(IERC20(IBeefyVault(beefyVault).want()), adapter, address(permissionRegistry), 10, "Beefy ", true);
 
@@ -127,6 +131,7 @@ contract BeefyAdapterTest is AbstractAdapterTest {
     createAdapter();
     (address _beefyVault, address _beefyBooster) = abi.decode(testConfigStorage.getTestConfig(0), (address, address));
     setPermission(_beefyVault, false, false);
+    if (_beefyBooster != address(0)) setPermission(_beefyBooster, true, false);
 
     vm.expectRevert(abi.encodeWithSelector(BeefyAdapter.NotEndorsed.selector, _beefyVault));
     adapter.initialize(
@@ -152,6 +157,7 @@ contract BeefyAdapterTest is AbstractAdapterTest {
     );
 
     // Using stMATIC-MATIC vault Booster on polygon
+    setPermission(0xBb77dDe3101B8f9B71755ABe2F69b64e79AE4A41, true, false);
     vm.expectRevert(
       abi.encodeWithSelector(
         BeefyAdapter.InvalidBeefyBooster.selector,
