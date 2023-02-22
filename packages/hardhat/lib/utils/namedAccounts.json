@@ -462,11 +462,11 @@
   },
   "popStaking": {
     "addresses": {
-      "arbitrum": "0xfaAddC93baf78e89DCf37bA67943E1bE8F37Bb8c",
       "bsc": "0xfaAddC93baf78e89DCf37bA67943E1bE8F37Bb8c",
       "mainnet": "0xeEE1d31297B042820349B03027aB3b13a9406184",
       "polygon": "0xe8af04AD759Ad790Aa5592f587D3cFB3ecC6A9dA",
-      "rinkeby": "0xbd085541Cf339a7B3a5112CeA9440542a02B29E5"
+      "rinkeby": "0xbd085541Cf339a7B3a5112CeA9440542a02B29E5",
+      "optimism": "0x3Fcc4eA703054453D8697b58C5CB2585F8883C05"
     },
     "metadata": {
       "contractName": "PopLocker",
@@ -549,7 +549,6 @@
   },
   "popUsdcLpStaking": {
     "addresses": {
-      "arbitrum": "0xfaAddC93baf78e89DCf37bA67943E1bE8F37Bb8c",
       "bsc": "0xfaAddC93baf78e89DCf37bA67943E1bE8F37Bb8c",
       "polygon": "0xe6f315f4e0dB78185239fFFb368D6d188f6b926C",
       "rinkeby": "0x2B2C9812A5561DC3B0d99bbeEd8690002191Ea4D"
@@ -587,11 +586,11 @@
   },
   "rewardsEscrow": {
     "addresses": {
-      "arbitrum": "0x0C0991CB6e1c8456660A49aa200B71de6158b85C",
       "bsc": "0x0C0991CB6e1c8456660A49aa200B71de6158b85C",
       "mainnet": "0xb5cb5710044D1074097c17B7535a1cF99cBfb17F",
       "polygon": "0xa82cAA79F35f7d6B6f1EC1971878F3474C894565",
-      "rinkeby": "0xdC7EF4A3ce57484fFAA8A61797E04A385Fdb7ACa"
+      "rinkeby": "0xdC7EF4A3ce57484fFAA8A61797E04A385Fdb7ACa",
+      "optimism": "0x432a97a2dB81bDE9978dd2430E1415fd0029a68A"
     },
     "metadata": {
       "priceResolver": "pop",

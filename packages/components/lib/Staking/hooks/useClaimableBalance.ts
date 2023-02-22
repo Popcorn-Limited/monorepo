@@ -1,9 +1,15 @@
-import { BigNumber } from "ethers";
+import { BigNumber, constants } from "ethers";
 import { useNamedAccounts } from "@popcorn/components/lib/utils";
-import { Pop } from "../../types";
+import { BigNumberWithFormatted, Pop } from "../../types";
 import { Address, useContractRead } from "wagmi";
+import { formatAndRoundBigNumber } from "@popcorn/utils";
 
-export const useClaimableBalance: Pop.Hook<BigNumber> = ({ chainId, address, account, enabled }: Pop.StdProps) => {
+export const useClaimableBalance: Pop.Hook<BigNumberWithFormatted> = ({
+  chainId,
+  address,
+  account,
+  enabled,
+}: Pop.StdProps) => {
   const [metadata] = useNamedAccounts(chainId as any, (!!address && [address]) || []);
   const _apyResolver = ["synthetix", "convex"].includes(metadata?.apyResolver);
 
@@ -13,7 +19,7 @@ export const useClaimableBalance: Pop.Hook<BigNumber> = ({ chainId, address, acc
       : !!account && !!address && !!chainId && _apyResolver;
 
   if (metadata?.apyResolver === "synthetix") {
-    return useContractRead({
+    const result = useContractRead({
       enabled: _enabled,
       scopeKey: `staking:synthetix:claimable:${chainId}:${address}:${account}`,
       cacheOnBlock: true,
@@ -23,6 +29,12 @@ export const useClaimableBalance: Pop.Hook<BigNumber> = ({ chainId, address, acc
       functionName: "earned(address)",
       args: [account],
     }) as Pop.HookResult<BigNumber>;
+    return {
+      ...result,
+      data: result?.data
+        ? { value: result?.data, formatted: formatAndRoundBigNumber(result?.data, 18) }
+        : { value: constants.Zero, formatted: "0" },
+    } as unknown as Pop.HookResult<BigNumberWithFormatted>;
   } else {
     const result = useContractRead({
       enabled: _enabled,
@@ -68,7 +80,10 @@ export const useClaimableBalance: Pop.Hook<BigNumber> = ({ chainId, address, acc
     });
     return {
       ...result,
-      data: result?.data ? result?.data[0].amount : undefined,
-    } as unknown as Pop.HookResult<BigNumber>;
+      data:
+        result?.data && result?.data.length > 0
+          ? { value: result?.data[0].amount, formatted: formatAndRoundBigNumber(result?.data[0].amount, 18) }
+          : { value: constants.Zero, formatted: "0" },
+    } as unknown as Pop.HookResult<BigNumberWithFormatted>;
   }
 };

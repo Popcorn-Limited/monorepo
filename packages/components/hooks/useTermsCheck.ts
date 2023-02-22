@@ -6,18 +6,8 @@ import { useContext } from "react";
 import { useAccount, useSignMessage } from "wagmi";
 
 const getShortTerms = (timestamp) => {
-  return `
-  By signing this message you agree to the following:
-  - I understand this software is experimental and interacting with smart contracts includes risk including loss of funds. 
-  - I am not the person or entities who reside in, are citizens of, are incorporated in, or have a registered office in the United States of America, the European Union or any Prohibited Localities including Myanmar (Burma), Cote D'Ivoire (Ivory Coast), Cuba, Crimea and Sevastopol, Democratic Republic of
-  Congo, Iran, Iraq, Libya, Mali, Nicaragua, Democratic People’s Republic of Korea (North Korea), Somalia,
-  Sudan, Syria, Yemen, Zimbabwe or any other state, country or region that is subject to sanctions
-  enforced by the United States, the United Kingdom or the European Union.
-  - I will not in the future access this site or use popcorndao.finance dApp while located within the United States or any Prohibited Localities.
-  - I am not using, and will not in the future use, a VPN to mask my physical location from a restricted territory.
-  - I am lawfully permitted to access this site and use popcorndao.finance under the laws of the jurisdiction on which I reside and am located.
-: ${timestamp}
-  `;
+  return `Welcome to Popcorn!
+  Please read the disclaimer carefully before accessing, interacting with, or using the popcorndao.finance, consisting of the popcorndao.finance smart contract technology stack and the user interface for the Popcorn DeFi application, as well as any other application developed in the future (together the “Popcorn Software”). By signing this message, you confirm that you have carefully read this disclaimer(https://www.popcorndao.finance/disclaimer). - ${timestamp}`;
 };
 
 export default function useTermsCheck() {

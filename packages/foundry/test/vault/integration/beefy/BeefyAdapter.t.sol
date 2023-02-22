@@ -192,4 +192,35 @@ contract BeefyAdapterTest is AbstractAdapterTest {
 
     assertGe(shares, defaultAmount, testId);
   }
+
+  /*//////////////////////////////////////////////////////////////
+                              PAUSE
+    //////////////////////////////////////////////////////////////*/
+
+  function test__unpause() public override {
+    _mintFor(defaultAmount * 3, bob);
+
+    vm.prank(bob);
+    adapter.deposit(defaultAmount, bob);
+
+    uint256 oldTotalAssets = adapter.totalAssets();
+    uint256 oldTotalSupply = adapter.totalSupply();
+    uint256 oldIouBalance = iouBalance();
+
+    adapter.pause();
+    adapter.unpause();
+
+    // We simply deposit back into the external protocol
+    // TotalSupply and Assets dont change
+    // @dev overriden _delta_
+    assertApproxEqAbs(oldTotalAssets, adapter.totalAssets(), 50, "totalAssets");
+    assertApproxEqAbs(oldTotalSupply, adapter.totalSupply(), 50, "totalSupply");
+    assertApproxEqAbs(asset.balanceOf(address(adapter)), 0, 50, "asset balance");
+    assertApproxEqAbs(iouBalance(), oldIouBalance, 50, "iou balance");
+
+    // Deposit and mint dont revert
+    vm.startPrank(bob);
+    adapter.deposit(defaultAmount, bob);
+    adapter.mint(defaultAmount, bob);
+  }
 }

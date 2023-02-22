@@ -27,7 +27,7 @@ export interface ContractMetadata {
   alias?: string;
 }
 export const useContractMetadata: Pop.Hook<ContractMetadata> = ({ chainId, address, enabled, alias }: Props) => {
-  const [metadata] = useNamedAccounts(chainId.toString() as any, (address && [address]) || []);
+  const [metadata] = useNamedAccounts(chainId.toString() as any, (address && [address]) || []) as any;
 
   useLog({ metadata, address, chainId, enabled, alias });
 

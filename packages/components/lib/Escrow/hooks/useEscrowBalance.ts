@@ -49,7 +49,10 @@ export const useEscrowBalance: Pop.Hook<BigNumberWithFormatted> = ({
           value: data as BigNumber,
           formatted: formatAndRoundBigNumber(data as BigNumber, 18),
         }
-      : undefined,
+      : {
+          value: constants.Zero,
+          formatted: "0",
+        },
     status,
   } as Pop.HookResult<BigNumberWithFormatted>;
 };

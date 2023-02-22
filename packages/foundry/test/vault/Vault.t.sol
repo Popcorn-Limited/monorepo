@@ -163,6 +163,19 @@ contract VaultTest is Test {
     );
   }
 
+  function testFail__initialize_fees_too_high() public {
+    address vaultAddress = address(new Vault());
+
+    vault = Vault(vaultAddress);
+    vault.initialize(
+      IERC20(address(asset)),
+      IERC4626(address(adapter)),
+      VaultFees({ deposit: 1e18, withdrawal: 0, management: 0, performance: 0 }),
+      feeRecipient,
+      address(this)
+    );
+  }
+
   function testFail__initialize_feeRecipient_addressZero() public {
     address vaultAddress = address(new Vault());
 

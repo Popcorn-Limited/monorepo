@@ -8,7 +8,8 @@
     "target": "ES2017",
     "lib": ["es2019", "dom"],
     "isolatedModules": true,
-    "incremental": true
+    "incremental": true,
+    "strict": false
   },
   "exclude": ["dist", ".next", "out", "next.config.js"],
   "include": [

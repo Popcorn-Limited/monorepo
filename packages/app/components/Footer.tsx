@@ -1,3 +1,3 @@
-import Footer from "@popcorn/popcorn-network/components/Footer";
+import Footer from "@popcorn/components/components/Footer";
 
 export default Footer;

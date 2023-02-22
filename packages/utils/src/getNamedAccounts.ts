@@ -25,9 +25,9 @@ export const getNamedAccounts = <Chain extends DeploymentChainIds>(
   contractAddresses?: Array<DeploymentContractsKeys<Chain>> | undefined[],
 ): GetNamedAccountsResponse => {
   if (Number(chainId) === 0) {
-    return Object.keys(deployments).flatMap((chainId) =>
-      Object.keys(deployments[chainId].contracts).map((contract) => map(chainId, contract)),
-    );
+    return Object.keys(deployments).map((chainId) =>
+      Object.keys(deployments[chainId].contracts).flat().map((contract) => map(chainId, contract)),
+    ).flat();
   }
   return !contractAddresses
     ? Object.keys(deployments[chainId].contracts).map((contract) => map(chainId, contract))

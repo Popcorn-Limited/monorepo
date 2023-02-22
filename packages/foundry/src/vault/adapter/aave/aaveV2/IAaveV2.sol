@@ -37,11 +37,7 @@ interface IAToken is IERC20, IScaledBalanceToken {
 
 // Aave liquidity mining interface
 interface IAaveMining {
-  function claimRewards(
-    address[] calldata assets,
-    uint256 amount,
-    address to
-  ) external returns (uint256);
+  function claimRewards(address[] calldata assets, uint256 amount, address to) external returns (uint256);
 
   /*
    * LEGACY **************************
@@ -49,32 +45,16 @@ interface IAaveMining {
    * @param asset The address of the reference asset of the distribution
    * @return The asset index, the emission per second and the last updated timestamp
    **/
-  function assets(address asset)
-    external
-    view
-    returns (
-      uint128,
-      uint128,
-      uint256
-    );
+  function assets(address asset) external view returns (uint128, uint128, uint256);
 
   function REWARD_TOKEN() external view returns (address);
 }
 
 // Aave lending pool interface
 interface ILendingPool {
-  function deposit(
-    address asset,
-    uint256 amount,
-    address onBehalfOf,
-    uint16 referralCode
-  ) external;
+  function deposit(address asset, uint256 amount, address onBehalfOf, uint16 referralCode) external;
 
-  function withdraw(
-    address asset,
-    uint256 amount,
-    address to
-  ) external returns (uint256);
+  function withdraw(address asset, uint256 amount, address to) external returns (uint256);
 
   /**
    * @dev Returns the state and configuration of the reserve
@@ -88,12 +68,7 @@ interface ILendingPool {
 
 // Aave protocol data provider
 interface IProtocolDataProvider {
-  function getReserveTokensAddresses(address asset)
-    external
-    view
-    returns (
-      address aTokenAddress,
-      address stableDebtTokenAddress,
-      address variableDebtTokenAddress
-    );
+  function getReserveTokensAddresses(
+    address asset
+  ) external view returns (address aTokenAddress, address stableDebtTokenAddress, address variableDebtTokenAddress);
 }

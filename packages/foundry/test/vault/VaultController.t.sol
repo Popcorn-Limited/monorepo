@@ -615,10 +615,9 @@ contract VaultControllerTest is Test {
       1 ether
     );
     // Check the initial deposit
-    assertEq(asset.balanceOf(adapterClone), 1 ether);
-    assertEq(IERC20(adapterClone).balanceOf(vaultClone), 1 ether);
+    assertEq(IERC20(adapterClone).balanceOf(vaultClone), 1 ether * 1e9);
     assertEq(IERC4626(adapterClone).totalAssets(), 1 ether);
-    assertEq(IERC4626(adapterClone).totalSupply(), 1 ether);
+    assertEq(IERC4626(adapterClone).totalSupply(), 1 ether * 1e9);
     assertEq(IERC20(vaultClone).balanceOf(address(this)), 1 ether);
     assertEq(IERC4626(vaultClone).totalAssets(), 1 ether);
     assertEq(IERC4626(vaultClone).totalSupply(), 1 ether);
@@ -699,10 +698,9 @@ contract VaultControllerTest is Test {
     );
 
     // Check the initial deposit
-    assertEq(asset.balanceOf(adapterClone), 1 ether);
-    assertEq(IERC20(adapterClone).balanceOf(address(this)), 1 ether);
+    assertEq(IERC20(adapterClone).balanceOf(address(this)), 1 ether * 1e9);
     assertEq(IERC4626(adapterClone).totalAssets(), 1 ether);
-    assertEq(IERC4626(adapterClone).totalSupply(), 1 ether);
+    assertEq(IERC4626(adapterClone).totalSupply(), 1 ether * 1e9);
   }
 
   function testFail__deployAdapter_token_rejected() public {
