@@ -96,15 +96,6 @@ contract AaveV2Adapter is AdapterBase, WithRewards {
     return aToken.balanceOf(address(this));
   }
 
-  /// @notice The amount of aave shares to withdraw given an mount of adapter shares
-  function _convertToUnderlyingShares(
-    uint256,
-    uint256 shares,
-    uint256 supply
-  ) internal view override returns (uint256) {
-    return shares.mulDiv(aToken.balanceOf(address(this)), supply, Math.Rounding.Up);
-  }
-
   /// @notice The token rewarded if the aave liquidity mining is active
   function rewardTokens() external view override returns (address[] memory) {
     address[] memory _rewardTokens = new address[](1);

@@ -42,7 +42,7 @@ contract CompoundV2AdapterTest is AbstractAdapterTest {
     (bool isListed, , ) = comptroller.markets(address(cToken));
     assertEq(isListed, true, "InvalidAsset");
 
-    setUpBaseTest(IERC20(asset), adapter, address(comptroller), 10, "CompoundV2", true);
+    setUpBaseTest(IERC20(asset), address(new CompoundV2Adapter()), address(comptroller), 10, "CompoundV2", true);
 
     vm.label(address(cToken), "cToken");
     vm.label(address(comptroller), "comptroller");
@@ -55,10 +55,6 @@ contract CompoundV2AdapterTest is AbstractAdapterTest {
   /*//////////////////////////////////////////////////////////////
                           HELPER
     //////////////////////////////////////////////////////////////*/
-
-  function createAdapter() public override {
-    adapter = IAdapter(address(new CompoundV2Adapter()));
-  }
 
   function increasePricePerShare(uint256 amount) public override {
     deal(address(asset), address(cToken), asset.balanceOf(address(cToken)) + amount);

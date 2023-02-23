@@ -39,7 +39,7 @@ contract AaveV2AdapterTest is AbstractAdapterTest {
     lendingPool = ILendingPool(aToken.POOL());
     aaveMining = IAaveMining(aToken.getIncentivesController());
 
-    setUpBaseTest(IERC20(_asset), adapter, aaveDataProvider, 10, "AaveV2 ", true);
+    setUpBaseTest(IERC20(_asset), address(new AaveV2Adapter()), aaveDataProvider, 10, "AaveV2 ", true);
 
     vm.label(address(aToken), "aToken");
     vm.label(address(lendingPool), "lendingPool");
@@ -53,10 +53,6 @@ contract AaveV2AdapterTest is AbstractAdapterTest {
   /*//////////////////////////////////////////////////////////////
                           HELPER
     //////////////////////////////////////////////////////////////*/
-
-  function createAdapter() public override {
-    adapter = IAdapter(address(new AaveV2Adapter()));
-  }
 
   function increasePricePerShare(uint256 amount) public override {
     deal(address(asset), address(aToken), asset.balanceOf(address(aToken)) + amount);

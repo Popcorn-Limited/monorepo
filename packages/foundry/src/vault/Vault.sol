@@ -27,7 +27,7 @@ contract Vault is ERC20Upgradeable, ReentrancyGuardUpgradeable, PausableUpgradea
   using SafeERC20 for IERC20;
   using Math for uint256;
 
-  uint256 constant SECONDS_PER_YEAR = 365.25 days;
+  uint256 internal constant SECONDS_PER_YEAR = 365.25 days;
 
   IERC20 public asset;
   uint8 internal _decimals;
@@ -38,6 +38,10 @@ contract Vault is ERC20Upgradeable, ReentrancyGuardUpgradeable, PausableUpgradea
 
   error InvalidAsset();
   error InvalidAdapter();
+
+  constructor() {
+    _disableInitializers();
+  }
 
   /**
    * @notice Initialize a new Vault.
@@ -75,8 +79,6 @@ contract Vault is ERC20Upgradeable, ReentrancyGuardUpgradeable, PausableUpgradea
     INITIAL_CHAIN_ID = block.chainid;
     INITIAL_DOMAIN_SEPARATOR = computeDomainSeparator();
 
-    feesUpdatedAt = block.timestamp;
-
     if (fees_.deposit >= 1e18 || fees_.withdrawal >= 1e18 || fees_.management >= 1e18 || fees_.performance >= 1e18)
       revert InvalidVaultFees();
     fees = fees_;
@@ -85,6 +87,10 @@ contract Vault is ERC20Upgradeable, ReentrancyGuardUpgradeable, PausableUpgradea
     feeRecipient = feeRecipient_;
 
     contractName = keccak256(abi.encodePacked("Popcorn", name(), block.timestamp, "Vault"));
+
+    feesUpdatedAt = block.timestamp;
+    highWaterMark = 1e18;
+    quitPeriod = 3 days;
 
     emit VaultInitialized(contractName, address(asset));
   }
@@ -106,6 +112,7 @@ contract Vault is ERC20Upgradeable, ReentrancyGuardUpgradeable, PausableUpgradea
     uint256 shares
   );
 
+  error ZeroAmount();
   error InvalidReceiver();
 
   function deposit(uint256 assets) public returns (uint256) {
@@ -118,18 +125,13 @@ contract Vault is ERC20Upgradeable, ReentrancyGuardUpgradeable, PausableUpgradea
    * @param receiver Receiver of issued vault shares.
    * @return shares Quantity of vault shares issued to `receiver`.
    */
-  function deposit(uint256 assets, address receiver)
-    public
-    nonReentrant
-    whenNotPaused
-    syncFeeCheckpoint
-    returns (uint256 shares)
-  {
+  function deposit(uint256 assets, address receiver) public nonReentrant whenNotPaused returns (uint256 shares) {
     if (receiver == address(0)) revert InvalidReceiver();
 
     uint256 feeShares = convertToShares(assets.mulDiv(uint256(fees.deposit), 1e18, Math.Rounding.Down));
 
     shares = convertToShares(assets) - feeShares;
+    if (shares == 0) revert ZeroAmount();
 
     if (feeShares > 0) _mint(feeRecipient, feeShares);
 
@@ -152,14 +154,9 @@ contract Vault is ERC20Upgradeable, ReentrancyGuardUpgradeable, PausableUpgradea
    * @param receiver Receiver of issued vault shares.
    * @return assets Quantity of assets deposited by caller.
    */
-  function mint(uint256 shares, address receiver)
-    public
-    nonReentrant
-    whenNotPaused
-    syncFeeCheckpoint
-    returns (uint256 assets)
-  {
+  function mint(uint256 shares, address receiver) public nonReentrant whenNotPaused returns (uint256 assets) {
     if (receiver == address(0)) revert InvalidReceiver();
+    if (shares == 0) revert ZeroAmount();
 
     uint256 depositFee = uint256(fees.deposit);
 
@@ -193,10 +190,11 @@ contract Vault is ERC20Upgradeable, ReentrancyGuardUpgradeable, PausableUpgradea
     uint256 assets,
     address receiver,
     address owner
-  ) public nonReentrant syncFeeCheckpoint returns (uint256 shares) {
+  ) public nonReentrant returns (uint256 shares) {
     if (receiver == address(0)) revert InvalidReceiver();
 
     shares = convertToShares(assets);
+    if (shares == 0) revert ZeroAmount();
 
     uint256 withdrawalFee = uint256(fees.withdrawal);
 
@@ -232,6 +230,7 @@ contract Vault is ERC20Upgradeable, ReentrancyGuardUpgradeable, PausableUpgradea
     address owner
   ) public nonReentrant returns (uint256 assets) {
     if (receiver == address(0)) revert InvalidReceiver();
+    if (shares == 0) revert ZeroAmount();
 
     if (msg.sender != owner) _approve(owner, msg.sender, allowance(owner, msg.sender) - shares);
 
@@ -397,7 +396,7 @@ contract Vault is ERC20Upgradeable, ReentrancyGuardUpgradeable, PausableUpgradea
                             FEE LOGIC
     //////////////////////////////////////////////////////////////*/
 
-  uint256 public highWaterMark = 1e18;
+  uint256 public highWaterMark;
   uint256 public assetsCheckpoint;
   uint256 public feesUpdatedAt;
 
@@ -415,16 +414,17 @@ contract Vault is ERC20Upgradeable, ReentrancyGuardUpgradeable, PausableUpgradea
 
     if (shareValue > highWaterMark) highWaterMark = shareValue;
 
-    if (managementFee > 0) feesUpdatedAt = block.timestamp;
+    if (totalFee > 0 && currentAssets > 0) {
+      uint256 supply = totalSupply();
+      uint256 feeInShare = supply == 0
+        ? totalFee
+        : totalFee.mulDiv(supply, currentAssets - totalFee, Math.Rounding.Down);
+      _mint(feeRecipient, feeInShare);
+    }
 
-    if (totalFee > 0 && currentAssets > 0) _mint(feeRecipient, convertToShares(totalFee));
+    feesUpdatedAt = block.timestamp;
 
     _;
-  }
-
-  modifier syncFeeCheckpoint() {
-    _;
-    highWaterMark = convertToAssets(1e18);
   }
 
   /*//////////////////////////////////////////////////////////////
@@ -467,7 +467,9 @@ contract Vault is ERC20Upgradeable, ReentrancyGuardUpgradeable, PausableUpgradea
     if (proposedFeeTime == 0 || block.timestamp < proposedFeeTime + quitPeriod) revert NotPassedQuitPeriod(quitPeriod);
 
     emit ChangedFees(fees, proposedFees);
+
     fees = proposedFees;
+    feesUpdatedAt = block.timestamp;
 
     delete proposedFees;
     delete proposedFeeTime;
@@ -542,7 +544,7 @@ contract Vault is ERC20Upgradeable, ReentrancyGuardUpgradeable, PausableUpgradea
                           RAGE QUIT LOGIC
     //////////////////////////////////////////////////////////////*/
 
-  uint256 public quitPeriod = 3 days;
+  uint256 public quitPeriod;
 
   event QuitPeriodSet(uint256 quitPeriod);
 

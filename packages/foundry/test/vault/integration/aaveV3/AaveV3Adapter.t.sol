@@ -39,7 +39,7 @@ contract AaveV3AdapterTest is AbstractAdapterTest {
     lendingPool = ILendingPool(aToken.POOL());
     aaveIncentives = IAaveIncentives(aToken.getIncentivesController());
 
-    setUpBaseTest(IERC20(_asset), adapter, aaveDataProvider, 10, "AaveV2 ", true);
+    setUpBaseTest(IERC20(_asset), address(new AaveV3Adapter()), aaveDataProvider, 10, "AaveV2 ", true);
 
     vm.label(address(aToken), "aToken");
     vm.label(address(lendingPool), "lendingPool");
@@ -48,6 +48,7 @@ contract AaveV3AdapterTest is AbstractAdapterTest {
     vm.label(address(this), "test");
 
     adapter.initialize(abi.encode(asset, address(this), strategy, 0, sigs, ""), externalRegistry, "");
+    
     defaultAmount = 10**IERC20Metadata(address(asset)).decimals();
     minFuzz = defaultAmount * 10;
     raise = defaultAmount * 100_000_000;
@@ -58,10 +59,6 @@ contract AaveV3AdapterTest is AbstractAdapterTest {
   /*//////////////////////////////////////////////////////////////
                           HELPER
     //////////////////////////////////////////////////////////////*/
-
-  function createAdapter() public override {
-    adapter = IAdapter(address(new AaveV3Adapter()));
-  }
 
   function increasePricePerShare(uint256 amount) public override {
     deal(address(asset), address(aToken), asset.balanceOf(address(aToken)) + amount);

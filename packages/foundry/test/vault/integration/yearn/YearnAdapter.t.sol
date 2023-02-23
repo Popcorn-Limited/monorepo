@@ -32,7 +32,7 @@ contract YearnAdapterTest is AbstractAdapterTest {
 
     address _asset = abi.decode(testConfig, (address));
 
-    setUpBaseTest(IERC20(_asset), adapter, 0x50c1a2eA0a861A967D9d0FFE2AE4012c2E053804, 10, "Yearn ", false);
+    setUpBaseTest(IERC20(_asset), address(new YearnAdapter()), 0x50c1a2eA0a861A967D9d0FFE2AE4012c2E053804, 10, "Yearn ", false);
 
     yearnVault = VaultAPI(IYearnRegistry(externalRegistry).latestVault(_asset));
     
@@ -52,10 +52,6 @@ contract YearnAdapterTest is AbstractAdapterTest {
   /*//////////////////////////////////////////////////////////////
                           HELPER
     //////////////////////////////////////////////////////////////*/
-
-  function createAdapter() public override {
-    adapter = IAdapter(address(new YearnAdapter()));
-  }
 
   function increasePricePerShare(uint256 amount) public override {
     deal(address(asset), address(yearnVault), asset.balanceOf(address(yearnVault)) + amount);

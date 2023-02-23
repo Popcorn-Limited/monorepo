@@ -1,6 +1,7 @@
 export default function DisclaimerPage(): JSX.Element {
   return (
     <div className="space-y-4">
+      <h1 className="text-6xl leading-12">Popcorndao.finance Disclaimer</h1>
       <h2 className="font-bold underline">Introduction</h2>
       <p>
         Please read this <span className="font-bold">disclaimer</span> carefully before accessing, interacting with, or

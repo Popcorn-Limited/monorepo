@@ -21,7 +21,7 @@ interface IVaultController {
     VaultInitParams memory vaultData,
     DeploymentArgs memory adapterData,
     DeploymentArgs memory strategyData,
-    address staking,
+    bool deployStaking,
     bytes memory rewardsData,
     VaultMetadata memory metadata,
     uint256 initialDeposit

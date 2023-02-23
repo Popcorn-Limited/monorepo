@@ -52,6 +52,7 @@ contract BeefyAdapter is AdapterBase, WithRewards {
     __AdapterBase_init(adapterInitData);
 
     if (!IPermissionRegistry(registry).endorsed(_beefyVault)) revert NotEndorsed(_beefyVault);
+    if (!IPermissionRegistry(registry).endorsed(_beefyBooster)) revert NotEndorsed(_beefyBooster);
     if (IBeefyVault(_beefyVault).want() != asset()) revert InvalidBeefyVault(_beefyVault);
     if (_beefyBooster != address(0) && IBeefyBooster(_beefyBooster).stakedToken() != _beefyVault)
       revert InvalidBeefyBooster(_beefyBooster);
@@ -91,12 +92,9 @@ contract BeefyAdapter is AdapterBase, WithRewards {
   }
 
   /// @notice The amount of beefy shares to withdraw given an amount of adapter shares
-  function _convertToUnderlyingShares(
-    uint256,
-    uint256 shares,
-    uint256 supply
-  ) internal view override returns (uint256) {
-    return shares.mulDiv(beefyBalanceCheck.balanceOf(address(this)), supply, Math.Rounding.Up);
+  function convertToUnderlyingShares(uint256 assets, uint256 shares) public view override returns (uint256) {
+    uint256 supply = totalSupply();
+    return supply == 0 ? shares : shares.mulDiv(beefyBalanceCheck.balanceOf(address(this)), supply, Math.Rounding.Up);
   }
 
   /// @notice The token rewarded if a beefy booster is configured

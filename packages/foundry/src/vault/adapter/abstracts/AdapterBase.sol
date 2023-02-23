@@ -40,6 +40,10 @@ abstract contract AdapterBase is
 
   error StrategySetupFailed();
 
+  constructor() {
+    _disableInitializers();
+  }
+
   /**
    * @notice Initialize a new Adapter.
    * @param popERC4626InitData Encoded data for the base adapter initialization.
@@ -131,7 +135,7 @@ abstract contract AdapterBase is
     uint256 shares
   ) internal virtual override nonReentrant {
     IERC20(asset()).safeTransferFrom(caller, address(this), assets);
-    
+
     _protocolDeposit(assets, shares);
     _mint(receiver, shares);
 
@@ -229,20 +233,7 @@ abstract contract AdapterBase is
    * @dev This is an optional function for underlying protocols that require deposit/withdrawal amounts in their shares.
    * @dev Returns shares if totalSupply is 0.
    */
-  function convertToUnderlyingShares(uint256 assets, uint256 shares) public view virtual returns (uint256) {
-    uint256 supply = totalSupply();
-    return supply == 0 ? shares : _convertToUnderlyingShares(assets, shares, supply);
-  }
-
-  /**
-   * @notice Convert 'shares' into underlying shares.
-   * @dev Conversion logic for convertToUnderlyingShares.
-   */
-  function _convertToUnderlyingShares(
-    uint256 assets,
-    uint256 shares,
-    uint256 supply
-  ) internal view virtual returns (uint256) {}
+  function convertToUnderlyingShares(uint256 assets, uint256 shares) public view virtual returns (uint256) {}
 
   /// @notice See _previewDeposit natspec
   function previewDeposit(uint256 assets) public view virtual override returns (uint256) {
@@ -352,7 +343,9 @@ abstract contract AdapterBase is
   function harvest() public takeFees {
     if (address(strategy) != address(0) && ((lastHarvest + harvestCooldown) < block.timestamp)) {
       // solhint-disable
-      address(strategy).delegatecall(abi.encodeWithSignature("harvest()"));
+      (bool success, ) = address(strategy).delegatecall(abi.encodeWithSignature("harvest()"));
+      if (!success) revert();
+      lastHarvest = block.timestamp;
     }
 
     emit Harvested();
@@ -417,7 +410,7 @@ abstract contract AdapterBase is
   uint256 public highWaterMark;
 
   // TODO use deterministic fee recipient proxy
-  address FEE_RECIPIENT = address(0x4444);
+  address public constant FEE_RECIPIENT = address(0x4444);
 
   event PerformanceFeeChanged(uint256 oldFee, uint256 newFee);
 

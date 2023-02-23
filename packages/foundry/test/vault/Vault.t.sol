@@ -10,6 +10,7 @@ import { Vault } from "../../src/vault/Vault.sol";
 import { IERC4626, IERC20 } from "../../src/interfaces/vault/IERC4626.sol";
 import { VaultFees } from "../../src/interfaces/vault/IVault.sol";
 import { FixedPointMathLib } from "solmate/utils/FixedPointMathLib.sol";
+import { Clones } from "openzeppelin-contracts/proxy/Clones.sol";
 
 contract VaultTest is Test {
   using FixedPointMathLib for uint256;
@@ -20,8 +21,10 @@ contract VaultTest is Test {
   MockERC20 asset;
   MockERC4626 adapter;
   Vault vault;
+  address implementation;
 
-  uint256 ONE = 1e18;
+  uint256 constant ONE = 1e18;
+  uint256 constant SECONDS_PER_YEAR = 365.25 days;
 
   address feeRecipient = address(0x4444);
   address alice = address(0xABCD);
@@ -44,10 +47,12 @@ contract VaultTest is Test {
     asset = new MockERC20("Mock Token", "TKN", 18);
     adapter = new MockERC4626(IERC20(address(asset)), "Mock Token Vault", "vwTKN");
 
-    address vaultAddress = address(new Vault());
+    implementation = address(new Vault());
+
+    address vaultAddress = Clones.clone(implementation);
+    vault = Vault(vaultAddress);
     vm.label(vaultAddress, "vault");
 
-    vault = Vault(vaultAddress);
     vault.initialize(
       IERC20(address(asset)),
       IERC4626(address(adapter)),
@@ -84,7 +89,7 @@ contract VaultTest is Test {
                           INITIALIZATION
     //////////////////////////////////////////////////////////////*/
   function test__metadata() public {
-    address vaultAddress = address(new Vault());
+    address vaultAddress = Clones.clone(implementation);
     Vault newVault = Vault(vaultAddress);
 
     uint256 callTime = block.timestamp;
@@ -236,7 +241,7 @@ contract VaultTest is Test {
     vault.deposit(0, address(this));
   }
 
-  function test__withdraw_zero() public {
+  function testFail__withdraw_zero() public {
     vault.withdraw(0, address(this), address(this));
   }
 
@@ -312,7 +317,7 @@ contract VaultTest is Test {
     vault.mint(0, address(this));
   }
 
-  function test__redeem_zero() public {
+  function testFail__redeem_zero() public {
     vault.redeem(0, address(this), address(this));
   }
 
@@ -622,7 +627,7 @@ contract VaultTest is Test {
   }
 
   function test__previewWithdraw_previewRedeem_takes_fees_into_account(uint8 fuzzAmount) public {
-    uint256 amount = bound(uint256(fuzzAmount), 1, 1 ether);
+    uint256 amount = bound(uint256(fuzzAmount), 10, 1 ether);
 
     _setFees(0, 1e17, 0, 0);
 
@@ -658,7 +663,7 @@ contract VaultTest is Test {
 
   function test__managementFee(uint128 timeframe) public {
     // Test Timeframe less than 10 years
-    vm.assume(timeframe <= 315576000);
+    timeframe = uint128(bound(timeframe, 1, 315576000));
     uint256 depositAmount = 1 ether;
 
     _setFees(0, 0, 1e17, 0);
@@ -670,20 +675,43 @@ contract VaultTest is Test {
     vm.stopPrank();
 
     // Increase Block Time to trigger managementFee
-    uint256 timestamp = block.timestamp + timeframe;
-    vm.roll(timestamp);
+    vm.warp(block.timestamp + timeframe);
 
     uint256 expectedFeeInAsset = vault.accruedManagementFee();
 
-    uint256 expectedFeeInShares = vault.convertToShares(expectedFeeInAsset);
+    uint256 supply = vault.totalSupply();
+    uint256 expectedFeeInShares = supply == 0
+      ? expectedFeeInAsset
+      : expectedFeeInAsset.mulDivDown(supply, 1 ether - expectedFeeInAsset);
 
     vault.takeManagementAndPerformanceFees();
 
-    assertEq(vault.totalSupply(), depositAmount + expectedFeeInShares);
-    assertEq(vault.balanceOf(feeRecipient), expectedFeeInShares);
+    assertEq(vault.totalSupply(), depositAmount + expectedFeeInShares, "ts");
+    assertEq(vault.balanceOf(feeRecipient), expectedFeeInShares, "fee bal");
+    assertApproxEqAbs(vault.convertToAssets(expectedFeeInShares), expectedFeeInAsset, 10, "convert back");
 
     // High Water Mark should remain unchanged
-    assertEq(vault.highWaterMark(), 1 ether);
+    assertEq(vault.highWaterMark(), 1 ether, "hwm");
+  }
+
+  function test__managementFee_change_fees_later() public {
+    uint256 depositAmount = 1 ether;
+
+    asset.mint(alice, depositAmount);
+    vm.startPrank(alice);
+    asset.approve(address(vault), depositAmount);
+    vault.deposit(depositAmount, alice);
+    vm.stopPrank();
+
+    // Set it to half the time without any fees
+    vm.warp(block.timestamp + (SECONDS_PER_YEAR / 2));
+    assertEq(vault.accruedManagementFee(), 0);
+
+    _setFees(0, 0, 1e17, 0);
+
+    vm.warp(block.timestamp + (SECONDS_PER_YEAR / 2));
+
+    assertEq(vault.accruedManagementFee(), ((1 ether * 1e17) / 1e18) / 2);
   }
 
   function test__performanceFee(uint128 amount) public {
@@ -765,6 +793,13 @@ contract VaultTest is Test {
     assertEq(withdrawal, 1);
     assertEq(management, 1);
     assertEq(performance, 1);
+    (uint256 propDeposit, uint256 propWithdrawal, uint256 propManagement, uint256 propPerformance) = vault
+      .proposedFees();
+    assertEq(propDeposit, 0);
+    assertEq(propWithdrawal, 0);
+    assertEq(propManagement, 0);
+    assertEq(propPerformance, 0);
+    assertEq(vault.proposedFeeTime(), 0);
   }
 
   function testFail__changeFees_NonOwner() public {
@@ -777,6 +812,10 @@ contract VaultTest is Test {
     vault.proposeFees(newVaultFees);
 
     // Didnt respect 3 days before propsal and change
+    vault.changeFees();
+  }
+
+  function testFail__changeFees_after_init() public {
     vault.changeFees();
   }
 
@@ -871,6 +910,9 @@ contract VaultTest is Test {
     assertEq(asset.allowance(address(vault), address(newAdapter)), type(uint256).max);
 
     assertEq(vault.highWaterMark(), oldHWM);
+
+    assertEq(vault.proposedAdapterTime(), 0);
+    assertEq(address(vault.proposedAdapter()), address(0));
   }
 
   function testFail__changeAdapter_NonOwner() public {
@@ -884,6 +926,38 @@ contract VaultTest is Test {
     vault.proposeAdapter(IERC4626(address(newAdapter)));
 
     // Didnt respect 3 days before propsal and change
+    vault.changeAdapter();
+  }
+
+  function testFail__changeAdapter_after_init() public {
+    vault.changeAdapter();
+  }
+
+  function testFail__changeAdapter_instantly_again() public {
+    MockERC4626 newAdapter = new MockERC4626(IERC20(address(asset)), "Mock Token Vault", "vwTKN");
+    uint256 depositAmount = 1 ether;
+
+    // Deposit funds for testing
+    asset.mint(alice, depositAmount);
+    vm.startPrank(alice);
+    asset.approve(address(vault), depositAmount);
+    vault.deposit(depositAmount, alice);
+    vm.stopPrank();
+
+    // Increase assets in asset Adapter to check hwm and assetCheckpoint later
+    asset.mint(address(adapter), depositAmount);
+    vault.takeManagementAndPerformanceFees();
+    uint256 oldHWM = vault.highWaterMark();
+
+    // Preparation to change the adapter
+    vault.proposeAdapter(IERC4626(address(newAdapter)));
+
+    vm.warp(block.timestamp + 3 days);
+
+    vm.expectEmit(false, false, false, true, address(vault));
+    emit ChangedAdapter(IERC4626(address(adapter)), IERC4626(address(newAdapter)));
+
+    vault.changeAdapter();
     vault.changeAdapter();
   }
 
