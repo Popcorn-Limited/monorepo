@@ -101,7 +101,10 @@ contract VaultController is Owned {
     IDeploymentController _deploymentController = deploymentController;
 
     _verifyToken(address(vaultData.asset));
-    if (address(vaultData.adapter) != address(0) && (adapterData.id > 0 || !cloneRegistry.cloneExists(address(vaultData.adapter)))) revert InvalidConfig();
+    if (
+      address(vaultData.adapter) != address(0) &&
+      (adapterData.id > 0 || !cloneRegistry.cloneExists(address(vaultData.adapter)))
+    ) revert InvalidConfig();
 
     if (adapterData.id > 0)
       vaultData.adapter = IERC4626(_deployAdapter(vaultData.asset, adapterData, strategyData, _deploymentController));
@@ -613,13 +616,24 @@ contract VaultController is Owned {
     //////////////////////////////////////////////////////////////*/
 
   /// @notice Pause Deposits and withdraw all funds from the underlying protocol. Caller must be owner or creator of the Vault.
-  function pauseAdapters(address[] calldata vaults) external {
+  function pauseAdapters(address[] calldata vaults) external onlyOwner {
     uint8 len = uint8(vaults.length);
     for (uint256 i = 0; i < len; i++) {
-      _verifyCreatorOrOwner(vaults[i]);
       (bool success, bytes memory returnData) = adminProxy.execute(
         IVault(vaults[i]).adapter(),
         abi.encodeWithSelector(IPausable.pause.selector)
+      );
+      if (!success) revert UnderlyingError(returnData);
+    }
+  }
+
+  /// @notice Unpause Deposits and deposit all funds into the underlying protocol. Caller must be owner or creator of the Vault.
+  function unpauseAdapters(address[] calldata vaults) external onlyOwner {
+    uint8 len = uint8(vaults.length);
+    for (uint256 i = 0; i < len; i++) {
+      (bool success, bytes memory returnData) = adminProxy.execute(
+        IVault(vaults[i]).adapter(),
+        abi.encodeWithSelector(IPausable.unpause.selector)
       );
       if (!success) revert UnderlyingError(returnData);
     }
@@ -629,23 +643,10 @@ contract VaultController is Owned {
   function pauseVaults(address[] calldata vaults) external {
     uint8 len = uint8(vaults.length);
     for (uint256 i = 0; i < len; i++) {
-      _verifyCreatorOrOwner(vaults[i]);
+      _verifyCreator(vaults[i]);
       (bool success, bytes memory returnData) = adminProxy.execute(
         vaults[i],
         abi.encodeWithSelector(IPausable.pause.selector)
-      );
-      if (!success) revert UnderlyingError(returnData);
-    }
-  }
-
-  /// @notice Unpause Deposits and deposit all funds into the underlying protocol. Caller must be owner or creator of the Vault.
-  function unpauseAdapters(address[] calldata vaults) external {
-    uint8 len = uint8(vaults.length);
-    for (uint256 i = 0; i < len; i++) {
-      _verifyCreatorOrOwner(vaults[i]);
-      (bool success, bytes memory returnData) = adminProxy.execute(
-        IVault(vaults[i]).adapter(),
-        abi.encodeWithSelector(IPausable.unpause.selector)
       );
       if (!success) revert UnderlyingError(returnData);
     }
@@ -655,7 +656,7 @@ contract VaultController is Owned {
   function unpauseVaults(address[] calldata vaults) external {
     uint8 len = uint8(vaults.length);
     for (uint256 i = 0; i < len; i++) {
-      _verifyCreatorOrOwner(vaults[i]);
+      _verifyCreator(vaults[i]);
       (bool success, bytes memory returnData) = adminProxy.execute(
         vaults[i],
         abi.encodeWithSelector(IPausable.unpause.selector)

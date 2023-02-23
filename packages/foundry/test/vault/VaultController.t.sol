@@ -1359,18 +1359,6 @@ contract VaultControllerTest is Test {
     assertTrue(IPausable(IVault(vault).adapter()).paused());
   }
 
-  function testFail__pauseAdapters_nonCreator() public {
-    address[] memory targets = new address[](1);
-    addTemplate("Adapter", templateId, adapterImpl, true, true);
-    addTemplate("Strategy", "MockStrategy", strategyImpl, false, true);
-    addTemplate("Vault", "V1", vaultImpl, true, true);
-    address vault = deployVault();
-    targets[0] = vault;
-
-    vm.prank(bob);
-    controller.pauseAdapters(targets);
-  }
-
   function testFail__pauseAdapters_nonOwner() public {
     address[] memory targets = new address[](1);
     addTemplate("Adapter", templateId, adapterImpl, true, true);
@@ -1394,19 +1382,6 @@ contract VaultControllerTest is Test {
 
     controller.unpauseAdapters(targets);
     assertFalse(IPausable(IVault(vault).adapter()).paused());
-  }
-
-  function testFail__unpauseAdapters_nonCreator() public {
-    address[] memory targets = new address[](1);
-    addTemplate("Adapter", templateId, adapterImpl, true, true);
-    addTemplate("Strategy", "MockStrategy", strategyImpl, false, true);
-    addTemplate("Vault", "V1", vaultImpl, true, true);
-    address vault = deployVault();
-    targets[0] = vault;
-    controller.pauseAdapters(targets);
-
-    vm.prank(bob);
-    controller.unpauseAdapters(targets);
   }
 
   function testFail__unpauseAdapters_nonOwner() public {
@@ -1450,18 +1425,6 @@ contract VaultControllerTest is Test {
     controller.pauseVaults(targets);
   }
 
-  function testFail__pauseVaults_nonOwner() public {
-    address[] memory targets = new address[](1);
-    addTemplate("Adapter", templateId, adapterImpl, true, true);
-    addTemplate("Strategy", "MockStrategy", strategyImpl, false, true);
-    addTemplate("Vault", "V1", vaultImpl, true, true);
-    address vault = deployVault();
-    targets[0] = vault;
-
-    vm.prank(nonOwner);
-    controller.pauseVaults(targets);
-  }
-
   function test__unpauseVaults() public {
     address[] memory targets = new address[](1);
     addTemplate("Adapter", templateId, adapterImpl, true, true);
@@ -1485,19 +1448,6 @@ contract VaultControllerTest is Test {
     controller.pauseVaults(targets);
 
     vm.prank(bob);
-    controller.unpauseVaults(targets);
-  }
-
-  function testFail__unpauseVaults_nonOwner() public {
-    address[] memory targets = new address[](1);
-    addTemplate("Adapter", templateId, adapterImpl, true, true);
-    addTemplate("Strategy", "MockStrategy", strategyImpl, false, true);
-    addTemplate("Vault", "V1", vaultImpl, true, true);
-    address vault = deployVault();
-    targets[0] = vault;
-    controller.pauseVaults(targets);
-
-    vm.prank(nonOwner);
     controller.unpauseVaults(targets);
   }
 
