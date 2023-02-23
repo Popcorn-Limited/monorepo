@@ -48,7 +48,7 @@ contract BeefyAdapterTest is AbstractAdapterTest {
       setPermission(_beefyBooster, true, false);
     }
 
-    setUpBaseTest(IERC20(IBeefyVault(beefyVault).want()), adapter, address(permissionRegistry), 10, "Beefy ", true);
+    setUpBaseTest(IERC20(IBeefyVault(beefyVault).want()), address(new BeefyAdapter()), address(permissionRegistry), 10, "Beefy ", true);
 
     vm.label(_beefyVault, "beefyVault");
     vm.label(_beefyBooster, "beefyBooster");
@@ -61,10 +61,6 @@ contract BeefyAdapterTest is AbstractAdapterTest {
   /*//////////////////////////////////////////////////////////////
                           HELPER
     //////////////////////////////////////////////////////////////*/
-
-  function createAdapter() public override {
-    adapter = IAdapter(address(new BeefyAdapter()));
-  }
 
   function increasePricePerShare(uint256 amount) public override {
     deal(address(asset), address(beefyVault), asset.balanceOf(address(beefyVault)) + amount);

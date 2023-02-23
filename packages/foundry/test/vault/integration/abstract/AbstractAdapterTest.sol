@@ -12,6 +12,7 @@ import { IERC20Upgradeable as IERC20, IERC20MetadataUpgradeable as IERC20Metadat
 import { ITestConfigStorage } from "./ITestConfigStorage.sol";
 import { MockStrategy } from "../../../utils/mocks/MockStrategy.sol";
 import { Math } from "openzeppelin-contracts/utils/math/Math.sol";
+import { Clones } from "openzeppelin-contracts/proxy/Clones.sol";
 
 contract AbstractAdapterTest is PropertyTest {
   using Math for uint256;
@@ -36,6 +37,7 @@ contract AbstractAdapterTest is PropertyTest {
   uint256 maxShares;
 
   IERC20 asset;
+  address implementation;
   IAdapter adapter;
   IStrategy strategy;
   address externalRegistry;
@@ -46,20 +48,22 @@ contract AbstractAdapterTest is PropertyTest {
 
   function setUpBaseTest(
     IERC20 asset_,
-    IAdapter adapter_,
+    address implementation_,
     address externalRegistry_,
     uint256 delta_,
     string memory baseTestId_,
     bool useStrategy_
   ) public {
-    // Setup PropertyTest
-    _asset_ = address(asset_);
-    _vault_ = address(adapter_);
-    _delta_ = delta_;
-
     asset = asset_;
-    adapter = adapter_;
+
+    implementation = implementation_;
+    adapter = IAdapter(Clones.clone(implementation_));
     externalRegistry = externalRegistry_;
+
+    // Setup PropertyTest
+    _vault_ = address(adapter);
+    _asset_ = address(asset_);
+    _delta_ = delta_;
 
     defaultAmount = 10**IERC20Metadata(address(asset_)).decimals() * 1e9;
 
@@ -85,8 +89,10 @@ contract AbstractAdapterTest is PropertyTest {
     // protocol specific setup();
   }
 
-  // Construct a new Adapter and set it to `adapter`
-  function createAdapter() public virtual {}
+  // Clone a new Adapter and set it to `adapter`
+  function createAdapter() public {
+    adapter = IAdapter(Clones.clone(implementation));
+  }
 
   // Increase the pricePerShare of the external protocol
   // sometimes its enough to simply add assets, othertimes one also needs to call some functions before the external protocol reflects the change

@@ -10,6 +10,7 @@ import { Vault } from "../../src/vault/Vault.sol";
 import { IERC4626, IERC20 } from "../../src/interfaces/vault/IERC4626.sol";
 import { VaultFees } from "../../src/interfaces/vault/IVault.sol";
 import { FixedPointMathLib } from "solmate/utils/FixedPointMathLib.sol";
+import { Clones } from "openzeppelin-contracts/proxy/Clones.sol";
 
 contract VaultTest is Test {
   using FixedPointMathLib for uint256;
@@ -20,6 +21,7 @@ contract VaultTest is Test {
   MockERC20 asset;
   MockERC4626 adapter;
   Vault vault;
+  address implementation;
 
   uint256 constant ONE = 1e18;
   uint256 constant SECONDS_PER_YEAR = 365.25 days;
@@ -45,10 +47,12 @@ contract VaultTest is Test {
     asset = new MockERC20("Mock Token", "TKN", 18);
     adapter = new MockERC4626(IERC20(address(asset)), "Mock Token Vault", "vwTKN");
 
-    address vaultAddress = address(new Vault());
+    implementation = address(new Vault());
+
+    address vaultAddress = Clones.clone(implementation);
+    vault = Vault(vaultAddress);
     vm.label(vaultAddress, "vault");
 
-    vault = Vault(vaultAddress);
     vault.initialize(
       IERC20(address(asset)),
       IERC4626(address(adapter)),
@@ -85,7 +89,7 @@ contract VaultTest is Test {
                           INITIALIZATION
     //////////////////////////////////////////////////////////////*/
   function test__metadata() public {
-    address vaultAddress = address(new Vault());
+    address vaultAddress = Clones.clone(implementation);
     Vault newVault = Vault(vaultAddress);
 
     uint256 callTime = block.timestamp;

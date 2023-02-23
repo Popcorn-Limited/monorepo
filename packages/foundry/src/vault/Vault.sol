@@ -27,7 +27,7 @@ contract Vault is ERC20Upgradeable, ReentrancyGuardUpgradeable, PausableUpgradea
   using SafeERC20 for IERC20;
   using Math for uint256;
 
-  uint256 constant SECONDS_PER_YEAR = 365.25 days;
+  uint256 internal constant SECONDS_PER_YEAR = 365.25 days;
 
   IERC20 public asset;
   uint8 internal _decimals;
@@ -38,6 +38,10 @@ contract Vault is ERC20Upgradeable, ReentrancyGuardUpgradeable, PausableUpgradea
 
   error InvalidAsset();
   error InvalidAdapter();
+
+  constructor() {
+    _disableInitializers();
+  }
 
   /**
    * @notice Initialize a new Vault.
@@ -75,8 +79,6 @@ contract Vault is ERC20Upgradeable, ReentrancyGuardUpgradeable, PausableUpgradea
     INITIAL_CHAIN_ID = block.chainid;
     INITIAL_DOMAIN_SEPARATOR = computeDomainSeparator();
 
-    feesUpdatedAt = block.timestamp;
-
     if (fees_.deposit >= 1e18 || fees_.withdrawal >= 1e18 || fees_.management >= 1e18 || fees_.performance >= 1e18)
       revert InvalidVaultFees();
     fees = fees_;
@@ -85,6 +87,10 @@ contract Vault is ERC20Upgradeable, ReentrancyGuardUpgradeable, PausableUpgradea
     feeRecipient = feeRecipient_;
 
     contractName = keccak256(abi.encodePacked("Popcorn", name(), block.timestamp, "Vault"));
+
+    feesUpdatedAt = block.timestamp;
+    highWaterMark = 1e18;
+    quitPeriod = 3 days;
 
     emit VaultInitialized(contractName, address(asset));
   }
@@ -390,7 +396,7 @@ contract Vault is ERC20Upgradeable, ReentrancyGuardUpgradeable, PausableUpgradea
                             FEE LOGIC
     //////////////////////////////////////////////////////////////*/
 
-  uint256 public highWaterMark = 1e18;
+  uint256 public highWaterMark;
   uint256 public assetsCheckpoint;
   uint256 public feesUpdatedAt;
 
@@ -538,7 +544,7 @@ contract Vault is ERC20Upgradeable, ReentrancyGuardUpgradeable, PausableUpgradea
                           RAGE QUIT LOGIC
     //////////////////////////////////////////////////////////////*/
 
-  uint256 public quitPeriod = 3 days;
+  uint256 public quitPeriod;
 
   event QuitPeriodSet(uint256 quitPeriod);
 

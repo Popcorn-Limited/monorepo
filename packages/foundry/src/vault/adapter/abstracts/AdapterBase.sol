@@ -40,6 +40,10 @@ abstract contract AdapterBase is
 
   error StrategySetupFailed();
 
+  constructor() {
+    _disableInitializers();
+  }
+
   /**
    * @notice Initialize a new Adapter.
    * @param popERC4626InitData Encoded data for the base adapter initialization.
@@ -419,7 +423,7 @@ abstract contract AdapterBase is
   uint256 public highWaterMark;
 
   // TODO use deterministic fee recipient proxy
-  address FEE_RECIPIENT = address(0x4444);
+  address public constant FEE_RECIPIENT = address(0x4444);
 
   event PerformanceFeeChanged(uint256 oldFee, uint256 newFee);
 
