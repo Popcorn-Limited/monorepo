@@ -21,7 +21,8 @@ contract VaultTest is Test {
   MockERC4626 adapter;
   Vault vault;
 
-  uint256 ONE = 1e18;
+  uint256 constant ONE = 1e18;
+  uint256 constant SECONDS_PER_YEAR = 365.25 days;
 
   address feeRecipient = address(0x4444);
   address alice = address(0xABCD);
@@ -670,8 +671,7 @@ contract VaultTest is Test {
     vm.stopPrank();
 
     // Increase Block Time to trigger managementFee
-    uint256 timestamp = block.timestamp + timeframe;
-    vm.roll(timestamp);
+    vm.warp(block.timestamp + timeframe);
 
     uint256 expectedFeeInAsset = vault.accruedManagementFee();
 
@@ -684,6 +684,26 @@ contract VaultTest is Test {
 
     // High Water Mark should remain unchanged
     assertEq(vault.highWaterMark(), 1 ether);
+  }
+
+  function test__managementFee_change_fees_later() public {
+    uint256 depositAmount = 1 ether;
+
+    asset.mint(alice, depositAmount);
+    vm.startPrank(alice);
+    asset.approve(address(vault), depositAmount);
+    vault.deposit(depositAmount, alice);
+    vm.stopPrank();
+
+    // Set it to half the time without any fees
+    vm.warp(block.timestamp + (SECONDS_PER_YEAR / 2));
+    assertEq(vault.accruedManagementFee(), 0);
+
+    _setFees(0, 0, 1e17, 0);
+
+    vm.warp(block.timestamp + (SECONDS_PER_YEAR / 2));
+
+    assertEq(vault.accruedManagementFee(), ((1 ether * 1e17) / 1e18) / 2);
   }
 
   function test__performanceFee(uint128 amount) public {

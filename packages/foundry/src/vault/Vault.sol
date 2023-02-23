@@ -415,9 +415,9 @@ contract Vault is ERC20Upgradeable, ReentrancyGuardUpgradeable, PausableUpgradea
 
     if (shareValue > highWaterMark) highWaterMark = shareValue;
 
-    if (managementFee > 0) feesUpdatedAt = block.timestamp;
-
     if (totalFee > 0 && currentAssets > 0) _mint(feeRecipient, convertToShares(totalFee));
+
+    feesUpdatedAt = block.timestamp;
 
     _;
   }
@@ -467,7 +467,9 @@ contract Vault is ERC20Upgradeable, ReentrancyGuardUpgradeable, PausableUpgradea
     if (proposedFeeTime == 0 || block.timestamp < proposedFeeTime + quitPeriod) revert NotPassedQuitPeriod(quitPeriod);
 
     emit ChangedFees(fees, proposedFees);
+    
     fees = proposedFees;
+    feesUpdatedAt = block.timestamp;
 
     delete proposedFees;
     delete proposedFeeTime;
