@@ -3,7 +3,7 @@ import { FeatureTogglePanel } from "@popcorn/components/components/FeatureToggle
 import { DualActionModalContainer } from "@popcorn/components/components/Modal/DualActionModalContainer";
 import { MultiChoiceActionModalContainer } from "@popcorn/components/components/Modal/MultiChoiceActionModalContainer";
 import { SingleActionModalContainer } from "@popcorn/components/components/Modal/SingleActionModalContainer";
-import OfacCheck from "../../app/components/OfacCheck";
+import OfacCheck from "@popcorn/app/components/OfacCheck";
 import { FeatureToggleProvider } from "@popcorn/components/context/FeatureToggleContext";
 import Head from "next/head";
 import Router from "next/router";
