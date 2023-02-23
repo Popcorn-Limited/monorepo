@@ -233,20 +233,7 @@ abstract contract AdapterBase is
    * @dev This is an optional function for underlying protocols that require deposit/withdrawal amounts in their shares.
    * @dev Returns shares if totalSupply is 0.
    */
-  function convertToUnderlyingShares(uint256 assets, uint256 shares) public view virtual returns (uint256) {
-    uint256 supply = totalSupply();
-    return supply == 0 ? shares : _convertToUnderlyingShares(assets, shares, supply);
-  }
-
-  /**
-   * @notice Convert 'shares' into underlying shares.
-   * @dev Conversion logic for convertToUnderlyingShares.
-   */
-  function _convertToUnderlyingShares(
-    uint256 assets,
-    uint256 shares,
-    uint256 supply
-  ) internal view virtual returns (uint256) {}
+  function convertToUnderlyingShares(uint256 assets, uint256 shares) public view virtual returns (uint256) {}
 
   /// @notice See _previewDeposit natspec
   function previewDeposit(uint256 assets) public view virtual override returns (uint256) {
