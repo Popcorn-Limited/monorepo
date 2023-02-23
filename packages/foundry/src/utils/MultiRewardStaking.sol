@@ -227,7 +227,7 @@ contract MultiRewardStaking is ERC4626Upgradeable, OwnedUpgradeable {
   error RewardsAreDynamic(IERC20 rewardToken);
   error ZeroRewardsSpeed();
   error InvalidConfig();
-  
+
   /**
    * @notice Adds a new rewardToken which can be earned via staking. Caller must be owner.
    * @param rewardToken Token that can be earned by staking.
@@ -304,14 +304,11 @@ contract MultiRewardStaking is ERC4626Upgradeable, OwnedUpgradeable {
 
     _accrueRewards(rewardToken, _accrueStatic(rewards));
 
-    uint256 remainder = rewardToken.balanceOf(address(this));
+    uint256 prevEndTime = uint256(rewards.rewardsEndTimestamp);
+    uint256 currTime = block.timestamp;
+    uint256 remainder = prevEndTime <= currTime ? 0 : uint256(rewards.rewardsPerSecond) * (prevEndTime - currTime);
 
-    uint32 prevEndTime = rewards.rewardsEndTimestamp;
-    uint32 rewardsEndTimestamp = _calcRewardsEnd(
-      prevEndTime > block.timestamp ? prevEndTime : block.timestamp.safeCastTo32(),
-      rewardsPerSecond,
-      remainder
-    );
+    uint32 rewardsEndTimestamp = _calcRewardsEnd(currTime.safeCastTo32(), rewardsPerSecond, remainder);
     rewardInfos[rewardToken].rewardsPerSecond = rewardsPerSecond;
     rewardInfos[rewardToken].rewardsEndTimestamp = rewardsEndTimestamp;
   }
