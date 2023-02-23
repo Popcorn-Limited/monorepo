@@ -11,7 +11,8 @@ import React, { useEffect, useState } from "react";
 import { GlobalLinearProgressAndLoading } from "@popcorn/components/components/GlobalLinearProgressAndLoading";
 import { StateProvider } from "@popcorn/components/context/store";
 import { RainbowKitProvider, getDefaultWallets, Chain } from "@rainbow-me/rainbowkit";
-import { chain, configureChains, createClient, WagmiConfig } from "wagmi";
+import { configureChains, createClient, WagmiConfig } from "wagmi";
+import { mainnet, polygon, optimism, arbitrum, goerli, localhost, bsc } from 'wagmi/chains';
 import { alchemyProvider } from "wagmi/providers/alchemy";
 import { infuraProvider } from "wagmi/providers/infura";
 import { jsonRpcProvider } from "wagmi/providers/jsonRpc";
@@ -19,23 +20,14 @@ import "@rainbow-me/rainbowkit/styles.css";
 import "../styles/globals.css";
 import { NetworthContextProvider } from "@popcorn/components/context/Networth";
 
-const bnb: Chain = {
-  id: 56,
-  name: "BNB Chain",
-  network: "bnb",
-  iconUrl: "https://assets.coingecko.com/coins/images/825/large/binance-coin-logo.png?1547034615",
-  rpcUrls: { default: "https://bsc-dataseed1.binance.org" },
-  blockExplorers: { default: { name: "BSCScan", url: "https://bscscan.com" } },
-};
-
 const { chains, provider, webSocketProvider } = configureChains(
   [
-    chain.mainnet,
-    chain.polygon,
-    chain.optimism,
-    chain.arbitrum,
-    bnb,
-    ...(process.env.NEXT_PUBLIC_ENABLE_TESTNETS === "true" ? [chain.goerli, chain.localhost] : []),
+    mainnet,
+    polygon,
+    optimism,
+    arbitrum,
+    bsc,
+    ...(process.env.NEXT_PUBLIC_ENABLE_TESTNETS === "true" ? [goerli, localhost] : []),
   ],
   [
     alchemyProvider({
@@ -44,7 +36,7 @@ const { chains, provider, webSocketProvider } = configureChains(
     infuraProvider({
       apiKey: process.env.INFURA_PROJECT_ID,
     }),
-    jsonRpcProvider({ rpc: (chain) => ({ http: chain.rpcUrls.default }) }),
+    jsonRpcProvider({ rpc: (chain) => ({ http: chain.rpcUrls.default.http[0] }) }),
   ],
 );
 
