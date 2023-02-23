@@ -40,31 +40,6 @@ contract LiquidityPairCompounder is LiquidityPairBase {
                           SETUP
     //////////////////////////////////////////////////////////////*/
 
-  // Setup for routes and allowances in constructor.
-  function _setUp(
-    address[][] memory _rewardsToNativeRoutes,
-    address[] memory _nativeToLp0Route,
-    address[] memory _nativeToLp1Route
-  ) internal override {
-    lpToken0 = IUniswapV2Pair(lpPair).token0();
-    if (_nativeToLp0Route[0] != native) revert InvalidRoute();
-    if (_nativeToLp0Route[_nativeToLp0Route.length - 1] != lpToken0) revert InvalidRoute();
-    nativeToLp0Route = _nativeToLp0Route;
-
-    lpToken1 = IUniswapV2Pair(lpPair).token0();
-    if (_nativeToLp1Route[0] != native) revert InvalidRoute();
-    if (_nativeToLp1Route[_nativeToLp1Route.length - 1] != lpToken1) revert InvalidRoute();
-    nativeToLp1Route = _nativeToLp1Route;
-
-    uint256 len = _rewardsToNativeRoutes.length;
-    for (uint256 i; i < len; ++i) {
-      if (_rewardsToNativeRoutes[i][_rewardsToNativeRoutes.length - 1] != native) revert InvalidRoute();
-      rewardTokens[i] = rewardsToNativeRoutes[i][0];
-    }
-
-    _giveInitialAllowances();
-  }
-
   // Give allowances for protocol deposit and rewardToken swaps.
   function _giveAllowances() internal override {
     address chef = protocolAddresses[0];
@@ -79,7 +54,7 @@ contract LiquidityPairCompounder is LiquidityPairBase {
                           HARVEST LOGIC
     //////////////////////////////////////////////////////////////*/
 
-  // Claim rewards from underlying protocol
+  // Claim rewards from underlying protocol.
   function _claimRewards() internal override {
     address chef = protocolAddresses[0];
     uint256 pid = protocolUints[0];
@@ -87,7 +62,7 @@ contract LiquidityPairCompounder is LiquidityPairBase {
     IMiniChefV2(chef).harvest(pid, address(this));
   }
 
-  // Swap all rewards to native token
+  // Swap all rewards to native token.
   function _swapRewardsToNative() internal override {
     uint256 len = rewardsToNativeRoutes.length;
     for (uint256 i; i < len; ++i) {
@@ -100,18 +75,18 @@ contract LiquidityPairCompounder is LiquidityPairBase {
     }
   }
 
-  // Swap native tokens for lpTokens
+  // Swap native tokens for lpTokens.
   function _swapNativeToLpTokens() internal override {
     _uniV2Swap(swapRouter, nativeToLp0Route, ERC20(native).balanceOf(address(this)) / 2);
     _uniV2Swap(swapRouter, nativeToLp1Route, ERC20(native).balanceOf(address(this)));
   }
 
-  // Use lpTokens to create lpPair
+  // Use lpTokens to create lpPair.
   function _addLiquidity() internal override {
     _uniV2AddLiquidity(swapRouter, lpToken0, lpToken1);
   }
 
-  // redeposit lpPair into underlying protocol
+  // Deposit lpPair into underlying protocol.
   function _deposit() internal override {
     address chef = protocolAddresses[0];
     uint256 pid = protocolUints[0];
@@ -137,4 +112,17 @@ contract LiquidityPairCompounder is LiquidityPairBase {
 
     return pendingRewards;
   }
+
+  /*//////////////////////////////////////////////////////////////
+                          ACCOUNTING LOGIC
+    //////////////////////////////////////////////////////////////*/
+
+  // Calculate the total underlaying 'want' held by the strat.
+  function balanceOf() public view override returns (uint256) {}
+
+  // Calculates how much 'want' this contract holds.
+  function balanceOfWant() public view override returns (uint256) {}
+
+  // Calculates how much 'want' the strategy has working in the farm.
+  function balanceOfPool() public view override returns (uint256) {}
 }

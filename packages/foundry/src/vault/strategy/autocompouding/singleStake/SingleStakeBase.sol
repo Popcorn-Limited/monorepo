@@ -32,7 +32,28 @@ contract SingleStakeBase is CompounderStrategyBase {
     address[][] memory _rewardToNativeRoutes,
     address[] memory _nativeToAssetTokenRoute,
     address _assetToken
-  ) internal virtual {}
+  ) internal virtual {
+    if (_nativeToAssetTokenRoute[0] != native) revert InvalidRoute();
+
+    assetToken = _assetToken;
+
+    if (_nativeToAssetTokenRoute[_nativeToAssetTokenRoute.length - 1] != _assetToken) revert InvalidRoute();
+
+    _setRewardTokens(_rewardToNativeRoutes);
+
+    _giveInitialAllowances();
+  }
+
+  /*//////////////////////////////////////////////////////////////
+                          ROUTES
+    //////////////////////////////////////////////////////////////*/
+
+  // Set nativeToLp0Route.
+  function setNativeToAssetTokenRoute(address[] calldata route) public virtual {
+    nativeToAssetTokenRoute = route;
+
+    if (isVaultFunctional == true) isVaultFunctional = false;
+  }
 
   /*//////////////////////////////////////////////////////////////
                           COMPOUND LOGIC

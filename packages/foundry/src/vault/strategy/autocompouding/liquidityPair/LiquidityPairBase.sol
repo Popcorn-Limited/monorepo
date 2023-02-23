@@ -10,6 +10,7 @@ import { ERC4626Upgradeable as ERC4626, ERC20Upgradeable as ERC20 } from "openze
 
 import { CompounderStrategyBase } from "../CompounderStrategyBase.sol";
 
+import { IUniswapV2Pair } from "../../../../interfaces/external/uni/IUniswapV2Pair.sol";
 import { IUniswapRouterV2 } from "../../../../interfaces/external/uni/IUniswapRouterV2.sol";
 import { IAdapter } from "../../../../interfaces/vault/IAdapter.sol";
 import { IWithRewards } from "../../../../interfaces/vault/IWithRewards.sol";
@@ -32,10 +33,42 @@ contract LiquidityPairBase is CompounderStrategyBase {
 
   // Setup for routes and allowances in constructor.
   function _setUp(
-    address[][] memory _rewardToNativeRoutes,
+    address[][] memory _rewardsToNativeRoutes,
     address[] memory _nativeToLp0Route,
     address[] memory _nativeToLp1Route
-  ) internal virtual {}
+  ) internal virtual {
+    lpToken0 = IUniswapV2Pair(lpPair).token0();
+    if (_nativeToLp0Route[0] != native) revert InvalidRoute();
+    if (_nativeToLp0Route[_nativeToLp0Route.length - 1] != lpToken0) revert InvalidRoute();
+    nativeToLp0Route = _nativeToLp0Route;
+
+    lpToken1 = IUniswapV2Pair(lpPair).token0();
+    if (_nativeToLp1Route[0] != native) revert InvalidRoute();
+    if (_nativeToLp1Route[_nativeToLp1Route.length - 1] != lpToken1) revert InvalidRoute();
+    nativeToLp1Route = _nativeToLp1Route;
+
+    _setRewardTokens(_rewardsToNativeRoutes);
+
+    _giveInitialAllowances();
+  }
+
+  /*//////////////////////////////////////////////////////////////
+                          ROUTES
+    //////////////////////////////////////////////////////////////*/
+
+  // Set nativeToLp0Route.
+  function setNativeToLp0TokenRoute(address[] calldata route) public virtual {
+    nativeToLp0Route = route;
+
+    if (isVaultFunctional == true) isVaultFunctional = false;
+  }
+
+  // Set nativeToLp1Route at index.
+  function setNativeToLp1TokenRoute(address[] calldata route) public virtual {
+    nativeToLp1Route = route;
+
+    if (isVaultFunctional == true) isVaultFunctional = false;
+  }
 
   /*//////////////////////////////////////////////////////////////
                           COMPOUND LOGIC
@@ -50,10 +83,10 @@ contract LiquidityPairBase is CompounderStrategyBase {
     _deposit();
   }
 
-  // Swap native tokens for lpTokens
+  // Swap native tokens for lpTokens.
   function _swapNativeToLpTokens() internal virtual {}
 
-  // Use lpTokens to create lpPair
+  // Use lpTokens to create lpPair.
   function _addLiquidity() internal virtual {}
 
   /*//////////////////////////////////////////////////////////////

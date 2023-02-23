@@ -40,23 +40,6 @@ contract StargateCompounder is SingleStakeBase {
                           SETUP
     //////////////////////////////////////////////////////////////*/
 
-  // Setup for routes and allowances in constructor.
-  function _setUp(
-    address[][] memory _rewardToNativeRoutes,
-    address[] memory _nativeToAssetTokenRoute,
-    address _assetToken
-  ) internal override {
-    if (_nativeToAssetTokenRoute[0] != native) revert InvalidRoute();
-
-    assetToken = _assetToken;
-
-    if (_nativeToAssetTokenRoute[_nativeToAssetTokenRoute.length - 1] != _assetToken) revert InvalidRoute();
-
-    _setRewardTokens(_rewardToNativeRoutes);
-
-    _giveInitialAllowances();
-  }
-
   // Give allowances for protocol deposit and rewardToken swaps.
   function _giveAllowances() internal override {
     address rewarder = protocolAddresses[0];
@@ -117,4 +100,17 @@ contract StargateCompounder is SingleStakeBase {
 
     return pendingRewards;
   }
+
+  /*//////////////////////////////////////////////////////////////
+                          ACCOUNTING LOGIC
+    //////////////////////////////////////////////////////////////*/
+
+  // Calculate the total underlaying 'want' held by the strat.
+  function balanceOf() public view override returns (uint256) {}
+
+  // Calculates how much 'want' this contract holds.
+  function balanceOfWant() public view override returns (uint256) {}
+
+  // Calculates how much 'want' the strategy has working in the farm.
+  function balanceOfPool() public view override returns (uint256) {}
 }

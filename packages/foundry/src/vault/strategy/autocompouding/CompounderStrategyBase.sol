@@ -79,13 +79,14 @@ contract CompounderStrategyBase {
                           HARVEST LOGIC
     //////////////////////////////////////////////////////////////*/
 
-  // harvest rewards.
+  // Harvest rewards.
   function harvest() public virtual {
     if (_rewardsCheck() == true && _rewardRoutesCheck() == true) {
       _compound();
     }
 
     lastHarvest = block.timestamp;
+
     if (isVaultFunctional == false) isVaultFunctional = true;
 
     emit Harvest();
@@ -94,13 +95,13 @@ contract CompounderStrategyBase {
   // Logic to claim rewards, swap rewards to native, charge fees, swap native to deposit token, add liquidity (if necessary), and re-deposit.
   function _compound() internal virtual {}
 
-  // Swap all rewards to native token
+  // Swap all rewards to native token.
   function _swapRewardsToNative() internal virtual {}
 
-  // Claim rewards from underlying protocol
+  // Claim rewards from underlying protocol.
   function _claimRewards() internal virtual {}
 
-  // deposit lpPair into underlying protocol
+  // Deposit assetToken or lpPair into underlying protocol.
   function _deposit() internal virtual {}
 
   /*//////////////////////////////////////////////////////////////
@@ -110,7 +111,7 @@ contract CompounderStrategyBase {
   // Return available rewards for all rewardTokens.
   function rewardsAvailable() public virtual returns (uint256[] memory) {}
 
-  // Set rewards tokens according to rewardToNativeRoutes
+  // Set rewards tokens according to rewardToNativeRoutes.
   function _setRewardTokens(address[][] memory _rewardsToNativeRoutes) internal virtual {
     uint256 len = _rewardsToNativeRoutes.length;
     for (uint256 i; i < len; ++i) {
@@ -148,12 +149,14 @@ contract CompounderStrategyBase {
   }
 
   // Set rewardRoute at index.
-  function setRewardRoute(uint256 rewardIndex, address[] calldata route) public virtual {
+  function setRewardsToNativeRoute(uint256 rewardIndex, address[] calldata route) public virtual {
     rewardsToNativeRoutes[rewardIndex] = route;
+
+    if (isVaultFunctional == true) isVaultFunctional = false;
   }
 
   // Get rewardRoute at index.
-  function getRewardRoute(uint256 rewardIndex) public view virtual returns (address[] memory) {
+  function getRewardsToNativeRoute(uint256 rewardIndex) public view virtual returns (address[] memory) {
     return rewardsToNativeRoutes[rewardIndex];
   }
 
