@@ -226,7 +226,8 @@ contract MultiRewardStaking is ERC4626Upgradeable, OwnedUpgradeable {
   error NotSubmitter(address submitter);
   error RewardsAreDynamic(IERC20 rewardToken);
   error ZeroRewardsSpeed();
-
+  error InvalidConfig();
+  
   /**
    * @notice Adds a new rewardToken which can be earned via staking. Caller must be owner.
    * @param rewardToken Token that can be earned by staking.
@@ -263,6 +264,7 @@ contract MultiRewardStaking is ERC4626Upgradeable, OwnedUpgradeable {
     rewardTokens.push(rewardToken);
 
     if (useEscrow) {
+      if (escrowPercentage == 0 || escrowPercentage > 1e18) revert InvalidConfig();
       escrowInfos[rewardToken] = EscrowInfo({
         escrowPercentage: escrowPercentage,
         escrowDuration: escrowDuration,
