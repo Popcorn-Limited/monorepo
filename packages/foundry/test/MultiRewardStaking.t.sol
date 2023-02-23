@@ -792,7 +792,7 @@ contract MultiRewardStakingTest is Test {
     assertEq(rewardsEndTimestamp, 21);
 
     vm.warp(block.timestamp + 10);
-    
+
     // 50% paid out, CallTime 11, Rewards 5e18, RewardsPerSecond 0.1e18, RewardsEndTimeStamp 61
     staking.changeRewardSpeed(iRewardToken1, 0.1 ether);
     (, , rewardsEndTimestamp, , ) = staking.rewardInfos(iRewardToken1);

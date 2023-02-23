@@ -240,6 +240,7 @@ contract MultiRewardStaking is ERC4626Upgradeable, OwnedUpgradeable {
    * @dev The `rewardsEndTimestamp` gets calculated based on `rewardsPerSecond` and `amount`.
    * @dev If `rewardsPerSecond` is 0 the rewards will be paid out instantly. In this case `amount` must be 0.
    * @dev If `useEscrow` is `false` the `escrowDuration`, `escrowPercentage` and `offset` will be ignored.
+   * @dev The max amount of rewardTokens is 20.
    */
   function addRewardToken(
     IERC20 rewardToken,
@@ -250,6 +251,7 @@ contract MultiRewardStaking is ERC4626Upgradeable, OwnedUpgradeable {
     uint32 escrowDuration,
     uint32 offset
   ) external onlyOwner {
+    if (rewardTokens.length == 20) revert InvalidConfig();
     if (asset() == address(rewardToken)) revert RewardTokenCantBeStakingToken();
 
     RewardInfo memory rewards = rewardInfos[rewardToken];
