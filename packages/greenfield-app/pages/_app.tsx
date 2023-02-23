@@ -20,18 +20,13 @@ import "@rainbow-me/rainbowkit/styles.css";
 import "../styles/globals.css";
 import { NetworthContextProvider } from "@popcorn/components/context/Networth";
 
-const bnb: Chain = {
-  ...bsc,
-  rpcUrls: { default: { http: ["https://bsc-dataseed1.binance.org"] }, public: { http: ["https://bsc-dataseed1.binance.org"] } },
-};
-
 const { chains, provider, webSocketProvider } = configureChains(
   [
     mainnet,
     polygon,
     optimism,
     arbitrum,
-    bnb,
+    bsc,
     ...(process.env.NEXT_PUBLIC_ENABLE_TESTNETS === "true" ? [goerli, localhost] : []),
   ],
   [
