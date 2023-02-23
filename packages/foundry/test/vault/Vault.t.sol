@@ -675,15 +675,19 @@ contract VaultTest is Test {
 
     uint256 expectedFeeInAsset = vault.accruedManagementFee();
 
-    uint256 expectedFeeInShares = vault.convertToShares(expectedFeeInAsset);
+    uint256 supply = vault.totalSupply();
+    uint256 expectedFeeInShares = supply == 0
+      ? expectedFeeInAsset
+      : expectedFeeInAsset.mulDivDown(supply, 1 ether - expectedFeeInAsset);
 
     vault.takeManagementAndPerformanceFees();
 
-    assertEq(vault.totalSupply(), depositAmount + expectedFeeInShares);
-    assertEq(vault.balanceOf(feeRecipient), expectedFeeInShares);
+    assertEq(vault.totalSupply(), depositAmount + expectedFeeInShares, "ts");
+    assertEq(vault.balanceOf(feeRecipient), expectedFeeInShares, "fee bal");
+    assertApproxEqAbs(vault.convertToAssets(expectedFeeInShares), expectedFeeInAsset, 10, "convert back");
 
     // High Water Mark should remain unchanged
-    assertEq(vault.highWaterMark(), 1 ether);
+    assertEq(vault.highWaterMark(), 1 ether, "hwm");
   }
 
   function test__managementFee_change_fees_later() public {
