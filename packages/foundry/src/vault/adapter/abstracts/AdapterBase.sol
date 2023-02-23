@@ -131,7 +131,7 @@ abstract contract AdapterBase is
     uint256 shares
   ) internal virtual override nonReentrant {
     IERC20(asset()).safeTransferFrom(caller, address(this), assets);
-    
+
     _protocolDeposit(assets, shares);
     _mint(receiver, shares);
 
@@ -354,6 +354,7 @@ abstract contract AdapterBase is
       // solhint-disable
       (bool success, ) = address(strategy).delegatecall(abi.encodeWithSignature("harvest()"));
       if (!success) revert();
+      lastHarvest = block.timestamp;
     }
 
     emit Harvested();
