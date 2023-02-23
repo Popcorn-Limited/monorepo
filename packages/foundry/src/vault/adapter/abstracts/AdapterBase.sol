@@ -352,7 +352,8 @@ abstract contract AdapterBase is
   function harvest() public takeFees {
     if (address(strategy) != address(0) && ((lastHarvest + harvestCooldown) < block.timestamp)) {
       // solhint-disable
-      address(strategy).delegatecall(abi.encodeWithSignature("harvest()"));
+      (bool success, ) = address(strategy).delegatecall(abi.encodeWithSignature("harvest()"));
+      if (!success) revert();
     }
 
     emit Harvested();

@@ -883,8 +883,8 @@ contract VaultTest is Test {
 
     assertEq(vault.highWaterMark(), oldHWM);
 
-    assertEq(vault.proposedAdapterTime(),0);
-    assertEq(address(vault.proposedAdapter()),address(0));
+    assertEq(vault.proposedAdapterTime(), 0);
+    assertEq(address(vault.proposedAdapter()), address(0));
   }
 
   function testFail__changeAdapter_NonOwner() public {
@@ -902,6 +902,34 @@ contract VaultTest is Test {
   }
 
   function testFail__changeAdapter_after_init() public {
+    vault.changeAdapter();
+  }
+
+  function testFail__changeAdapter_instantly_again() public {
+    MockERC4626 newAdapter = new MockERC4626(IERC20(address(asset)), "Mock Token Vault", "vwTKN");
+    uint256 depositAmount = 1 ether;
+
+    // Deposit funds for testing
+    asset.mint(alice, depositAmount);
+    vm.startPrank(alice);
+    asset.approve(address(vault), depositAmount);
+    vault.deposit(depositAmount, alice);
+    vm.stopPrank();
+
+    // Increase assets in asset Adapter to check hwm and assetCheckpoint later
+    asset.mint(address(adapter), depositAmount);
+    vault.takeManagementAndPerformanceFees();
+    uint256 oldHWM = vault.highWaterMark();
+
+    // Preparation to change the adapter
+    vault.proposeAdapter(IERC4626(address(newAdapter)));
+
+    vm.warp(block.timestamp + 3 days);
+
+    vm.expectEmit(false, false, false, true, address(vault));
+    emit ChangedAdapter(IERC4626(address(adapter)), IERC4626(address(newAdapter)));
+
+    vault.changeAdapter();
     vault.changeAdapter();
   }
 
