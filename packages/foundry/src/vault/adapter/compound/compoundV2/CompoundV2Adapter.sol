@@ -107,14 +107,6 @@ contract CompoundV2Adapter is AdapterBase, WithRewards {
     return supply == 0 ? shares : shares.mulDiv(cToken.balanceOf(address(this)), supply, Math.Rounding.Up);
   }
 
-  function previewWithdraw(uint256 assets) public view override returns (uint256) {
-    return _convertToShares(assets, Math.Rounding.Up);
-  }
-
-  function previewRedeem(uint256 shares) public view override returns (uint256) {
-    return _convertToAssets(shares, Math.Rounding.Down);
-  }
-
   /*//////////////////////////////////////////////////////////////
                           INTERNAL HOOKS LOGIC
     //////////////////////////////////////////////////////////////*/

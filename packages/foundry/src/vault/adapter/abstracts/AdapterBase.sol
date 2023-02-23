@@ -104,7 +104,7 @@ abstract contract AdapterBase is
   function deposit(uint256 assets, address receiver) public virtual override returns (uint256) {
     if (assets > maxDeposit(receiver)) revert MaxError(assets);
 
-    uint256 shares = _previewDeposit(assets);
+    uint256 shares = _convertToShares(assets, Math.Rounding.Down);
     _deposit(_msgSender(), receiver, assets, shares);
 
     return shares;
@@ -118,7 +118,7 @@ abstract contract AdapterBase is
   function mint(uint256 shares, address receiver) public virtual override returns (uint256) {
     if (shares > maxMint(receiver)) revert MaxError(shares);
 
-    uint256 assets = _previewMint(shares);
+    uint256 assets = _convertToAssets(shares, Math.Rounding.Up);
     _deposit(_msgSender(), receiver, assets, shares);
 
     return assets;
@@ -157,7 +157,7 @@ abstract contract AdapterBase is
   ) public virtual override returns (uint256) {
     if (assets > maxWithdraw(owner)) revert MaxError(assets);
 
-    uint256 shares = _previewWithdraw(assets);
+    uint256 shares = _convertToShares(assets, Math.Rounding.Up);
 
     _withdraw(_msgSender(), receiver, owner, assets, shares);
 
@@ -177,7 +177,7 @@ abstract contract AdapterBase is
   ) public virtual override returns (uint256) {
     if (shares > maxRedeem(owner)) revert MaxError(shares);
 
-    uint256 assets = _previewRedeem(shares);
+    uint256 assets = _convertToAssets(shares, Math.Rounding.Down);
     _withdraw(_msgSender(), receiver, owner, assets, shares);
 
     return assets;
@@ -235,23 +235,13 @@ abstract contract AdapterBase is
    */
   function convertToUnderlyingShares(uint256 assets, uint256 shares) public view virtual returns (uint256) {}
 
-  /// @notice See _previewDeposit natspec
-  function previewDeposit(uint256 assets) public view virtual override returns (uint256) {
-    return _previewDeposit(assets);
-  }
-
   /**
    * @notice Simulate the effects of a deposit at the current block, given current on-chain conditions.
    * @dev Return 0 if paused since no further deposits are allowed.
    * @dev Override this function if the underlying protocol has a unique deposit logic and/or deposit fees.
    */
-  function _previewDeposit(uint256 assets) internal view virtual returns (uint256) {
+  function previewDeposit(uint256 assets) public view virtual override returns (uint256) {
     return paused() ? 0 : _convertToShares(assets, Math.Rounding.Down);
-  }
-
-  /// @notice See _previewMint natspec
-  function previewMint(uint256 shares) public view virtual override returns (uint256) {
-    return _previewMint(shares);
   }
 
   /**
@@ -259,34 +249,8 @@ abstract contract AdapterBase is
    * @dev Return 0 if paused since no further deposits are allowed.
    * @dev Override this function if the underlying protocol has a unique deposit logic and/or deposit fees.
    */
-  function _previewMint(uint256 shares) internal view virtual returns (uint256) {
+  function previewMint(uint256 shares) public view virtual override returns (uint256) {
     return paused() ? 0 : _convertToAssets(shares, Math.Rounding.Up);
-  }
-
-  /// @notice See _previewWithdraw natspec
-  function previewWithdraw(uint256 assets) public view virtual override returns (uint256) {
-    return _previewWithdraw(assets);
-  }
-
-  /**
-   * @notice Simulate the effects of a withdraw at the current block, given current on-chain conditions.
-   * @dev Override this function if the underlying protocol has a unique withdrawal logic and/or withdraw fees.
-   */
-  function _previewWithdraw(uint256 assets) internal view virtual returns (uint256) {
-    return _convertToShares(assets, Math.Rounding.Up);
-  }
-
-  /// @notice See _previewRedeem natspec
-  function previewRedeem(uint256 shares) public view virtual override returns (uint256) {
-    return _previewRedeem(shares);
-  }
-
-  /**
-   * @notice Simulate the effects of a redeem at the current block, given current on-chain conditions.
-   * @dev Override this function if the underlying protocol has a unique redeem logic and/or redeem fees.
-   */
-  function _previewRedeem(uint256 shares) internal view virtual returns (uint256) {
-    return _convertToAssets(shares, Math.Rounding.Down);
   }
 
   function _convertToShares(uint256 assets, Math.Rounding rounding)
