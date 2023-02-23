@@ -3,14 +3,26 @@ import { etherscan, foundry, react } from "@wagmi/cli/plugins";
 import { erc20ABI } from "wagmi";
 
 
-// This is the config file that is used to generate the wagmi hooks.
+
 /*
-It can generate hooks using
-1) Foundry (We use some exclusions as there can't be duplicate contracts with the same names - we also use the prefix FoundryHook for the hooks generated from the foundry contracts )
-2) Etherscan (using the contract addresses to look up the ABIs for verified contracts) - Note that these can only be used on the chainId that you created the hooks for
-3) using ABI files
+This is the config file that is used to generate the wagmi hooks.
+
+
+It can generate hooks using 3 different methods
+  1) Foundry (We use some exclusions as there can't be duplicate contracts with the same names - we also use the prefix FoundryHook for the hooks generated from the foundry contracts )
+  2) Etherscan (using the contract addresses to look up the ABIs for verified contracts) - Note that these can only be used on the chainId that you created the hooks for
+  3) using ABI files
 
 There are some examples in greenfield-app/components/WagmiHookExamples.tsx
+
+HOW TO CREATE THE HOOKS
+
+1. go into the greenfield-app directory --> cd greenfield-app
+2. install forge on the terminal by doing following two commands
+    - source /Users/your_personal_path/.bashrc
+    - foundryup
+3. Finally, run `yarn create-hooks`
+
 */
 
 interface Contracts4Etherscan {
