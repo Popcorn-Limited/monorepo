@@ -131,7 +131,9 @@ export default defineConfig({
         "**Initializable**/**",
         "**IAav**/**",
         "IYearn.sol",
-        "ILido.sol"
+        "ILido.sol",
+        ".t.sol$",
+        ".prop.sol$"
       ],
       project: "../foundry",
     }),
