@@ -741,6 +741,33 @@ contract VaultTest is Test {
     assertEq(vault.highWaterMark(), (depositAmount + amount).mulDivDown(depositAmount, depositAmount));
   }
 
+  function test_performanceFee2() public {
+    asset = new MockERC20("Mock Token", "TKN", 6);
+    adapter = new MockERC4626(IERC20(address(asset)), "Mock Token Vault", "vwTKN");
+    address vaultAddress = Clones.clone(implementation);
+    vault = Vault(vaultAddress);
+    vm.label(vaultAddress, "vault");
+    vault.initialize(
+      IERC20(address(asset)),
+      IERC4626(address(adapter)),
+      VaultFees({ deposit: 0, withdrawal: 0, management: 0, performance: 1e17 }),
+      feeRecipient,
+      address(this)
+    );
+
+    uint256 depositAmount = 1e6;
+    asset.mint(alice, depositAmount);
+    vm.startPrank(alice);
+    asset.approve(address(vault), depositAmount);
+    vault.deposit(depositAmount, alice);
+    vm.stopPrank();
+
+    asset.mint(address(adapter), 1e6);
+
+    // Take 10% of 1e6
+    assertEq(vault.accruedPerformanceFee(), 1e5);
+  }
+
   /*//////////////////////////////////////////////////////////////
                           CHANGE FEES
     //////////////////////////////////////////////////////////////*/

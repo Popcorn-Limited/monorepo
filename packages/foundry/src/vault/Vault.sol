@@ -388,7 +388,11 @@ contract Vault is ERC20Upgradeable, ReentrancyGuardUpgradeable, PausableUpgradea
 
     return
       performanceFee > 0 && shareValue > highWaterMark
-        ? performanceFee.mulDiv((shareValue - highWaterMark) * totalSupply(), 1e36, Math.Rounding.Down)
+        ? performanceFee.mulDiv(
+          (shareValue - highWaterMark) * totalSupply(),
+          1e36,
+          Math.Rounding.Down
+        )
         : 0;
   }
 
