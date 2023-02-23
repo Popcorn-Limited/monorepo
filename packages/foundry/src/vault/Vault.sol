@@ -106,6 +106,7 @@ contract Vault is ERC20Upgradeable, ReentrancyGuardUpgradeable, PausableUpgradea
     uint256 shares
   );
 
+  error ZeroAmount();
   error InvalidReceiver();
 
   function deposit(uint256 assets) public returns (uint256) {
@@ -118,17 +119,13 @@ contract Vault is ERC20Upgradeable, ReentrancyGuardUpgradeable, PausableUpgradea
    * @param receiver Receiver of issued vault shares.
    * @return shares Quantity of vault shares issued to `receiver`.
    */
-  function deposit(uint256 assets, address receiver)
-    public
-    nonReentrant
-    whenNotPaused
-    returns (uint256 shares)
-  {
+  function deposit(uint256 assets, address receiver) public nonReentrant whenNotPaused returns (uint256 shares) {
     if (receiver == address(0)) revert InvalidReceiver();
 
     uint256 feeShares = convertToShares(assets.mulDiv(uint256(fees.deposit), 1e18, Math.Rounding.Down));
 
     shares = convertToShares(assets) - feeShares;
+    if (shares == 0) revert ZeroAmount();
 
     if (feeShares > 0) _mint(feeRecipient, feeShares);
 
@@ -151,13 +148,9 @@ contract Vault is ERC20Upgradeable, ReentrancyGuardUpgradeable, PausableUpgradea
    * @param receiver Receiver of issued vault shares.
    * @return assets Quantity of assets deposited by caller.
    */
-  function mint(uint256 shares, address receiver)
-    public
-    nonReentrant
-    whenNotPaused
-    returns (uint256 assets)
-  {
+  function mint(uint256 shares, address receiver) public nonReentrant whenNotPaused returns (uint256 assets) {
     if (receiver == address(0)) revert InvalidReceiver();
+    if (shares == 0) revert ZeroAmount();
 
     uint256 depositFee = uint256(fees.deposit);
 
@@ -195,6 +188,7 @@ contract Vault is ERC20Upgradeable, ReentrancyGuardUpgradeable, PausableUpgradea
     if (receiver == address(0)) revert InvalidReceiver();
 
     shares = convertToShares(assets);
+    if (shares == 0) revert ZeroAmount();
 
     uint256 withdrawalFee = uint256(fees.withdrawal);
 
@@ -230,6 +224,7 @@ contract Vault is ERC20Upgradeable, ReentrancyGuardUpgradeable, PausableUpgradea
     address owner
   ) public nonReentrant returns (uint256 assets) {
     if (receiver == address(0)) revert InvalidReceiver();
+    if (shares == 0) revert ZeroAmount();
 
     if (msg.sender != owner) _approve(owner, msg.sender, allowance(owner, msg.sender) - shares);
 

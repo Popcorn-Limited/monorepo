@@ -237,7 +237,7 @@ contract VaultTest is Test {
     vault.deposit(0, address(this));
   }
 
-  function test__withdraw_zero() public {
+  function testFail__withdraw_zero() public {
     vault.withdraw(0, address(this), address(this));
   }
 
@@ -313,7 +313,7 @@ contract VaultTest is Test {
     vault.mint(0, address(this));
   }
 
-  function test__redeem_zero() public {
+  function testFail__redeem_zero() public {
     vault.redeem(0, address(this), address(this));
   }
 
@@ -623,7 +623,7 @@ contract VaultTest is Test {
   }
 
   function test__previewWithdraw_previewRedeem_takes_fees_into_account(uint8 fuzzAmount) public {
-    uint256 amount = bound(uint256(fuzzAmount), 1, 1 ether);
+    uint256 amount = bound(uint256(fuzzAmount), 10, 1 ether);
 
     _setFees(0, 1e17, 0, 0);
 
