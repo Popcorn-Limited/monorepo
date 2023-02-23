@@ -3,7 +3,7 @@ import { FeatureTogglePanel } from "@popcorn/components/components/FeatureToggle
 import { DualActionModalContainer } from "@popcorn/components/components/Modal/DualActionModalContainer";
 import { MultiChoiceActionModalContainer } from "@popcorn/components/components/Modal/MultiChoiceActionModalContainer";
 import { SingleActionModalContainer } from "@popcorn/components/components/Modal/SingleActionModalContainer";
-import OfacCheck from "@popcorn/app/components/OfacCheck";
+import OfacCheck from "../../app/components/OfacCheck";
 import { FeatureToggleProvider } from "@popcorn/components/context/FeatureToggleContext";
 import Head from "next/head";
 import Router from "next/router";
@@ -11,7 +11,8 @@ import React, { useEffect, useState } from "react";
 import { GlobalLinearProgressAndLoading } from "@popcorn/components/components/GlobalLinearProgressAndLoading";
 import { StateProvider } from "@popcorn/components/context/store";
 import { RainbowKitProvider, getDefaultWallets, Chain } from "@rainbow-me/rainbowkit";
-import { chain, configureChains, createClient, WagmiConfig } from "wagmi";
+import { configureChains, createClient, WagmiConfig } from "wagmi";
+import { mainnet, polygon, optimism, arbitrum, goerli, localhost, bsc } from 'wagmi/chains';
 import { alchemyProvider } from "wagmi/providers/alchemy";
 import { infuraProvider } from "wagmi/providers/infura";
 import { jsonRpcProvider } from "wagmi/providers/jsonRpc";
@@ -20,22 +21,18 @@ import "../styles/globals.css";
 import { NetworthContextProvider } from "@popcorn/components/context/Networth";
 
 const bnb: Chain = {
-  id: 56,
-  name: "BNB Chain",
-  network: "bnb",
-  iconUrl: "https://assets.coingecko.com/coins/images/825/large/binance-coin-logo.png?1547034615",
-  rpcUrls: { default: "https://bsc-dataseed1.binance.org" },
-  blockExplorers: { default: { name: "BSCScan", url: "https://bscscan.com" } },
+  ...bsc,
+  rpcUrls: { default: { http: ["https://bsc-dataseed1.binance.org"] }, public: { http: ["https://bsc-dataseed1.binance.org"] } },
 };
 
 const { chains, provider, webSocketProvider } = configureChains(
   [
-    chain.mainnet,
-    chain.polygon,
-    chain.optimism,
-    chain.arbitrum,
+    mainnet,
+    polygon,
+    optimism,
+    arbitrum,
     bnb,
-    ...(process.env.NEXT_PUBLIC_ENABLE_TESTNETS === "true" ? [chain.goerli, chain.localhost] : []),
+    ...(process.env.NEXT_PUBLIC_ENABLE_TESTNETS === "true" ? [goerli, localhost] : []),
   ],
   [
     alchemyProvider({
@@ -44,7 +41,7 @@ const { chains, provider, webSocketProvider } = configureChains(
     infuraProvider({
       apiKey: process.env.INFURA_PROJECT_ID,
     }),
-    jsonRpcProvider({ rpc: (chain) => ({ http: chain.rpcUrls.default }) }),
+    jsonRpcProvider({ rpc: (chain) => ({ http: chain.rpcUrls.default.http[0] }) }),
   ],
 );
 
