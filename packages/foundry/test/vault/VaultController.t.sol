@@ -241,7 +241,7 @@ contract VaultControllerTest is Test {
         }),
         DeploymentArgs({ id: templateId, data: abi.encode(uint256(100)) }),
         DeploymentArgs({ id: "MockStrategy", data: "" }),
-        address(0),
+        true,
         abi.encode(address(rewardToken), 0.1 ether, 1 ether, true, 10000000, 2 days, 1 days),
         VaultMetadata({
           vault: address(0),
@@ -315,7 +315,7 @@ contract VaultControllerTest is Test {
       }),
       DeploymentArgs({ id: templateId, data: abi.encode(uint256(100)) }),
       DeploymentArgs({ id: "MockStrategy", data: "" }),
-      address(0),
+      true,
       abi.encode(address(rewardToken), 0.1 ether, 1 ether, true, 10000000, 2 days, 1 days),
       VaultMetadata({
         vault: address(0),
@@ -396,7 +396,7 @@ contract VaultControllerTest is Test {
       }),
       DeploymentArgs({ id: templateId, data: abi.encode(uint256(100)) }),
       DeploymentArgs({ id: "", data: "" }),
-      address(0),
+      true,
       abi.encode(address(rewardToken), 0.1 ether, 1 ether, true, 10000000, 2 days, 1 days),
       VaultMetadata({
         vault: address(0),
@@ -437,7 +437,7 @@ contract VaultControllerTest is Test {
       }),
       DeploymentArgs({ id: templateId, data: abi.encode(uint256(100)) }),
       DeploymentArgs({ id: "", data: "" }),
-      address(0),
+      true,
       "",
       VaultMetadata({
         vault: address(0),
@@ -492,7 +492,7 @@ contract VaultControllerTest is Test {
       }),
       DeploymentArgs({ id: "", data: "" }),
       DeploymentArgs({ id: "", data: "" }),
-      address(0),
+      true,
       abi.encode(address(rewardToken), 0.1 ether, 1 ether, true, 10000000, 2 days, 1 days),
       VaultMetadata({
         vault: address(0),
@@ -513,64 +513,6 @@ contract VaultControllerTest is Test {
     assertEq(IAdapter(adapterClone).harvestCooldown(), 1 days);
     assertEq(IAdapter(adapterClone).performanceFee(), 1000);
     assertEq(IAdapter(adapterClone).strategy(), address(0));
-  }
-
-  function test__deployVault_staking_given() public {
-    addTemplate("Adapter", templateId, adapterImpl, true, true);
-    addTemplate("Strategy", "MockStrategy", strategyImpl, false, true);
-    addTemplate("Vault", "V1", vaultImpl, true, true);
-    controller.setPerformanceFee(uint256(1000));
-    controller.setHarvestCooldown(1 days);
-    rewardToken.mint(address(this), 10 ether);
-    rewardToken.approve(address(controller), 10 ether);
-
-    swapTokenAddresses[0] = address(0x9999);
-    address adapterClone = 0x949DEa045FE979a11F0D4A929446F83072D81095;
-    address strategyClone = 0xD6C5fA22BBE89db86245e111044a880213b35705;
-    address stakingClone = controller.deployStaking(iAsset);
-
-    uint256 callTimestamp = block.timestamp;
-    address vaultClone = controller.deployVault(
-      VaultInitParams({
-        asset: iAsset,
-        adapter: IERC4626(address(0)),
-        fees: VaultFees({ deposit: 100, withdrawal: 200, management: 300, performance: 400 }),
-        feeRecipient: feeRecipient,
-        owner: address(this)
-      }),
-      DeploymentArgs({ id: templateId, data: abi.encode(uint256(100)) }),
-      DeploymentArgs({ id: "MockStrategy", data: "" }),
-      stakingClone,
-      abi.encode(address(rewardToken), 0.1 ether, 1 ether, true, 10000000, 2 days, 1 days),
-      VaultMetadata({
-        vault: address(0),
-        staking: address(0),
-        creator: address(this),
-        metadataCID: metadataCid,
-        swapTokenAddresses: swapTokenAddresses,
-        swapAddress: address(0x5555),
-        exchange: uint256(1)
-      }),
-      0
-    );
-    // Assert Vault Metadata
-    assertEq(vaultRegistry.getVault(vaultClone).staking, stakingClone);
-    // Assert Staking
-    assertTrue(cloneRegistry.cloneExists(stakingClone));
-    assertEq(IERC4626(stakingClone).asset(), address(iAsset));
-
-    assertEq(IMultiRewardStaking(stakingClone).rewardInfos(iRewardToken).ONE, 1 ether);
-    assertEq(IMultiRewardStaking(stakingClone).rewardInfos(iRewardToken).rewardsPerSecond, 0.1 ether);
-    assertEq(
-      uint256(IMultiRewardStaking(stakingClone).rewardInfos(iRewardToken).rewardsEndTimestamp),
-      callTimestamp + 10
-    );
-    assertEq(uint256(IMultiRewardStaking(stakingClone).rewardInfos(iRewardToken).index), 1 ether);
-    assertEq(uint256(IMultiRewardStaking(stakingClone).rewardInfos(iRewardToken).lastUpdatedTimestamp), callTimestamp);
-
-    assertEq(uint256(IMultiRewardStaking(stakingClone).escrowInfos(iRewardToken).escrowPercentage), 10000000);
-    assertEq(uint256(IMultiRewardStaking(stakingClone).escrowInfos(iRewardToken).escrowDuration), 2 days);
-    assertEq(uint256(IMultiRewardStaking(stakingClone).escrowInfos(iRewardToken).offset), 1 days);
   }
 
   function test__deployVault_with_initial_deposit() public {
@@ -601,7 +543,7 @@ contract VaultControllerTest is Test {
       }),
       DeploymentArgs({ id: templateId, data: abi.encode(uint256(100)) }),
       DeploymentArgs({ id: "MockStrategy", data: "" }),
-      address(0),
+      true,
       abi.encode(address(rewardToken), 0.1 ether, 1 ether, true, 10000000, 2 days, 1 days),
       VaultMetadata({
         vault: address(0),
@@ -632,6 +574,41 @@ contract VaultControllerTest is Test {
     setPermission(address(1), true, false);
     setPermission(address(bob), false, false);
     deployVault();
+  }
+
+  function testFail__deployVault_without_staking_but_with_rewards() public {
+    addTemplate("Adapter", templateId, adapterImpl, true, true);
+    addTemplate("Strategy", "MockStrategy", strategyImpl, false, true);
+    addTemplate("Vault", "V1", vaultImpl, true, true);
+    controller.setPerformanceFee(uint256(1000));
+    controller.setHarvestCooldown(1 days);
+    rewardToken.mint(address(this), 10 ether);
+    rewardToken.approve(address(controller), 10 ether);
+
+
+    controller.deployVault(
+      VaultInitParams({
+        asset: iAsset,
+        adapter: IERC4626(address(0)),
+        fees: VaultFees({ deposit: 100, withdrawal: 200, management: 300, performance: 400 }),
+        feeRecipient: feeRecipient,
+        owner: address(this)
+      }),
+      DeploymentArgs({ id: templateId, data: abi.encode(uint256(100)) }),
+      DeploymentArgs({ id: "MockStrategy", data: "" }),
+      false,
+      abi.encode(address(rewardToken), 0.1 ether, 1 ether, true, 10000000, 2 days, 1 days),
+      VaultMetadata({
+        vault: address(0),
+        staking: address(0),
+        creator: address(this),
+        metadataCID: metadataCid,
+        swapTokenAddresses: swapTokenAddresses,
+        swapAddress: address(0x5555),
+        exchange: uint256(1)
+      }),
+      0
+    );
   }
 
   /*//////////////////////////////////////////////////////////////

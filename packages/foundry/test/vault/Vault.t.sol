@@ -663,7 +663,7 @@ contract VaultTest is Test {
 
   function test__managementFee(uint128 timeframe) public {
     // Test Timeframe less than 10 years
-    vm.assume(timeframe <= 315576000);
+    timeframe = uint128(bound(timeframe, 1, 315576000));
     uint256 depositAmount = 1 ether;
 
     _setFees(0, 0, 1e17, 0);

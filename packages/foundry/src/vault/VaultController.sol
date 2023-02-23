@@ -75,22 +75,25 @@ contract VaultController is Owned {
 
   event VaultDeployed(address indexed vault, address indexed staking, address indexed adapter);
 
+  error InvalidConfig();
+
   /**
    * @notice Deploy a new Vault. Optionally with an Adapter and Staking. Caller must be owner.
    * @param vaultData Vault init params.
    * @param adapterData Encoded adapter init data.
    * @param strategyData Encoded strategy init data.
-   * @param staking Address of staking contract to use for the vault. If 0, a new staking contract will be deployed.
+   * @param deployStaking Should we deploy a staking contract for the vault?
    * @param rewardsData Encoded data to add a rewards to the staking contract
    * @param metadata Vault metadata for the `VaultRegistry` (Will be used by the frontend for additional informations)
    * @param initialDeposit Initial deposit to the vault. If 0, no deposit will be made.
    * @dev This function is the one stop solution to create a new vault with all necessary admin functions or auxiliery contracts.
+   * @dev If `rewardsData` is not empty `deployStaking` must be true
    */
   function deployVault(
     VaultInitParams memory vaultData,
     DeploymentArgs memory adapterData,
     DeploymentArgs memory strategyData,
-    address staking,
+    bool deployStaking,
     bytes memory rewardsData,
     VaultMetadata memory metadata,
     uint256 initialDeposit
@@ -98,18 +101,22 @@ contract VaultController is Owned {
     IDeploymentController _deploymentController = deploymentController;
 
     _verifyToken(address(vaultData.asset));
-    _verifyAdapterConfiguration(address(vaultData.adapter), adapterData.id);
+    if (address(vaultData.adapter) != address(0) && (adapterData.id > 0 || !cloneRegistry.cloneExists(address(vaultData.adapter)))) revert InvalidConfig();
 
     if (adapterData.id > 0)
       vaultData.adapter = IERC4626(_deployAdapter(vaultData.asset, adapterData, strategyData, _deploymentController));
 
     vault = _deployVault(vaultData, _deploymentController);
 
-    if (staking == address(0)) staking = _deployStaking(IERC20(address(vault)), _deploymentController);
+    address staking;
+    if (deployStaking) staking = _deployStaking(IERC20(address(vault)), _deploymentController);
 
     _registerCreatedVault(vault, staking, metadata);
 
-    if (rewardsData.length > 0) _handleVaultStakingRewards(vault, rewardsData);
+    if (rewardsData.length > 0) {
+      if (!deployStaking) revert InvalidConfig();
+      _handleVaultStakingRewards(vault, rewardsData);
+    }
 
     emit VaultDeployed(vault, staking, address(vaultData.adapter));
 
@@ -664,7 +671,6 @@ contract VaultController is Owned {
   error NotSubmitterNorOwner(address caller);
   error NotSubmitter(address caller);
   error NotAllowed(address subject);
-  error AdapterConfigFaulty();
   error ArrayLengthMissmatch();
 
   /// @notice Verify that the caller is the creator of the vault or owner of `VaultController` (admin rights).
@@ -690,14 +696,6 @@ contract VaultController is Owned {
       cloneRegistry.cloneExists(token) ||
       token == address(0)
     ) revert NotAllowed(token);
-  }
-
-  /// @notice Verify that the adapter configuration is valid.
-  function _verifyAdapterConfiguration(address adapter, bytes32 adapterId) internal view {
-    if (adapter != address(0)) {
-      if (adapterId > 0) revert AdapterConfigFaulty();
-      if (!cloneRegistry.cloneExists(adapter)) revert AdapterConfigFaulty();
-    }
   }
 
   /// @notice Verify that the array lengths are equal.
