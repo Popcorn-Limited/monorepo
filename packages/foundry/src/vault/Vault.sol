@@ -122,7 +122,6 @@ contract Vault is ERC20Upgradeable, ReentrancyGuardUpgradeable, PausableUpgradea
     public
     nonReentrant
     whenNotPaused
-    syncFeeCheckpoint
     returns (uint256 shares)
   {
     if (receiver == address(0)) revert InvalidReceiver();
@@ -156,7 +155,6 @@ contract Vault is ERC20Upgradeable, ReentrancyGuardUpgradeable, PausableUpgradea
     public
     nonReentrant
     whenNotPaused
-    syncFeeCheckpoint
     returns (uint256 assets)
   {
     if (receiver == address(0)) revert InvalidReceiver();
@@ -193,7 +191,7 @@ contract Vault is ERC20Upgradeable, ReentrancyGuardUpgradeable, PausableUpgradea
     uint256 assets,
     address receiver,
     address owner
-  ) public nonReentrant syncFeeCheckpoint returns (uint256 shares) {
+  ) public nonReentrant returns (uint256 shares) {
     if (receiver == address(0)) revert InvalidReceiver();
 
     shares = convertToShares(assets);
@@ -426,11 +424,6 @@ contract Vault is ERC20Upgradeable, ReentrancyGuardUpgradeable, PausableUpgradea
     feesUpdatedAt = block.timestamp;
 
     _;
-  }
-
-  modifier syncFeeCheckpoint() {
-    _;
-    highWaterMark = convertToAssets(1e18);
   }
 
   /*//////////////////////////////////////////////////////////////
