@@ -3,14 +3,13 @@
 
 pragma solidity ^0.8.15;
 
-import { ERC4626Upgradeable, IERC20Upgradeable as IERC20, IERC20MetadataUpgradeable as IERC20Metadata, ERC20Upgradeable as ERC20 } from "openzeppelin-contracts-upgradeable/token/ERC20/extensions/ERC4626Upgradeable.sol";
-import { IERC4626Upgradeable as IERC4626 } from "openzeppelin-contracts-upgradeable/interfaces/IERC4626Upgradeable.sol";
+import { ERC4626Upgradeable, IERC20MetadataUpgradeable as IERC20Metadata, ERC20Upgradeable as ERC20 } from "openzeppelin-contracts-upgradeable/token/ERC20/extensions/ERC4626Upgradeable.sol";
 import { SafeERC20Upgradeable as SafeERC20 } from "openzeppelin-contracts-upgradeable/token/ERC20/utils/SafeERC20Upgradeable.sol";
 import { ReentrancyGuardUpgradeable } from "openzeppelin-contracts-upgradeable/security/ReentrancyGuardUpgradeable.sol";
 import { PausableUpgradeable } from "openzeppelin-contracts-upgradeable/security/PausableUpgradeable.sol";
 import { MathUpgradeable as Math } from "openzeppelin-contracts-upgradeable/utils/math/MathUpgradeable.sol";
 import { OwnedUpgradeable } from "../utils/OwnedUpgradeable.sol";
-import { VaultFees } from "../interfaces/vault/IVault.sol";
+import { VaultFees, IERC4626, IERC20 } from "../interfaces/vault/IVault.sol";
 
 /**
  * @title   Vault
@@ -344,56 +343,6 @@ contract Vault is ERC4626Upgradeable, ReentrancyGuardUpgradeable, PausableUpgrad
     return adapter.maxRedeem(address(this));
   }
 
-  // Scenario:
-    // A = Alice, B = Bob
-    //  ________________________________________________________
-    // | Vault shares | A share | A assets | B share | B assets |
-    // |========================================================|
-    // | 1. Alice mints 2000 shares (costs 2000 tokens)         |
-    // |--------------|---------|----------|---------|----------|
-    // |         2000 |    2000 |     2000 |       0 |        0 |
-    // |--------------|---------|----------|---------|----------|
-    // | 2. Bob deposits 4000 tokens (mints 4000 shares)        |
-    // |--------------|---------|----------|---------|----------|
-    // |         6000 |    2000 |     2000 |    4000 |     4000 |
-    // |--------------|---------|----------|---------|----------|
-    // | 3. Vault mutates by +3000 tokens...                    |
-    // |    (simulated yield returned from adapter)...         |
-    // |--------------|---------|----------|---------|----------|
-    // |         6000 |    2000 |     3000 |    4000 |     6000 |
-    // |--------------|---------|----------|---------|----------|
-    // | 4. Alice deposits 2000 tokens (mints 1333 shares)      |
-    // |--------------|---------|----------|---------|----------|
-    // |         7333 |    3333 |     4999 |    4000 |     6000 |
-    // |--------------|---------|----------|---------|----------|
-    // | 5. Bob mints 2000 shares (costs 3000 assets)           |
-    // |--------------|---------|----------|---------|----------|
-    // |         9333 |    3333 |     5000 |    6000 |     9000 |
-    // |--------------|---------|----------|---------|----------|
-    // | 6. Vault mutates by +3000 tokens...                    |
-    // |    (simulated yield returned from adapter)            |
-    // |    NOTE: Vault holds 17001 tokens, but sum of          |
-    // |          assetsOf() is 17000.                          |
-    // |--------------|---------|----------|---------|----------|
-    // |         9333 |    3333 |     6071 |    6000 |    10929 |
-    // |--------------|---------|----------|---------|----------|
-    // | 7. Alice redeem 1333 shares (2429 assets)              |
-    // |--------------|---------|----------|---------|----------|
-    // |         8000 |    2000 |     3643 |    6000 |    10929 |
-    // |--------------|---------|----------|---------|----------|
-    // | 8. Bob withdraws 2929 assets (1608 shares)             |
-    // |--------------|---------|----------|---------|----------|
-    // |         6391 |    2000 |     3643 |    4391 |     7999 |
-    // |--------------|---------|----------|---------|----------|
-    // | 9. Alice withdraws 3643 assets (2000 shares)           |
-    // |--------------|---------|----------|---------|----------|
-    // |         4391 |       0 |        0 |    4391 |     8000 |
-    // |--------------|---------|----------|---------|----------|
-    // | 10. Bob redeem 4391 shares (8000 tokens)               |
-    // |--------------|---------|----------|---------|----------|
-    // |            0 |       0 |        0 |       0 |        0 |
-    // |______________|_________|__________|_________|__________|
-
   /*//////////////////////////////////////////////////////////////
                         FEE ACCOUNTING LOGIC
     //////////////////////////////////////////////////////////////*/
@@ -597,6 +546,8 @@ contract Vault is ERC4626Upgradeable, ReentrancyGuardUpgradeable, PausableUpgrad
    * @param _quitPeriod Time to rage quit after proposal.
    */
   function setQuitPeriod(uint256 _quitPeriod) external onlyOwner {
+    if (block.timestamp < proposedAdapterTime + quitPeriod || block.timestamp < proposedFeeTime + quitPeriod)
+      revert NotPassedQuitPeriod(quitPeriod);
     if (_quitPeriod < 1 days || _quitPeriod > 7 days) revert InvalidQuitPeriod();
 
     quitPeriod = _quitPeriod;

@@ -4,7 +4,7 @@ pragma solidity ^0.8.15;
 
 import { SafeERC20Upgradeable as SafeERC20 } from "openzeppelin-contracts-upgradeable/token/ERC20/utils/SafeERC20Upgradeable.sol";
 import { Owned } from "../utils/Owned.sol";
-import { IVault, VaultInitParams, VaultFees } from "../interfaces/vault/IVault.sol";
+import { IVault, VaultInitParams, VaultFees, IERC4626, IERC20 } from "../interfaces/vault/IVault.sol";
 import { IMultiRewardStaking } from "../interfaces/IMultiRewardStaking.sol";
 import { IMultiRewardEscrow } from "../interfaces/IMultiRewardEscrow.sol";
 import { IDeploymentController, ICloneRegistry } from "../interfaces/vault/IDeploymentController.sol";
@@ -12,7 +12,6 @@ import { ITemplateRegistry, Template } from "../interfaces/vault/ITemplateRegist
 import { IPermissionRegistry, Permission } from "../interfaces/vault/IPermissionRegistry.sol";
 import { IVaultRegistry, VaultMetadata } from "../interfaces/vault/IVaultRegistry.sol";
 import { IAdminProxy } from "../interfaces/vault/IAdminProxy.sol";
-import { IERC4626, IERC20 } from "../interfaces/vault/IERC4626.sol";
 import { IStrategy } from "../interfaces/vault/IStrategy.sol";
 import { IAdapter } from "../interfaces/vault/IAdapter.sol";
 import { IPausable } from "../interfaces/IPausable.sol";
@@ -389,6 +388,51 @@ contract VaultController is Owned {
       (bool success, bytes memory returnData) = adminProxy.execute(
         vaults[i],
         abi.encodeWithSelector(IVault.changeFees.selector)
+      );
+      if (!success) revert UnderlyingError(returnData);
+    }
+  }
+
+  /**
+   * @notice Sets new Quit Periods for Vaults. Caller must be creator of the vaults.
+   * @param vaults Addresses of the vaults to change
+   * @param quitPeriods QuitPeriod in seconds
+   * @dev Minimum value is 1 day max is 7 days.
+   * @dev Cant be called if recently a new fee or adapter has been proposed
+   */
+  function setVaultQuitPeriods(address[] calldata vaults, uint256[] calldata quitPeriods) external {
+    uint8 len = uint8(vaults.length);
+
+    _verifyEqualArrayLength(len, quitPeriods.length);
+
+    for (uint8 i = 0; i < len; i++) {
+      _verifyCreator(vaults[i]);
+
+      (bool success, bytes memory returnData) = adminProxy.execute(
+        vaults[i],
+        abi.encodeWithSelector(IVault.setQuitPeriod.selector, quitPeriods[i])
+      );
+      if (!success) revert UnderlyingError(returnData);
+    }
+  }
+
+  /**
+   * @notice Sets new Fee Recipients for Vaults. Caller must be creator of the vaults.
+   * @param vaults Addresses of the vaults to change
+   * @param feeRecipients fee recipient for this vault
+   * @dev address must not be 0
+   */
+  function setVaultFeeRecipients(address[] calldata vaults, address[] calldata feeRecipients) external {
+    uint8 len = uint8(vaults.length);
+
+    _verifyEqualArrayLength(len, feeRecipients.length);
+
+    for (uint8 i = 0; i < len; i++) {
+      _verifyCreator(vaults[i]);
+
+      (bool success, bytes memory returnData) = adminProxy.execute(
+        vaults[i],
+        abi.encodeWithSelector(IVault.setFeeRecipient.selector, feeRecipients[i])
       );
       if (!success) revert UnderlyingError(returnData);
     }

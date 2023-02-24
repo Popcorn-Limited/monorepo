@@ -3,7 +3,7 @@
 
 pragma solidity ^0.8.15;
 
-import { IERC4626 } from "../interfaces/vault/IERC4626.sol";
+import { IERC4626Upgradeable as IERC4626 } from "openzeppelin-contracts-upgradeable/interfaces/IERC4626Upgradeable.sol";
 import { IVaultRegistry, VaultMetadata } from "../interfaces/vault/IVaultRegistry.sol";
 
 /**
@@ -21,7 +21,11 @@ contract VaultRouter {
 
   error NoStaking();
 
-  function depositAndStake(IERC4626 vault, uint256 assetAmount, address receiver) external {
+  function depositAndStake(
+    IERC4626 vault,
+    uint256 assetAmount,
+    address receiver
+  ) external {
     VaultMetadata memory metadata = vaultRegistry.getVault(address(vault));
     if (metadata.staking == address(0)) revert NoStaking();
 
@@ -30,7 +34,12 @@ contract VaultRouter {
     IERC4626(metadata.staking).deposit(shares, receiver);
   }
 
-  function redeemAndWithdraw(IERC4626 vault, uint256 burnAmount, address receiver, address owner) external {
+  function redeemAndWithdraw(
+    IERC4626 vault,
+    uint256 burnAmount,
+    address receiver,
+    address owner
+  ) external {
     VaultMetadata memory metadata = vaultRegistry.getVault(address(vault));
     if (metadata.staking == address(0)) revert NoStaking();
 

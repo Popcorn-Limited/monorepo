@@ -993,6 +993,9 @@ contract VaultTest is Test {
     //////////////////////////////////////////////////////////////*/
 
   function test__setQuitPeriod() public {
+    // Pass the inital quit period
+    vm.warp(block.timestamp + 3 days);
+
     uint256 newQuitPeriod = 1 days;
     vm.expectEmit(false, false, false, true, address(vault));
     emit QuitPeriodSet(newQuitPeriod);
@@ -1013,6 +1016,30 @@ contract VaultTest is Test {
 
   function testFail__setQuitPeriod_too_high() public {
     vault.setQuitPeriod(8 days);
+  }
+
+  function testFail__setQuitPeriod_during_initial_quitPeriod() public {
+    vault.setQuitPeriod(1 days);
+  }
+
+  function testFail__setQuitPeriod_during_adapter_quitPeriod() public {
+    MockERC4626 newAdapter = new MockERC4626(IERC20(address(asset)), "Mock Token Vault", "vwTKN");
+
+    // Pass the inital quit period
+    vm.warp(block.timestamp + 3 days);
+
+    vault.proposeAdapter(IERC4626(address(newAdapter)));
+
+    vault.setQuitPeriod(1 days);
+  }
+
+  function testFail__setQuitPeriod_during_fee_quitPeriod() public {
+    // Pass the inital quit period
+    vm.warp(block.timestamp + 3 days);
+
+    vault.proposeFees(VaultFees({ deposit: 1, withdrawal: 1, management: 1, performance: 1 }));
+
+    vault.setQuitPeriod(1 days);
   }
 
   /*//////////////////////////////////////////////////////////////

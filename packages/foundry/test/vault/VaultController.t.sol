@@ -32,11 +32,10 @@ import { IMultiRewardStaking } from "../../src/interfaces/IMultiRewardStaking.so
 import { IOwned } from "../../src/interfaces/IOwned.sol";
 import { IPausable } from "../../src/interfaces/IPausable.sol";
 
-import { IERC4626, IERC20 } from "../../src/interfaces/vault/IERC4626.sol";
 import { IVault, VaultFees } from "../../src/interfaces/vault/IVault.sol";
 
 import { MockERC20 } from "../utils/mocks/MockERC20.sol";
-import { MockERC4626 } from "../utils/mocks/MockERC4626.sol";
+import { MockERC4626, IERC4626, IERC20 } from "../utils/mocks/MockERC4626.sol";
 import { MockAdapter } from "../utils/mocks/MockAdapter.sol";
 import { MockStrategy } from "../utils/mocks/MockStrategy.sol";
 
@@ -585,7 +584,6 @@ contract VaultControllerTest is Test {
     rewardToken.mint(address(this), 10 ether);
     rewardToken.approve(address(controller), 10 ether);
 
-
     controller.deployVault(
       VaultInitParams({
         asset: iAsset,
@@ -871,20 +869,6 @@ contract VaultControllerTest is Test {
     controller.proposeVaultAdapters(targets, adapters);
   }
 
-  function testFail__proposeVaultAdapters_nonOwner() public {
-    address[] memory targets = new address[](1);
-    IERC4626[] memory adapters = new IERC4626[](1);
-    addTemplate("Adapter", templateId, adapterImpl, true, true);
-    addTemplate("Strategy", "MockStrategy", strategyImpl, false, true);
-    addTemplate("Vault", "V1", vaultImpl, true, true);
-
-    address vault = deployVault();
-    targets[0] = vault;
-
-    vm.prank(nonOwner);
-    controller.proposeVaultAdapters(targets, adapters);
-  }
-
   /*//////////////////////////////////////////////////////////////
                       CHANGE VAULT ADAPTER
     //////////////////////////////////////////////////////////////*/
@@ -959,19 +943,6 @@ contract VaultControllerTest is Test {
     controller.proposeVaultFees(targets, fees);
   }
 
-  function testFail__proposeVaultFees_nonOwner() public {
-    address[] memory targets = new address[](1);
-    VaultFees[] memory fees = new VaultFees[](1);
-    addTemplate("Adapter", templateId, adapterImpl, true, true);
-    addTemplate("Strategy", "MockStrategy", strategyImpl, false, true);
-    addTemplate("Vault", "V1", vaultImpl, true, true);
-    address vault = deployVault();
-    targets[0] = vault;
-
-    vm.prank(nonOwner);
-    controller.proposeVaultFees(targets, fees);
-  }
-
   /*//////////////////////////////////////////////////////////////
                       CHANGE VAULT FEES
     //////////////////////////////////////////////////////////////*/
@@ -995,6 +966,90 @@ contract VaultControllerTest is Test {
     assertEq(IVault(vault).fees().withdrawal, 20);
     assertEq(IVault(vault).fees().management, 30);
     assertEq(IVault(vault).fees().performance, 40);
+  }
+
+  /*//////////////////////////////////////////////////////////////
+                      SET VAULT QUIT PERIOD
+    //////////////////////////////////////////////////////////////*/
+
+  function test__setVaultQuitPeriods() public {
+    address[] memory targets = new address[](1);
+    uint256[] memory quitPeriods = new uint256[](1);
+    addTemplate("Adapter", templateId, adapterImpl, true, true);
+    addTemplate("Strategy", "MockStrategy", strategyImpl, false, true);
+    addTemplate("Vault", "V1", vaultImpl, true, true);
+    address vault = deployVault();
+    targets[0] = vault;
+    quitPeriods[0] = 1 days;
+
+    // Pass the inital quit period
+    vm.warp(block.timestamp + 3 days);
+    controller.setVaultQuitPeriods(targets, quitPeriods);
+
+    assertEq(IVault(vault).quitPeriod(), 1 days);
+  }
+
+  function testFail__setVaultQuitPeriods_missmatching_arrays() public {
+    address[] memory targets = new address[](2);
+    uint256[] memory quitPeriods = new uint256[](1);
+
+    controller.setVaultQuitPeriods(targets, quitPeriods);
+  }
+
+  function testFail__setVaultQuitPeriods_nonCreator() public {
+    address[] memory targets = new address[](1);
+    uint256[] memory quitPeriods = new uint256[](1);
+    addTemplate("Adapter", templateId, adapterImpl, true, true);
+    addTemplate("Strategy", "MockStrategy", strategyImpl, false, true);
+    addTemplate("Vault", "V1", vaultImpl, true, true);
+    address vault = deployVault();
+    targets[0] = vault;
+    quitPeriods[0] = 1 days;
+
+    vm.prank(bob);
+    controller.setVaultQuitPeriods(targets, quitPeriods);
+  }
+
+  /*//////////////////////////////////////////////////////////////
+                      SET VAULT QUIT PERIOD
+    //////////////////////////////////////////////////////////////*/
+
+  function test__setVaultFeeRecipients() public {
+    address[] memory targets = new address[](1);
+    address[] memory feeRecipients = new address[](1);
+    addTemplate("Adapter", templateId, adapterImpl, true, true);
+    addTemplate("Strategy", "MockStrategy", strategyImpl, false, true);
+    addTemplate("Vault", "V1", vaultImpl, true, true);
+    address vault = deployVault();
+    targets[0] = vault;
+    feeRecipients[0] = address(0x44444);
+
+    // Pass the inital quit period
+    vm.warp(block.timestamp + 3 days);
+    controller.setVaultFeeRecipients(targets, feeRecipients);
+
+    assertEq(IVault(vault).feeRecipient(), address(0x44444));
+  }
+
+  function testFail__setVaultFeeRecipients_missmatching_arrays() public {
+    address[] memory targets = new address[](2);
+    address[] memory feeRecipients = new address[](1);
+
+    controller.setVaultFeeRecipients(targets, feeRecipients);
+  }
+
+  function testFail__setVaultFeeRecipients_nonCreator() public {
+    address[] memory targets = new address[](1);
+    address[] memory feeRecipients = new address[](1);
+    addTemplate("Adapter", templateId, adapterImpl, true, true);
+    addTemplate("Strategy", "MockStrategy", strategyImpl, false, true);
+    addTemplate("Vault", "V1", vaultImpl, true, true);
+    address vault = deployVault();
+    targets[0] = vault;
+    feeRecipients[0] = address(0x44444);
+
+    vm.prank(bob);
+    controller.setVaultFeeRecipients(targets, feeRecipients);
   }
 
   /*//////////////////////////////////////////////////////////////
@@ -1283,10 +1338,6 @@ contract VaultControllerTest is Test {
     vm.prank(nonOwner);
     controller.addTemplateCategories(templateCategories);
   }
-
-  /*//////////////////////////////////////////////////////////////
-                    TOGGLE TEMPLATE ENDORSEMENT
-    //////////////////////////////////////////////////////////////*/
 
   /*//////////////////////////////////////////////////////////////
                     TOGGLE TEMPLATE ENDORSEMENT

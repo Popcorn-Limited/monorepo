@@ -3,11 +3,9 @@
 
 pragma solidity ^0.8.15;
 
-import { VaultInitParams, VaultFees } from "./IVault.sol";
+import { VaultInitParams, VaultFees, IERC4626, IERC20 } from "./IVault.sol";
 import { VaultMetadata } from "./IVaultRegistry.sol";
 import { IDeploymentController } from "./IDeploymentController.sol";
-
-import { IERC4626, IERC20 } from "./IERC4626.sol";
 
 struct DeploymentArgs {
   /// @Notice templateId
@@ -36,41 +34,45 @@ interface IVaultController {
 
   function deployStaking(IERC20 asset) external returns (address);
 
-  function proposeVaultAdapters(address[] memory vaults, IERC4626[] memory newAdapter) external;
+  function proposeVaultAdapters(address[] calldata vaults, IERC4626[] calldata newAdapter) external;
 
-  function changeVaultAdapters(address[] memory vaults) external;
+  function changeVaultAdapters(address[] calldata vaults) external;
 
-  function proposeVaultFees(address[] memory vaults, VaultFees[] memory newFees) external;
+  function proposeVaultFees(address[] calldata vaults, VaultFees[] calldata newFees) external;
 
-  function changeVaultFees(address[] memory vaults) external;
+  function changeVaultFees(address[] calldata vaults) external;
 
-  function registerVaults(address[] memory vaults, VaultMetadata[] memory metadata) external;
+  function setVaultQuitPeriods(address[] calldata vaults, uint256[] calldata quitPeriods) external;
 
-  function addClones(address[] memory clones) external;
+  function setVaultFeeRecipients(address[] calldata vaults, address[] calldata feeRecipients) external;
 
-  function toggleEndorsements(address[] memory targets) external;
+  function registerVaults(address[] calldata vaults, VaultMetadata[] calldata metadata) external;
 
-  function toggleRejections(address[] memory targets) external;
+  function addClones(address[] calldata clones) external;
 
-  function addStakingRewardsTokens(address[] memory vaults, bytes[] memory rewardsTokenData) external;
+  function toggleEndorsements(address[] calldata targets) external;
+
+  function toggleRejections(address[] calldata targets) external;
+
+  function addStakingRewardsTokens(address[] calldata vaults, bytes[] calldata rewardsTokenData) external;
 
   function changeStakingRewardsSpeeds(
-    address[] memory vaults,
-    IERC20[] memory rewardTokens,
-    uint160[] memory rewardsSpeeds
+    address[] calldata vaults,
+    IERC20[] calldata rewardTokens,
+    uint160[] calldata rewardsSpeeds
   ) external;
 
   function fundStakingRewards(
-    address[] memory vaults,
-    IERC20[] memory rewardTokens,
-    uint256[] memory amounts
+    address[] calldata vaults,
+    IERC20[] calldata rewardTokens,
+    uint256[] calldata amounts
   ) external;
 
-  function setEscrowTokenFees(IERC20[] memory tokens, uint256[] memory fees) external;
+  function setEscrowTokenFees(IERC20[] calldata tokens, uint256[] calldata fees) external;
 
-  function addTemplateCategories(bytes32[] memory templateCategories) external;
+  function addTemplateCategories(bytes32[] calldata templateCategories) external;
 
-  function toggleTemplateEndorsements(bytes32[] memory templateCategories, bytes32[] memory templateIds) external;
+  function toggleTemplateEndorsements(bytes32[] calldata templateCategories, bytes32[] calldata templateIds) external;
 
   function pauseAdapters(address[] calldata vaults) external;
 
