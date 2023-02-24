@@ -7,7 +7,7 @@ import { Test } from "forge-std/Test.sol";
 import { MockERC20 } from "../utils/mocks/MockERC20.sol";
 import { MockERC4626 } from "../utils/mocks/MockERC4626.sol";
 import { Vault } from "../../src/vault/Vault.sol";
-import { IERC4626, IERC20 } from "../../src/interfaces/vault/IERC4626.sol";
+import { IERC4626Upgradeable as IERC4626, IERC20Upgradeable as IERC20 } from "openzeppelin-contracts-upgradeable/interfaces/IERC4626Upgradeable.sol";
 import { VaultFees } from "../../src/interfaces/vault/IVault.sol";
 import { FixedPointMathLib } from "solmate/utils/FixedPointMathLib.sol";
 import { Clones } from "openzeppelin-contracts/proxy/Clones.sol";
@@ -375,28 +375,28 @@ contract VaultTest is Test {
     // |--------------|---------|----------|---------|----------|
     // | 5. Bob mints 2000 shares (costs 3000 assets)           |
     // |--------------|---------|----------|---------|----------|
-    // |         9333 |    3333 |     4999 |    6000 |     9000 |
+    // |         9333 |    3333 |     5000 |    6000 |     9000 |
     // |--------------|---------|----------|---------|----------|
     // | 6. Vault mutates by +3000 tokens...                    |
     // |    (simulated yield returned from adapter)            |
     // |    NOTE: Vault holds 17001 tokens, but sum of          |
     // |          assetsOf() is 17000.                          |
     // |--------------|---------|----------|---------|----------|
-    // |         9333 |    3333 |     6071 |    6000 |    10928 |
+    // |         9333 |    3333 |     6071 |    6000 |    10929 |
     // |--------------|---------|----------|---------|----------|
-    // | 7. Alice redeem 1333 shares (2428 assets)              |
+    // | 7. Alice redeem 1333 shares (2429 assets)              |
     // |--------------|---------|----------|---------|----------|
     // |         8000 |    2000 |     3643 |    6000 |    10929 |
     // |--------------|---------|----------|---------|----------|
-    // | 8. Bob withdraws 2928 assets (1608 shares)             |
+    // | 8. Bob withdraws 2929 assets (1608 shares)             |
     // |--------------|---------|----------|---------|----------|
-    // |         6392 |    2000 |     3642 |    4392 |     8000 |
+    // |         6391 |    2000 |     3643 |    4391 |     7999 |
     // |--------------|---------|----------|---------|----------|
     // | 9. Alice withdraws 3643 assets (2000 shares)           |
     // |--------------|---------|----------|---------|----------|
-    // |         4392 |       0 |        0 |    4392 |     8000 |
+    // |         4391 |       0 |        0 |    4391 |     8000 |
     // |--------------|---------|----------|---------|----------|
-    // | 10. Bob redeem 4392 shares (8000 tokens)               |
+    // | 10. Bob redeem 4391 shares (8000 tokens)               |
     // |--------------|---------|----------|---------|----------|
     // |            0 |       0 |        0 |       0 |        0 |
     // |______________|_________|__________|_________|__________|
@@ -492,7 +492,7 @@ contract VaultTest is Test {
 
     assertEq(vault.totalSupply(), 9333);
     assertEq(vault.balanceOf(alice), 3333);
-    assertEq(vault.convertToAssets(vault.balanceOf(alice)), 4999);
+    assertEq(vault.convertToAssets(vault.balanceOf(alice)), 5000);
     assertEq(vault.balanceOf(bob), 6000);
     assertEq(vault.convertToAssets(vault.balanceOf(bob)), 9000);
 
@@ -500,21 +500,21 @@ contract VaultTest is Test {
     // Alice and bob should have spent all their tokens now
     // Bob still has 1 wei left
     assertEq(asset.balanceOf(alice), 0);
-    assertEq(asset.balanceOf(bob), 1);
+    assertEq(asset.balanceOf(bob), 0);
     // Assets in vault: 4k (alice) + 7k (bob) + 3k (yield)
-    assertEq(vault.totalAssets(), 14000);
+    assertEq(vault.totalAssets(), 14001);
 
     // 6. Vault mutates by +3000 tokens
     asset.mint(address(adapter), mutationassetAmount);
-    assertEq(vault.totalAssets(), 17000);
+    assertEq(vault.totalAssets(), 17001);
     assertEq(vault.convertToAssets(vault.balanceOf(alice)), 6071);
-    assertEq(vault.convertToAssets(vault.balanceOf(bob)), 10928);
+    assertEq(vault.convertToAssets(vault.balanceOf(bob)), 10929);
 
-    // 7. Alice redeem 1333 shares (2428 assets)
+    // 7. Alice redeem 1333 shares (2429 assets)
     vm.prank(alice);
     vault.redeem(1333, alice, alice);
 
-    assertEq(asset.balanceOf(alice), 2428);
+    assertEq(asset.balanceOf(alice), 2429);
     assertEq(vault.totalSupply(), 8000);
     assertEq(vault.totalAssets(), 14572);
     assertEq(vault.balanceOf(alice), 2000);
@@ -526,30 +526,30 @@ contract VaultTest is Test {
     vm.prank(bob);
     vault.withdraw(2929, bob, bob);
 
-    assertEq(asset.balanceOf(bob), 2930);
-    assertEq(vault.totalSupply(), 6392);
+    assertEq(asset.balanceOf(bob), 2929);
+    assertEq(vault.totalSupply(), 6391);
     assertEq(vault.totalAssets(), 11643);
     assertEq(vault.balanceOf(alice), 2000);
-    assertEq(vault.convertToAssets(vault.balanceOf(alice)), 3642);
-    assertEq(vault.balanceOf(bob), 4392);
-    assertEq(vault.convertToAssets(vault.balanceOf(bob)), 8000);
+    assertEq(vault.convertToAssets(vault.balanceOf(alice)), 3643);
+    assertEq(vault.balanceOf(bob), 4391);
+    assertEq(vault.convertToAssets(vault.balanceOf(bob)), 7999);
 
     // 9. Alice withdraws 3643 assets (2000 shares)
     vm.prank(alice);
     vault.withdraw(3643, alice, alice);
 
-    assertEq(asset.balanceOf(alice), 6071);
-    assertEq(vault.totalSupply(), 4392);
+    assertEq(asset.balanceOf(alice), 6072);
+    assertEq(vault.totalSupply(), 4391);
     assertEq(vault.totalAssets(), 8000);
     assertEq(vault.balanceOf(alice), 0);
     assertEq(vault.convertToAssets(vault.balanceOf(alice)), 0);
-    assertEq(vault.balanceOf(bob), 4392);
+    assertEq(vault.balanceOf(bob), 4391);
     assertEq(vault.convertToAssets(vault.balanceOf(bob)), 8000);
 
-    // 10. Bob redeem 4392 shares (8000 tokens)
+    // 10. Bob redeem 4391 shares (8000 tokens)
     vm.prank(bob);
-    vault.redeem(4392, bob, bob);
-    assertEq(asset.balanceOf(bob), 10930);
+    vault.redeem(4391, bob, bob);
+    assertEq(asset.balanceOf(bob), 10929);
     assertEq(vault.totalSupply(), 0);
     assertEq(vault.totalAssets(), 0);
     assertEq(vault.balanceOf(alice), 0);
