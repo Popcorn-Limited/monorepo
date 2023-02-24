@@ -438,6 +438,27 @@ contract VaultController is Owned {
     }
   }
 
+  /**
+   * @notice Sets new DepositLimit for Vaults. Caller must be creator of the vaults.
+   * @param vaults Addresses of the vaults to change
+   * @param depositLimits Maximum amount of assets that can be deposited.
+   */
+  function setVaultDepositLimits(address[] calldata vaults, uint256[] calldata depositLimits) external {
+    uint8 len = uint8(vaults.length);
+
+    _verifyEqualArrayLength(len, depositLimits.length);
+
+    for (uint8 i = 0; i < len; i++) {
+      _verifyCreator(vaults[i]);
+
+      (bool success, bytes memory returnData) = adminProxy.execute(
+        vaults[i],
+        abi.encodeWithSelector(IVault.setDepositLimit.selector, depositLimits[i])
+      );
+      if (!success) revert UnderlyingError(returnData);
+    }
+  }
+
   /*//////////////////////////////////////////////////////////////
                           REGISTER VAULT
     //////////////////////////////////////////////////////////////*/

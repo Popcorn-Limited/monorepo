@@ -48,6 +48,7 @@ contract VaultDemoData is Script {
       IERC4626(address(adapter)),
       VaultFees({ deposit: 0, withdrawal: 0, management: 5e15, performance: 0 }),
       feeRecipient,
+      type(uint256).max,
       deployer
     );
 

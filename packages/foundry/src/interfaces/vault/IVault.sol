@@ -22,6 +22,8 @@ struct VaultInitParams {
   VaultFees fees;
   /// @Notice Address of the recipient of the fees
   address feeRecipient;
+  /// @Notice Maximum amount of assets that can be deposited
+  uint256 depositLimit;
   /// @Notice Owner of the vault (Usually the submitter)
   address owner;
 }
@@ -85,6 +87,10 @@ interface IVault is IERC4626 {
 
   function setQuitPeriod(uint256 _quitPeriod) external;
 
+  function depositLimit() external view returns (uint256);
+
+  function setDepositLimit(uint256 _depositLimit) external;
+
   // INITIALIZE
 
   function initialize(
@@ -92,6 +98,7 @@ interface IVault is IERC4626 {
     IERC4626 adapter_,
     VaultFees memory fees_,
     address feeRecipient_,
+    uint256 depositLimit_,
     address owner
   ) external;
 }

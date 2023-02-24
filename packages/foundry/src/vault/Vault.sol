@@ -50,6 +50,7 @@ contract Vault is ERC4626Upgradeable, ReentrancyGuardUpgradeable, PausableUpgrad
    * @param adapter_ Adapter which will be used to interact with the wrapped protocol.
    * @param fees_ Desired fees in 1e18. (1e18 = 100%, 1e14 = 1 BPS)
    * @param feeRecipient_ Recipient of all vault fees. (Must not be zero address)
+   * @param depositLimit_ Maximum amount of assets which can be deposited.
    * @param owner Owner of the contract. Controls management functions.
    * @dev This function is called by the factory contract when deploying a new vault.
    * @dev Usually the adapter should already be pre configured. Otherwise a new one can only be added after a ragequit time.
@@ -59,6 +60,7 @@ contract Vault is ERC4626Upgradeable, ReentrancyGuardUpgradeable, PausableUpgrad
     IERC4626 adapter_,
     VaultFees calldata fees_,
     address feeRecipient_,
+    uint256 depositLimit_,
     address owner
   ) external initializer {
     __ERC4626_init(IERC20Metadata(address(asset_)));
@@ -88,6 +90,7 @@ contract Vault is ERC4626Upgradeable, ReentrancyGuardUpgradeable, PausableUpgrad
     feesUpdatedAt = block.timestamp;
     highWaterMark = 1e9;
     quitPeriod = 3 days;
+    depositLimit = depositLimit_;
 
     emit VaultInitialized(contractName, address(asset_));
 
@@ -339,12 +342,18 @@ contract Vault is ERC4626Upgradeable, ReentrancyGuardUpgradeable, PausableUpgrad
 
   /// @return Maximum amount of underlying `asset` token that may be deposited for a given address. Delegates to adapter.
   function maxDeposit(address) public view override returns (uint256) {
-    return adapter.maxDeposit(address(this));
+    uint256 assets = totalAssets();
+    uint256 depositLimit_ = depositLimit;
+    if (paused() || assets >= depositLimit_) return 0;
+    return Math.min(depositLimit_ - assets, adapter.maxDeposit(address(this)));
   }
 
   /// @return Maximum amount of vault shares that may be minted to given address. Delegates to adapter.
   function maxMint(address) public view override returns (uint256) {
-    return adapter.maxMint(address(this));
+    uint256 assets = totalAssets();
+    uint256 depositLimit_ = depositLimit;
+    if (paused() || assets >= depositLimit_) return 0;
+    return Math.min(depositLimit_ - assets, adapter.maxMint(address(this)));
   }
 
   /// @return Maximum amount of underlying `asset` token that can be withdrawn by `caller` address. Delegates to adapter.
@@ -567,6 +576,24 @@ contract Vault is ERC4626Upgradeable, ReentrancyGuardUpgradeable, PausableUpgrad
     quitPeriod = _quitPeriod;
 
     emit QuitPeriodSet(quitPeriod);
+  }
+
+  /*//////////////////////////////////////////////////////////////
+                          DEPOSIT LIMIT LOGIC
+    //////////////////////////////////////////////////////////////*/
+
+  uint256 public depositLimit;
+
+  event DepositLimitSet(uint256 depositLimit);
+
+  /**
+   * @notice Sets a limit for deposits in assets. Caller must be Owner.
+   * @param _depositLimit Maximum amount of assets that can be deposited.
+   */
+  function setDepositLimit(uint256 _depositLimit) external onlyOwner {
+    depositLimit = _depositLimit;
+
+    emit DepositLimitSet(_depositLimit);
   }
 
   /*//////////////////////////////////////////////////////////////

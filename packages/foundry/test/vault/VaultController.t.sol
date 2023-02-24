@@ -235,6 +235,7 @@ contract VaultControllerTest is Test {
           adapter: IERC4626(address(0)),
           fees: VaultFees({ deposit: 100, withdrawal: 200, management: 300, performance: 400 }),
           feeRecipient: feeRecipient,
+          depositLimit: type(uint256).max,
           owner: address(this)
         }),
         DeploymentArgs({ id: templateId, data: abi.encode(uint256(100)) }),
@@ -309,6 +310,7 @@ contract VaultControllerTest is Test {
         adapter: IERC4626(address(0)),
         fees: VaultFees({ deposit: 100, withdrawal: 200, management: 300, performance: 400 }),
         feeRecipient: feeRecipient,
+        depositLimit: type(uint256).max,
         owner: address(this)
       }),
       DeploymentArgs({ id: templateId, data: abi.encode(uint256(100)) }),
@@ -336,6 +338,7 @@ contract VaultControllerTest is Test {
     assertEq(IVault(vaultClone).fees().performance, 400);
     assertEq(IVault(vaultClone).feeRecipient(), feeRecipient);
     assertEq(IOwned(vaultClone).owner(), address(adminProxy));
+    assertEq(IVault(vaultClone).depositLimit(), type(uint256).max);
     // Assert Vault Metadata
     assertEq(vaultRegistry.getVault(vaultClone).vault, vaultClone);
     assertEq(vaultRegistry.getVault(vaultClone).staking, stakingClone);
@@ -390,6 +393,7 @@ contract VaultControllerTest is Test {
         adapter: IERC4626(address(0)),
         fees: VaultFees({ deposit: 100, withdrawal: 200, management: 300, performance: 400 }),
         feeRecipient: feeRecipient,
+        depositLimit: type(uint256).max,
         owner: address(this)
       }),
       DeploymentArgs({ id: templateId, data: abi.encode(uint256(100)) }),
@@ -431,6 +435,7 @@ contract VaultControllerTest is Test {
         adapter: IERC4626(address(0)),
         fees: VaultFees({ deposit: 100, withdrawal: 200, management: 300, performance: 400 }),
         feeRecipient: feeRecipient,
+        depositLimit: type(uint256).max,
         owner: address(this)
       }),
       DeploymentArgs({ id: templateId, data: abi.encode(uint256(100)) }),
@@ -486,6 +491,7 @@ contract VaultControllerTest is Test {
         adapter: IERC4626(address(adapterClone)),
         fees: VaultFees({ deposit: 100, withdrawal: 200, management: 300, performance: 400 }),
         feeRecipient: feeRecipient,
+        depositLimit: type(uint256).max,
         owner: address(this)
       }),
       DeploymentArgs({ id: "", data: "" }),
@@ -537,6 +543,7 @@ contract VaultControllerTest is Test {
         adapter: IERC4626(address(0)),
         fees: VaultFees({ deposit: 0, withdrawal: 200, management: 300, performance: 400 }),
         feeRecipient: feeRecipient,
+        depositLimit: type(uint256).max,
         owner: address(this)
       }),
       DeploymentArgs({ id: templateId, data: abi.encode(uint256(100)) }),
@@ -558,9 +565,9 @@ contract VaultControllerTest is Test {
     assertEq(IERC20(adapterClone).balanceOf(vaultClone), 1 ether * 1e9);
     assertEq(IERC4626(adapterClone).totalAssets(), 1 ether);
     assertEq(IERC4626(adapterClone).totalSupply(), 1 ether * 1e9);
-    assertEq(IERC20(vaultClone).balanceOf(address(this)), 1 ether);
+    assertEq(IERC20(vaultClone).balanceOf(address(this)), 1 ether * 1e9);
     assertEq(IERC4626(vaultClone).totalAssets(), 1 ether);
-    assertEq(IERC4626(vaultClone).totalSupply(), 1 ether);
+    assertEq(IERC4626(vaultClone).totalSupply(), 1 ether * 1e9);
   }
 
   function testFail__deployVault_creator_rejected() public {
@@ -589,6 +596,7 @@ contract VaultControllerTest is Test {
         adapter: IERC4626(address(0)),
         fees: VaultFees({ deposit: 100, withdrawal: 200, management: 300, performance: 400 }),
         feeRecipient: feeRecipient,
+        depositLimit: type(uint256).max,
         owner: address(this)
       }),
       DeploymentArgs({ id: templateId, data: abi.encode(uint256(100)) }),
@@ -1049,6 +1057,46 @@ contract VaultControllerTest is Test {
 
     vm.prank(bob);
     controller.setVaultFeeRecipients(targets, feeRecipients);
+  }
+
+  /*//////////////////////////////////////////////////////////////
+                      SET VAULT DEPOSIT LIMIT
+    //////////////////////////////////////////////////////////////*/
+
+  function test__setVaultDepositLimits() public {
+    address[] memory targets = new address[](1);
+    uint256[] memory depositLimits = new uint256[](1);
+    addTemplate("Adapter", templateId, adapterImpl, true, true);
+    addTemplate("Strategy", "MockStrategy", strategyImpl, false, true);
+    addTemplate("Vault", "V1", vaultImpl, true, true);
+    address vault = deployVault();
+    targets[0] = vault;
+    depositLimits[0] = uint256(10);
+
+    controller.setVaultDepositLimits(targets, depositLimits);
+
+    assertEq(IVault(vault).depositLimit(), uint256(10));
+  }
+
+  function testFail__setVaultDepositLimits_missmatching_arrays() public {
+    address[] memory targets = new address[](2);
+    uint256[] memory depositLimits = new uint256[](1);
+
+    controller.setVaultDepositLimits(targets, depositLimits);
+  }
+
+  function testFail__setVaultDepositLimits_nonCreator() public {
+    address[] memory targets = new address[](1);
+    uint256[] memory depositLimits = new uint256[](1);
+    addTemplate("Adapter", templateId, adapterImpl, true, true);
+    addTemplate("Strategy", "MockStrategy", strategyImpl, false, true);
+    addTemplate("Vault", "V1", vaultImpl, true, true);
+    address vault = deployVault();
+    targets[0] = vault;
+    depositLimits[0] = uint256(10);
+
+    vm.prank(bob);
+    controller.setVaultDepositLimits(targets, depositLimits);
   }
 
   /*//////////////////////////////////////////////////////////////

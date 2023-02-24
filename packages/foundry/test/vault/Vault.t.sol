@@ -40,6 +40,7 @@ contract VaultTest is Test {
   event QuitPeriodSet(uint256 quitPeriod);
   event Paused(address account);
   event Unpaused(address account);
+  event DepositLimitSet(uint256 depositLimit);
 
   function setUp() public {
     vm.label(feeRecipient, "feeRecipient");
@@ -63,6 +64,7 @@ contract VaultTest is Test {
       IERC4626(address(adapter)),
       VaultFees({ deposit: 0, withdrawal: 0, management: 0, performance: 0 }),
       feeRecipient,
+      type(uint256).max,
       address(this)
     );
   }
@@ -109,6 +111,7 @@ contract VaultTest is Test {
       IERC4626(address(adapter)),
       VaultFees({ deposit: 100, withdrawal: 100, management: 100, performance: 100 }),
       feeRecipient,
+      type(uint256).max,
       bob
     );
 
@@ -143,6 +146,7 @@ contract VaultTest is Test {
       IERC4626(address(adapter)),
       VaultFees({ deposit: 0, withdrawal: 0, management: 0, performance: 0 }),
       feeRecipient,
+      type(uint256).max,
       address(this)
     );
   }
@@ -159,6 +163,7 @@ contract VaultTest is Test {
       IERC4626(address(newAdapter)),
       VaultFees({ deposit: 0, withdrawal: 0, management: 0, performance: 0 }),
       feeRecipient,
+      type(uint256).max,
       address(this)
     );
   }
@@ -175,6 +180,7 @@ contract VaultTest is Test {
       IERC4626(address(newAdapter)),
       VaultFees({ deposit: 0, withdrawal: 0, management: 0, performance: 0 }),
       feeRecipient,
+      type(uint256).max,
       address(this)
     );
   }
@@ -188,6 +194,7 @@ contract VaultTest is Test {
       IERC4626(address(adapter)),
       VaultFees({ deposit: 1e18, withdrawal: 0, management: 0, performance: 0 }),
       feeRecipient,
+      type(uint256).max,
       address(this)
     );
   }
@@ -201,6 +208,7 @@ contract VaultTest is Test {
       IERC4626(address(adapter)),
       VaultFees({ deposit: 0, withdrawal: 0, management: 0, performance: 0 }),
       address(0),
+      type(uint256).max,
       address(this)
     );
   }
@@ -559,6 +567,7 @@ contract VaultTest is Test {
       IERC4626(address(adapter)),
       VaultFees({ deposit: 0, withdrawal: 0, management: 0, performance: 1e17 }),
       feeRecipient,
+      type(uint256).max,
       address(this)
     );
 
@@ -848,6 +857,34 @@ contract VaultTest is Test {
     vault.proposeFees(VaultFees({ deposit: 1, withdrawal: 1, management: 1, performance: 1 }));
 
     vault.setQuitPeriod(1 days);
+  }
+
+  /*//////////////////////////////////////////////////////////////
+                          SET DEPOSIT LIMIT
+    //////////////////////////////////////////////////////////////*/
+
+  function test__setDepositLimit() public {
+    uint256 newDepositLimit = 100;
+    vm.expectEmit(false, false, false, true, address(vault));
+    emit DepositLimitSet(newDepositLimit);
+
+    vault.setDepositLimit(newDepositLimit);
+
+    assertEq(vault.depositLimit(), newDepositLimit);
+
+    asset.mint(address(this), 101);
+    asset.approve(address(vault), 101);
+
+    vm.expectRevert(abi.encodeWithSelector(Vault.MaxError.selector, 101));
+    vault.deposit(101, address(this));
+
+    vm.expectRevert(abi.encodeWithSelector(Vault.MaxError.selector, 101));
+    vault.mint(101, address(this));
+  }
+
+  function testFail__setDepositLimit_NonOwner() public {
+    vm.prank(alice);
+    vault.setDepositLimit(uint256(100));
   }
 
   /*//////////////////////////////////////////////////////////////
