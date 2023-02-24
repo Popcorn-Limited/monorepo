@@ -886,9 +886,26 @@ contract VaultController is Owned {
 
     emit DeploymentControllerChanged(address(deploymentController), address(_deploymentController));
 
+    // Dont try to change ownership on construction
+    if (address(deploymentController) != address(0)) _transferDependencyOwnership(address(_deploymentController));
+
     deploymentController = _deploymentController;
     cloneRegistry = _deploymentController.cloneRegistry();
     templateRegistry = _deploymentController.templateRegistry();
+  }
+
+  function _transferDependencyOwnership(address _deploymentController) internal {
+    (bool success, bytes memory returnData) = adminProxy.execute(
+      address(deploymentController),
+      abi.encodeWithSelector(IDeploymentController.nominateNewDependencyOwner.selector, _deploymentController)
+    );
+    if (!success) revert UnderlyingError(returnData);
+
+    (success, returnData) = adminProxy.execute(
+      _deploymentController,
+      abi.encodeWithSelector(IDeploymentController.acceptDependencyOwnership.selector, "")
+    );
+    if (!success) revert UnderlyingError(returnData);
   }
 
   /*//////////////////////////////////////////////////////////////

@@ -1616,14 +1616,17 @@ contract VaultControllerTest is Test {
 
   function test__setDeploymentController() public {
     IDeploymentController newDeploymentController = IDeploymentController(
-      address(
-        new DeploymentController(address(this), factory, ICloneRegistry(address(1)), ITemplateRegistry(address(2)))
-      )
+      address(new DeploymentController(address(adminProxy), factory, cloneRegistry, templateRegistry))
     );
+
     controller.setDeploymentController(newDeploymentController);
+
     assertEq(address(controller.deploymentController()), address(newDeploymentController));
-    assertEq(address(controller.cloneRegistry()), address(1));
-    assertEq(address(controller.templateRegistry()), address(2));
+    assertEq(address(controller.cloneRegistry()), address(cloneRegistry));
+    assertEq(address(controller.templateRegistry()), address(templateRegistry));
+    assertEq(factory.owner(), address(newDeploymentController));
+    assertEq(cloneRegistry.owner(), address(newDeploymentController));
+    assertEq(templateRegistry.owner(), address(newDeploymentController));
   }
 
   function testFail__setDeploymentController_addressZero() public {
