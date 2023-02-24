@@ -71,7 +71,7 @@ contract Vault is ERC4626Upgradeable, ReentrancyGuardUpgradeable, PausableUpgrad
 
     asset_.approve(address(adapter_), type(uint256).max);
 
-    _decimals = IERC20Metadata(address(asset_)).decimals();
+    _decimals = IERC20Metadata(address(asset_)).decimals() + decimalOffset; // Asset decimals + decimal offset to combat inflation attacks
 
     INITIAL_CHAIN_ID = block.chainid;
     INITIAL_DOMAIN_SEPARATOR = computeDomainSeparator();
@@ -86,7 +86,7 @@ contract Vault is ERC4626Upgradeable, ReentrancyGuardUpgradeable, PausableUpgrad
     contractName = keccak256(abi.encodePacked("Popcorn", name(), block.timestamp, "Vault"));
 
     feesUpdatedAt = block.timestamp;
-    highWaterMark = 1e18;
+    highWaterMark = 1e9;
     quitPeriod = 3 days;
 
     emit VaultInitialized(contractName, address(asset_));
@@ -319,6 +319,20 @@ contract Vault is ERC4626Upgradeable, ReentrancyGuardUpgradeable, PausableUpgrad
     assets -= assets.mulDiv(uint256(fees.withdrawal), 1e18, Math.Rounding.Down);
   }
 
+  function _convertToShares(uint256 assets, Math.Rounding rounding)
+    internal
+    view
+    virtual
+    override
+    returns (uint256 shares)
+  {
+    return assets.mulDiv(totalSupply() + 10**decimalOffset, totalAssets() + 1, rounding);
+  }
+
+  function _convertToAssets(uint256 shares, Math.Rounding rounding) internal view virtual override returns (uint256) {
+    return shares.mulDiv(totalAssets() + 1, totalSupply() + 10**decimalOffset, rounding);
+  }
+
   /*//////////////////////////////////////////////////////////////
                      DEPOSIT/WITHDRAWAL LIMIT LOGIC
     //////////////////////////////////////////////////////////////*/
@@ -378,8 +392,8 @@ contract Vault is ERC4626Upgradeable, ReentrancyGuardUpgradeable, PausableUpgrad
     uint256 performanceFee = fees.performance;
 
     return
-      performanceFee > 0 && shareValue > highWaterMark
-        ? performanceFee.mulDiv((shareValue - highWaterMark) * totalSupply(), 1e36, Math.Rounding.Down)
+      performanceFee > 0 && shareValue > highWaterMark_
+        ? performanceFee.mulDiv((shareValue - highWaterMark_) * totalSupply(), 1e36, Math.Rounding.Down)
         : 0;
   }
 

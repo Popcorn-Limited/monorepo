@@ -11,7 +11,7 @@ import { MockERC4626, IERC20 } from "../utils/mocks/MockERC4626.sol";
 
 contract VaultRegistryTest is Test {
   MockERC20 asset = new MockERC20("ERC20", "TEST", 18);
-  MockERC4626 vault = new MockERC4626(IERC20(address(asset)), "ERC4626", "TEST-4626");
+  MockERC4626 vault;
   VaultRegistry registry;
 
   address nonOwner = makeAddr("non owner");
@@ -29,6 +29,9 @@ contract VaultRegistryTest is Test {
     for (uint256 i; i < 8; ++i) {
       swapTokenAddresses[i] = address(uint160(i));
     }
+
+    vault = new MockERC4626();
+    vault.initialize(IERC20(address(asset)), "ERC4626", "TEST-4626");
 
     registry = new VaultRegistry(address(this));
   }

@@ -32,10 +32,9 @@ import { IMultiRewardStaking } from "../../src/interfaces/IMultiRewardStaking.so
 import { IOwned } from "../../src/interfaces/IOwned.sol";
 import { IPausable } from "../../src/interfaces/IPausable.sol";
 
-import { IVault, VaultFees } from "../../src/interfaces/vault/IVault.sol";
+import { IVault, VaultFees, IERC4626, IERC20 } from "../../src/interfaces/vault/IVault.sol";
 
 import { MockERC20 } from "../utils/mocks/MockERC20.sol";
-import { MockERC4626, IERC4626, IERC20 } from "../utils/mocks/MockERC4626.sol";
 import { MockAdapter } from "../utils/mocks/MockAdapter.sol";
 import { MockStrategy } from "../utils/mocks/MockStrategy.sol";
 

@@ -38,7 +38,8 @@ contract VaultDemoData is Script {
 
     vm.startBroadcast(deployerPrivateKey);
 
-    adapter = new MockERC4626(asset, "Mock Token Vault", "vwTKN");
+    adapter = new MockERC4626();
+    adapter.initialize(asset, "Mock Token Vault", "vwTKN");
 
     address vaultAddress = address(new Vault());
     vault = Vault(vaultAddress);
