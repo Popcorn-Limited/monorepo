@@ -879,7 +879,7 @@ contract VaultTest is Test {
     vault.deposit(101, address(this));
 
     vm.expectRevert(abi.encodeWithSelector(Vault.MaxError.selector, 101));
-    vault.mint(101, address(this));
+    vault.mint(101 * 1e9, address(this));
   }
 
   function testFail__setDepositLimit_NonOwner() public {

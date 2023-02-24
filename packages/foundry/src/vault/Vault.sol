@@ -170,13 +170,14 @@ contract Vault is ERC4626Upgradeable, ReentrancyGuardUpgradeable, PausableUpgrad
   function mint(uint256 shares, address receiver) public override nonReentrant whenNotPaused returns (uint256 assets) {
     if (receiver == address(0)) revert InvalidReceiver();
     if (shares == 0) revert ZeroAmount();
-    if (shares > maxMint(receiver)) revert MaxError(shares);
 
     uint256 depositFee = uint256(fees.deposit);
 
     uint256 feeShares = shares.mulDiv(depositFee, 1e18 - depositFee, Math.Rounding.Down);
 
     assets = _convertToAssets(shares + feeShares, Math.Rounding.Up);
+    
+    if (assets > maxMint(receiver)) revert MaxError(assets);
 
     if (feeShares > 0) _mint(feeRecipient, feeShares);
 
