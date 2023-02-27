@@ -11,6 +11,11 @@ import { MathUpgradeable as Math } from "openzeppelin-contracts-upgradeable/util
 import { OwnedUpgradeable } from "../utils/OwnedUpgradeable.sol";
 import { VaultFees, IERC4626, IERC20 } from "../interfaces/vault/IVault.sol";
 
+struct AdapterConfig {
+  IERC4626 adapter;
+  uint256 allocation;
+}
+
 /**
  * @title   Vault
  * @author  RedVeil
@@ -47,7 +52,8 @@ contract MultiStrategyVault is ERC4626Upgradeable, ReentrancyGuardUpgradeable, P
   /**
    * @notice Initialize a new Vault.
    * @param asset_ Underlying Asset which users will deposit.
-   * @param adapter_ Adapter which will be used to interact with the wrapped protocol.
+   * @param adapters_ Adapter which will be used to interact with the wrapped protocol.
+   * @param adapterCount_ Amount of adapters to use.
    * @param fees_ Desired fees in 1e18. (1e18 = 100%, 1e14 = 1 BPS)
    * @param feeRecipient_ Recipient of all vault fees. (Must not be zero address)
    * @param depositLimit_ Maximum amount of assets which can be deposited.
@@ -57,7 +63,8 @@ contract MultiStrategyVault is ERC4626Upgradeable, ReentrancyGuardUpgradeable, P
    */
   function initialize(
     IERC20 asset_,
-    IERC4626 adapter_,
+    AdapterConfig[10] calldata adapters_,
+    uint8 adapterCount_,
     VaultFees calldata fees_,
     address feeRecipient_,
     uint256 depositLimit_,
@@ -67,11 +74,15 @@ contract MultiStrategyVault is ERC4626Upgradeable, ReentrancyGuardUpgradeable, P
     __Owned_init(owner);
 
     if (address(asset_) == address(0)) revert InvalidAsset();
-    if (address(asset_) != adapter_.asset()) revert InvalidAdapter();
-  
-    adapter = adapter_;
+    _verifyAdapterConfig(adapters_, adapterCount_);
 
-    asset_.approve(address(adapter_), type(uint256).max);
+    uint8 adapterCount = adapterCount_;
+    for (uint8 i; i < adapterCount_; i++) {
+      adapters[i] = adapters_[i];
+
+      // TODO use save approve
+      asset_.approve(address(adapters_[i].adapter), type(uint256).max);
+    }
 
     _decimals = IERC20Metadata(address(asset_)).decimals() + decimalOffset; // Asset decimals + decimal offset to combat inflation attacks
 
@@ -152,9 +163,11 @@ contract MultiStrategyVault is ERC4626Upgradeable, ReentrancyGuardUpgradeable, P
 
     IERC20(asset()).safeTransferFrom(msg.sender, address(this), assets);
 
-    uint8 len = uint8(adapters.length);
-    for (uint8 i = 0; i < len; i++) {
-      adapters[i].deposit(assets.mulDiv(allocation[i], 1e18, Math.Rounding.Down), address(this));
+    for (uint8 i; i < adapterCount; i++) {
+      adapters[i].adapter.deposit(
+        assets.mulDiv(adapters[i].allocation, 1e18, Math.Rounding.Down),
+        address(this)
+      );
     }
 
     emit Deposit(msg.sender, receiver, assets, shares);
@@ -188,7 +201,12 @@ contract MultiStrategyVault is ERC4626Upgradeable, ReentrancyGuardUpgradeable, P
 
     IERC20(asset()).safeTransferFrom(msg.sender, address(this), assets);
 
-    adapter.deposit(assets, address(this));
+    for (uint8 i; i < adapterCount; i++) {
+      adapters[i].adapter.deposit(
+        assets.mulDiv(adapters[i].allocation, 1e18, Math.Rounding.Down),
+        address(this)
+      );
+    }
 
     emit Deposit(msg.sender, receiver, assets, shares);
   }
@@ -227,7 +245,13 @@ contract MultiStrategyVault is ERC4626Upgradeable, ReentrancyGuardUpgradeable, P
 
     if (feeShares > 0) _mint(feeRecipient, feeShares);
 
-    adapter.withdraw(assets, receiver, address(this));
+    for (uint8 i; i < adapterCount; i++) {
+      adapters[i].adapter.withdraw(
+        assets.mulDiv(adapters[i].allocation, 1e18, Math.Rounding.Down),
+        receiver,
+        address(this)
+      );
+    }
 
     emit Withdraw(msg.sender, receiver, owner, assets, shares);
   }
@@ -262,7 +286,13 @@ contract MultiStrategyVault is ERC4626Upgradeable, ReentrancyGuardUpgradeable, P
 
     if (feeShares > 0) _mint(feeRecipient, feeShares);
 
-    adapter.withdraw(assets, receiver, address(this));
+    for (uint8 i; i < adapterCount; i++) {
+      adapters[i].adapter.withdraw(
+        assets.mulDiv(adapters[i].allocation, 1e18, Math.Rounding.Down),
+        receiver,
+        address(this)
+      );
+    }
 
     emit Withdraw(msg.sender, receiver, owner, assets, shares);
   }
@@ -271,11 +301,10 @@ contract MultiStrategyVault is ERC4626Upgradeable, ReentrancyGuardUpgradeable, P
                             ACCOUNTING LOGIC
     //////////////////////////////////////////////////////////////*/
 
-  /// @return Total amount of underlying `asset` token managed by vault. Delegates to adapter.
+  /// @return assets Total amount of underlying `asset` token managed by vault. Delegates to adapter.
   function totalAssets() public view override returns (uint256 assets) {
-    uint8 len = uint8(adapters.length);
-    for (uint8 i = 0; i < len; i++) {
-      assets += adapters[i].convertToAssets(adapter.balanceOf(address(this)));
+    for (uint8 i; i < adapterCount; i++) {
+      assets += adapters[i].adapter.convertToAssets(adapters[i].adapter.balanceOf(address(this)));
     }
   }
 
@@ -288,9 +317,10 @@ contract MultiStrategyVault is ERC4626Upgradeable, ReentrancyGuardUpgradeable, P
   function previewDeposit(uint256 assets) public view override returns (uint256 shares) {
     assets -= assets.mulDiv(uint256(fees.deposit), 1e18, Math.Rounding.Down);
 
-    uint8 len = uint8(adapters.length);
-    for (uint8 i = 0; i < len; i++) {
-      shares += adapters[i].previewDeposit(assets.mulDiv(allocation[i], 1e18, Math.Rounding.Down));
+    for (uint8 i; i < adapterCount; i++) {
+      shares += adapters[i].adapter.previewDeposit(
+        assets.mulDiv(adapters[i].allocation, 1e18, Math.Rounding.Down)
+      );
     }
   }
 
@@ -304,9 +334,10 @@ contract MultiStrategyVault is ERC4626Upgradeable, ReentrancyGuardUpgradeable, P
     uint256 depositFee = uint256(fees.deposit);
     shares += shares.mulDiv(depositFee, 1e18 - depositFee, Math.Rounding.Up);
 
-    uint8 len = uint8(adapters.length);
-    for (uint8 i = 0; i < len; i++) {
-      assets += adapters[i].previewMint(shares.mulDiv(allocation[i], 1e18, Math.Rounding.Down));
+    for (uint8 i; i < adapterCount; i++) {
+      assets += adapters[i].adapter.previewMint(
+        shares.mulDiv(adapters[i].allocation, 1e18, Math.Rounding.Down)
+      );
     }
   }
 
@@ -320,9 +351,10 @@ contract MultiStrategyVault is ERC4626Upgradeable, ReentrancyGuardUpgradeable, P
     uint256 withdrawalFee = uint256(fees.withdrawal);
     assets += assets.mulDiv(withdrawalFee, 1e18 - withdrawalFee, Math.Rounding.Up);
 
-    uint8 len = uint8(adapters.length);
-    for (uint8 i = 0; i < len; i++) {
-      shares += adapters[i].previewWithdraw(assets.mulDiv(allocation[i], 1e18, Math.Rounding.Down));
+    for (uint8 i; i < adapterCount; i++) {
+      shares += adapters[i].adapter.previewWithdraw(
+        assets.mulDiv(adapters[i].allocation, 1e18, Math.Rounding.Down)
+      );
     }
   }
 
@@ -333,9 +365,10 @@ contract MultiStrategyVault is ERC4626Upgradeable, ReentrancyGuardUpgradeable, P
    * @dev This method accounts for both issuance of fee shares and withdrawal fee.
    */
   function previewRedeem(uint256 shares) public view override returns (uint256 assets) {
-    uint8 len = uint8(adapters.length);
-    for (uint8 i = 0; i < len; i++) {
-      assets += adapters[i].previewRedeem(shares.mulDiv(allocation[i], 1e18, Math.Rounding.Down));
+    for (uint8 i; i < adapterCount; i++) {
+      assets += adapters[i].adapter.previewRedeem(
+        shares.mulDiv(adapters[i].allocation, 1e18, Math.Rounding.Down)
+      );
     }
     assets -= assets.mulDiv(uint256(fees.withdrawal), 1e18, Math.Rounding.Down);
   }
@@ -358,30 +391,48 @@ contract MultiStrategyVault is ERC4626Upgradeable, ReentrancyGuardUpgradeable, P
                      DEPOSIT/WITHDRAWAL LIMIT LOGIC
     //////////////////////////////////////////////////////////////*/
 
-  /// @return Maximum amount of underlying `asset` token that may be deposited for a given address. Delegates to adapter.
+  /// @return Maximum amount of underlying `asset` token that may be deposited for a given address. Delegates to adapters.
   function maxDeposit(address) public view override returns (uint256) {
     uint256 assets = totalAssets();
     uint256 depositLimit_ = depositLimit;
     if (paused() || assets >= depositLimit_) return 0;
-    return Math.min(depositLimit_ - assets, adapter.maxDeposit(address(this)));
+
+    uint256 maxDeposit_ = depositLimit_;
+    for (uint8 i; i < adapterCount; i++) {
+      maxDeposit_ = Math.min(maxDeposit_, adapters[i].adapter.maxDeposit(address(this)));
+    }
+    return maxDeposit_;
   }
 
-  /// @return Maximum amount of vault shares that may be minted to given address. Delegates to adapter.
+  /// @return Maximum amount of vault shares that may be minted to given address. Delegates to adapters.
   function maxMint(address) public view override returns (uint256) {
     uint256 assets = totalAssets();
     uint256 depositLimit_ = depositLimit;
     if (paused() || assets >= depositLimit_) return 0;
-    return Math.min(depositLimit_ - assets, adapter.maxMint(address(this)));
+
+    uint256 maxMint_ = depositLimit_;
+    for (uint8 i; i < adapterCount; i++) {
+      maxMint_ = Math.min(maxMint_, adapters[i].adapter.maxMint(address(this)));
+    }
+    return maxMint_;
   }
 
-  /// @return Maximum amount of underlying `asset` token that can be withdrawn by `caller` address. Delegates to adapter.
+  /// @return Maximum amount of underlying `asset` token that can be withdrawn by `caller` address. Delegates to adapters.
   function maxWithdraw(address) public view override returns (uint256) {
-    return adapter.maxWithdraw(address(this));
+    uint256 maxWithdraw_ = adapters[0].adapter.maxWithdraw(address(this));
+    for (uint8 i = 1; i < adapterCount; i++) {
+      maxWithdraw_ = Math.min(maxWithdraw_, adapters[i].adapter.maxWithdraw(address(this)));
+    }
+    return maxWithdraw_;
   }
 
-  /// @return Maximum amount of shares that may be redeemed by `caller` address. Delegates to adapter.
+  /// @return Maximum amount of shares that may be redeemed by `caller` address. Delegates to adapters.
   function maxRedeem(address) public view override returns (uint256) {
-    return adapter.maxRedeem(address(this));
+    uint256 maxRedeem_ = adapters[0].adapter.maxRedeem(address(this));
+    for (uint8 i = 1; i < adapterCount; i++) {
+      maxRedeem_ = Math.min(maxRedeem_, adapters[i].adapter.maxRedeem(address(this)));
+    }
+    return maxRedeem_;
   }
 
   /*//////////////////////////////////////////////////////////////
@@ -524,26 +575,52 @@ contract MultiStrategyVault is ERC4626Upgradeable, ReentrancyGuardUpgradeable, P
                           ADAPTER LOGIC
     //////////////////////////////////////////////////////////////*/
 
-  IERC4626 public adapter;
-  IERC4626 public proposedAdapter;
+  AdapterConfig[10] public adapters;
+  AdapterConfig[10] public proposedAdapters;
+
+  uint8 public adapterCount;
+  uint8 public proposedAdapterCount;
+
   uint256 public proposedAdapterTime;
 
-  event NewAdapterProposed(IERC4626 newAdapter, uint256 timestamp);
-  event ChangedAdapter(IERC4626 oldAdapter, IERC4626 newAdapter);
+  event NewAdaptersProposed(AdapterConfig[10] newAdapter, uint256 timestamp);
+  event ChangedAdapters(AdapterConfig[10] oldAdapter, AdapterConfig[10] newAdapter);
 
-  error VaultAssetMismatchNewAdapterAsset();
+  error AssetInvalid();
+  error InvalidConfig();
 
   /**
    * @notice Propose a new adapter for this vault. Caller must be Owner.
-   * @param newAdapter A new ERC4626 that should be used as a yield adapter for this asset.
+   * @param newAdapters A new ERC4626 that should be used as a yield adapter for this asset.
+   * @param newAdapterCount Amount of new adapters.
    */
-  function proposeAdapter(IERC4626 newAdapter) external onlyOwner {
-    if (newAdapter.asset() != asset()) revert VaultAssetMismatchNewAdapterAsset();
+  function proposeAdapters(AdapterConfig[10] calldata newAdapters, uint8 newAdapterCount) external onlyOwner {
+    _verifyAdapterConfig(newAdapters, newAdapterCount);
 
-    proposedAdapter = newAdapter;
+    for (uint8 i; i < newAdapterCount; i++) {
+      proposedAdapters[i] = newAdapters[i];
+    }
+
+    proposedAdapterCount = newAdapterCount;
+
     proposedAdapterTime = block.timestamp;
 
-    emit NewAdapterProposed(newAdapter, block.timestamp);
+    emit NewAdaptersProposed(newAdapters, block.timestamp);
+  }
+
+  function _verifyAdapterConfig(AdapterConfig[10] calldata newAdapters, uint8 adapterCount_) internal {
+    if (adapterCount_ == 0 || adapterCount_ > 10) revert InvalidConfig();
+
+    uint256 totalAllocation;
+    for (uint8 i; i < adapterCount_; i++) {
+      if (newAdapters[i].adapter.asset() != asset()) revert AssetInvalid();
+
+      uint256 allocation = newAdapters[i].allocation;
+      if (allocation == 0) revert InvalidConfig();
+
+      totalAllocation += allocation;
+    }
+    if (totalAllocation != 1e18) revert InvalidConfig();
   }
 
   /**
@@ -556,20 +633,36 @@ contract MultiStrategyVault is ERC4626Upgradeable, ReentrancyGuardUpgradeable, P
     if (proposedAdapterTime == 0 || block.timestamp < proposedAdapterTime + quitPeriod)
       revert NotPassedQuitPeriod(quitPeriod);
 
-    adapter.redeem(adapter.balanceOf(address(this)), address(this), address(this));
+    for (uint8 i; i < adapterCount; i++) {
+      adapters[i].adapter.redeem(
+        adapters[i].adapter.balanceOf(address(this)),
+        address(this),
+        address(this)
+      );
 
-    IERC20(asset()).approve(address(adapter), 0);
+      // TODO use save approve
+      IERC20(asset()).approve(address(adapters[i].adapter), 0);
+    }
 
-    emit ChangedAdapter(adapter, proposedAdapter);
+    emit ChangedAdapters(adapters, proposedAdapters);
 
-    adapter = proposedAdapter;
+    adapters = proposedAdapters;
+    adapterCount = proposedAdapterCount;
 
-    IERC20(asset()).approve(address(adapter), type(uint256).max);
+    uint256 totalAssets_ = IERC20(asset()).balanceOf(address(this));
 
-    adapter.deposit(IERC20(asset()).balanceOf(address(this)), address(this));
+    for (uint8 i; i < adapterCount; i++) {
+      IERC20(asset()).approve(address(adapters[i].adapter), type(uint256).max);
 
+      adapters[i].adapter.deposit(
+        totalAssets_.mulDiv(adapters[i].allocation, 1e18, Math.Rounding.Down),
+        address(this)
+      );
+    }
+
+    delete proposedAdapters;
+    delete proposedAdapterCount;
     delete proposedAdapterTime;
-    delete proposedAdapter;
   }
 
   /*//////////////////////////////////////////////////////////////
