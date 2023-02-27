@@ -7,7 +7,7 @@ import { AdapterBase, IERC20, IERC20Metadata, SafeERC20, ERC20, Math, IStrategy,
 
 // import { ERC4626 } from "solmate/mixins/ERC4626.sol";
 // import { FixedPointMathLib } from "solmate/utils/FixedPointMathLib.sol";
-
+import { MathUpgradeable as Math } from "openzeppelin-contracts-upgradeable/utils/math/MathUpgradeable.sol";
 import { IWETH } from "../../../interfaces/external/IWETH.sol";
 import { ILido, VaultAPI } from "./ILido.sol";
 import { ICurveFi } from "./ICurveFi.sol";
@@ -24,7 +24,7 @@ contract LidoAdapter is AdapterBase {
   // using FixedPointMathLib for uint256;
   using SafeERC20 for IERC20;
   using SafeMath for uint256;
-  // using UnstructuredStorage for bytes32;
+  using Math for uint256;
 
   string internal _name;
   string internal _symbol;
@@ -118,13 +118,30 @@ contract LidoAdapter is AdapterBase {
 
   /// @notice Withdraw from LIDO pool
   function _protocolWithdraw(uint256 assets, uint256 shares) internal virtual override {
-    // lido.burnShares(address(this), assets); // burn shares and get Eth back
-    require(assets > 0, "assets cant be 0");
     uint256 slippageAllowance = assets.mul(DENOMINATOR.sub(slippageProtectionOut)).div(DENOMINATOR);
-    // uint256 slippageAllowance = 0;
     uint256 amountRecieved = StableSwapSTETH.exchange(STETHID, WETHID, assets, slippageAllowance);
 
     weth.deposit{ value: amountRecieved }(); // get wrapped eth back
+  }
+
+  /**
+   * @notice Simulate the effects of a withdraw at the current block, given current on-chain conditions.
+   * @dev Override this function if the underlying protocol has a unique withdrawal logic and/or withdraw fees.
+   */
+  function _previewWithdraw(uint256 assets) internal view virtual override returns (uint256) {
+    uint256 slippageAllowance = assets.mul(DENOMINATOR.add(slippageProtectionOut)).div(DENOMINATOR);
+    // return StableSwapSTETH.get_dy(WETHID, STETHID, assets);
+    return _convertToShares(slippageAllowance, Math.Rounding.Down);
+  }
+
+  /**
+   * @notice Simulate the effects of a redeem at the current block, given current on-chain conditions.
+   * @dev Override this function if the underlying protocol has a unique redeem logic and/or redeem fees.
+   */
+  function _previewRedeem(uint256 shares) internal view virtual override returns (uint256) {
+    uint256 slippageAllowance = shares.mul(DENOMINATOR.sub(slippageProtectionOut)).div(DENOMINATOR);
+    // return StableSwapSTETH.get_dy(STETHID, WETHID, shares);
+    return _convertToAssets(slippageAllowance, Math.Rounding.Down);
   }
 
   /**
@@ -142,7 +159,7 @@ contract LidoAdapter is AdapterBase {
       _spendAllowance(owner, caller, shares);
     }
 
-    uint256 balanceBefore = IERC20(asset()).balanceOf(address(this));
+    uint256 balanceInitial = IERC20(asset()).balanceOf(address(this));
 
     if (!paused()) {
       _protocolWithdraw(assets, shares);
@@ -152,39 +169,26 @@ contract LidoAdapter is AdapterBase {
 
     uint256 balanceNow = IERC20(asset()).balanceOf(address(this));
 
-    uint256 assetsRecievedFromExchange = balanceNow.sub(balanceBefore);
+    uint256 amountReceived = balanceNow.sub(balanceInitial);
 
-    IERC20(asset()).safeTransfer(receiver, assetsRecievedFromExchange);
+    IERC20(asset()).safeTransfer(receiver, amountReceived);
 
     harvest();
 
-    emit Withdraw(caller, receiver, owner, assetsRecievedFromExchange, shares);
+    emit Withdraw(caller, receiver, owner, assets, shares);
   }
 
-  function previewWithdraw(uint256 assets) public view virtual override returns (uint256) {
-    uint256 slippageAllowance = assets.mul(DENOMINATOR.sub(slippageProtectionOut)).div(DENOMINATOR);
-    return _previewWithdraw(slippageAllowance);
+  // function maxWithdraw(address owner) public view virtual override returns (uint256) {
+  //   return _convertToAssets(balanceOf(owner), MathUpgradeable.Rounding.Down);
+  //   return StableSwapSTETH.get_dy(WETHID, STETHID, assets);
+  // }
+
+  function _convertToShares(uint256 assets, Math.Rounding rounding) internal view virtual override returns (uint256) {
+    return assets.mulDiv(totalSupply() + 10**decimalOffset, totalAssets() + 1, rounding);
   }
 
-  /**
-   * @notice Withdraws `assets` from the underlying protocol and burns vault shares from `owner`.
-   * @param assets Amount of assets to withdraw.
-   * @param receiver Receiver of the assets.
-   * @param owner Owner of the shares.
-   */
-  function withdraw(
-    uint256 assets,
-    address receiver,
-    address owner
-  ) public virtual override returns (uint256) {
-    uint256 slippageAllowance = assets.mul(DENOMINATOR.sub(slippageProtectionOut)).div(DENOMINATOR);
-    if (slippageAllowance > maxWithdraw(owner)) revert MaxError(slippageAllowance);
-
-    uint256 shares = _previewWithdraw(slippageAllowance);
-
-    _withdraw(_msgSender(), receiver, owner, slippageAllowance, shares);
-
-    return shares;
+  function _convertToAssets(uint256 shares, Math.Rounding rounding) internal view virtual override returns (uint256) {
+    return shares.mulDiv(totalAssets() + 1, totalSupply() + 10**decimalOffset, rounding);
   }
 }
 

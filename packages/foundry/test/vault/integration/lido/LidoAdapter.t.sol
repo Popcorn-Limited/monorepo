@@ -11,6 +11,7 @@ import { LidoTestConfigStorage, LidoTestConfig } from "./LidoTestConfigStorage.s
 import { AbstractAdapterTest, ITestConfigStorage, IAdapter } from "../abstract/AbstractAdapterTest.sol";
 import { SafeMath } from "openzeppelin-contracts/utils/math/SafeMath.sol";
 import "hardhat/console.sol";
+import { ICurveFi } from "../../../../src/vault/adapter/lido/ICurveFi.sol";
 
 contract LidoAdapterTest is AbstractAdapterTest {
   using Math for uint256;
@@ -22,7 +23,7 @@ contract LidoAdapterTest is AbstractAdapterTest {
   int128 private constant WETHID = 0;
   int128 private constant STETHID = 1;
   uint8 internal constant decimalOffset = 9;
-  // ICurveFi public constant StableSwapSTETH = ICurveFi(0xDC24316b9AE028F1497c275EB9192a3Ea0f67022);
+  ICurveFi public constant StableSwapSTETH = ICurveFi(0xDC24316b9AE028F1497c275EB9192a3Ea0f67022);
   uint256 public constant DENOMINATOR = 10000;
   uint256 public slippageProtectionOut = 100; // = 100; //out of 10000. 100 = 1%
 
@@ -107,7 +108,7 @@ contract LidoAdapterTest is AbstractAdapterTest {
     );
   }
 
-  // Simplifing it here a little to avoid `Stack to Deep` - Caller = Receiver
+  // Assets wont be the same as before so this overwrites the base function
   function prop_withdraw(
     address caller,
     address owner,
@@ -138,35 +139,35 @@ contract LidoAdapterTest is AbstractAdapterTest {
     return (shares, assets);
   }
 
-  function prop_redeem(
-    address caller,
-    address owner,
-    uint256 shares,
-    string memory testPreFix
-  ) public virtual override returns (uint256 paid, uint256 received) {
-    uint256 oldReceiverAsset = IERC20(_asset_).balanceOf(caller);
-    uint256 oldOwnerShare = IERC20(_vault_).balanceOf(owner);
-    uint256 oldAllowance = IERC20(_vault_).allowance(owner, caller);
+  // function prop_redeem(
+  //   address caller,
+  //   address owner,
+  //   uint256 shares,
+  //   string memory testPreFix
+  // ) public virtual override returns (uint256 paid, uint256 received) {
+  //   uint256 oldReceiverAsset = IERC20(_asset_).balanceOf(caller);
+  //   uint256 oldOwnerShare = IERC20(_vault_).balanceOf(owner);
+  //   uint256 oldAllowance = IERC20(_vault_).allowance(owner, caller);
 
-    vm.prank(caller);
-    uint256 assets = IERC4626(_vault_).redeem(shares, caller, owner);
+  //   vm.prank(caller);
+  //   uint256 assets = IERC4626(_vault_).redeem(shares, caller, owner);
 
-    uint256 newReceiverAsset = IERC20(_asset_).balanceOf(caller);
-    uint256 newOwnerShare = IERC20(_vault_).balanceOf(owner);
-    uint256 newAllowance = IERC20(_vault_).allowance(owner, caller);
+  //   uint256 newReceiverAsset = IERC20(_asset_).balanceOf(caller);
+  //   uint256 newOwnerShare = IERC20(_vault_).balanceOf(owner);
+  //   uint256 newAllowance = IERC20(_vault_).allowance(owner, caller);
 
-    assertApproxEqAbs(newOwnerShare, oldOwnerShare - shares, _delta_, string.concat("share", testPreFix));
-    // assertApproxEqAbs(newReceiverAsset, oldReceiverAsset + assets, _delta_, string.concat("asset", testPreFix)); // NOTE: this may fail if the receiver is a contract in which the asset is stored
-    if (caller != owner && oldAllowance != type(uint256).max)
-      assertApproxEqAbs(newAllowance, oldAllowance - shares, _delta_, string.concat("allowance", testPreFix));
+  //   assertApproxEqAbs(newOwnerShare, oldOwnerShare - shares, _delta_, string.concat("share", testPreFix));
+  //   // assertApproxEqAbs(newReceiverAsset, oldReceiverAsset + assets, _delta_, string.concat("asset", testPreFix)); // NOTE: this may fail if the receiver is a contract in which the asset is stored
+  //   if (caller != owner && oldAllowance != type(uint256).max)
+  //     assertApproxEqAbs(newAllowance, oldAllowance - shares, _delta_, string.concat("allowance", testPreFix));
 
-    assertTrue(
-      caller == owner || oldAllowance != 0 || (shares == 0 && assets == 0),
-      string.concat("access control", testPreFix)
-    );
+  //   assertTrue(
+  //     caller == owner || oldAllowance != 0 || (shares == 0 && assets == 0),
+  //     string.concat("access control", testPreFix)
+  //   );
 
-    return (shares, assets);
-  }
+  //   return (shares, assets);
+  // }
 
   /*//////////////////////////////////////////////////////////////
                           INITIALIZATION
@@ -310,77 +311,103 @@ contract LidoAdapterTest is AbstractAdapterTest {
   }
 
   // This test fails on the original implementation due to the fact that the amount of assets returned when we withdraw will be lower because of the swap slippage
-  function test__withdraw(uint8 fuzzAmount) public virtual override {
-    uint256 amount = bound(uint256(fuzzAmount), 10, maxAssets);
-    uint8 len = uint8(testConfigStorage.getTestConfigLength());
-    for (uint8 i; i < len; i++) {
-      if (i > 0) overrideSetup(testConfigStorage.getTestConfig(i));
+  // function test__withdraw(uint8 fuzzAmount) public virtual override {
+  //   uint256 maxAssetsNew = IERC20(asset).totalSupply() / 10**5;
+  //   console.log("maxAssets", maxAssetsNew);
+  //   uint256 amount = bound(uint256(fuzzAmount), 10, maxAssetsNew);
+  //   uint8 len = uint8(testConfigStorage.getTestConfigLength());
+  //   for (uint8 i; i < len; i++) {
+  //     if (i > 0) overrideSetup(testConfigStorage.getTestConfig(i));
 
-      uint256 reqAssets = (adapter.previewMint(adapter.previewWithdraw(amount)) * 10) / 8;
-      _mintFor(reqAssets, bob);
-      vm.prank(bob);
-      adapter.deposit(reqAssets, bob);
-      emit log_named_uint("ts", adapter.totalSupply());
-      emit log_named_uint("ta", adapter.totalAssets());
-      prop_withdraw(bob, bob, amount, testId);
+  //     uint256 reqAssets = adapter.previewWithdraw(amount);
+  //     _mintFor(amount, bob);
+  //     vm.prank(bob);
+  //     adapter.deposit(amount, bob);
+  //     emit log_named_uint("ts", adapter.totalSupply());
+  //     emit log_named_uint("ta", adapter.totalAssets());
+  //     prop_withdraw(bob, bob, reqAssets, testId);
 
-      _mintFor(reqAssets, bob);
-      vm.prank(bob);
-      adapter.deposit(reqAssets, bob);
+  //     _mintFor(amount, bob);
+  //     vm.prank(bob);
+  //     adapter.deposit(amount, bob);
 
-      increasePricePerShare(raise);
+  //     increasePricePerShare(raise);
 
-      vm.prank(bob);
-      adapter.approve(alice, type(uint256).max);
-      prop_withdraw(alice, bob, amount, testId);
-    }
-  }
+  //     vm.prank(bob);
+  //     adapter.approve(alice, type(uint256).max);
+  //     prop_withdraw(alice, bob, reqAssets, testId);
+  // //   }
+  // }
 
-  // This test fails on the original implementation due to the fact that the amount of assets returned when we withdraw will be lower because of the swap slippage
+  // // This test fails on the original implementation due to the fact that the amount of assets returned when we withdraw will be lower because of the swap slippage
   function test__redeem(uint8 fuzzAmount) public virtual override {
     uint256 amount = bound(uint256(fuzzAmount), 10, maxShares);
     uint8 len = uint8(testConfigStorage.getTestConfigLength());
     for (uint8 i; i < len; i++) {
       if (i > 0) overrideSetup(testConfigStorage.getTestConfig(i));
 
-      uint256 reqAssets = (adapter.previewMint(amount) * 10) / 9;
-      _mintFor(reqAssets, bob);
+      uint256 reqAssets = adapter.previewWithdraw(amount);
+      _mintFor(amount, bob);
       vm.prank(bob);
-      adapter.deposit(reqAssets, bob);
-      prop_redeem(bob, bob, amount, testId);
+      adapter.deposit(amount, bob);
+      console.log("balance of adapter: ", IERC20(address(lidoVault)).balanceOf(address(adapter)));
+      prop_redeem(bob, bob, reqAssets, testId);
 
-      _mintFor(reqAssets, bob);
+      _mintFor(amount, bob);
       vm.prank(bob);
-      adapter.deposit(reqAssets, bob);
+      uint256 sharesReceived = adapter.deposit(amount, bob);
 
       increasePricePerShare(raise);
 
+      // uint256 reqAssetsNewPrice = adapter.previewWithdraw(amount);
       vm.prank(bob);
       adapter.approve(alice, type(uint256).max);
-      prop_redeem(alice, bob, amount, testId);
+      prop_redeem(alice, bob, sharesReceived, testId);
     }
   }
 
-  function test__RT_mint_redeem() public virtual override {
-    _mintFor(adapter.previewMint(defaultAmount), bob);
+  // function test__RT_mint_redeem() public virtual override {
+  //   _mintFor(adapter.previewMint(defaultAmount), bob);
 
-    vm.startPrank(bob);
-    uint256 assets1 = adapter.mint(defaultAmount, bob);
-    uint256 assets2 = adapter.redeem(defaultAmount, bob, bob);
-    vm.stopPrank();
+  //   vm.startPrank(bob);
+  //   uint256 assets1 = adapter.mint(defaultAmount, bob);
+  //   uint256 assets2 = adapter.redeem(defaultAmount, bob, bob);
+  //   vm.stopPrank();
 
-    assertLe(assets2, assets1, testId); //This is flipped for this test as well get less assets back due to the stable Swap
-  }
+  //   assertLe(assets2, assets1, testId); //This is flipped for this test as well get less assets back due to the stable Swap
+  // }
 
-  // NOTE - The yearn adapter suffers often from an off-by-one error which "steals" 1 wei from the user
-  function test__RT_deposit_withdraw() public override {
-    _mintFor(defaultAmount, bob);
+  // // NOTE - The yearn adapter suffers often from an off-by-one error which "steals" 1 wei from the user
+  // function test__RT_deposit_withdraw() public override {
+  //   _mintFor(defaultAmount, bob);
 
-    vm.startPrank(bob);
-    uint256 shares1 = adapter.deposit(defaultAmount, bob);
-    uint256 shares2 = adapter.withdraw(defaultAmount - 1, bob, bob);
-    vm.stopPrank();
+  //   vm.startPrank(bob);
+  //   uint256 shares1 = adapter.deposit(defaultAmount, bob);
+  //   uint256 shares2 = adapter.withdraw(defaultAmount - 1, bob, bob);
+  //   vm.stopPrank();
 
-    assertLe(shares2, shares1, testId); // again this is flipped due to the swap process
-  }
+  //   assertLe(shares2, shares1, testId); // again this is flipped due to the swap process
+  // }
+
+  // function test__estimate_token_swap_amount(uint256 amount) public {
+  //   vm.assume(amount > 0);
+  //   _mintFor(defaultAmount, bob);
+
+  //   vm.startPrank(bob);
+  //   uint256 shares1 = adapter.deposit(defaultAmount, bob);
+  //   vm.stopPrank();
+
+  //   vm.startPrank(address(adapter));
+  //   uint256 slippageAllowance = amount.mul(DENOMINATOR.sub(slippageProtectionOut)).div(DENOMINATOR);
+  //   uint256 recievedPredicted = StableSwapSTETH.get_dy(0, 1, amount);
+  //   uint256 amountRecievedActual = StableSwapSTETH.exchange(STETHID, WETHID, amount, slippageAllowance);
+
+  //   vm.stopPrank();
+  //   assertApproxEqAbs(
+  //     recievedPredicted,
+  //     amountRecievedActual,
+  //     11,
+  //     string.concat("predicted vs actual recieved from swap", "lol")
+  //   );
+  // }
 }
