@@ -35,7 +35,7 @@ export const useSupportedContracts = (selectedNetworks) => {
     (network) => network,
   ) as any;
   allContracts = allContracts.flat(1) as any as Pop.NamedAccountsMetadata[];
-  console.log(allContracts);
+  
   const [selectedContracts, setSelectedContracts] = useState(allContracts);
 
   useEffect(() => {

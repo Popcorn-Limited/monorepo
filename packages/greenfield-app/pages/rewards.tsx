@@ -27,15 +27,41 @@ export default function RewardsPage(): JSX.Element {
 
   useEffect(() => {
     if (shouldAirdropVisible(selectedNetworks)) {
-      setAvailableTabs([Tabs.Staking, Tabs.Airdrop, Tabs.Vesting]);
+      if (shouldStakingVisible(selectedNetworks)) {
+        setAvailableTabs([Tabs.Staking, Tabs.Airdrop, Tabs.Vesting]);
+      } else {
+        setAvailableTabs([Tabs.Airdrop, Tabs.Vesting]);
+      }
     } else {
       setAvailableTabs([Tabs.Staking, Tabs.Vesting]);
     }
   }, [selectedNetworks]);
 
+  useEffect(() => {
+    if (tabSelected === Tabs.Airdrop && !shouldAirdropVisible(selectedNetworks)) {
+      setTabSelected(Tabs.Staking);
+    }
+    if (
+      selectedNetworks.length !== supportedNetworks.length &&
+      tabSelected === Tabs.Staking &&
+      !shouldStakingVisible(selectedNetworks)
+    ) {
+      setTabSelected(Tabs.Airdrop);
+    }
+  }, [selectedNetworks, tabSelected]);
+
   const shouldAirdropVisible = (chainId) => {
     if (chainId.length === 1) {
-      return [ChainId.Arbitrum, ChainId.Polygon, ChainId.Hardhat, ChainId.BNB, ChainId.Localhost].includes(chainId[0]);
+      return [ChainId.Arbitrum, ChainId.Polygon, ChainId.BNB, ChainId.Hardhat, ChainId.Localhost].includes(chainId[0]);
+    }
+    return false;
+  };
+
+  const shouldStakingVisible = (chainId) => {
+    if (chainId.length === 1) {
+      return [ChainId.Ethereum, ChainId.Polygon, ChainId.Optimism, ChainId.Hardhat, ChainId.Localhost].includes(
+        chainId[0],
+      );
     }
     return false;
   };
@@ -74,7 +100,9 @@ export default function RewardsPage(): JSX.Element {
                 <StakingRewardsContainer selectedNetworks={selectedNetworks} />
               </div>
 
-              <div className={`mt-8 ${isSelected(Tabs.Airdrop) ? "" : "hidden"}`}>
+              <div
+                className={`mt-8 ${isSelected(Tabs.Airdrop) && shouldAirdropVisible(selectedNetworks) ? "" : "hidden"}`}
+              >
                 <AirDropClaim chainId={selectedNetworks[0]} />
               </div>
 

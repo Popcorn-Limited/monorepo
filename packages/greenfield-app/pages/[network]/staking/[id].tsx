@@ -103,7 +103,7 @@ export default function Index(): JSX.Element {
                   />
                 </div>
                 <AssetInputWithAction
-                  assetAddress={stakingToken}
+                  assetAddress={isDeposit ? stakingToken : stakingAddress}
                   target={stakingAddress}
                   chainId={chainId}
                   action={{

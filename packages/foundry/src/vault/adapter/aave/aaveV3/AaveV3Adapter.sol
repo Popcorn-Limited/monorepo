@@ -5,7 +5,7 @@ pragma solidity ^0.8.15;
 
 import { AdapterBase, IERC20, IERC20Metadata, SafeERC20, ERC20, Math, IStrategy, IAdapter } from "../../abstracts/AdapterBase.sol";
 import { WithRewards, IWithRewards } from "../../abstracts/WithRewards.sol";
-import { ILendingPool, IAaveMining, IAToken, IProtocolDataProvider } from "./IAaveV2.sol";
+import { ILendingPool, IAaveIncentives, IAToken, IProtocolDataProvider } from "./IAaveV3.sol";
 import { DataTypes } from "./lib.sol";
 
 /**
@@ -18,28 +18,28 @@ import { DataTypes } from "./lib.sol";
  * Allows for additional strategies to use rewardsToken in case of an active Liquidity Mining.
  */
 
-contract AaveV2Adapter is AdapterBase, WithRewards {
+contract AaveV3Adapter is AdapterBase, WithRewards {
   using SafeERC20 for IERC20;
   using Math for uint256;
 
   string internal _name;
   string internal _symbol;
 
-  // @notice The Aave aToken contract
+  /// @notice The Aave aToken contract
   IAToken public aToken;
 
-  // @notice The Aave liquidity mining contract
-  IAaveMining public aaveMining;
+  /// @notice The Aave liquidity mining contract
+  IAaveIncentives public aaveIncentives;
 
-  // @notice Check to see if Aave liquidity mining is active
-  bool public isActiveMining;
+  /// @notice Array of reward tokens available for aToken.
+  address[] availableRewards;
 
-  // @notice The Aave LendingPool contract
+  /// @notice Check to see if Aave liquidity mining is active
+  bool public isActiveIncentives;
+
+  /// @notice The Aave LendingPool contract
   ILendingPool public lendingPool;
-
-  uint256 internal constant RAY = 1e27;
-  uint256 internal constant halfRAY = RAY / 2;
-
+  
   /*//////////////////////////////////////////////////////////////
                             CONSTRUCTOR
     //////////////////////////////////////////////////////////////*/
@@ -52,11 +52,12 @@ contract AaveV2Adapter is AdapterBase, WithRewards {
    * @param aaveDataProvider Encoded data for the base adapter initialization.
    * @dev This function is called by the factory contract when deploying a new vault.
    */
+
   function initialize(
     bytes memory adapterInitData,
     address aaveDataProvider,
     bytes memory
-  ) external initializer {
+  ) public initializer {
     __AdapterBase_init(adapterInitData);
 
     _name = string.concat("Popcorn AaveV2", IERC20Metadata(asset()).name(), " Adapter");
@@ -68,16 +69,15 @@ contract AaveV2Adapter is AdapterBase, WithRewards {
       revert DifferentAssets(aToken.UNDERLYING_ASSET_ADDRESS(), asset());
 
     lendingPool = ILendingPool(aToken.POOL());
-    aaveMining = IAaveMining(aToken.getIncentivesController());
+    aaveIncentives = IAaveIncentives(aToken.getIncentivesController());
 
     IERC20(asset()).approve(address(lendingPool), type(uint256).max);
 
-    uint128 emission;
-    if (address(aaveMining) != address(0)) {
-      (, emission, ) = aaveMining.assets(asset());
+    if (address(aaveIncentives) != address(0)) {
+      availableRewards = aaveIncentives.getRewardsByAsset(asset());
     }
 
-    isActiveMining = emission > 0 ? true : false;
+    isActiveIncentives = availableRewards.length > 0 ? true : false;
   }
 
   function name() public view override(IERC20Metadata, ERC20) returns (string memory) {
@@ -98,10 +98,7 @@ contract AaveV2Adapter is AdapterBase, WithRewards {
 
   /// @notice The token rewarded if the aave liquidity mining is active
   function rewardTokens() external view override returns (address[] memory) {
-    address[] memory _rewardTokens = new address[](1);
-    if (isActiveMining == false) return _rewardTokens;
-    _rewardTokens[0] = aaveMining.REWARD_TOKEN();
-    return _rewardTokens;
+    return aaveIncentives.getRewardsList();
   }
 
   /*//////////////////////////////////////////////////////////////
@@ -110,7 +107,7 @@ contract AaveV2Adapter is AdapterBase, WithRewards {
 
   /// @notice Deposit into aave lending pool
   function _protocolDeposit(uint256 assets, uint256) internal virtual override {
-    lendingPool.deposit(asset(), assets, address(this), 0);
+    lendingPool.supply(asset(), assets, address(this), 0);
   }
 
   /// @notice Withdraw from lending pool
@@ -122,14 +119,14 @@ contract AaveV2Adapter is AdapterBase, WithRewards {
                             STRATEGY LOGIC
     //////////////////////////////////////////////////////////////*/
 
-  error MiningNotActive();
+  error IncentivesNotActive();
 
-  /// @notice Claim liquidity mining rewards given that it's active
+  /// @notice Claim additional rewards given that it's active.
   function claim() public override onlyStrategy {
-    address[] memory assets = new address[](1);
-    assets[0] = address(aToken);
-    if (isActiveMining == false) revert MiningNotActive();
-    aaveMining.claimRewards(assets, type(uint256).max, address(this));
+    if (isActiveIncentives == false) revert IncentivesNotActive();
+    address[] memory _assets = new address[](1);
+    _assets[0] = address(aToken);
+    aaveIncentives.claimAllRewardsOnBehalf(_assets, address(this), address(this));
   }
 
   /*//////////////////////////////////////////////////////////////

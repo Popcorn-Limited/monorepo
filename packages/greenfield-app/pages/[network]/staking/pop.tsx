@@ -11,7 +11,7 @@ import SecondaryActionButton from "@popcorn/components/components/SecondaryActio
 import { Tvl } from "@popcorn/components/lib/Contract";
 import MobileCardSlider from "@popcorn/app/components/Common/MobileCardSlider";
 import { useChainIdFromUrl } from "@popcorn/app/hooks/useChainIdFromUrl";
-import { useAccount, useContractRead } from "wagmi";
+import { Address, useAccount, useContractRead } from "wagmi";
 import TabSelector from "components/TabSelector";
 import { useEffect, useState } from "react";
 import AssetInputWithAction from "@popcorn/components/components/AssetInputWithAction";
@@ -26,6 +26,7 @@ import { formatDate } from "@popcorn/utils/DateTime";
 import { useLockedBalances } from "@popcorn/components/lib/PopLocker/hooks";
 import useRestake from "@popcorn/components/hooks/useRestake";
 import NoSSR from "react-no-ssr";
+import { ValueOfBalance } from "@popcorn/components/lib/Erc20";
 
 const TAB_DEPOSIT = "Deposit";
 const TAB_WITHDRAW = "Withdraw";
@@ -70,13 +71,7 @@ export default function Index(): JSX.Element {
           <div className="flex flex-wrap">
             <div className="block pr-8 md:pr-6 mt-6 md:mt-8">
               <StatusWithLabel
-                content={
-                  chainId === ChainId.Optimism ? (
-                    "New ✨"
-                  ) : (
-                    <Staking.Apy chainId={chainId} address={popStaking?.address} />
-                  )
-                }
+                content={<Staking.Apy chainId={chainId} address={popStaking?.address} />}
                 label={
                   <>
                     <span className="lowercase">v</span>APR
@@ -91,9 +86,14 @@ export default function Index(): JSX.Element {
               />
             </div>
             <div className="block mt-6 md:mt-8 pr-8 md:pr-6 md:pl-6 md:border-l md:border-customLightGray">
+              {/* Somehow the Convex Staking Contract breaks on optimism. Therefore we simply check the balanceOf pop token in the staking contract */}
               <StatusWithLabel
                 content={
-                  chainId === ChainId.Optimism ? "New ✨" : <Tvl chainId={chainId} address={popStaking?.address} />
+                  chainId === ChainId.Optimism ? (
+                    <ValueOfBalance chainId={chainId} address={pop?.address} account={popStaking?.address as Address} />
+                  ) : (
+                    <Tvl chainId={chainId} address={popStaking?.address} />
+                  )
                 }
                 label="TVL"
               />
@@ -208,11 +208,10 @@ export default function Index(): JSX.Element {
                       checked={restake}
                       onChange={() => setRestake(!restake)}
                       className={`mr-4 rounded h-5 w-5 border-customLightGray 
-                    ${
-                      restake && !lockedBalances?.unlockable.eq(constants.Zero)
-                        ? "focus:ring-blue-500 text-blue-600"
-                        : "focus:ring-gray-500 text-primaryDark"
-                    }`}
+                    ${restake && !lockedBalances?.unlockable.eq(constants.Zero)
+                          ? "focus:ring-blue-500 text-blue-600"
+                          : "focus:ring-gray-500 text-primaryDark"
+                        }`}
                       disabled={lockedBalances?.unlockable.eq(constants.Zero)}
                     />
                     <p className="text-primaryDark">Restake POP</p>

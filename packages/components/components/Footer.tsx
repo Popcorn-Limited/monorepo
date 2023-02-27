@@ -116,6 +116,13 @@ const Footer = () => {
             >
               Gitbook
             </Link>
+            <Link
+              href="/disclaimer"
+              target="_blank"
+              className=" text-primary hover:text-black leading-6 mt-4"
+            >
+              Disclaimer
+            </Link>
           </div>
         </div>
 
