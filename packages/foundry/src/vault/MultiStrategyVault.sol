@@ -13,7 +13,7 @@ import { VaultFees, IERC4626, IERC20 } from "../interfaces/vault/IVault.sol";
 
 struct AdapterConfig {
   IERC4626 adapter;
-  uint256 allocation;
+  uint64 allocation;
 }
 
 /**
@@ -165,7 +165,7 @@ contract MultiStrategyVault is ERC4626Upgradeable, ReentrancyGuardUpgradeable, P
 
     for (uint8 i; i < adapterCount; i++) {
       adapters[i].adapter.deposit(
-        assets.mulDiv(adapters[i].allocation, 1e18, Math.Rounding.Down),
+        assets.mulDiv(uint256(adapters[i].allocation), 1e18, Math.Rounding.Down),
         address(this)
       );
     }
@@ -203,7 +203,7 @@ contract MultiStrategyVault is ERC4626Upgradeable, ReentrancyGuardUpgradeable, P
 
     for (uint8 i; i < adapterCount; i++) {
       adapters[i].adapter.deposit(
-        assets.mulDiv(adapters[i].allocation, 1e18, Math.Rounding.Down),
+        assets.mulDiv(uint256(adapters[i].allocation), 1e18, Math.Rounding.Down),
         address(this)
       );
     }
@@ -247,7 +247,7 @@ contract MultiStrategyVault is ERC4626Upgradeable, ReentrancyGuardUpgradeable, P
 
     for (uint8 i; i < adapterCount; i++) {
       adapters[i].adapter.withdraw(
-        assets.mulDiv(adapters[i].allocation, 1e18, Math.Rounding.Down),
+        assets.mulDiv(uint256(adapters[i].allocation), 1e18, Math.Rounding.Down),
         receiver,
         address(this)
       );
@@ -288,7 +288,7 @@ contract MultiStrategyVault is ERC4626Upgradeable, ReentrancyGuardUpgradeable, P
 
     for (uint8 i; i < adapterCount; i++) {
       adapters[i].adapter.withdraw(
-        assets.mulDiv(adapters[i].allocation, 1e18, Math.Rounding.Down),
+        assets.mulDiv(uint256(adapters[i].allocation), 1e18, Math.Rounding.Down),
         receiver,
         address(this)
       );
@@ -319,7 +319,7 @@ contract MultiStrategyVault is ERC4626Upgradeable, ReentrancyGuardUpgradeable, P
 
     for (uint8 i; i < adapterCount; i++) {
       shares += adapters[i].adapter.previewDeposit(
-        assets.mulDiv(adapters[i].allocation, 1e18, Math.Rounding.Down)
+        assets.mulDiv(uint256(adapters[i].allocation), 1e18, Math.Rounding.Down)
       );
     }
   }
@@ -336,7 +336,7 @@ contract MultiStrategyVault is ERC4626Upgradeable, ReentrancyGuardUpgradeable, P
 
     for (uint8 i; i < adapterCount; i++) {
       assets += adapters[i].adapter.previewMint(
-        shares.mulDiv(adapters[i].allocation, 1e18, Math.Rounding.Down)
+        shares.mulDiv(uint256(adapters[i].allocation), 1e18, Math.Rounding.Down)
       );
     }
   }
@@ -353,7 +353,7 @@ contract MultiStrategyVault is ERC4626Upgradeable, ReentrancyGuardUpgradeable, P
 
     for (uint8 i; i < adapterCount; i++) {
       shares += adapters[i].adapter.previewWithdraw(
-        assets.mulDiv(adapters[i].allocation, 1e18, Math.Rounding.Down)
+        assets.mulDiv(uint256(adapters[i].allocation), 1e18, Math.Rounding.Down)
       );
     }
   }
@@ -367,7 +367,7 @@ contract MultiStrategyVault is ERC4626Upgradeable, ReentrancyGuardUpgradeable, P
   function previewRedeem(uint256 shares) public view override returns (uint256 assets) {
     for (uint8 i; i < adapterCount; i++) {
       assets += adapters[i].adapter.previewRedeem(
-        shares.mulDiv(adapters[i].allocation, 1e18, Math.Rounding.Down)
+        shares.mulDiv(uint256(adapters[i].allocation), 1e18, Math.Rounding.Down)
       );
     }
     assets -= assets.mulDiv(uint256(fees.withdrawal), 1e18, Math.Rounding.Down);
@@ -615,7 +615,7 @@ contract MultiStrategyVault is ERC4626Upgradeable, ReentrancyGuardUpgradeable, P
     for (uint8 i; i < adapterCount_; i++) {
       if (newAdapters[i].adapter.asset() != asset()) revert AssetInvalid();
 
-      uint256 allocation = newAdapters[i].allocation;
+      uint256 allocation = uint256(newAdapters[i].allocation);
       if (allocation == 0) revert InvalidConfig();
 
       totalAllocation += allocation;
@@ -655,7 +655,7 @@ contract MultiStrategyVault is ERC4626Upgradeable, ReentrancyGuardUpgradeable, P
       IERC20(asset()).approve(address(adapters[i].adapter), type(uint256).max);
 
       adapters[i].adapter.deposit(
-        totalAssets_.mulDiv(adapters[i].allocation, 1e18, Math.Rounding.Down),
+        totalAssets_.mulDiv(uint256(adapters[i].allocation), 1e18, Math.Rounding.Down),
         address(this)
       );
     }

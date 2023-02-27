@@ -130,8 +130,16 @@ contract MultiStrategyVaultTest is Test {
     assertEq(newVault.symbol(), "pop-TKN");
     assertEq(newVault.decimals(), 27);
 
+    (IERC4626 adapter0_, uint64 allocation0_) = newVault.adapters(0);
+    (IERC4626 adapter1_, uint64 allocation1_) = newVault.adapters(1);
+    assertEq(address(adapter0_), address(adapter1));
+    assertEq(allocation0_, 0.5e18);
+    assertEq(address(adapter1_), address(adapter1));
+    assertEq(allocation1_, 0.5e18);
+    assertEq(asset.allowance(address(newVault), address(adapter0_)), type(uint256).max);
+    assertEq(asset.allowance(address(newVault), address(adapter1_)), type(uint256).max);
+
     assertEq(address(newVault.asset()), address(asset));
-    assertEq(address(newVault.adapter()), address(adapter));
     assertEq(newVault.owner(), bob);
 
     (uint256 deposit, uint256 withdrawal, uint256 management, uint256 performance) = newVault.fees();
@@ -144,7 +152,6 @@ contract MultiStrategyVaultTest is Test {
     assertEq(newVault.feesUpdatedAt(), callTime);
 
     assertEq(newVault.quitPeriod(), 3 days);
-    assertEq(asset.allowance(address(newVault), address(adapter)), type(uint256).max);
   }
 
   function testFail__initialize_asset_is_zero() public {
@@ -232,6 +239,21 @@ contract MultiStrategyVaultTest is Test {
     );
   }
 
+  function testFail__initialize_adapterCount_too_high() public {
+    address vaultAddress = address(new MultiStrategyVault());
+
+    vault = MultiStrategyVault(vaultAddress);
+    vault.initialize(
+      IERC20(address(asset)),
+      adapters,
+      11,
+      VaultFees({ deposit: 0, withdrawal: 0, management: 0, performance: 0 }),
+      feeRecipient,
+      type(uint256).max,
+      address(this)
+    );
+  }
+
   function testFail__initialize_adapterCount_too_low() public {
     address vaultAddress = address(new MultiStrategyVault());
 
@@ -240,36 +262,6 @@ contract MultiStrategyVaultTest is Test {
       IERC20(address(asset)),
       adapters,
       0,
-      VaultFees({ deposit: 0, withdrawal: 0, management: 0, performance: 0 }),
-      feeRecipient,
-      type(uint256).max,
-      address(this)
-    );
-  }
-
-  function testFail__initialize_adapterCount_too_high() public {
-    address vaultAddress = address(new MultiStrategyVault());
-
-    vault = MultiStrategyVault(vaultAddress);
-    vault.initialize(
-      IERC20(address(asset)),
-      adapters,
-      11,
-      VaultFees({ deposit: 0, withdrawal: 0, management: 0, performance: 0 }),
-      feeRecipient,
-      type(uint256).max,
-      address(this)
-    );
-  }
-
-  function testFail__initialize_adapterCount_too_high() public {
-    address vaultAddress = address(new MultiStrategyVault());
-
-    vault = MultiStrategyVault(vaultAddress);
-    vault.initialize(
-      IERC20(address(asset)),
-      adapters,
-      11,
       VaultFees({ deposit: 0, withdrawal: 0, management: 0, performance: 0 }),
       feeRecipient,
       type(uint256).max,
@@ -312,7 +304,8 @@ contract MultiStrategyVaultTest is Test {
     vm.prank(alice);
     uint256 aliceShareAmount = vault.deposit(aliceassetAmount, alice);
 
-    assertEq(adapter.afterDepositHookCalledCounter(), 1);
+    assertEq(adapter1.afterDepositHookCalledCounter(), 1);
+    assertEq(adapter2.afterDepositHookCalledCounter(), 1);
 
     // Expect exchange rate to be 1:1e9 on initial deposit.
     assertEq(aliceassetAmount * 1e9, aliceShareAmount);
@@ -327,7 +320,8 @@ contract MultiStrategyVaultTest is Test {
     vm.prank(alice);
     vault.withdraw(aliceassetAmount, alice, alice);
 
-    assertEq(adapter.beforeWithdrawHookCalledCounter(), 1);
+    assertEq(adapter1.beforeWithdrawHookCalledCounter(), 1);
+    assertEq(adapter2.beforeWithdrawHookCalledCounter(), 1);
 
     assertEq(vault.totalAssets(), 0);
     assertEq(vault.balanceOf(alice), 0);
@@ -387,7 +381,8 @@ contract MultiStrategyVaultTest is Test {
     vm.prank(alice);
     uint256 aliceAssetAmount = vault.mint(aliceShareAmount, alice);
 
-    assertEq(adapter.afterDepositHookCalledCounter(), 1);
+    assertEq(adapter1.afterDepositHookCalledCounter(), 1);
+    assertEq(adapter2.afterDepositHookCalledCounter(), 1);
 
     // Expect exchange rate to be 1e9:1 on initial mint.
     // We allow 1e9 delta since virtual shares lead to amounts between 1e9 to demand/mint more shares
@@ -404,7 +399,8 @@ contract MultiStrategyVaultTest is Test {
     vm.prank(alice);
     vault.redeem(aliceShareAmount, alice, alice);
 
-    assertEq(adapter.beforeWithdrawHookCalledCounter(), 1);
+    assertEq(adapter1.beforeWithdrawHookCalledCounter(), 1);
+    assertEq(adapter2.beforeWithdrawHookCalledCounter(), 1);
 
     assertEq(vault.totalAssets(), 0);
     assertEq(vault.balanceOf(alice), 0);
@@ -615,7 +611,7 @@ contract MultiStrategyVaultTest is Test {
     vm.stopPrank();
 
     // Increase asset assets to trigger performanceFee
-    asset.mint(address(adapter), amount);
+    asset.mint(address(adapter1), amount);
 
     uint256 expectedFeeInAsset = vault.accruedPerformanceFee();
 
@@ -659,7 +655,7 @@ contract MultiStrategyVaultTest is Test {
     vault.deposit(depositAmount, alice);
     vm.stopPrank();
 
-    asset.mint(address(adapter), 1e6);
+    asset.mint(address(adapters[0].adapter), 1e6);
 
     // Take 10% of 1e6
     assertEq(vault.accruedPerformanceFee(), 1e5 - 1);
@@ -926,7 +922,7 @@ contract MultiStrategyVaultTest is Test {
     // Pass the inital quit period
     vm.warp(block.timestamp + 3 days);
 
-    vault.proposeAdapter(IERC4626(address(newAdapter)));
+    vault.proposeAdapters(adapters, 2);
 
     vault.setQuitPeriod(1 days);
   }
