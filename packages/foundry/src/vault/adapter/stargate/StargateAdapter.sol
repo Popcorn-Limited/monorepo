@@ -33,11 +33,11 @@ contract StargateAdapter is AdapterBase, WithRewards {
   /// @notice The Stargate router contract
   IStargateRouter public stargateRouter;
 
-  /// @notice Check to see if Stargate incentives are active
-  bool public isActiveIncentives;
-
   /// @notice The Stargate LpStaking contract
   IStargateStaking public stargateStaking;
+
+  /// @notice Check to see if Stargate incentives are active
+  bool public isActiveIncentives;
 
   /*//////////////////////////////////////////////////////////////
                             CONSTRUCTOR

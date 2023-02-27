@@ -8,6 +8,8 @@ interface ISToken {
   function router() external view returns (address);
 
   function balanceOf(address user) external view returns (uint256);
+
+  function token() external view returns (address);
 }
 
 interface IStargateStaking {
