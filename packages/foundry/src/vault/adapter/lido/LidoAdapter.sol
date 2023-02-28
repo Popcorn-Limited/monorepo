@@ -5,14 +5,11 @@ pragma solidity ^0.8.15;
 
 import { AdapterBase, IERC20, IERC20Metadata, SafeERC20, ERC20, Math, IStrategy, IAdapter } from "../abstracts/AdapterBase.sol";
 
-// import { ERC4626 } from "solmate/mixins/ERC4626.sol";
-// import { FixedPointMathLib } from "solmate/utils/FixedPointMathLib.sol";
 import { MathUpgradeable as Math } from "openzeppelin-contracts-upgradeable/utils/math/MathUpgradeable.sol";
 import { IWETH } from "../../../interfaces/external/IWETH.sol";
 import { ILido, VaultAPI } from "./ILido.sol";
 import { ICurveFi } from "./ICurveFi.sol";
 import { SafeMath } from "openzeppelin-contracts/utils/math/SafeMath.sol";
-import "hardhat/console.sol";
 
 /// @title LidoAdapter
 /// @author zefram.eth
@@ -33,7 +30,7 @@ contract LidoAdapter is AdapterBase {
   int128 private constant STETHID = 1;
   ICurveFi public constant StableSwapSTETH = ICurveFi(0xDC24316b9AE028F1497c275EB9192a3Ea0f67022);
   uint256 public constant DENOMINATOR = 10000;
-  uint256 public slippageProtectionOut = 100; // = 100; //out of 10000. 100 = 1%
+  uint256 public slippage; // = 100; //out of 10000. 100 = 1%
 
   /// @notice The poolId inside Convex booster for relevant Curve lpToken.
   uint256 public pid;
@@ -41,7 +38,6 @@ contract LidoAdapter is AdapterBase {
   /// @notice The booster address for Convex
   ILido public lido;
 
-  /// @dev contract for WETH
   // address public immutable weth;
   IWETH public weth;
 
@@ -73,6 +69,7 @@ contract LidoAdapter is AdapterBase {
     lido = ILido(ILido(_lidoAddress).token());
     pid = _pid;
     weth = IWETH(ILido(_lidoAddress).weth());
+    slippage = 100;
 
     _name = string.concat("Popcorn Lido ", IERC20Metadata(address(weth)).name(), " Adapter");
     _symbol = string.concat("popL-", IERC20Metadata(address(weth)).symbol());
@@ -98,7 +95,7 @@ contract LidoAdapter is AdapterBase {
                             ACCOUNTING LOGIC
     //////////////////////////////////////////////////////////////*/
 
-  function _underlyingBalance() internal view override returns (uint256) {
+  function _underlyingBalance() internal view returns (uint256) {
     return lido.sharesOf(address(this));
   }
 
@@ -118,9 +115,8 @@ contract LidoAdapter is AdapterBase {
 
   /// @notice Withdraw from LIDO pool
   function _protocolWithdraw(uint256 assets, uint256 shares) internal virtual override {
-    uint256 slippageAllowance = assets.mul(DENOMINATOR.sub(slippageProtectionOut)).div(DENOMINATOR);
+    uint256 slippageAllowance = assets.mulDiv(DENOMINATOR.sub(slippage), DENOMINATOR, Math.Rounding.Down);
     uint256 amountRecieved = StableSwapSTETH.exchange(STETHID, WETHID, assets, slippageAllowance);
-
     weth.deposit{ value: amountRecieved }(); // get wrapped eth back
   }
 
@@ -128,8 +124,8 @@ contract LidoAdapter is AdapterBase {
    * @notice Simulate the effects of a withdraw at the current block, given current on-chain conditions.
    * @dev Override this function if the underlying protocol has a unique withdrawal logic and/or withdraw fees.
    */
-  function _previewWithdraw(uint256 assets) internal view virtual override returns (uint256) {
-    uint256 slippageAllowance = assets.mul(DENOMINATOR.add(slippageProtectionOut)).div(DENOMINATOR);
+  function previewWithdraw(uint256 assets) public view virtual override returns (uint256) {
+    uint256 slippageAllowance = assets.mul(DENOMINATOR.add(slippage)).div(DENOMINATOR);
     // return StableSwapSTETH.get_dy(WETHID, STETHID, assets);
     return _convertToShares(slippageAllowance, Math.Rounding.Down);
   }
@@ -138,8 +134,8 @@ contract LidoAdapter is AdapterBase {
    * @notice Simulate the effects of a redeem at the current block, given current on-chain conditions.
    * @dev Override this function if the underlying protocol has a unique redeem logic and/or redeem fees.
    */
-  function _previewRedeem(uint256 shares) internal view virtual override returns (uint256) {
-    uint256 slippageAllowance = shares.mul(DENOMINATOR.sub(slippageProtectionOut)).div(DENOMINATOR);
+  function previewRedeem(uint256 shares) public view virtual override returns (uint256) {
+    uint256 slippageAllowance = shares.mul(DENOMINATOR.sub(slippage)).div(DENOMINATOR);
     // return StableSwapSTETH.get_dy(STETHID, WETHID, shares);
     return _convertToAssets(slippageAllowance, Math.Rounding.Down);
   }
@@ -178,11 +174,6 @@ contract LidoAdapter is AdapterBase {
     emit Withdraw(caller, receiver, owner, assets, shares);
   }
 
-  // function maxWithdraw(address owner) public view virtual override returns (uint256) {
-  //   return _convertToAssets(balanceOf(owner), MathUpgradeable.Rounding.Down);
-  //   return StableSwapSTETH.get_dy(WETHID, STETHID, assets);
-  // }
-
   function _convertToShares(uint256 assets, Math.Rounding rounding) internal view virtual override returns (uint256) {
     return assets.mulDiv(totalSupply() + 10**decimalOffset, totalAssets() + 1, rounding);
   }
@@ -191,7 +182,3 @@ contract LidoAdapter is AdapterBase {
     return shares.mulDiv(totalAssets() + 1, totalSupply() + 10**decimalOffset, rounding);
   }
 }
-
-// Questions
-
-// 1. the totalAssets function calls IERC20(asset()).balanceOf() to get the totalAssets when the vault is paused. However, the asset in this case is WEth which is always converted to Eth before being deposited/withdrawn from the underlying Lido pool.
