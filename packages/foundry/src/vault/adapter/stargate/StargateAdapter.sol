@@ -54,8 +54,8 @@ contract StargateAdapter is AdapterBase, WithRewards {
 
   function initialize(
     bytes memory adapterInitData,
-    bytes memory stargateInitData,
-    bytes memory
+    address,
+    bytes memory stargateInitData
   ) public initializer {
     __AdapterBase_init(adapterInitData);
 
@@ -70,10 +70,10 @@ contract StargateAdapter is AdapterBase, WithRewards {
     (address _sToken, , , ) = stargateStaking.poolInfo(pid);
     sToken = ISToken(_sToken);
 
-    IERC20(asset()).approve(address(sToken), type(uint256).max);
-    sToken.approve(address(stargateStaking), type(uint256).max);
-
     stargateRouter = IStargateRouter(sToken.router());
+
+    IERC20(asset()).approve(address(stargateRouter), type(uint256).max);
+    sToken.approve(address(stargateStaking), type(uint256).max);
 
     if (address(stargateStaking) != address(0)) {
       isActiveIncentives = stargateStaking.pendingStargate(pid, address(this)) > 0 ? true : false;
@@ -110,16 +110,22 @@ contract StargateAdapter is AdapterBase, WithRewards {
 
   /// @notice Deposit into stargate lending pool
   function _protocolDeposit(uint256 assets, uint256) internal virtual override {
-    stargateRouter.addLiquidity(pid, assets, address(this));
-    stargateStaking.deposit(pid, sToken.balanceOf(address(this)));
+    // liquidity pid = staking pid + 1
+    stargateRouter.addLiquidity(pid + 1, assets, address(this));
+
+    uint256 sTokenDeposit = sToken.balanceOf(address(this));
+    stargateStaking.deposit(pid, sTokenDeposit);
   }
 
   /// @notice Withdraw from lending pool
   function _protocolWithdraw(uint256 assets, uint256) internal virtual override {
     stargateStaking.withdraw(pid, assets);
 
-    uint16 srcPoolId = uint16(pid);
-    stargateRouter.instantRedeemLocal(srcPoolId, assets, address(this));
+    // liquidity pid = staking pid + 1
+    uint16 srcPoolId = uint16(pid + 1);
+    uint256 sTokenDeposit = sToken.balanceOf(address(this));
+
+    stargateRouter.instantRedeemLocal(srcPoolId, sTokenDeposit, address(this));
   }
 
   /*//////////////////////////////////////////////////////////////

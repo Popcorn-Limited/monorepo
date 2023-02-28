@@ -32,14 +32,16 @@ contract StargateAdapterTest is AbstractAdapterTest {
 
   function _setUpTest(bytes memory testConfig) internal {
     createAdapter();
-
     (address _stargateStaking, uint256 _pid) = abi.decode(testConfig, (address, uint256));
 
     stargateStaking = IStargateStaking(_stargateStaking);
     pid = _pid;
 
     (address _sToken, , , ) = stargateStaking.poolInfo(pid);
+
     sToken = ISToken(_sToken);
+    asset = IERC20(sToken.token());
+    emit log_named_address("DING1", address(asset));
 
     stargateRouter = IStargateRouter(sToken.router());
 
@@ -52,6 +54,8 @@ contract StargateAdapterTest is AbstractAdapterTest {
     vm.label(address(this), "test");
 
     adapter.initialize(abi.encode(asset, address(this), strategy, 0, sigs, ""), externalRegistry, testConfig);
+
+    defaultAmount = 10**IERC20Metadata(address(asset)).decimals();
   }
 
   /*//////////////////////////////////////////////////////////////
@@ -99,6 +103,7 @@ contract StargateAdapterTest is AbstractAdapterTest {
       "symbol"
     );
 
-    assertEq(asset.allowance(address(adapter), address(sToken)), type(uint256).max, "allowance");
+    assertEq(asset.allowance(address(adapter), address(stargateRouter)), type(uint256).max, "allowance");
+    assertEq(sToken.allowance(address(adapter), address(stargateStaking)), type(uint256).max, "allowance");
   }
 }

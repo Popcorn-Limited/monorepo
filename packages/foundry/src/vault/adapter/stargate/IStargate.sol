@@ -10,6 +10,10 @@ interface ISToken {
   function balanceOf(address user) external view returns (uint256);
 
   function token() external view returns (address);
+
+  function allowance(address spender, address user) external view returns (uint256);
+
+  function convertRate() external view returns (uint256);
 }
 
 interface IStargateStaking {
