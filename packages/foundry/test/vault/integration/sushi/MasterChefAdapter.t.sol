@@ -94,30 +94,4 @@ contract MasterChefAdapterTest is AbstractAdapterTest {
 
     assertEq(asset.allowance(address(adapter), address(masterChef)), type(uint256).max, "allowance");
   }
-
-  /*//////////////////////////////////////////////////////////////
-                          ROUNDTRIP TESTS
-    //////////////////////////////////////////////////////////////*/
-
-  function test__RT_deposit_withdraw() public override {
-    _mintFor(defaultAmount, bob);
-
-    vm.startPrank(bob);
-    uint256 shares1 = adapter.deposit(defaultAmount, bob);
-    uint256 shares2 = adapter.withdraw(defaultAmount - 1, bob, bob);
-    vm.stopPrank();
-
-    assertApproxGeAbs(shares2, shares1, _delta_, testId);
-  }
-
-  function test__RT_mint_withdraw() public override {
-    _mintFor(adapter.previewMint(defaultAmount), bob);
-
-    vm.startPrank(bob);
-    uint256 assets = adapter.mint(defaultAmount, bob);
-    uint256 shares = adapter.withdraw(assets - 1, bob, bob);
-    vm.stopPrank();
-
-    assertApproxGeAbs(shares, defaultAmount, _delta_, testId);
-  }
 }

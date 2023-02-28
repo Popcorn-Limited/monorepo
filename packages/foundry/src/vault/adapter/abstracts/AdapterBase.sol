@@ -215,7 +215,7 @@ abstract contract AdapterBase is
    * @notice Total amount of underlying `asset` token managed by adapter.
    * @dev Return assets held by adapter if paused.
    */
-  function totalAssets() public view virtual override returns (uint256) {
+  function totalAssets() public view override returns (uint256) {
     return paused() ? IERC20(asset()).balanceOf(address(this)) : _totalAssets();
   }
 

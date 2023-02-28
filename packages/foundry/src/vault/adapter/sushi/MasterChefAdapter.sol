@@ -67,17 +67,9 @@ contract MasterChefAdapter is AdapterBase, WithRewards {
   /// @notice Calculates the total amount of underlying tokens the Vault holds.
   /// @return The total amount of underlying tokens the Vault holds.
 
-  function totalAssets() public view virtual override returns (uint256) {
+  function _totalAssets() internal view override returns (uint256) {
     IMasterChef.UserInfo memory info = masterChef.userInfo(pid, address(this));
     return info.amount;
-  }
-
-  function previewWithdraw(uint256 assets) public view virtual override returns (uint256) {
-    return _convertToShares(assets, Math.Rounding.Up);
-  }
-
-  function previewRedeem(uint256 shares) public view override returns (uint256) {
-    return _convertToAssets(shares, Math.Rounding.Up);
   }
 
   /*//////////////////////////////////////////////////////////////
