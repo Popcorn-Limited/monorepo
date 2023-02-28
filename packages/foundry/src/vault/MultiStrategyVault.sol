@@ -76,7 +76,7 @@ contract MultiStrategyVault is ERC4626Upgradeable, ReentrancyGuardUpgradeable, P
     if (address(asset_) == address(0)) revert InvalidAsset();
     _verifyAdapterConfig(adapters_, adapterCount_);
 
-    uint8 adapterCount = adapterCount_;
+    adapterCount = adapterCount_;
     for (uint8 i; i < adapterCount_; i++) {
       adapters[i] = adapters_[i];
 
@@ -134,6 +134,17 @@ contract MultiStrategyVault is ERC4626Upgradeable, ReentrancyGuardUpgradeable, P
   }
 
   /**
+   * @notice Simulate the effects of a deposit at the current block, given current on-chain conditions.
+   * @param assets Exact amount of underlying `asset` token to deposit
+   * @return shares of the vault issued in exchange to the user for `assets`
+   * @dev This method accounts for issuance of accrued fee shares.
+   */
+  function previewDeposit(uint256 assets) public view override returns (uint256 shares) {
+    assets -= assets.mulDiv(uint256(fees.deposit), 1e18, Math.Rounding.Down);
+    shares = _convertToShares(assets, Math.Rounding.Down);
+  }
+
+  /**
    * @notice Deposit exactly `assets` amount of tokens, issuing vault shares to `receiver`.
    * @param assets Quantity of tokens to deposit.
    * @param receiver Receiver of issued vault shares.
@@ -157,10 +168,6 @@ contract MultiStrategyVault is ERC4626Upgradeable, ReentrancyGuardUpgradeable, P
     shares = _convertToShares(assets, Math.Rounding.Down) - feeShares;
     if (shares == 0) revert ZeroAmount();
 
-    if (feeShares > 0) _mint(feeRecipient, feeShares);
-
-    _mint(receiver, shares);
-
     IERC20(asset()).safeTransferFrom(msg.sender, address(this), assets);
 
     for (uint8 i; i < adapterCount; i++) {
@@ -170,8 +177,16 @@ contract MultiStrategyVault is ERC4626Upgradeable, ReentrancyGuardUpgradeable, P
       );
     }
 
+    if (feeShares > 0) _mint(feeRecipient, feeShares);
+
+    _mint(receiver, shares);
+
     emit Deposit(msg.sender, receiver, assets, shares);
   }
+
+  event log_uint(uint256);
+  event log_address(address);
+  event log(string);
 
   function mint(uint256 shares) external returns (uint256) {
     return mint(shares, msg.sender);
@@ -216,6 +231,19 @@ contract MultiStrategyVault is ERC4626Upgradeable, ReentrancyGuardUpgradeable, P
   }
 
   /**
+   * @notice Simulate the effects of a withdrawal at the current block, given current on-chain conditions.
+   * @param assets Exact amount of `assets` to withdraw
+   * @return shares to be burned in exchange for `assets`
+   * @dev This method accounts for both issuance of fee shares and withdrawal fee.
+   */
+  function previewWithdraw(uint256 assets) public view override returns (uint256 shares) {
+    uint256 withdrawalFee = uint256(fees.withdrawal);
+    assets += assets.mulDiv(withdrawalFee, 1e18 - withdrawalFee, Math.Rounding.Up);
+
+    shares = _convertToShares(assets, Math.Rounding.Up);
+  }
+
+  /**
    * @notice Burn shares from `owner` in exchange for `assets` amount of underlying token.
    * @param assets Quantity of underlying `asset` token to withdraw.
    * @param receiver Receiver of underlying token.
@@ -232,26 +260,35 @@ contract MultiStrategyVault is ERC4626Upgradeable, ReentrancyGuardUpgradeable, P
 
     shares = _convertToShares(assets, Math.Rounding.Up);
     if (shares == 0) revert ZeroAmount();
+    emit log("got here1");
 
     uint256 withdrawalFee = uint256(fees.withdrawal);
 
     uint256 feeShares = shares.mulDiv(withdrawalFee, 1e18 - withdrawalFee, Math.Rounding.Down);
 
     shares += feeShares;
-
+    emit log("got here2");
+    emit log_address(msg.sender);
+    emit log_address(owner);
     if (msg.sender != owner) _approve(owner, msg.sender, allowance(owner, msg.sender) - shares);
+    emit log("got here3");
 
     _burn(owner, shares);
+    emit log("got here4");
 
     if (feeShares > 0) _mint(feeRecipient, feeShares);
 
     for (uint8 i; i < adapterCount; i++) {
       adapters[i].adapter.withdraw(
         assets.mulDiv(uint256(adapters[i].allocation), 1e18, Math.Rounding.Down),
-        receiver,
+        address(this),
         address(this)
       );
     }
+    emit log("got here5");
+
+    IERC20(asset()).safeTransfer(receiver, assets);
+    emit log("got here6");
 
     emit Withdraw(msg.sender, receiver, owner, assets, shares);
   }
@@ -274,13 +311,14 @@ contract MultiStrategyVault is ERC4626Upgradeable, ReentrancyGuardUpgradeable, P
   ) public override nonReentrant returns (uint256 assets) {
     if (receiver == address(0)) revert InvalidReceiver();
     if (shares == 0) revert ZeroAmount();
-    if (shares > maxRedeem(owner)) revert MaxError(shares);
 
     if (msg.sender != owner) _approve(owner, msg.sender, allowance(owner, msg.sender) - shares);
 
     uint256 feeShares = shares.mulDiv(uint256(fees.withdrawal), 1e18, Math.Rounding.Down);
 
     assets = _convertToAssets(shares - feeShares, Math.Rounding.Up);
+
+    if (assets > maxRedeem(owner)) revert MaxError(assets);
 
     _burn(owner, shares);
 
@@ -303,24 +341,10 @@ contract MultiStrategyVault is ERC4626Upgradeable, ReentrancyGuardUpgradeable, P
 
   /// @return assets Total amount of underlying `asset` token managed by vault. Delegates to adapter.
   function totalAssets() public view override returns (uint256 assets) {
+    assets = IERC20(asset()).balanceOf(address(this));
+
     for (uint8 i; i < adapterCount; i++) {
       assets += adapters[i].adapter.convertToAssets(adapters[i].adapter.balanceOf(address(this)));
-    }
-  }
-
-  /**
-   * @notice Simulate the effects of a deposit at the current block, given current on-chain conditions.
-   * @param assets Exact amount of underlying `asset` token to deposit
-   * @return shares of the vault issued in exchange to the user for `assets`
-   * @dev This method accounts for issuance of accrued fee shares.
-   */
-  function previewDeposit(uint256 assets) public view override returns (uint256 shares) {
-    assets -= assets.mulDiv(uint256(fees.deposit), 1e18, Math.Rounding.Down);
-
-    for (uint8 i; i < adapterCount; i++) {
-      shares += adapters[i].adapter.previewDeposit(
-        assets.mulDiv(uint256(adapters[i].allocation), 1e18, Math.Rounding.Down)
-      );
     }
   }
 
@@ -337,23 +361,6 @@ contract MultiStrategyVault is ERC4626Upgradeable, ReentrancyGuardUpgradeable, P
     for (uint8 i; i < adapterCount; i++) {
       assets += adapters[i].adapter.previewMint(
         shares.mulDiv(uint256(adapters[i].allocation), 1e18, Math.Rounding.Down)
-      );
-    }
-  }
-
-  /**
-   * @notice Simulate the effects of a withdrawal at the current block, given current on-chain conditions.
-   * @param assets Exact amount of `assets` to withdraw
-   * @return shares to be burned in exchange for `assets`
-   * @dev This method accounts for both issuance of fee shares and withdrawal fee.
-   */
-  function previewWithdraw(uint256 assets) public view override returns (uint256 shares) {
-    uint256 withdrawalFee = uint256(fees.withdrawal);
-    assets += assets.mulDiv(withdrawalFee, 1e18 - withdrawalFee, Math.Rounding.Up);
-
-    for (uint8 i; i < adapterCount; i++) {
-      shares += adapters[i].adapter.previewWithdraw(
-        assets.mulDiv(uint256(adapters[i].allocation), 1e18, Math.Rounding.Down)
       );
     }
   }
@@ -392,17 +399,27 @@ contract MultiStrategyVault is ERC4626Upgradeable, ReentrancyGuardUpgradeable, P
     //////////////////////////////////////////////////////////////*/
 
   /// @return Maximum amount of underlying `asset` token that may be deposited for a given address. Delegates to adapters.
-  function maxDeposit(address) public view override returns (uint256) {
-    uint256 assets = totalAssets();
-    uint256 depositLimit_ = depositLimit;
-    if (paused() || assets >= depositLimit_) return 0;
+  // function maxDeposit(address) public view override returns (uint256) {
+  //   uint256 assets = totalAssets();
+  //   uint256 depositLimit_ = depositLimit;
+  //   if (paused() || assets >= depositLimit_) return 0;
 
-    uint256 maxDeposit_ = depositLimit_;
-    for (uint8 i; i < adapterCount; i++) {
-      maxDeposit_ = Math.min(maxDeposit_, adapters[i].adapter.maxDeposit(address(this)));
-    }
-    return maxDeposit_;
-  }
+  //   uint256 maxDeposit_ = depositLimit_;
+  //   for (uint8 i; i < adapterCount; i++) {
+  //     uint256 adapterMax = adapters[i].adapter.maxDeposit(address(this));
+  //     uint256 scalar = 1e18 / uint256(adapters[i].allocation);
+
+  //     if (adapterMax > type(uint256).max / scalar) {
+  //       adapterMax = type(uint256).max;
+  //     } else {
+  //       adapterMax *= scalar;
+  //     }
+
+  //     maxDeposit_ = Math.min(maxDeposit_, adapterMax);
+  //   }
+
+  //   return maxDeposit_;
+  // }
 
   /// @return Maximum amount of vault shares that may be minted to given address. Delegates to adapters.
   function maxMint(address) public view override returns (uint256) {
@@ -412,26 +429,58 @@ contract MultiStrategyVault is ERC4626Upgradeable, ReentrancyGuardUpgradeable, P
 
     uint256 maxMint_ = depositLimit_;
     for (uint8 i; i < adapterCount; i++) {
-      maxMint_ = Math.min(maxMint_, adapters[i].adapter.maxMint(address(this)));
+      uint256 adapterMax = adapters[i].adapter.maxMint(address(this));
+      uint256 scalar = 1e18 / uint256(adapters[i].allocation);
+
+      if (adapterMax > type(uint256).max / scalar) {
+        adapterMax = type(uint256).max;
+      } else {
+        adapterMax *= scalar;
+      }
+
+      maxMint_ = Math.min(maxMint_, adapterMax);
     }
+
     return maxMint_;
   }
 
   /// @return Maximum amount of underlying `asset` token that can be withdrawn by `caller` address. Delegates to adapters.
-  function maxWithdraw(address) public view override returns (uint256) {
-    uint256 maxWithdraw_ = adapters[0].adapter.maxWithdraw(address(this));
-    for (uint8 i = 1; i < adapterCount; i++) {
-      maxWithdraw_ = Math.min(maxWithdraw_, adapters[i].adapter.maxWithdraw(address(this)));
-    }
-    return maxWithdraw_;
-  }
+  // function maxWithdraw(address) public view override returns (uint256) {
+  //   uint256 maxWithdraw_ = type(uint256).max;
+
+  //   for (uint8 i; i < adapterCount; i++) {
+  //     uint256 adapterMax = adapters[i].adapter.maxWithdraw(address(this));
+  //     uint256 scalar = 1e18 / uint256(adapters[i].allocation);
+
+  //     if (adapterMax > type(uint256).max / scalar) {
+  //       adapterMax = type(uint256).max;
+  //     } else {
+  //       adapterMax = adapterMax.mulDiv(1e18, uint256(adapters[i].allocation), Math.Rounding.Down);
+  //     }
+
+  //     maxWithdraw_ = Math.min(maxWithdraw_, adapterMax);
+  //   }
+
+  //   return maxWithdraw_;
+  // }
 
   /// @return Maximum amount of shares that may be redeemed by `caller` address. Delegates to adapters.
   function maxRedeem(address) public view override returns (uint256) {
-    uint256 maxRedeem_ = adapters[0].adapter.maxRedeem(address(this));
-    for (uint8 i = 1; i < adapterCount; i++) {
-      maxRedeem_ = Math.min(maxRedeem_, adapters[i].adapter.maxRedeem(address(this)));
+    uint256 maxRedeem_ = type(uint256).max;
+
+    for (uint8 i; i < adapterCount; i++) {
+      uint256 adapterMax = adapters[i].adapter.maxRedeem(address(this));
+      uint256 scalar = 1e18 / uint256(adapters[i].allocation);
+
+      if (adapterMax > type(uint256).max / scalar) {
+        adapterMax = type(uint256).max;
+      } else {
+        adapterMax *= scalar;
+      }
+
+      maxRedeem_ = Math.min(maxRedeem_, adapterMax);
     }
+
     return maxRedeem_;
   }
 
@@ -629,16 +678,12 @@ contract MultiStrategyVault is ERC4626Upgradeable, ReentrancyGuardUpgradeable, P
    * @dev Additionally it will zero old allowances and set new ones
    * @dev Last we update HWM and assetsCheckpoint for fees to make sure they adjust to the new adapter
    */
-  function changeAdapter() external takeFees {
+  function changeAdapters() external takeFees {
     if (proposedAdapterTime == 0 || block.timestamp < proposedAdapterTime + quitPeriod)
       revert NotPassedQuitPeriod(quitPeriod);
 
     for (uint8 i; i < adapterCount; i++) {
-      adapters[i].adapter.redeem(
-        adapters[i].adapter.balanceOf(address(this)),
-        address(this),
-        address(this)
-      );
+      adapters[i].adapter.redeem(adapters[i].adapter.balanceOf(address(this)), address(this), address(this));
 
       // TODO use save approve
       IERC20(asset()).approve(address(adapters[i].adapter), 0);
