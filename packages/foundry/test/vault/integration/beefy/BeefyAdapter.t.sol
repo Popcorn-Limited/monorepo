@@ -48,7 +48,14 @@ contract BeefyAdapterTest is AbstractAdapterTest {
       setPermission(_beefyBooster, true, false);
     }
 
-    setUpBaseTest(IERC20(IBeefyVault(beefyVault).want()), address(new BeefyAdapter()), address(permissionRegistry), 10, "Beefy ", true);
+    setUpBaseTest(
+      IERC20(IBeefyVault(beefyVault).want()),
+      address(new BeefyAdapter()),
+      address(permissionRegistry),
+      10,
+      "Beefy ",
+      true
+    );
 
     vm.label(_beefyVault, "beefyVault");
     vm.label(_beefyBooster, "beefyBooster");
@@ -225,4 +232,7 @@ contract BeefyAdapterTest is AbstractAdapterTest {
     adapter.deposit(defaultAmount, bob);
     adapter.mint(defaultAmount, bob);
   }
+
+  // TODO add claim test
+  // TODO add rewardTokens test
 }

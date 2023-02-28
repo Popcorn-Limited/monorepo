@@ -133,6 +133,10 @@ contract MultiStrategyVault is ERC4626Upgradeable, ReentrancyGuardUpgradeable, P
     return deposit(assets, msg.sender);
   }
 
+  function mint(uint256 shares) external returns (uint256) {
+    return mint(shares, msg.sender);
+  }
+
   /**
    * @notice Simulate the effects of a deposit at the current block, given current on-chain conditions.
    * @param assets Exact amount of underlying `asset` token to deposit
@@ -145,85 +149,67 @@ contract MultiStrategyVault is ERC4626Upgradeable, ReentrancyGuardUpgradeable, P
   }
 
   /**
-   * @notice Deposit exactly `assets` amount of tokens, issuing vault shares to `receiver`.
-   * @param assets Quantity of tokens to deposit.
-   * @param receiver Receiver of issued vault shares.
-   * @return shares Quantity of vault shares issued to `receiver`.
+   * @notice Simulate the effects of a mint at the current block, given current on-chain conditions.
+   * @param shares Exact amount of vault shares to mint.
+   * @return assets quantity of underlying needed in exchange to mint `shares`.
+   * @dev This method accounts for issuance of accrued fee shares.
    */
-  function deposit(uint256 assets, address receiver)
-    public
-    override
-    nonReentrant
-    whenNotPaused
-    returns (uint256 shares)
-  {
+  function previewMint(uint256 shares) public view override returns (uint256 assets) {
+    uint256 depositFee = uint256(fees.deposit);
+    shares += shares.mulDiv(depositFee, 1e18 - depositFee, Math.Rounding.Up);
+    assets = _convertToAssets(shares, Math.Rounding.Up);
+  }
+
+  // TODO move feeShare calc into deposit and mint
+  // TODO create second _deposit with feeShare param to deposit assets and mint fee shares
+  // TODO do the same for withdraw and redeem
+  // TODO add rebalance
+  // TODO Test with adapter that it actually works
+
+  
+  function deposit(uint256 assets, address receiver) public override returns (uint256) {
+    require(assets <= maxDeposit(receiver), "ERC4626: deposit more than max");
+
+    uint256 shares = previewDeposit(assets);
+    _deposit(_msgSender(), receiver, assets, shares);
+
+    return shares;
+  }
+
+  function mint(uint256 shares, address receiver) public override returns (uint256) {
+    require(shares <= maxMint(receiver), "ERC4626: mint more than max");
+
+    uint256 assets = previewMint(shares);
+    _deposit(_msgSender(), receiver, assets, shares);
+
+    return assets;
+  }
+
+  function _deposit(
+    address caller,
+    address receiver,
+    uint256 assets,
+    uint256 shares
+  ) internal override nonReentrant whenNotPaused {
     if (receiver == address(0)) revert InvalidReceiver();
-    if (assets > maxDeposit(receiver)) revert MaxError(assets);
+
+    IERC20(asset()).safeTransferFrom(caller, address(this), assets);
 
     uint256 feeShares = _convertToShares(
       assets.mulDiv(uint256(fees.deposit), 1e18, Math.Rounding.Down),
       Math.Rounding.Down
     );
-
-    shares = _convertToShares(assets, Math.Rounding.Down) - feeShares;
-    if (shares == 0) revert ZeroAmount();
-
-    IERC20(asset()).safeTransferFrom(msg.sender, address(this), assets);
+    shares -= feeShares;
 
     for (uint8 i; i < adapterCount; i++) {
-      adapters[i].adapter.deposit(
-        assets.mulDiv(uint256(adapters[i].allocation), 1e18, Math.Rounding.Down),
-        address(this)
-      );
+      adapters[i].adapter.deposit(assets.mulDiv(adapters[i].allocation, 1e18, Math.Rounding.Down), address(this));
     }
 
     if (feeShares > 0) _mint(feeRecipient, feeShares);
 
     _mint(receiver, shares);
 
-    emit Deposit(msg.sender, receiver, assets, shares);
-  }
-
-  event log_uint(uint256);
-  event log_address(address);
-  event log(string);
-
-  function mint(uint256 shares) external returns (uint256) {
-    return mint(shares, msg.sender);
-  }
-
-  /**
-   * @notice Mint exactly `shares` vault shares to `receiver`, taking the necessary amount of `asset` from the caller.
-   * @param shares Quantity of shares to mint.
-   * @param receiver Receiver of issued vault shares.
-   * @return assets Quantity of assets deposited by caller.
-   */
-  function mint(uint256 shares, address receiver) public override nonReentrant whenNotPaused returns (uint256 assets) {
-    if (receiver == address(0)) revert InvalidReceiver();
-    if (shares == 0) revert ZeroAmount();
-
-    uint256 depositFee = uint256(fees.deposit);
-
-    uint256 feeShares = shares.mulDiv(depositFee, 1e18 - depositFee, Math.Rounding.Down);
-
-    assets = _convertToAssets(shares + feeShares, Math.Rounding.Up);
-
-    if (assets > maxMint(receiver)) revert MaxError(assets);
-
-    if (feeShares > 0) _mint(feeRecipient, feeShares);
-
-    _mint(receiver, shares);
-
-    IERC20(asset()).safeTransferFrom(msg.sender, address(this), assets);
-
-    for (uint8 i; i < adapterCount; i++) {
-      adapters[i].adapter.deposit(
-        assets.mulDiv(uint256(adapters[i].allocation), 1e18, Math.Rounding.Down),
-        address(this)
-      );
-    }
-
-    emit Deposit(msg.sender, receiver, assets, shares);
+    emit Deposit(caller, receiver, assets, shares);
   }
 
   function withdraw(uint256 assets) public returns (uint256) {
@@ -260,21 +246,16 @@ contract MultiStrategyVault is ERC4626Upgradeable, ReentrancyGuardUpgradeable, P
 
     shares = _convertToShares(assets, Math.Rounding.Up);
     if (shares == 0) revert ZeroAmount();
-    emit log("got here1");
 
     uint256 withdrawalFee = uint256(fees.withdrawal);
 
     uint256 feeShares = shares.mulDiv(withdrawalFee, 1e18 - withdrawalFee, Math.Rounding.Down);
 
     shares += feeShares;
-    emit log("got here2");
-    emit log_address(msg.sender);
-    emit log_address(owner);
+
     if (msg.sender != owner) _approve(owner, msg.sender, allowance(owner, msg.sender) - shares);
-    emit log("got here3");
 
     _burn(owner, shares);
-    emit log("got here4");
 
     if (feeShares > 0) _mint(feeRecipient, feeShares);
 
@@ -285,12 +266,37 @@ contract MultiStrategyVault is ERC4626Upgradeable, ReentrancyGuardUpgradeable, P
         address(this)
       );
     }
-    emit log("got here5");
 
     IERC20(asset()).safeTransfer(receiver, assets);
-    emit log("got here6");
 
     emit Withdraw(msg.sender, receiver, owner, assets, shares);
+  }
+
+  function _withdraw(
+    address caller,
+    address receiver,
+    address owner,
+    uint256 assets,
+    uint256 shares
+  ) internal override {
+    if (caller != owner) {
+      _spendAllowance(owner, caller, shares);
+    }
+
+    _burn(owner, shares);
+
+    for (uint8 i; i < len; i++) {
+      uint256 allocation = assets.mulDiv(allocations[i], 1e18, Math.Rounding.Down);
+      adapters[i].withdraw(allocation, address(this), address(this));
+    }
+
+    uint256 withdrawalFee = uint256(fees.withdrawal);
+    uint256 feeShares = shares.mulDiv(withdrawalFee, 1e18 - withdrawalFee, Math.Rounding.Down);
+    if (feeShares > 0) _mint(feeRecipient, feeShares);
+
+    IERC20(asset()).safeTransfer(receiver, assets);
+
+    emit Withdraw(caller, receiver, owner, assets, shares);
   }
 
   function redeem(uint256 shares) external returns (uint256) {
@@ -345,23 +351,6 @@ contract MultiStrategyVault is ERC4626Upgradeable, ReentrancyGuardUpgradeable, P
 
     for (uint8 i; i < adapterCount; i++) {
       assets += adapters[i].adapter.convertToAssets(adapters[i].adapter.balanceOf(address(this)));
-    }
-  }
-
-  /**
-   * @notice Simulate the effects of a mint at the current block, given current on-chain conditions.
-   * @param shares Exact amount of vault shares to mint.
-   * @return assets quantity of underlying needed in exchange to mint `shares`.
-   * @dev This method accounts for issuance of accrued fee shares.
-   */
-  function previewMint(uint256 shares) public view override returns (uint256 assets) {
-    uint256 depositFee = uint256(fees.deposit);
-    shares += shares.mulDiv(depositFee, 1e18 - depositFee, Math.Rounding.Up);
-
-    for (uint8 i; i < adapterCount; i++) {
-      assets += adapters[i].adapter.previewMint(
-        shares.mulDiv(uint256(adapters[i].allocation), 1e18, Math.Rounding.Down)
-      );
     }
   }
 
