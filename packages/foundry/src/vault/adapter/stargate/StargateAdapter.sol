@@ -93,7 +93,8 @@ contract StargateAdapter is AdapterBase, WithRewards {
   //////////////////////////////////////////////////////////////*/
 
   function _totalAssets() internal view override returns (uint256) {
-    return sToken.balanceOf(address(this));
+    (uint256 stake, ) = stargateStaking.userInfo(pid, address(this));
+    return sToken.balanceOf(address(this)) + stake;
   }
 
   /// @notice The token rewarded if the stargate liquidity mining is active
@@ -108,7 +109,7 @@ contract StargateAdapter is AdapterBase, WithRewards {
                           INTERNAL HOOKS LOGIC
     //////////////////////////////////////////////////////////////*/
 
-  /// @notice Deposit into stargate lending pool
+  /// @notice Deposit into stargate pool
   function _protocolDeposit(uint256 assets, uint256) internal virtual override {
     // liquidity pid = staking pid + 1
     stargateRouter.addLiquidity(pid + 1, assets, address(this));
@@ -117,8 +118,9 @@ contract StargateAdapter is AdapterBase, WithRewards {
     stargateStaking.deposit(pid, sTokenDeposit);
   }
 
-  /// @notice Withdraw from lending pool
+  /// @notice Withdraw from stargate pool
   function _protocolWithdraw(uint256 assets, uint256) internal virtual override {
+    uint256 shares = convertToUnderlyingShares(assets);
     stargateStaking.withdraw(pid, assets);
 
     // liquidity pid = staking pid + 1
@@ -126,6 +128,10 @@ contract StargateAdapter is AdapterBase, WithRewards {
     uint256 sTokenDeposit = sToken.balanceOf(address(this));
 
     stargateRouter.instantRedeemLocal(srcPoolId, sTokenDeposit, address(this));
+  }
+
+  function convertToUnderlyingShares(uint256 assets) public view returns (uint256) {
+    return assets / 10**12;
   }
 
   /*//////////////////////////////////////////////////////////////

@@ -41,7 +41,6 @@ contract StargateAdapterTest is AbstractAdapterTest {
 
     sToken = ISToken(_sToken);
     asset = IERC20(sToken.token());
-    emit log_named_address("DING1", address(asset));
 
     stargateRouter = IStargateRouter(sToken.router());
 

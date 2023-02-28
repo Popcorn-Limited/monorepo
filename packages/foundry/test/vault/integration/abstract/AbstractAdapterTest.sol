@@ -66,7 +66,6 @@ contract AbstractAdapterTest is PropertyTest {
     _delta_ = delta_;
 
     defaultAmount = 10**IERC20Metadata(address(asset_)).decimals() * 1e9;
-    emit log_named_uint("SING", defaultAmount);
 
     raise = defaultAmount;
     maxAssets = defaultAmount * 1000;
@@ -363,6 +362,9 @@ contract AbstractAdapterTest is PropertyTest {
 
     vm.startPrank(bob);
     uint256 shares = adapter.deposit(defaultAmount, bob);
+    emit log_named_uint("DING", shares);
+    emit log_named_uint("RING", defaultAmount);
+
     uint256 assets = adapter.redeem(shares, bob, bob);
     vm.stopPrank();
 
