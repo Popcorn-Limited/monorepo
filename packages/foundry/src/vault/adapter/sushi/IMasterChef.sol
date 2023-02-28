@@ -13,7 +13,14 @@ interface IMasterChef {
     uint256 accSushiPerShare; // Accumulated SUSHI per share, times 1e12. See below.
   }
 
+  struct UserInfo {
+    uint256 amount; // How many LP tokens the user has provided.
+    uint256 rewardDebt; // Reward debt. See explanation below.
+  }
+
   function poolInfo(uint256 pid) external view returns (IMasterChef.PoolInfo memory);
+
+  function userInfo(uint256 pid, address adapterAddress) external view returns (IMasterChef.UserInfo memory);
 
   function totalAllocPoint() external view returns (uint256);
 
@@ -26,20 +33,4 @@ interface IMasterChef {
   function leaveStaking(uint256 _amount) external;
 
   function emergencyWithdraw(uint256 _pid) external;
-}
-
-interface IRewarder is IERC20 {
-  function onSushiReward(
-    uint256 pid,
-    address user,
-    address recipient,
-    uint256 sushiAmount,
-    uint256 newLpAmount
-  ) external;
-
-  function pendingTokens(
-    uint256 pid,
-    address user,
-    uint256 sushiAmount
-  ) external view returns (IERC20[] memory, uint256[] memory);
 }

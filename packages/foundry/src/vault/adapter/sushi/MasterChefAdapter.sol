@@ -5,7 +5,7 @@ pragma solidity ^0.8.15;
 
 import { AdapterBase, IERC20, IERC20Metadata, SafeERC20, ERC20, Math, IStrategy, IAdapter } from "../abstracts/AdapterBase.sol";
 import { WithRewards, IWithRewards } from "../abstracts/WithRewards.sol";
-import { IMasterChef, IRewarder } from "./IMasterChef.sol";
+import { IMasterChef } from "./IMasterChef.sol";
 
 /**
  * @title   MasterChef Adapter
@@ -20,11 +20,9 @@ contract MasterChefAdapter is AdapterBase, WithRewards {
 
   string internal _name;
   string internal _symbol;
+  uint256 public pid;
 
   IMasterChef public masterChef;
-  IRewarder public rewards;
-
-  uint256 public pid;
 
   /**
    * @notice Initialize a new MasterChef Adapter.
@@ -70,7 +68,8 @@ contract MasterChefAdapter is AdapterBase, WithRewards {
   /// @return The total amount of underlying tokens the Vault holds.
 
   function totalAssets() public view virtual override returns (uint256) {
-    return paused() ? IERC20(asset()).balanceOf(address(this)) : rewards.balanceOf(address(this));
+    IMasterChef.UserInfo memory info = masterChef.userInfo(pid, address(this));
+    return info.amount;
   }
 
   function previewWithdraw(uint256 assets) public view virtual override returns (uint256) {
@@ -89,12 +88,8 @@ contract MasterChefAdapter is AdapterBase, WithRewards {
     masterChef.deposit(pid, amount);
   }
 
-  function _protocolWithdraw(
-    uint256 assets,
-    uint256 shares,
-    uint256 pool
-  ) internal virtual {
-    masterChef.withdraw(pool, convertToUnderlyingShares(assets, shares));
+  function _protocolWithdraw(uint256 amount, uint256) internal virtual override {
+    masterChef.withdraw(pid, amount);
   }
 
   /*//////////////////////////////////////////////////////////////

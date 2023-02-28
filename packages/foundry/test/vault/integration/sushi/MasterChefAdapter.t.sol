@@ -3,7 +3,7 @@ pragma solidity ^0.8.15;
 
 import { Test } from "forge-std/Test.sol";
 
-import { MasterChefAdapter, SafeERC20, IERC20, IERC20Metadata, Math, IMasterChef, IRewarder } from "../../../../src/vault/adapter/sushi/MasterChefAdapter.sol";
+import { MasterChefAdapter, SafeERC20, IERC20, IERC20Metadata, Math, IMasterChef } from "../../../../src/vault/adapter/sushi/MasterChefAdapter.sol";
 import { MasterChefTestConfigStorage, MasterChefTestConfig } from "./MasterChefTestConfigStorage.sol";
 import { AbstractAdapterTest, ITestConfigStorage, IAdapter } from "../abstract/AbstractAdapterTest.sol";
 
@@ -11,7 +11,6 @@ contract MasterChefAdapterTest is AbstractAdapterTest {
   using Math for uint256;
 
   IMasterChef public masterChef = IMasterChef(0xc2EdaD668740f1aA35E4D8f227fB8E17dcA888Cd);
-  IRewarder public rewards;
 
   uint256 pid;
 

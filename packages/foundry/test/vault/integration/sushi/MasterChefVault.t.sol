@@ -3,19 +3,16 @@
 
 pragma solidity 0.8.15;
 
-import { AbstractVaultIntegrationTest } from "../abstract/AbstractVaultIntegrationTest.sol";
-import { MasterChefAdapter, SafeERC20, IERC20, IERC20Metadata, Math, IStrategy, IAdapter, IMasterChef, IRewarder } from "../../../../src/vault/adapter/sushi/MasterChefAdapter.sol";
+import { MasterChefAdapter, SafeERC20, IERC20, IERC20Metadata, Math, IStrategy, IAdapter, IMasterChef } from "../../../../src/vault/adapter/sushi/MasterChefAdapter.sol";
 import { MasterChefTestConfigStorage, MasterChefTestConfig, ITestConfigStorage } from "./MasterChefTestConfigStorage.sol";
 import { MockStrategy } from "../../../utils/mocks/MockStrategy.sol";
+import { AbstractAdapterTest } from "../abstract/AbstractAdapterTest.sol";
 
-contract MasterChefVaultTest is AbstractVaultIntegrationTest {
+contract MasterChefVaultTest is AbstractAdapterTest {
   using Math for uint256;
 
   IMasterChef public masterChef;
-  IRewarder public rewards;
   uint256 pid;
-
-  IStrategy strategy;
 
   function setUp() public {
     uint256 forkId = vm.createSelectFork(vm.rpcUrl("mainnet"));
@@ -44,7 +41,7 @@ contract MasterChefVaultTest is AbstractVaultIntegrationTest {
 
     adapter.initialize(abi.encode(asset, address(this), strategy, 0, sigs, ""), _masterChef, testConfig);
 
-    setUpBaseTest(IERC20(_masterChef), adapter, "MasterChef", 1);
+    setUpBaseTest(IERC20(_masterChef), adapter, 0xc2EdaD668740f1aA35E4D8f227fB8E17dcA888Cd, 10, "MasterChef", true);
 
     vm.label(address(_masterChef), "masterChef");
     vm.label(address(asset), "asset");
