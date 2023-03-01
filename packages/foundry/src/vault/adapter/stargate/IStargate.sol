@@ -14,6 +14,12 @@ interface ISToken {
   function allowance(address spender, address user) external view returns (uint256);
 
   function convertRate() external view returns (uint256);
+
+  function mintFeeBP() external view returns (uint256);
+
+  function totalSupply() external view returns (uint256);
+
+  function totalLiquidity() external view returns (uint256);
 }
 
 interface IStargateStaking {

@@ -108,6 +108,25 @@ contract StargateAdapter is AdapterBase, WithRewards {
   /*//////////////////////////////////////////////////////////////
                           INTERNAL HOOKS LOGIC
     //////////////////////////////////////////////////////////////*/
+  function calculateSTokenMintFee(uint256 assets) public view virtual returns (uint256) {
+    uint256 BP_DENOMINATOR = 10000;
+
+    uint256 _amountLD = (assets / sToken.convertRate()) * sToken.convertRate();
+    uint256 _amountSD = _amountLD / sToken.convertRate();
+
+    uint256 _mintFeeSD = (_amountSD * sToken.mintFeeBP()) / BP_DENOMINATOR;
+    _amountSD = _amountSD - _mintFeeSD;
+
+    uint256 amountLPTokens = (_amountSD * sToken.totalSupply()) / sToken.totalLiquidity();
+    uint256 mintFee = _amountSD - amountLPTokens;
+    return mintFee;
+  }
+
+  error TestError(uint256 amount);
+
+  function convertToUnderlyingShares(uint256 assets, uint256 shares) public view virtual override returns (uint256) {
+    return assets / 10**12 - calculateSTokenMintFee(assets);
+  }
 
   /// @notice Deposit into stargate pool
   function _protocolDeposit(uint256 assets, uint256) internal virtual override {
@@ -115,12 +134,13 @@ contract StargateAdapter is AdapterBase, WithRewards {
     stargateRouter.addLiquidity(pid + 1, assets, address(this));
 
     uint256 sTokenDeposit = sToken.balanceOf(address(this));
+
     stargateStaking.deposit(pid, sTokenDeposit);
   }
 
   /// @notice Withdraw from stargate pool
-  function _protocolWithdraw(uint256 assets, uint256) internal virtual override {
-    uint256 shares = convertToUnderlyingShares(assets);
+  function _protocolWithdraw(uint256 assets, uint256 shares) internal virtual override {
+    assets = convertToUnderlyingShares(assets, shares);
     stargateStaking.withdraw(pid, assets);
 
     // liquidity pid = staking pid + 1
@@ -130,8 +150,18 @@ contract StargateAdapter is AdapterBase, WithRewards {
     stargateRouter.instantRedeemLocal(srcPoolId, sTokenDeposit, address(this));
   }
 
-  function convertToUnderlyingShares(uint256 assets) public view returns (uint256) {
-    return assets / 10**12;
+  function _convertToShares(uint256 assets, Math.Rounding rounding)
+    internal
+    view
+    virtual
+    override
+    returns (uint256 shares)
+  {
+    return assets.mulDiv(totalSupply() + 10**decimalOffset, totalAssets() + 1, rounding);
+  }
+
+  function _convertToAssets(uint256 shares, Math.Rounding rounding) internal view virtual override returns (uint256) {
+    return (shares.mulDiv(totalAssets() + 1, totalSupply() + 10**decimalOffset, rounding) + 12) * 10**12;
   }
 
   /*//////////////////////////////////////////////////////////////
