@@ -1,5 +1,6 @@
 import type { BigNumberish } from "ethers";
-import { parseUnits } from "ethers";
+import { utils } from "ethers";
+
 import { FormEventHandler, useMemo } from "react";
 import { usePersistentAtom } from "./jotai";
 
@@ -11,7 +12,7 @@ export type FormattedInput<T, FormattedType = T> = {
   setValue: (state: T) => void;
 };
 
-export const bigNumberFormatter = (value: any) => parseUnits(validateInput(value).formatted);
+export const bigNumberFormatter = (value: any) => utils.parseUnits(validateInput(value).formatted);
 
 export const validateInput = (value?: string | number) => {
   const formatted = value === "." ? "0" : (`${value || "0"}`.replace(/\.$/, ".0") as any);
