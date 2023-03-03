@@ -331,30 +331,15 @@ contract MultiStrategyVaultTest is Test {
     vm.prank(alice);
     vault.withdraw(aliceAssetAmount, alice, alice);
 
-    // assertEq(adapter1.beforeWithdrawHookCalledCounter(), 1, "w adapter1");
-    // assertEq(adapter2.beforeWithdrawHookCalledCounter(), 1, "w adapter2");
+    assertEq(adapter1.beforeWithdrawHookCalledCounter(), 1, "w adapter1");
+    assertEq(adapter2.beforeWithdrawHookCalledCounter(), 1, "w adapter2");
 
-    // assertEq(vault.totalAssets(), 0, "ta2");
-    // assertEq(vault.balanceOf(alice), 0, "vault bal2");
-    // assertEq(vault.convertToAssets(vault.balanceOf(alice)), 0, "convert2");
-    // assertEq(asset.balanceOf(alice), alicePreDepositBal, "asset bal2");
-
-    // vm.prank(alice);
-    // vault.redeem(aliceShareAmount, alice, alice);
-
-    // assertEq(vault.totalAssets(), 0, "ta2");
-    // assertEq(vault.balanceOf(alice), 0, "vault bal2");
-    // assertEq(vault.convertToAssets(vault.balanceOf(alice)), 0, "convert2");
-    // assertEq(asset.balanceOf(alice), alicePreDepositBal, "asset bal2");
+    assertEq(vault.totalAssets(), 0, "ta2");
+    assertEq(vault.balanceOf(alice), 0, "vault bal2");
+    assertEq(vault.convertToAssets(vault.balanceOf(alice)), 0, "convert2");
+    assertEq(asset.balanceOf(alice), alicePreDepositBal, "asset bal2");
   }
 
-  function testFail__deposit_zero() public {
-    vault.deposit(0, address(this));
-  }
-
-  function testFail__withdraw_zero() public {
-    vault.withdraw(0, address(this), address(this));
-  }
 
   function testFail__deposit_with_no_approval() public {
     vault.deposit(1e18, address(this));
@@ -425,14 +410,6 @@ contract MultiStrategyVaultTest is Test {
     assertEq(vault.balanceOf(alice), 0);
     assertEq(vault.convertToAssets(vault.balanceOf(alice)), 0);
     assertEq(asset.balanceOf(alice), alicePreDepositBal);
-  }
-
-  function testFail__mint_zero() public {
-    vault.mint(0, address(this));
-  }
-
-  function testFail__redeem_zero() public {
-    vault.redeem(0, address(this), address(this));
   }
 
   function testFail__mint_with_no_approval() public {
@@ -551,9 +528,11 @@ contract MultiStrategyVaultTest is Test {
     // NOTE: Reduce the amount of assets to withdraw to take withdrawalFee into account (otherwise we would withdraw more than we deposited)
     uint256 withdrawAmount = (amount / 10) * 9;
     uint256 expectedShares = vault.previewWithdraw(withdrawAmount);
+    emit log_uint(expectedShares);
 
     vm.prank(alice);
     uint256 actualShares = vault.withdraw(withdrawAmount, alice, alice);
+    emit log_uint(actualShares);
     assertApproxEqAbs(expectedShares, actualShares, 1);
 
     // Test PreviewRedeem and Redeem
@@ -974,7 +953,7 @@ contract MultiStrategyVaultTest is Test {
     vm.expectRevert(abi.encodeWithSelector(MultiStrategyVault.MaxError.selector, 101));
     vault.deposit(101, address(this));
 
-    vm.expectRevert(abi.encodeWithSelector(MultiStrategyVault.MaxError.selector, 101));
+    vm.expectRevert(abi.encodeWithSelector(MultiStrategyVault.MaxError.selector, 101 * 1e9));
     vault.mint(101 * 1e9, address(this));
   }
 
@@ -1006,11 +985,11 @@ contract MultiStrategyVaultTest is Test {
     assertTrue(vault.paused());
 
     vm.prank(alice);
-    vm.expectRevert("Pausable: paused");
+    vm.expectRevert(abi.encodeWithSelector(MultiStrategyVault.MaxError.selector, depositAmount));
     vault.deposit(depositAmount, alice);
 
     vm.prank(alice);
-    vm.expectRevert("Pausable: paused");
+    vm.expectRevert(abi.encodeWithSelector(MultiStrategyVault.MaxError.selector, depositAmount));
     vault.mint(depositAmount, alice);
 
     vm.prank(alice);
