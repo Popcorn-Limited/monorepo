@@ -145,6 +145,7 @@ abstract contract AdapterBase is
   }
 
   error Shares(uint256 shares);
+  error PING(uint256 ping);
 
   /**
    * @notice Withdraws `assets` from the underlying protocol and burns vault shares from `owner`.
@@ -157,9 +158,11 @@ abstract contract AdapterBase is
     address receiver,
     address owner
   ) public virtual override returns (uint256) {
-    // if (assets > maxWithdraw(owner)) revert MaxError(assets, maxWithdraw(owner));
+    // revert PING(1);
+    if (assets > maxWithdraw(owner)) revert MaxError(assets, maxWithdraw(owner));
 
     uint256 shares = _convertToShares(assets, Math.Rounding.Up);
+
     // revert Shares(shares);
 
     _withdraw(_msgSender(), receiver, owner, assets, shares);
@@ -186,6 +189,8 @@ abstract contract AdapterBase is
     return assets;
   }
 
+  error TestError2(uint256 amount1, uint256 amount2);
+
   /**
    * @notice Withdraws `assets` from the underlying protocol and burns vault shares from `owner`.
    * @dev Executes harvest if `harvestCooldown` is passed since last invocation.
@@ -205,9 +210,14 @@ abstract contract AdapterBase is
       _protocolWithdraw(assets, shares);
     }
 
+    // revert Shares(shares);
+    // revert TestError2(shares, IERC20(asset()).balanceOf(address(this)));
+
     _burn(owner, shares);
 
-    IERC20(asset()).safeTransfer(receiver, 1e15);
+    revert TestError2(assets, IERC20(asset()).balanceOf(address(this)));
+
+    IERC20(asset()).safeTransfer(receiver, assets);
 
     harvest();
 

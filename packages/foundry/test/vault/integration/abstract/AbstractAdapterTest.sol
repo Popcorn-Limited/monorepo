@@ -379,6 +379,8 @@ contract AbstractAdapterTest is PropertyTest {
     uint256 shares1 = adapter.deposit(defaultAmount, bob);
     emit log_named_uint("SHARES 1", shares1);
     uint256 shares2 = adapter.withdraw(defaultAmount, bob, bob);
+    // 1000000000000
+    //
     emit log_named_uint("SHARES 2", shares2);
     vm.stopPrank();
 

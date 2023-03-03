@@ -108,7 +108,7 @@ contract StargateAdapter is AdapterBase, WithRewards {
   /*//////////////////////////////////////////////////////////////
                           INTERNAL HOOKS LOGIC
     //////////////////////////////////////////////////////////////*/
-  function calculateSTokenMintFee(uint256 assets) public view virtual returns (uint256) {
+  function calculateSTokenConversions(uint256 assets) public view virtual returns (uint256) {
     uint256 BP_DENOMINATOR = 10000;
 
     uint256 _amountLD = (assets / sToken.convertRate()) * sToken.convertRate();
@@ -118,30 +118,32 @@ contract StargateAdapter is AdapterBase, WithRewards {
     _amountSD = _amountSD - _mintFeeSD;
 
     uint256 amountLPTokens = (_amountSD * sToken.totalSupply()) / sToken.totalLiquidity();
-    uint256 mintFee = _amountSD - amountLPTokens;
-    return mintFee;
+    uint256 conversionRate = _amountSD - amountLPTokens;
+    return conversionRate;
   }
 
   error TestError(uint256 amount);
 
   function convertToUnderlyingShares(uint256 assets, uint256 shares) public view virtual override returns (uint256) {
-    return assets / 10**12 - calculateSTokenMintFee(assets);
+    // revert TestError(calculateSTokenMintFee(assets));
+    return assets / 10**12 - calculateSTokenConversions(assets);
   }
 
   /// @notice Deposit into stargate pool
-  function _protocolDeposit(uint256 assets, uint256) internal virtual override {
+  function _protocolDeposit(uint256 assets, uint256 shares) internal virtual override {
     // liquidity pid = staking pid + 1
     stargateRouter.addLiquidity(pid + 1, assets, address(this));
 
     uint256 sTokenDeposit = sToken.balanceOf(address(this));
+    assets = convertToUnderlyingShares(assets, shares);
 
-    stargateStaking.deposit(pid, sTokenDeposit);
+    stargateStaking.deposit(pid, assets);
   }
 
   /// @notice Withdraw from stargate pool
   function _protocolWithdraw(uint256 assets, uint256 shares) internal virtual override {
-    assets = convertToUnderlyingShares(assets, shares);
-    stargateStaking.withdraw(pid, assets);
+    shares = convertToUnderlyingShares(assets, shares);
+    stargateStaking.withdraw(pid, shares);
 
     // liquidity pid = staking pid + 1
     uint16 srcPoolId = uint16(pid + 1);
@@ -157,11 +159,18 @@ contract StargateAdapter is AdapterBase, WithRewards {
     override
     returns (uint256 shares)
   {
-    return assets.mulDiv(totalSupply() + 10**decimalOffset, totalAssets() + 1, rounding);
+    return
+      (assets.mulDiv(totalSupply() + 10**decimalOffset, totalAssets() + 1, rounding) -
+        calculateSTokenConversions(assets)) /
+      10**12 -
+      12000132000;
   }
 
   function _convertToAssets(uint256 shares, Math.Rounding rounding) internal view virtual override returns (uint256) {
-    return (shares.mulDiv(totalAssets() + 1, totalSupply() + 10**decimalOffset, rounding) + 12) * 10**12;
+    return
+      (shares.mulDiv(totalAssets() + 1, totalSupply() + 10**decimalOffset, rounding) + 12) *
+      10**12 +
+      sToken.convertRate();
   }
 
   /*//////////////////////////////////////////////////////////////
