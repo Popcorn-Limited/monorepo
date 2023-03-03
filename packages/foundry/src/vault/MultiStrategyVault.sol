@@ -272,11 +272,7 @@ contract MultiStrategyVault is ERC4626Upgradeable, ReentrancyGuardUpgradeable, P
 
       if (assets % 2 == 1 && i == 0 && IERC20(asset()).balanceOf(address(this)) == 0) allocation += 1;
 
-      adapters[i].adapter.withdraw(
-        allocation,
-        address(this),
-        address(this)
-      );
+      adapters[i].adapter.withdraw(allocation, address(this), address(this));
     }
 
     IERC20(asset()).safeTransfer(receiver, assets);
@@ -604,8 +600,13 @@ contract MultiStrategyVault is ERC4626Upgradeable, ReentrancyGuardUpgradeable, P
 
   uint256 public proposedAdapterTime;
 
-  event NewAdaptersProposed(AdapterConfig[10] newAdapter, uint256 timestamp);
-  event ChangedAdapters(AdapterConfig[10] oldAdapter, AdapterConfig[10] newAdapter);
+  event NewAdaptersProposed(AdapterConfig[10] newAdapter, uint8 adapterCount, uint256 timestamp);
+  event ChangedAdapters(
+    AdapterConfig[10] oldAdapter,
+    uint8 oldAdapterCount,
+    AdapterConfig[10] newAdapter,
+    uint8 newAdapterCount
+  );
 
   error AssetInvalid();
   error InvalidConfig();
@@ -626,7 +627,7 @@ contract MultiStrategyVault is ERC4626Upgradeable, ReentrancyGuardUpgradeable, P
 
     proposedAdapterTime = block.timestamp;
 
-    emit NewAdaptersProposed(newAdapters, block.timestamp);
+    emit NewAdaptersProposed(newAdapters, proposedAdapterCount, block.timestamp);
   }
 
   function _verifyAdapterConfig(AdapterConfig[10] calldata newAdapters, uint8 adapterCount_) internal {
@@ -660,7 +661,7 @@ contract MultiStrategyVault is ERC4626Upgradeable, ReentrancyGuardUpgradeable, P
       IERC20(asset()).approve(address(adapters[i].adapter), 0);
     }
 
-    emit ChangedAdapters(adapters, proposedAdapters);
+    emit ChangedAdapters(adapters, adapterCount, proposedAdapters, proposedAdapterCount);
 
     adapters = proposedAdapters;
     adapterCount = proposedAdapterCount;

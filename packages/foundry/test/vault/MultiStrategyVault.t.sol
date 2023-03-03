@@ -38,8 +38,13 @@ contract MultiStrategyVaultTest is Test {
   event NewFeesProposed(VaultFees newFees, uint256 timestamp);
   event ChangedFees(VaultFees oldFees, VaultFees newFees);
   event FeeRecipientUpdated(address oldFeeRecipient, address newFeeRecipient);
-  event NewAdaptersProposed(AdapterConfig[10] newAdapter, uint256 timestamp);
-  event ChangedAdapters(AdapterConfig[10] oldAdapter, AdapterConfig[10] newAdapter);
+  event NewAdaptersProposed(AdapterConfig[10] newAdapter, uint8 adapterCount, uint256 timestamp);
+  event ChangedAdapters(
+    AdapterConfig[10] oldAdapter,
+    uint8 oldAdapterCount,
+    AdapterConfig[10] newAdapter,
+    uint8 newAdapterCount
+  );
   event QuitPeriodSet(uint256 quitPeriod);
   event Paused(address account);
   event Unpaused(address account);
@@ -339,7 +344,6 @@ contract MultiStrategyVaultTest is Test {
     assertEq(vault.convertToAssets(vault.balanceOf(alice)), 0, "convert2");
     assertEq(asset.balanceOf(alice), alicePreDepositBal, "asset bal2");
   }
-
 
   function testFail__deposit_with_no_approval() public {
     vault.deposit(1e18, address(this));
@@ -764,121 +768,135 @@ contract MultiStrategyVaultTest is Test {
     //////////////////////////////////////////////////////////////*/
 
   // Propose Adapter
-  // function test__proposeAdapter() public {
-  //   MockERC4626 newAdapter = _createAdapter(IERC20(address(asset)));
+  function test__proposeAdapters() public {
+    MockERC4626 newAdapter = _createAdapter(IERC20(address(asset)));
+    adapters[0].adapter = newAdapter;
+    adapters[0].allocation = 1e18;
 
-  //   uint256 callTime = block.timestamp;
-  //   vm.expectEmit(false, false, false, true, address(vault));
-  //   emit NewAdapterProposed(IERC4626(address(newAdapter)), callTime);
+    uint256 callTime = block.timestamp;
+    vm.expectEmit(false, false, false, true, address(vault));
+    emit NewAdaptersProposed(adapters, 1, callTime);
 
-  //   vault.proposeAdapter(IERC4626(address(newAdapter)));
+    vault.proposeAdapters(adapters, 1);
 
-  //   assertEq(vault.proposedAdapterTime(), callTime);
-  //   assertEq(address(vault.proposedAdapter()), address(newAdapter));
-  // }
+    assertEq(vault.proposedAdapterTime(), callTime);
+    //assertEq(address(vault.proposedAdapters()), address(newAdapter));
+    assertEq(uint256(vault.proposedAdapterCount()), uint256(1));
+  }
 
-  // function testFail__proposeAdapter_nonOwner() public {
-  //   MockERC4626 newAdapter = _createAdapter(IERC20(address(asset)));
+  function testFail__proposeAdapters_nonOwner() public {
+    MockERC4626 newAdapter = _createAdapter(IERC20(address(asset)));
+    adapters[0].adapter = newAdapter;
+    adapters[0].allocation = 1e18;
 
-  //   vm.prank(alice);
-  //   vault.proposeAdapter(IERC4626(address(newAdapter)));
-  // }
+    vm.prank(alice);
+    vault.proposeAdapters(adapters, 2);
+  }
 
-  // function testFail__proposeAdapter_asset_missmatch() public {
-  //   MockERC20 newAsset = new MockERC20("New Mock Token", "NTKN", 18);
-  //   MockERC4626 newAdapter = _createAdapter(IERC20(address(newAsset)));
+  function testFail__proposeAdapters_asset_missmatch() public {
+    MockERC20 newAsset = new MockERC20("New Mock Token", "NTKN", 18);
+    MockERC4626 newAdapter = _createAdapter(IERC20(address(newAsset)));
+    adapters[0].adapter = newAdapter;
+    adapters[0].allocation = 1e18;
 
-  //   vm.prank(alice);
-  //   vault.proposeAdapter(IERC4626(address(newAdapter)));
-  // }
+    vault.proposeAdapters(adapters, 1);
+  }
 
-  // // Change Adapter
-  // function test__changeAdapters() public {
-  //   MockERC4626 newAdapter = _createAdapter(IERC20(address(asset)));
-  //   uint256 depositAmount = 1 ether;
+  // Change Adapter
+  function test__changeAdapters() public {
+    MockERC4626 newAdapter = _createAdapter(IERC20(address(asset)));
+    adapters[0].adapter = newAdapter;
+    adapters[0].allocation = 1e18;
+    
+    uint256 depositAmount = 1 ether;
 
-  //   // Deposit funds for testing
-  //   asset.mint(alice, depositAmount);
-  //   vm.startPrank(alice);
-  //   asset.approve(address(vault), depositAmount);
-  //   vault.deposit(depositAmount, alice);
-  //   vm.stopPrank();
+    // Deposit funds for testing
+    asset.mint(alice, depositAmount);
+    vm.startPrank(alice);
+    asset.approve(address(vault), depositAmount);
+    vault.deposit(depositAmount, alice);
+    vm.stopPrank();
 
-  //   // Increase assets in asset Adapter to check hwm and assetCheckpoint later
-  //   asset.mint(address(adapter), depositAmount);
-  //   vault.takeManagementAndPerformanceFees();
-  //   uint256 oldHWM = vault.highWaterMark();
+    // Increase assets in asset Adapter to check hwm and assetCheckpoint later
+    asset.mint(address(adapter1), depositAmount);
+    vault.takeManagementAndPerformanceFees();
+    uint256 oldHWM = vault.highWaterMark();
 
-  //   // Preparation to change the adapter
-  //   vault.proposeAdapter(IERC4626(address(newAdapter)));
+    // Preparation to change the adapter
+    vault.proposeAdapters(adapters, 1);
 
-  //   vm.warp(block.timestamp + 3 days);
+    vm.warp(block.timestamp + 3 days);
 
-  //   vm.expectEmit(false, false, false, true, address(vault));
-  //   emit ChangedAdapter(IERC4626(address(adapter)), IERC4626(address(newAdapter)));
+    // vm.expectEmit(false, false, false, true, address(vault));
+    // emit ChangedAdapter(IERC4626(address(adapter)), IERC4626(address(newAdapter)));
 
-  //   vault.changeAdapters();
+    vault.changeAdapters();
 
-  //   // Annoyingly Math fails us here and leaves 1 asset in the adapter
-  //   assertEq(asset.allowance(address(vault), address(adapter)), 0);
-  //   assertEq(asset.balanceOf(address(adapter)), 1);
-  //   assertEq(adapter.balanceOf(address(vault)), 0);
+    // Annoyingly Math fails us here and leaves 2 asset in the adapter
+    assertEq(asset.allowance(address(vault), address(adapter1)), 0);
+    assertEq(asset.balanceOf(address(adapter1)), 2);
+    assertEq(adapter1.balanceOf(address(vault)), 0);
 
-  //   assertEq(asset.balanceOf(address(newAdapter)), (depositAmount * 2) - 1);
-  //   assertEq(newAdapter.balanceOf(address(vault)), (depositAmount * 2e9) - 1e9);
-  //   assertEq(asset.allowance(address(vault), address(newAdapter)), type(uint256).max);
+    assertEq(asset.balanceOf(address(newAdapter)), (depositAmount*2)- 2);
+    assertEq(newAdapter.balanceOf(address(vault)), (depositAmount * 2e9) - 2e9);
+    assertEq(asset.allowance(address(vault), address(newAdapter)), type(uint256).max);
 
-  //   assertEq(vault.highWaterMark(), oldHWM);
+    assertEq(vault.highWaterMark(), oldHWM);
 
-  //   assertEq(vault.proposedAdapterTime(), 0);
-  //   assertEq(address(vault.proposedAdapter()), address(0));
-  // }
+    assertEq(vault.proposedAdapterTime(), 0);
+    //assertEq(address(vault.proposedAdapters()), address(0));
+  }
 
-  // function testFail__changeAdapters_NonOwner() public {
-  //   vm.prank(alice);
-  //   vault.changeAdapters();
-  // }
+  function testFail__changeAdapters_NonOwner() public {
+    vm.prank(alice);
+    vault.changeAdapters();
+  }
 
-  // function testFail__changeAdapters_respect_rageQuit() public {
-  //   MockERC4626 newAdapter = _createAdapter(IERC20(address(asset)));
+  function testFail__changeAdapters_respect_rageQuit() public {
+    MockERC4626 newAdapter = _createAdapter(IERC20(address(asset)));
+    adapters[0].adapter = newAdapter;
+    adapters[0].allocation = 1e18;
 
-  //   vault.proposeAdapter(IERC4626(address(newAdapter)));
+    vault.proposeAdapters(adapters, 1);
 
-  //   // Didnt respect 3 days before propsal and change
-  //   vault.changeAdapters();
-  // }
+    // Didnt respect 3 days before propsal and change
+    vault.changeAdapters();
+  }
 
-  // function testFail__changeAdapters_after_init() public {
-  //   vault.changeAdapters();
-  // }
+  function testFail__changeAdapters_after_init() public {
+    vault.changeAdapters();
+  }
 
-  // function testFail__changeAdapters_instantly_again() public {
-  //   MockERC4626 newAdapter = _createAdapter(IERC20(address(asset)));
-  //   uint256 depositAmount = 1 ether;
+  function testFail__changeAdapters_instantly_again() public {
+    MockERC4626 newAdapter = _createAdapter(IERC20(address(asset)));
+    adapters[0].adapter = newAdapter;
+    adapters[0].allocation = 1e18;
 
-  //   // Deposit funds for testing
-  //   asset.mint(alice, depositAmount);
-  //   vm.startPrank(alice);
-  //   asset.approve(address(vault), depositAmount);
-  //   vault.deposit(depositAmount, alice);
-  //   vm.stopPrank();
+    uint256 depositAmount = 1 ether;
 
-  //   // Increase assets in asset Adapter to check hwm and assetCheckpoint later
-  //   asset.mint(address(adapter), depositAmount);
-  //   vault.takeManagementAndPerformanceFees();
-  //   uint256 oldHWM = vault.highWaterMark();
+    // Deposit funds for testing
+    asset.mint(alice, depositAmount);
+    vm.startPrank(alice);
+    asset.approve(address(vault), depositAmount);
+    vault.deposit(depositAmount, alice);
+    vm.stopPrank();
 
-  //   // Preparation to change the adapter
-  //   vault.proposeAdapter(IERC4626(address(newAdapter)));
+    // Increase assets in asset Adapter to check hwm and assetCheckpoint later
+    asset.mint(address(adapter1), depositAmount);
+    vault.takeManagementAndPerformanceFees();
+    uint256 oldHWM = vault.highWaterMark();
 
-  //   vm.warp(block.timestamp + 3 days);
+    // Preparation to change the adapter
+    vault.proposeAdapters(adapters, 1);
 
-  //   vm.expectEmit(false, false, false, true, address(vault));
-  //   emit ChangedAdapter(IERC4626(address(adapter)), IERC4626(address(newAdapter)));
+    vm.warp(block.timestamp + 3 days);
 
-  //   vault.changeAdapters();
-  //   vault.changeAdapters();
-  // }
+    // vm.expectEmit(false, false, false, true, address(vault));
+    // emit ChangedAdapter(IERC4626(address(adapter)), IERC4626(address(newAdapter)));
+
+    vault.changeAdapters();
+    vault.changeAdapters();
+  }
 
   /*//////////////////////////////////////////////////////////////
                           SET RAGE QUIT
