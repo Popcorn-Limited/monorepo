@@ -710,6 +710,14 @@ contract MultiRewardStakingTest is Test {
     staking.addRewardToken(iRewardToken1, 0, 1 ether, true, 10000000, 100, 20);
   }
 
+  function testFail__addRewardToken_escrow_with_0_percentage() public {
+    staking.addRewardToken(iRewardToken1, 0.1 ether, 10 ether, true, 0, 100, 0);
+  }
+
+  function testFail__addRewardToken_escrow_with_more_than_100_percentage() public {
+    staking.addRewardToken(iRewardToken1, 0.1 ether, 10 ether, true, 1e19, 100, 0);
+  }
+
   /*//////////////////////////////////////////////////////////////
                         CHANGE REWARDS SPEED LOGIC
     //////////////////////////////////////////////////////////////*/
@@ -762,6 +770,33 @@ contract MultiRewardStakingTest is Test {
 
     assertEq(staking.userIndex(bob, iRewardToken1), index);
     assertEq(staking.accruedRewards(bob, iRewardToken1), 1 ether);
+  }
+
+  function test__changeRewardSpeed2() public {
+    _addRewardToken(rewardToken1);
+
+    stakingToken.mint(alice, 1 ether);
+
+    vm.prank(alice);
+    stakingToken.approve(address(staking), 1 ether);
+    vm.prank(alice);
+    staking.deposit(1 ether);
+
+    (, , uint32 rewardsEndTimestamp, , ) = staking.rewardInfos(iRewardToken1);
+    // StartTime 1, Rewards 10e18, RewardsPerSecond 0.1e18, RewardsEndTimeStamp 101
+    assertEq(rewardsEndTimestamp, 101);
+
+    staking.changeRewardSpeed(iRewardToken1, 0.5 ether);
+    (, , rewardsEndTimestamp, , ) = staking.rewardInfos(iRewardToken1);
+    // StartTime 1, Rewards 10e18, RewardsPerSecond 0.5e18, RewardsEndTimeStamp 21
+    assertEq(rewardsEndTimestamp, 21);
+
+    vm.warp(block.timestamp + 10);
+
+    // 50% paid out, CallTime 11, Rewards 5e18, RewardsPerSecond 0.1e18, RewardsEndTimeStamp 61
+    staking.changeRewardSpeed(iRewardToken1, 0.1 ether);
+    (, , rewardsEndTimestamp, , ) = staking.rewardInfos(iRewardToken1);
+    assertEq(rewardsEndTimestamp, 61);
   }
 
   function testFail__changeRewardSpeed_to_0() public {

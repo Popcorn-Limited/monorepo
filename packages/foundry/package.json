@@ -14,6 +14,7 @@
     "anvil": "./script/anvil.sh",
     "fund:seth": "./script/fundSEth.sh",
     "fund:pop": "./script/fundPop.sh",
+    "popStaking:fundOptimism": "./script/fundOpStaking.sh",
     "demodata:vault": "forge script ./script/VaultDemoData.s.sol --rpc-url http://localhost:8545 --broadcast",
     "dev": "yarn fund:seth && yarn fund:pop && yarn demodata:vault"
   },

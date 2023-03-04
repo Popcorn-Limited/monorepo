@@ -1,39 +1,20 @@
-import { ChainId } from "@popcorn/utils";
+import type { ContractWriteArgs } from "@popcorn/components/lib/types";
 import type { BigNumber } from "ethers";
 import { constants } from "ethers";
-import { useContractWrite, usePrepareContractWrite } from "wagmi";
-
-type ConfigArgs = Partial<Parameters<typeof useContractWrite>[0]>;
+import { useContractRead, useContractWrite, usePrepareContractWrite } from "wagmi";
+import { useNamedAccounts } from "@popcorn/components/lib/utils/hooks";
+import { ChainId } from "@popcorn/utils";
+import { useTypedReadCall } from "./wagmi";
 
 // TODO: remove hard-coded gas
 // NOTE: Fails - out of gas from anvil local if lower that this
 const GAS_LIMIT = constants.Zero.add(1000000);
 
-export const useApproveVaultBalance = (
-  vaultAddress: string,
-  assetAddress: string,
-  chainId: ChainId,
-  wagmiConfig?: ConfigArgs,
-) => {
-  const { config } = usePrepareContractWrite({
-    address: assetAddress,
-    abi: ["function approve(address spender, uint256 amount) public"],
-    functionName: "approve",
-    args: [vaultAddress, constants.MaxUint256],
-    chainId: Number(chainId),
-  });
-
-  return useContractWrite({
-    ...(wagmiConfig as any),
-    ...config,
-  });
-};
-
 export const useDepositVaultBalance = (
   vaultAddress: string,
   chainId: ChainId,
   balance: BigNumber,
-  wagmiConfig?: ConfigArgs,
+  wagmiConfig?: ContractWriteArgs,
 ) => {
   const { config } = usePrepareContractWrite({
     address: vaultAddress,
@@ -59,7 +40,7 @@ export const useRedeemVaultBalance = (
   vaultAddress: string,
   chainId: ChainId,
   balance: BigNumber,
-  wagmiConfig?: ConfigArgs,
+  wagmiConfig?: ContractWriteArgs,
 ) => {
   const { config } = usePrepareContractWrite({
     address: vaultAddress,
@@ -77,6 +58,25 @@ export const useRedeemVaultBalance = (
 
   return useContractWrite({
     ...(wagmiConfig as any),
+    ...config,
+  });
+};
+
+export const useVaultRegistry = (chainId: any) => {
+  const [registry] = useNamedAccounts(chainId, ["vaultRegistry"]);
+  return registry;
+};
+
+/**
+ * Pulls vault addresses from `allVaults` in VaulRegistry
+ */
+export const useAllVaults = (chainId?: ChainId, config?: ContractWriteArgs) => {
+  const registry = useVaultRegistry(chainId);
+  return useTypedReadCall<string[]>({
+    address: registry?.address,
+    abi: ["function getRegisteredAddresses() external view returns (address[])"],
+    functionName: "getRegisteredAddresses",
+    chainId,
     ...config,
   });
 };

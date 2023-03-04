@@ -63,7 +63,7 @@ export const PortfolioPage: NextPage = () => {
     "xPop",
   ]);
   const contractsBnb = useNamedAccounts("56", ["pop", "xPop", "rewardsEscrow"]);
-  const contractsArbitrum = useNamedAccounts("42161", ["pop", "xPop", "rewardsEscrow"]);
+  const contractsArbitrum = useNamedAccounts("42161", ["pop", "xPop"]);
   const contractsOp = useNamedAccounts("10", ["pop", "popUsdcArrakisVault"]);
 
   const [rewardContracts, escrowContracts] = useMemo(() => {
@@ -73,10 +73,13 @@ export const PortfolioPage: NextPage = () => {
       ...filterByChainId(contractsBnb, 56, selectedNetworks),
       ...filterByChainId(contractsArbitrum, 42161, selectedNetworks),
       ...filterByChainId(contractsOp, 10, selectedNetworks),
-    ].flatMap((network) => network) as Array<Pop.NamedAccountsMetadata>;
+    ]
+      .map((network) => network)
+      .flat(1) as Array<Pop.NamedAccountsMetadata>;
 
     const escrow = allContracts.filter(({ __alias }) => __alias === "rewardsEscrow");
     const rewards = allContracts.filter(({ __alias }) => __alias !== "rewardsEscrow");
+
     return [rewards, escrow];
     // re-trigger only when array length change to avoid shallow object false positives
   }, [account, contractsEth, contractsPoly, contractsBnb, contractsArbitrum, contractsOp, filterByChainId]);

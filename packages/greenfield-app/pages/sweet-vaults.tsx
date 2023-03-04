@@ -1,15 +1,15 @@
 import type { NextPage } from "next";
-import type { Pop } from "@popcorn/components/lib/types";
 
 import Image from "next/image";
 
-import { useNamedAccounts } from "@popcorn/components/lib/utils";
+import { useAllVaults } from "@popcorn/components/hooks/vaults";
 import Title from "@popcorn/components/components/content/Title";
 import SweetVault from "../components/SweetVault";
 import asset_bg from "../assets/sv-bg.png";
+import { ChainId } from "@popcorn/utils";
 
 const SweetVaults: NextPage = () => {
-  const sweetVaults = useNamedAccounts("1337", ["sEthSweetVault"]) as Pop.NamedAccountsMetadata[];
+  const { data: allVaults = [] } = useAllVaults(ChainId.Hardhat);
 
   return (
     <main>
@@ -19,8 +19,8 @@ const SweetVaults: NextPage = () => {
       </section>
 
       <section className="flex flex-col gap-8">
-        {sweetVaults.map((vault) => {
-          return <SweetVault vault={vault} key={`vault-${vault.address}`} />;
+        {allVaults.map((vaultAddress) => {
+          return <SweetVault key={`sv-${vaultAddress}`} chainId={ChainId.Hardhat} vaultAddress={vaultAddress} />;
         })}
       </section>
 

@@ -1,10 +1,10 @@
-import { Address, useAccount } from "wagmi";
+import { Address, useAccount, useNetwork, useSwitchNetwork } from "wagmi";
 import { BigNumber, constants } from "ethers";
 import toast from "react-hot-toast";
 import Image from "next/image";
 import ContentLoader from "react-content-loader";
 
-import { ChainId, formatAndRoundBigNumber, networkLogos } from "@popcorn/utils";
+import { ChainId, networkLogos } from "@popcorn/utils";
 import { Contract, Staking } from "@popcorn/components/lib";
 import { useClaim } from "@popcorn/components/lib/Staking/hooks";
 import MainActionButton from "@popcorn/app/components/MainActionButton";
@@ -19,6 +19,8 @@ interface ClaimCardProps {
 
 const ClaimCard: React.FC<ClaimCardProps> = ({ staking, chainId, addEarned }) => {
   const { address: account } = useAccount();
+  const { chain } = useNetwork();
+  const { switchNetwork } = useSwitchNetwork();
   const { openModal } = useClaimModal();
 
   const { write: claim } = useClaim(staking, chainId, account, {
@@ -51,7 +53,7 @@ const ClaimCard: React.FC<ClaimCardProps> = ({ staking, chainId, addEarned }) =>
                   </div>
                   <div
                     className={`hover:scale-102 transition duration-500 ease-in-out transform w-full md:h-48 border-b border-customLightGray border-opacity-40
-               ${status !== "success" || earned?.eq(constants.Zero) ? "hidden" : ""}`}
+               ${status !== "success" || earned?.value?.eq(constants.Zero) ? "hidden" : ""}`}
                   >
                     <div className="flex flex-col md:flex-row justify-between pt-4 pb-6 md:px-8">
                       <div className="flex flex-col justify-between">
@@ -76,13 +78,19 @@ const ClaimCard: React.FC<ClaimCardProps> = ({ staking, chainId, addEarned }) =>
                         <div className="my-6 md:my-0">
                           <p className="text-primaryLight leading-6">Rewards</p>
                           <h1 className={`text-2xl md:text-3xl leading-8 text-primary`}>
-                            {formatAndRoundBigNumber(earned, decimals)}{" "}
+                            {earned?.formatted}{" "}
                             <span className=" text-tokenTextGray text-xl"> POP</span>
                           </h1>
                         </div>
                       </div>
                       <div>
-                        <MainActionButton handleClick={claim} label="Claim" disabled={earned?.eq(constants.Zero)} />
+                        <MainActionButton
+                          handleClick={
+                            Number(chain.id) !== Number(chainId) ? () => switchNetwork(Number(chainId)) : () => claim()
+                          }
+                          label="Claim"
+                          disabled={earned?.value?.eq(constants.Zero)}
+                        />
                       </div>
                     </div>
                   </div>

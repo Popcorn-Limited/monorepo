@@ -7,6 +7,3 @@
 [submodule "packages/foundry/lib/solmate"]
 	path = packages/foundry/lib/solmate
 	url = https://github.com/transmissions11/solmate
-[submodule "packages/foundry/lib/libcompound"]
-	path = packages/foundry/lib/libcompound
-	url = https://github.com/transmissions11/libcompound

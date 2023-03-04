@@ -43,8 +43,12 @@ contract BeefyAdapterTest is AbstractAdapterTest {
     // Endorse Beefy Vault
     permissionRegistry = IPermissionRegistry(address(new PermissionRegistry(address(this))));
     setPermission(_beefyVault, true, false);
+    if (_beefyBooster != address(0)) {
+      // Endorse Beefy Booster
+      setPermission(_beefyBooster, true, false);
+    }
 
-    setUpBaseTest(IERC20(IBeefyVault(beefyVault).want()), adapter, address(permissionRegistry), 10, "Beefy ", true);
+    setUpBaseTest(IERC20(IBeefyVault(beefyVault).want()), address(new BeefyAdapter()), address(permissionRegistry), 10, "Beefy ", true);
 
     vm.label(_beefyVault, "beefyVault");
     vm.label(_beefyBooster, "beefyBooster");
@@ -57,10 +61,6 @@ contract BeefyAdapterTest is AbstractAdapterTest {
   /*//////////////////////////////////////////////////////////////
                           HELPER
     //////////////////////////////////////////////////////////////*/
-
-  function createAdapter() public override {
-    adapter = IAdapter(address(new BeefyAdapter()));
-  }
 
   function increasePricePerShare(uint256 amount) public override {
     deal(address(asset), address(beefyVault), asset.balanceOf(address(beefyVault)) + amount);
@@ -127,6 +127,7 @@ contract BeefyAdapterTest is AbstractAdapterTest {
     createAdapter();
     (address _beefyVault, address _beefyBooster) = abi.decode(testConfigStorage.getTestConfig(0), (address, address));
     setPermission(_beefyVault, false, false);
+    if (_beefyBooster != address(0)) setPermission(_beefyBooster, true, false);
 
     vm.expectRevert(abi.encodeWithSelector(BeefyAdapter.NotEndorsed.selector, _beefyVault));
     adapter.initialize(
@@ -152,6 +153,7 @@ contract BeefyAdapterTest is AbstractAdapterTest {
     );
 
     // Using stMATIC-MATIC vault Booster on polygon
+    setPermission(0xBb77dDe3101B8f9B71755ABe2F69b64e79AE4A41, true, false);
     vm.expectRevert(
       abi.encodeWithSelector(
         BeefyAdapter.InvalidBeefyBooster.selector,
@@ -191,5 +193,36 @@ contract BeefyAdapterTest is AbstractAdapterTest {
     vm.stopPrank();
 
     assertGe(shares, defaultAmount, testId);
+  }
+
+  /*//////////////////////////////////////////////////////////////
+                              PAUSE
+    //////////////////////////////////////////////////////////////*/
+
+  function test__unpause() public override {
+    _mintFor(defaultAmount * 3, bob);
+
+    vm.prank(bob);
+    adapter.deposit(defaultAmount, bob);
+
+    uint256 oldTotalAssets = adapter.totalAssets();
+    uint256 oldTotalSupply = adapter.totalSupply();
+    uint256 oldIouBalance = iouBalance();
+
+    adapter.pause();
+    adapter.unpause();
+
+    // We simply deposit back into the external protocol
+    // TotalSupply and Assets dont change
+    // @dev overriden _delta_
+    assertApproxEqAbs(oldTotalAssets, adapter.totalAssets(), 50, "totalAssets");
+    assertApproxEqAbs(oldTotalSupply, adapter.totalSupply(), 50, "totalSupply");
+    assertApproxEqAbs(asset.balanceOf(address(adapter)), 0, 50, "asset balance");
+    assertApproxEqAbs(iouBalance(), oldIouBalance, 50, "iou balance");
+
+    // Deposit and mint dont revert
+    vm.startPrank(bob);
+    adapter.deposit(defaultAmount, bob);
+    adapter.mint(defaultAmount, bob);
   }
 }
