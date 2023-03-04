@@ -30,8 +30,6 @@ contract AaveV2AdapterTest is AbstractAdapterTest {
   }
 
   function _setUpTest(bytes memory testConfig) internal {
-    createAdapter();
-
     (address _asset, address aaveDataProvider) = abi.decode(testConfig, (address, address));
     (address _aToken, , ) = IProtocolDataProvider(aaveDataProvider).getReserveTokensAddresses(_asset);
 

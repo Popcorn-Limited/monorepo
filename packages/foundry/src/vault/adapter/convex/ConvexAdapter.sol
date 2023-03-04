@@ -5,7 +5,7 @@ pragma solidity ^0.8.15;
 
 import { AdapterBase, IERC20, IERC20Metadata, SafeERC20, ERC20, Math, IStrategy, IAdapter } from "../abstracts/AdapterBase.sol";
 import { WithRewards, IWithRewards } from "../abstracts/WithRewards.sol";
-import { IConvexBooster, IBaseRewarder } from "./IConvex.sol";
+import { IConvexBooster, IConvexRewards, IRewards } from "./IConvex.sol";
 
 /**
  * @title   Convex Adapter
@@ -13,8 +13,8 @@ import { IConvexBooster, IBaseRewarder } from "./IConvex.sol";
  * @notice  ERC4626 wrapper for Convex Vaults.
  *
  * An ERC4626 compliant Wrapper for https://github.com/beefyfinance/beefy-contracts/blob/master/contracts/BIFI/vaults/BeefyVaultV6.sol.
- * Allows wrapping Convex Vaults with or without an active Booster.
- * Allows for additional strategies to use rewardsToken in case of an active Booster.
+ * Allows wrapping Convex Vaults with or without an active convexBooster.
+ * Allows for additional strategies to use rewardsToken in case of an active convexBooster.
  */
 contract ConvexAdapter is AdapterBase, WithRewards {
   using SafeERC20 for IERC20;
@@ -27,42 +27,47 @@ contract ConvexAdapter is AdapterBase, WithRewards {
   uint256 public pid;
 
   /// @notice The booster address for Convex
-  IConvexBooster public booster;
+  IConvexBooster public convexBooster;
 
-  /// @notice The Convex BaseRewarder.
-  IBaseRewarder public baseRewarder;
+  /// @notice The Convex convexRewards.
+  IConvexRewards public convexRewards;
 
   /*//////////////////////////////////////////////////////////////
                             INITIALIZATION
     //////////////////////////////////////////////////////////////*/
 
+  error AssetMismatch();
+
   /**
    * @notice Initialize a new Convex Adapter.
    * @param adapterInitData Encoded data for the base adapter initialization.
+   * @param registry The Convex Booster contract
    * @param convexInitData Encoded data for the convex adapter initialization.
-   * @dev `_booster` - The booster address for Convex.
    * @dev `_pid` - The poolId for lpToken.
    * @dev This function is called by the factory contract when deploying a new vault.
    */
   function initialize(
     bytes memory adapterInitData,
-    address,
+    address registry,
     bytes memory convexInitData
   ) public initializer {
     __AdapterBase_init(adapterInitData);
 
-    (address _booster, uint256 _pid) = abi.decode(convexInitData, (address, uint256));
+    uint256 _pid = abi.decode(convexInitData, (uint256));
 
-    booster = IConvexBooster(_booster);
+    convexBooster = IConvexBooster(registry);
     pid = _pid;
 
-    (address _asset, , , address _baseRewarder, , ) = booster.poolInfo(pid);
-    baseRewarder = IBaseRewarder(_baseRewarder);
+    (address _asset, , , address _convexRewards, , ) = convexBooster.poolInfo(pid);
+
+    if (_asset != asset()) revert AssetMismatch();
+
+    convexRewards = IConvexRewards(_convexRewards);
 
     _name = string.concat("Popcorn Convex", IERC20Metadata(_asset).name(), " Adapter");
     _symbol = string.concat("popB-", IERC20Metadata(_asset).symbol());
 
-    IERC20(_asset).approve(address(booster), type(uint256).max);
+    IERC20(_asset).approve(address(convexBooster), type(uint256).max);
   }
 
   function name() public view override(IERC20Metadata, ERC20) returns (string memory) {
@@ -79,35 +84,49 @@ contract ConvexAdapter is AdapterBase, WithRewards {
 
   /// @notice Calculates the total amount of underlying tokens the Vault holds.
   /// @return The total amount of underlying tokens the Vault holds.
-  function totalAssets() public view override returns (uint256) {
-    return paused() ? IERC20(asset()).balanceOf(address(this)) : baseRewarder.balanceOf(address(this));
+  function _totalAssets() internal view override returns (uint256) {
+    return convexRewards.balanceOf(address(this));
   }
 
-  function previewWithdraw(uint256 assets) public view override returns (uint256) {
-    return _convertToShares(assets, Math.Rounding.Up);
-  }
+  /// @notice The token rewarded if the aave liquidity mining is active
+  function rewardTokens() external view override returns (address[] memory) {
+    uint256 len = convexRewards.extraRewardsLength();
 
-  function previewRedeem(uint256 shares) public view override returns (uint256) {
-    return _convertToAssets(shares, Math.Rounding.Up);
+    address[] memory tokens = new address[](len);
+    for (uint256 i; i < len; i++) {
+      tokens[i] = convexRewards.extraRewards(i).rewardToken();
+    }
+    return tokens;
   }
 
   /*//////////////////////////////////////////////////////////////
                           INTERNAL HOOKS LOGIC
     //////////////////////////////////////////////////////////////*/
 
-  /// @notice Deposit into Convex booster contract.
-  function _protocolDeposit(uint256 amount, uint256) internal virtual override {
-    booster.deposit(pid, amount, true);
+  /// @notice Deposit into Convex convexBooster contract.
+  function _protocolDeposit(uint256 amount, uint256) internal override {
+    convexBooster.deposit(pid, amount, true);
   }
 
-  /// @notice Withdraw from Convex baseRewarder contract.
-  function _protocolWithdraw(uint256, uint256 shares) internal virtual override {
+  /// @notice Withdraw from Convex convexRewards contract.
+  function _protocolWithdraw(uint256 amount, uint256) internal override {
     /**
      * @dev No need to convert as Convex shares are 1:1 with Curve deposits.
      * @param amount Amount of shares to withdraw.
      * @param claim Claim rewards on withdraw?
      */
-    baseRewarder.withdrawAndUnwrap(shares, false);
+    convexRewards.withdrawAndUnwrap(amount, false);
+  }
+
+  /*//////////////////////////////////////////////////////////////
+                            STRATEGY LOGIC
+    //////////////////////////////////////////////////////////////*/
+
+  error MiningNotActive();
+
+  /// @notice Claim liquidity mining rewards given that it's active
+  function claim() public override onlyStrategy {
+    convexRewards.getReward(address(this), true);
   }
 
   /*//////////////////////////////////////////////////////////////

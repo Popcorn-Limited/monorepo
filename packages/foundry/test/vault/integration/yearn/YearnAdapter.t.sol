@@ -28,8 +28,6 @@ contract YearnAdapterTest is AbstractAdapterTest {
   }
 
   function _setUpTest(bytes memory testConfig) internal {
-    createAdapter();
-
     address _asset = abi.decode(testConfig, (address));
 
     setUpBaseTest(IERC20(_asset), address(new YearnAdapter()), 0x50c1a2eA0a861A967D9d0FFE2AE4012c2E053804, 10, "Yearn ", false);

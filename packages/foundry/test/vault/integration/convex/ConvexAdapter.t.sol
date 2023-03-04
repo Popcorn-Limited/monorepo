@@ -3,15 +3,15 @@ pragma solidity ^0.8.15;
 
 import { Test } from "forge-std/Test.sol";
 
-import { ConvexAdapter, SafeERC20, IERC20, IERC20Metadata, Math, IConvexBooster, IBaseRewarder } from "../../../../src/vault/adapter/convex/ConvexAdapter.sol";
+import { ConvexAdapter, SafeERC20, IERC20, IERC20Metadata, Math, IConvexBooster, IConvexRewards } from "../../../../src/vault/adapter/convex/ConvexAdapter.sol";
 import { ConvexTestConfigStorage, ConvexTestConfig } from "./ConvexTestConfigStorage.sol";
 import { AbstractAdapterTest, ITestConfigStorage, IAdapter } from "../abstract/AbstractAdapterTest.sol";
 
 contract ConvexAdapterTest is AbstractAdapterTest {
   using Math for uint256;
 
-  IConvexBooster booster;
-  IBaseRewarder baseRewarder;
+  IConvexBooster convexBooster = IConvexBooster(0xF403C135812408BFbE8713b5A23a04b3D48AAE31);
+  IConvexRewards convexRewards;
   uint256 pid;
 
   function setUp() public {
@@ -28,20 +28,17 @@ contract ConvexAdapterTest is AbstractAdapterTest {
   }
 
   function _setUpTest(bytes memory testConfig) internal {
-    createAdapter();
+    uint256 _pid = abi.decode(testConfig, (uint256));
 
-    (address _booster, uint256 _pid) = abi.decode(testConfig, (address, uint256));
-
-    booster = IConvexBooster(_booster);
     pid = _pid;
 
-    (address _asset, , , address _baseRewarder, , ) = booster.poolInfo(pid);
-    baseRewarder = IBaseRewarder(_baseRewarder);
+    (address _asset, , , address _convexRewards, , ) = convexBooster.poolInfo(pid);
+    convexRewards = IConvexRewards(_convexRewards);
 
-    setUpBaseTest(IERC20(_asset), adapter, address(0), 10, "Convex", true);
+    setUpBaseTest(IERC20(_asset), address(new ConvexAdapter()), address(convexBooster), 10, "Convex", true);
 
-    vm.label(address(booster), "booster");
-    vm.label(address(baseRewarder), "baseRewarder");
+    vm.label(address(convexBooster), "convexBooster");
+    vm.label(address(convexRewards), "convexRewards");
     vm.label(address(asset), "asset");
     vm.label(address(this), "test");
 
@@ -52,12 +49,8 @@ contract ConvexAdapterTest is AbstractAdapterTest {
                           HELPER
     //////////////////////////////////////////////////////////////*/
 
-  function createAdapter() public override {
-    adapter = IAdapter(address(new ConvexAdapter()));
-  }
-
   function increasePricePerShare(uint256 amount) public override {
-    deal(address(asset), address(baseRewarder), asset.balanceOf(address(baseRewarder)) + amount);
+    deal(address(asset), address(convexRewards), asset.balanceOf(address(convexRewards)) + amount);
   }
 
   // Verify that totalAssets returns the expected amount
@@ -93,6 +86,6 @@ contract ConvexAdapterTest is AbstractAdapterTest {
       "symbol"
     );
 
-    assertEq(asset.allowance(address(adapter), address(booster)), type(uint256).max, "allowance");
+    assertEq(asset.allowance(address(adapter), address(convexBooster)), type(uint256).max, "allowance");
   }
 }

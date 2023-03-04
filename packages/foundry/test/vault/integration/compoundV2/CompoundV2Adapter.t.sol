@@ -31,8 +31,6 @@ contract CompoundV2AdapterTest is AbstractAdapterTest {
   }
 
   function _setUpTest(bytes memory testConfig) internal {
-    createAdapter();
-
     address _cToken = abi.decode(testConfig, (address));
 
     cToken = ICToken(_cToken);

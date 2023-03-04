@@ -23,10 +23,22 @@ interface IConvexBooster {
     );
 }
 
-interface IBaseRewarder {
+interface IConvexRewards {
+  function withdrawAndUnwrap(uint256 amount, bool claim) external returns (bool);
+
+  function getReward(address _account, bool _claimExtras) external returns (bool);
+
   function balanceOf(address addr) external view returns (uint256);
 
   function stakingToken() external view returns (address);
 
-  function withdrawAndUnwrap(uint256 amount, bool claim) external returns (bool);
+  function extraRewards(uint256 index) external view returns (IRewards);
+
+  function extraRewardsLength() external view returns (uint256);
+
+  function rewardToken() external view returns (address);
+}
+
+interface IRewards {
+  function rewardToken() external view returns (address);
 }

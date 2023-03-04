@@ -33,8 +33,6 @@ contract BeefyAdapterTest is AbstractAdapterTest {
   }
 
   function _setUpTest(bytes memory testConfig) internal {
-    createAdapter();
-
     (address _beefyVault, address _beefyBooster) = abi.decode(testConfig, (address, address));
     beefyVault = IBeefyVault(_beefyVault);
     beefyBooster = IBeefyBooster(_beefyBooster);
