@@ -7,12 +7,14 @@ import { IUniswapRouterV2 } from "../../../../../../interfaces/external/uni/IUni
 import { IUniswapV2Pair } from "../../../../../../interfaces/external/uni/IUniswapV2Pair.sol";
 import { IMiniChefV2 } from "../../../../../../interfaces/external/sushi/IMiniChefV2.sol";
 import { IRewarder } from "../../../../../../interfaces/external/IRewarder.sol";
+import { IUniswapV2Module } from "../../../../../../interfaces/modules/IUniswapV2Module.sol";
 
 contract LiquidityPairCompounder is LiquidityPairBase {
   constructor(
     address _native,
     address _lpPair,
-    address _swapRouter,
+    address[] memory _tradeModules,
+    address[] memory _routers,
     address _vault,
     address _strategist,
     address[] memory _protocolAddresses,
@@ -23,7 +25,9 @@ contract LiquidityPairCompounder is LiquidityPairBase {
   ) public {
     native = _native;
     lpPair = _lpPair;
-    swapRouter = _swapRouter;
+
+    tradeModules = _tradeModules;
+    routers = _routers;
 
     vault = _vault;
     strategist = _strategist;
@@ -42,56 +46,42 @@ contract LiquidityPairCompounder is LiquidityPairBase {
 
   // Give allowances for protocol deposit and rewardToken swaps.
   function _giveAllowances() internal override {
+    address uniV2Router = routers[0];
     address chef = protocolAddresses[0];
 
     ERC20(lpPair).approve(chef, type(uint256).max);
-    ERC20(native).approve(swapRouter, type(uint256).max);
-    ERC20(lpToken0).approve(swapRouter, type(uint256).max);
-    ERC20(lpToken1).approve(swapRouter, type(uint256).max);
+    ERC20(native).approve(uniV2Router, type(uint256).max);
+    ERC20(lpToken0).approve(uniV2Router, type(uint256).max);
+    ERC20(lpToken1).approve(uniV2Router, type(uint256).max);
   }
 
   /*//////////////////////////////////////////////////////////////
                           HARVEST LOGIC
     //////////////////////////////////////////////////////////////*/
 
-  // Claim rewards from underlying protocol.
-  function _claimRewards() internal override {
-    address chef = protocolAddresses[0];
-    uint256 pid = protocolUints[0];
-
-    IMiniChefV2(chef).harvest(pid, address(this));
-  }
-
   // Swap all rewards to native token.
-  function _swapRewardsToNative() internal override {
-    uint256 len = rewardsToNativeRoutes.length;
-    for (uint256 i; i < len; ++i) {
-      address reward = rewardsToNativeRoutes[i][0];
-      address[] memory rewardRoute = rewardsToNativeRoutes[i];
-      uint256 rewardAmount = ERC20(reward).balanceOf(address(this));
-      if (rewardAmount > 0) {
-        _uniV2Swap(swapRouter, rewardRoute, rewardAmount);
-      }
-    }
+  function _swapRewardsToNative(address[] memory _rewardRoute, uint256 _rewardAmount) internal override {
+    IUniswapV2Module uniV2Module = IUniswapV2Module(tradeModules[0]);
+    address uniV2Router = routers[0];
+
+    uniV2Module.swap(uniV2Router, _rewardRoute, _rewardAmount);
   }
 
   // Swap native tokens for lpTokens.
   function _swapNativeToLpTokens() internal override {
-    _uniV2Swap(swapRouter, nativeToLp0Route, ERC20(native).balanceOf(address(this)) / 2);
-    _uniV2Swap(swapRouter, nativeToLp1Route, ERC20(native).balanceOf(address(this)));
+    IUniswapV2Module uniV2Module = IUniswapV2Module(tradeModules[0]);
+    address uniV2Router = routers[0];
+
+    uniV2Module.swap(uniV2Router, nativeToLp0Route, ERC20(native).balanceOf(address(this)) / 2);
+    uniV2Module.swap(uniV2Router, nativeToLp1Route, ERC20(native).balanceOf(address(this)));
   }
 
   // Use lpTokens to create lpPair.
   function _addLiquidity() internal override {
-    _uniV2AddLiquidity(swapRouter, lpToken0, lpToken1);
-  }
+    IUniswapV2Module uniV2Module = IUniswapV2Module(tradeModules[0]);
+    address uniV2Router = routers[0];
 
-  // Deposit lpPair into underlying protocol.
-  function _deposit() internal override {
-    address chef = protocolAddresses[0];
-    uint256 pid = protocolUints[0];
-
-    IMiniChefV2(chef).deposit(pid, ERC20(lpPair).balanceOf(address(this)), address(this));
+    uniV2Module.addLiquidity(uniV2Router, lpToken0, lpToken1);
   }
 
   // Return available rewards for all rewardTokens.

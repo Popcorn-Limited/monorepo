@@ -36,4 +36,36 @@ contract UniV2TradeModule {
     IERC20(tradePath[len - 1]).transfer(msg.sender, amountsOut[len - 1]);
     return amountsOut[len - 1];
   }
+
+  // Swap compatible with UniswapV2 interface.
+  function swap(
+    address _router,
+    address[] memory _route,
+    uint256 _amount
+  ) external {
+    IUniswapRouterV2(_router).swapExactTokensForTokens(_amount, 0, _route, address(this), block.timestamp + 60);
+  }
+
+  // Add liquidity to UniswapV2-compatible protocol.
+  function addLiquidity(
+    address _router,
+    address _lpToken0,
+    address _lpToken1
+  ) external {
+    uint256 lpToken0Amount = IERC20(_lpToken0).balanceOf(address(this));
+    uint256 lpToken1Amount = IERC20(_lpToken1).balanceOf(address(this));
+
+    if (lpToken0Amount > 0 && lpToken1Amount > 0) {
+      IUniswapRouterV2(_router).addLiquidity(
+        _lpToken0,
+        _lpToken1,
+        lpToken0Amount,
+        lpToken1Amount,
+        0,
+        0,
+        address(this),
+        block.timestamp + 60
+      );
+    }
+  }
 }

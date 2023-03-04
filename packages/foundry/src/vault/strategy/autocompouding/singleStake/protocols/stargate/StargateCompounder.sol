@@ -8,12 +8,14 @@ import { IUniswapV2Pair } from "../../../../../../interfaces/external/uni/IUnisw
 import { IStargateRewarder } from "../../../../../../interfaces/external/stargate/IStargateRewarder.sol";
 import { IStargateRouter } from "../../../../../../interfaces/external/stargate/IStargateRouter.sol";
 import { IRewarder } from "../../../../../../interfaces/external/IRewarder.sol";
+import { IUniswapV2Module } from "../../../../../../interfaces/modules/IUniswapV2Module.sol";
 
 contract StargateCompounder is SingleStakeBase {
   constructor(
     address _native,
     address _assetToken,
-    address _swapRouter,
+    address[] memory _tradeModules,
+    address[] memory _routers,
     address _vault,
     address _strategist,
     address[] memory _protocolAddresses,
@@ -22,7 +24,9 @@ contract StargateCompounder is SingleStakeBase {
     address[] memory _nativeToAssetTokenRoute
   ) public {
     native = _native;
-    swapRouter = _swapRouter;
+
+    tradeModules = _tradeModules;
+    routers = _routers;
 
     vault = _vault;
     strategist = _strategist;
@@ -42,61 +46,40 @@ contract StargateCompounder is SingleStakeBase {
 
   // Give allowances for protocol deposit and rewardToken swaps.
   function _giveAllowances() internal override {
-    address rewarder = protocolAddresses[0];
+    address stargateRewarder = protocolAddresses[0];
     address stargateRouter = protocolAddresses[1];
     address stargateWrappedAsset = protocolAddresses[2];
 
     ERC20(assetToken).approve(stargateRouter, type(uint256).max);
-    ERC20(stargateWrappedAsset).approve(rewarder, type(uint256).max);
+    ERC20(stargateWrappedAsset).approve(stargateRewarder, type(uint256).max);
   }
 
   /*//////////////////////////////////////////////////////////////
                           COMPOUND LOGIC
     //////////////////////////////////////////////////////////////*/
 
-  // Claim rewards from underlying protocol
-  function _claimRewards() internal override {
-    address rewarder = protocolAddresses[0];
-    uint256 pid = protocolUints[0];
-
-    IStargateRewarder(rewarder).deposit(pid, 0);
-  }
-
   // Swap all rewards to native token
-  function _swapRewardsToNative() internal override {
-    uint256 len = rewardsToNativeRoutes.length;
-    for (uint256 i; i < len; ++i) {
-      address reward = rewardsToNativeRoutes[i][0];
-      address[] memory rewardRoute = rewardsToNativeRoutes[i];
-      uint256 rewardAmount = ERC20(reward).balanceOf(address(this));
-      if (rewardAmount > 0) {
-        _uniV2Swap(swapRouter, rewardRoute, rewardAmount);
-      }
-    }
+  function _swapRewardsToNative(address[] memory _rewardRoute, uint256 _rewardAmount) internal override {
+    IUniswapV2Module uniV2Module = IUniswapV2Module(tradeModules[0]);
+    address uniV2Router = routers[0];
+
+    uniV2Module.swap(uniV2Router, _rewardRoute, _rewardAmount);
   }
 
   // Swap native tokens for lpTokens
   function _swapNativeToAssetToken() internal override {
-    _uniV2Swap(swapRouter, nativeToAssetTokenRoute, ERC20(native).balanceOf(address(this)));
-  }
+    IUniswapV2Module uniV2Module = IUniswapV2Module(tradeModules[0]);
+    address uniV2Router = routers[0];
 
-  // deposit asset into underlying protocol
-  function _deposit() internal override {
-    address rewarder = protocolAddresses[0];
-    address stargateRouter = protocolAddresses[1];
-    address stargateWrappedAsset = protocolAddresses[2];
-    uint256 pid = protocolUints[0];
-
-    IStargateRouter(stargateRouter).addLiquidity(pid, ERC20(assetToken).balanceOf(address(this)), address(this));
-    IStargateRewarder(rewarder).deposit(pid, ERC20(stargateWrappedAsset).balanceOf(address(this)));
+    uniV2Module.swap(uniV2Router, nativeToAssetTokenRoute, ERC20(native).balanceOf(address(this)));
   }
 
   // Return available rewards for all rewardTokens.
   function rewardsAvailable() public override returns (uint256[] memory) {
-    address rewarder = protocolAddresses[0];
+    IStargateRewarder stargateRewarder = IStargateRewarder(protocolAddresses[0]);
     uint256 pid = protocolUints[0];
 
-    pendingRewards.push(IStargateRewarder(rewarder).pendingStargate(pid, address(this)));
+    pendingRewards.push(stargateRewarder.pendingStargate(pid, address(this)));
 
     return pendingRewards;
   }

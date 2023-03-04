@@ -23,8 +23,9 @@ contract CompounderStrategyBase {
   address public vault;
   address public strategist;
 
-  // Router and Routes
-  address public swapRouter;
+  // Swapping
+  address[] public tradeModules;
+  address[] public routers;
   /**
    * @dev rewardToken index must match respective index in rewardRoutes and pendingRewards.
    * @dev Routes follow this pattern: [rewardToken, ...hops, native]
@@ -63,6 +64,8 @@ contract CompounderStrategyBase {
 
   // Give allowances for rewardToken swaps.
   function giveRewardAllowances() public {
+    address swapRouter = routers[0];
+
     uint256 len = rewardTokens.length;
     for (uint256 i; i < len; ++i) {
       ERC20(rewardTokens[i]).approve(swapRouter, type(uint256).max);
@@ -96,13 +99,32 @@ contract CompounderStrategyBase {
   function _compound() internal virtual {}
 
   // Swap all rewards to native token.
-  function _swapRewardsToNative() internal virtual {}
+  function _swapRewardsToNative() internal virtual {
+    uint256 len = rewardsToNativeRoutes.length;
+    for (uint256 i; i < len; ++i) {
+      address reward = rewardsToNativeRoutes[i][0];
+      address[] memory rewardRoute = rewardsToNativeRoutes[i];
+      uint256 rewardAmount = ERC20(reward).balanceOf(address(this));
+      if (rewardAmount > 0) {
+        _swapRewardsToNative(rewardRoute, rewardAmount);
+      }
+    }
+  }
+
+  function _swapRewardsToNative(address[] memory _rewardRoute, uint256 rewardAmount) internal virtual {}
 
   // Claim rewards from underlying protocol.
-  function _claimRewards() internal virtual {}
+  function _claimRewards() internal virtual {
+    IAdapter(address(this)).claim();
+  }
 
   // Deposit assetToken or lpPair into underlying protocol.
-  function _deposit() internal virtual {}
+  function _deposit() internal virtual {
+    uint256 assets = 1e18;
+    uint256 shares = 1e18;
+
+    IAdapter(address(this)).strategyDeposit(assets, shares);
+  }
 
   /*//////////////////////////////////////////////////////////////
                           REWARDS AND ROUTES
@@ -172,16 +194,4 @@ contract CompounderStrategyBase {
 
   // Calculates how much 'want' the strategy has working in the farm.
   function balanceOfPool() public view virtual returns (uint256) {}
-
-  /*//////////////////////////////////////////////////////////////
-                          SWAPPING LOGIC
-    //////////////////////////////////////////////////////////////*/
-  // Swap compatible with UniswapV2 interface.
-  function _uniV2Swap(
-    address _router,
-    address[] memory _route,
-    uint256 _amount
-  ) internal {
-    IUniswapRouterV2(_router).swapExactTokensForTokens(_amount, 0, _route, address(this), block.timestamp + 60);
-  }
 }

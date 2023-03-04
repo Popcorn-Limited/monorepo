@@ -88,30 +88,4 @@ contract LiquidityPairBase is CompounderStrategyBase {
 
   // Use lpTokens to create lpPair.
   function _addLiquidity() internal virtual {}
-
-  /*//////////////////////////////////////////////////////////////
-                          LIQUIDITY LOGIC
-    //////////////////////////////////////////////////////////////*/
-  // Add liquidity to UniswapV2-compatible protocol.
-  function _uniV2AddLiquidity(
-    address _router,
-    address _lpToken0,
-    address _lpToken1
-  ) internal {
-    uint256 lpToken0Amount = ERC20(_lpToken0).balanceOf(address(this));
-    uint256 lpToken1Amount = ERC20(_lpToken1).balanceOf(address(this));
-
-    if (lpToken0Amount > 0 && lpToken1Amount > 0) {
-      IUniswapRouterV2(_router).addLiquidity(
-        _lpToken0,
-        _lpToken1,
-        lpToken0Amount,
-        lpToken1Amount,
-        0,
-        0,
-        address(this),
-        block.timestamp + 60
-      );
-    }
-  }
 }
