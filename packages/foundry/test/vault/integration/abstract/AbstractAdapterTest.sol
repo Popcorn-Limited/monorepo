@@ -336,7 +336,7 @@ contract AbstractAdapterTest is PropertyTest {
       if (i > 0) overrideSetup(testConfigStorage.getTestConfig(i));
 
       uint256 reqAssets = (adapter.previewMint(amount) * 10) / 9;
-      _mintFor(reqAssets, bob);
+      _mintFor(10000000000, bob);
       vm.prank(bob);
       adapter.deposit(reqAssets, bob);
       prop_redeem(bob, bob, amount, testId);
@@ -362,6 +362,9 @@ contract AbstractAdapterTest is PropertyTest {
 
     vm.startPrank(bob);
     uint256 shares = adapter.deposit(defaultAmount, bob);
+    emit log_named_uint("DING", shares);
+    emit log_named_uint("RING", defaultAmount);
+
     uint256 assets = adapter.redeem(shares, bob, bob);
     vm.stopPrank();
 
@@ -370,10 +373,15 @@ contract AbstractAdapterTest is PropertyTest {
 
   function test__RT_deposit_withdraw() public virtual {
     _mintFor(defaultAmount, bob);
+    emit log_named_uint("PING0", defaultAmount);
 
     vm.startPrank(bob);
     uint256 shares1 = adapter.deposit(defaultAmount, bob);
+    emit log_named_uint("SHARES 1", shares1);
     uint256 shares2 = adapter.withdraw(defaultAmount, bob, bob);
+    // 1000000000000
+    //
+    emit log_named_uint("SHARES 2", shares2);
     vm.stopPrank();
 
     assertGe(shares2, shares1, testId);
