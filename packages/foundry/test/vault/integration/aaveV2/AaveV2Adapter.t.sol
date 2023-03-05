@@ -30,8 +30,6 @@ contract AaveV2AdapterTest is AbstractAdapterTest {
   }
 
   function _setUpTest(bytes memory testConfig) internal {
-    createAdapter();
-
     (address _asset, address aaveDataProvider) = abi.decode(testConfig, (address, address));
     (address _aToken, , ) = IProtocolDataProvider(aaveDataProvider).getReserveTokensAddresses(_asset);
 
@@ -39,7 +37,7 @@ contract AaveV2AdapterTest is AbstractAdapterTest {
     lendingPool = ILendingPool(aToken.POOL());
     aaveMining = IAaveMining(aToken.getIncentivesController());
 
-    setUpBaseTest(IERC20(_asset), adapter, aaveDataProvider, 10, "AaveV2 ", true);
+    setUpBaseTest(IERC20(_asset), address(new AaveV2Adapter()), aaveDataProvider, 10, "AaveV2 ", true);
 
     vm.label(address(aToken), "aToken");
     vm.label(address(lendingPool), "lendingPool");
@@ -53,10 +51,6 @@ contract AaveV2AdapterTest is AbstractAdapterTest {
   /*//////////////////////////////////////////////////////////////
                           HELPER
     //////////////////////////////////////////////////////////////*/
-
-  function createAdapter() public override {
-    adapter = IAdapter(address(new AaveV2Adapter()));
-  }
 
   function increasePricePerShare(uint256 amount) public override {
     deal(address(asset), address(aToken), asset.balanceOf(address(aToken)) + amount);
@@ -100,37 +94,5 @@ contract AaveV2AdapterTest is AbstractAdapterTest {
     );
 
     assertEq(asset.allowance(address(adapter), address(lendingPool)), type(uint256).max, "allowance");
-  }
-
-  function getApy() public view returns (uint256) {
-    DataTypes.ReserveData memory data = lendingPool.getReserveData(address(asset));
-    uint128 supplyRate = data.currentLiquidityRate;
-    return uint256(supplyRate / 1e9);
-  }
-
-  /*//////////////////////////////////////////////////////////////
-                          ROUNDTRIP TESTS
-    //////////////////////////////////////////////////////////////*/
-
-  function test__RT_deposit_withdraw() public override {
-    _mintFor(defaultAmount, bob);
-
-    vm.startPrank(bob);
-    uint256 shares1 = adapter.deposit(defaultAmount, bob);
-    uint256 shares2 = adapter.withdraw(defaultAmount - 1, bob, bob);
-    vm.stopPrank();
-
-    assertApproxGeAbs(shares2, shares1, _delta_, testId);
-  }
-
-  function test__RT_mint_withdraw() public override {
-    _mintFor(adapter.previewMint(defaultAmount), bob);
-
-    vm.startPrank(bob);
-    uint256 assets = adapter.mint(defaultAmount, bob);
-    uint256 shares = adapter.withdraw(assets - 1, bob, bob);
-    vm.stopPrank();
-
-    assertApproxGeAbs(shares, defaultAmount, _delta_, testId);
   }
 }

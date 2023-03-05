@@ -1,79 +1,62 @@
 import { ChainId } from "@popcorn/utils";
-import { Token } from "@popcorn/utils/src/types";
-import { BigNumber, constants } from "ethers";
-import { useState } from "react";
 import * as Icon from "react-feather";
-import TokenInput from "@popcorn/app/components/Common/TokenInput";
-import MainActionButton from "@popcorn/app/components/MainActionButton";
-import useXPOPRedemption from "hooks/xPopRedemption/useXPOPRedemption";
+import { useNamedAccounts } from "@popcorn/components/lib/utils";
+import AssetInputWithAction from "@popcorn/components/components/AssetInputWithAction";
+import useTokenAllowance from "@popcorn/app/hooks/tokens/useTokenAllowance";
+import { useAccount } from "wagmi";
+import TokenIcon from "@popcorn/app/components/TokenIcon";
 
 interface AirDropClaimProps {
   chainId: ChainId;
 }
 
 const AirDropClaim: React.FC<AirDropClaimProps> = ({ chainId }) => {
-  const {
-    approveXpopRedemption: approve,
-    redeemXpop: redeem,
-    balancesXPop,
-    balancesPop,
-    xPop,
-    pop,
-  } = useXPOPRedemption(chainId);
-  const balances = [balancesXPop, balancesPop];
-  const tokens = [xPop, pop];
-
-  const [inputAmount, setInputAmount] = useState<BigNumber>(BigNumber.from(0));
+  const { address: account } = useAccount();
+  const [pop, xPop, xPopRedemption] = useNamedAccounts(chainId as any, ["pop", "xPop", "xPopRedemption"]);
+  const { data: allowance } = useTokenAllowance(xPop?.address, chainId, account, xPopRedemption?.address);
 
   return (
     <div className="bg-white rounded-3xl px-5 pt-14 pb-6 border border-gray-200 shadow-custom">
-      <div className="flex flex-col justify-between items-start">
-        <TokenInput
+      <div className="flex flex-col justify-between items-start w-full">
+        <AssetInputWithAction
+          assetAddress={xPop?.address}
+          target={xPopRedemption?.address}
           chainId={chainId}
-          token={tokens[0]}
-          label={"Redeem Amount"}
-          balance={balances[0].balance}
-          amount={inputAmount}
-          setAmount={(n) => setInputAmount(n)}
-        />
-        <div className="w-full relative mt-10 mb-2">
-          <div className={`relative flex justify-center`}>
-            <div className="w-20 bg-white">
-              <div className="flex items-center justify-center w-14 h-14 mx-auto border border-gray-300 rounded-full cursor-pointer">
-                <Icon.ArrowDown height={24} width={24} strokeWidth={1.5} color="gray" />
-              </div>
-            </div>
-          </div>
-        </div>
-        <div className="w-full mt-6">
-          <TokenInput
-            chainId={chainId}
-            token={tokens[1]}
-            label={""}
-            amount={inputAmount}
-            setAmount={(n) => setInputAmount(n)}
-            readonly
-          />
-        </div>
-      </div>
-      <div className="w-full text-center mt-10 space-y-4">
-        {(balances[0].allowance.lte(BigNumber.from(0)) || balances[0].allowance.lt(inputAmount)) && (
-          <MainActionButton label={`Approve xPOP`} handleClick={approve} disabled={inputAmount.isZero()} />
-        )}
-        <MainActionButton
-          label="Redeem"
-          disabled={
-            inputAmount.isZero() ||
-            inputAmount.gte(balances[0].allowance) ||
-            balances[0].allowance.lte(constants.Zero) ||
-            balances[0].allowance.lt(inputAmount)
-          }
-          handleClick={() => {
-            redeem(inputAmount).then((res) => {
-              setInputAmount(BigNumber.from(0));
-            });
+          action={{
+            label: "Redeem",
+            abi: ["function redeem(uint256 amount) external"],
+            functionName: "redeem",
+            successMessage: "Redemption successful!",
           }}
-        />
+          allowance={allowance}
+        >
+          {({ ActionableComponent, data }) => {
+            return (
+              <>
+                <div className="w-full relative mt-4 mb-2">
+                  <div className={`relative flex justify-center`}>
+                    <div className="w-20 bg-white">
+                      <div className="flex items-center justify-center w-14 h-14 mx-auto border border-gray-300 rounded-full cursor-pointer">
+                        <Icon.ArrowDown height={24} width={24} strokeWidth={1.5} color="gray" />
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div className="w-full mt-6">
+                  <div
+                    className={`w-full flex flex-row justify-between px-5 py-4 items-center rounded-lg border border-customLightGray `}
+                  >
+                    <p>{data.balance.formatted}</p>
+                    <TokenIcon token={pop?.address} imageSize="w-5 h-5" chainId={chainId} />
+                  </div>
+                </div>
+                <div className="w-full text-center mt-10 space-y-4">
+                  <ActionableComponent />
+                </div>
+              </>
+            );
+          }}
+        </AssetInputWithAction>
       </div>
     </div>
   );

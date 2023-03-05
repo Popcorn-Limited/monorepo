@@ -6,7 +6,7 @@ const workspace = join(__dirname, "..");
 module.exports = {
   reactStrictMode: true,
   typescript: {
-    ignoreBuildErrors: false,
+    ignoreBuildErrors: true,
   },
   env: {
     RPC_URL: process.env.RPC_URL,

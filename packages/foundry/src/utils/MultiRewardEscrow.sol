@@ -28,6 +28,7 @@ contract MultiRewardEscrow is Owned {
    * @param _feeRecipient Receiver of all fees.
    */
   constructor(address _owner, address _feeRecipient) Owned(_owner) {
+    if(_feeRecipient == address(0)) revert ZeroAddress();
     feeRecipient = _feeRecipient;
   }
 

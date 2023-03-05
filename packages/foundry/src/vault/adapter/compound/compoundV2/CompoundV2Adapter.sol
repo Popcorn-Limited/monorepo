@@ -89,30 +89,22 @@ contract CompoundV2Adapter is AdapterBase, WithRewards {
                             ACCOUNTING LOGIC
     //////////////////////////////////////////////////////////////*/
 
-  function _totalAssets() internal view override returns (uint256) {
-    uint256 underlyingBalance_ = underlyingBalance;
-    return
-      underlyingBalance_ == 0
-        ? 0
-        : underlyingBalance.mulDiv(LibCompound.viewExchangeRate(cToken), 1e18, Math.Rounding.Down);
+  function _viewUnderlyingBalanceOf(address token, address user) internal view returns (uint256) {
+    ICToken token = ICToken(token);
+    return LibCompound.viewUnderlyingBalanceOf(token, user);
   }
 
-  function _underlyingBalance() internal view override returns (uint256) {
-    return cToken.balanceOf(address(this));
+  function _totalAssets() internal view override returns (uint256) {
+    return _viewUnderlyingBalanceOf(address(cToken), address(this));
   }
 
   /// @notice The amount of compound shares to withdraw given an mount of adapter shares
-  function convertToUnderlyingShares(uint256, uint256 shares) public view override returns (uint256) {
+  function convertToUnderlyingShares(
+    uint256 assets,
+    uint256 shares
+  ) public view override returns (uint256) {
     uint256 supply = totalSupply();
     return supply == 0 ? shares : shares.mulDiv(cToken.balanceOf(address(this)), supply, Math.Rounding.Up);
-  }
-
-  function previewWithdraw(uint256 assets) public view override returns (uint256) {
-    return _convertToShares(assets, Math.Rounding.Up);
-  }
-
-  function previewRedeem(uint256 shares) public view override returns (uint256) {
-    return _convertToAssets(shares, Math.Rounding.Down);
   }
 
   /*//////////////////////////////////////////////////////////////

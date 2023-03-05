@@ -1,9 +1,15 @@
-import { BigNumber } from "ethers";
+import { constants } from "ethers";
 import { useNamedAccounts } from "@popcorn/components/lib/utils";
-import { Pop } from "../../types";
+import { BigNumberWithFormatted, Pop } from "../../types";
 import { Address, useContractRead } from "wagmi";
+import { formatAndRoundBigNumber } from "@popcorn/utils";
 
-export const useClaimableBalance: Pop.Hook<BigNumber> = ({ chainId, address, account, enabled }: Pop.StdProps) => {
+export const useClaimableBalance: Pop.Hook<BigNumberWithFormatted> = ({
+  chainId,
+  address,
+  account,
+  enabled,
+}: Pop.StdProps) => {
   const [metadata] = useNamedAccounts(chainId as any, (!!address && [address]) || []);
   const _apyResolver = metadata?.apyResolver === "convex";
 
@@ -54,5 +60,16 @@ export const useClaimableBalance: Pop.Hook<BigNumber> = ({ chainId, address, acc
     functionName: "claimableRewards",
     args: [account as Address],
   });
-  return { ...result, data: result?.data ? result?.data[0].amount : undefined } as unknown as Pop.HookResult<BigNumber>;
+  return {
+    ...result,
+    data: result?.data
+      ? {
+          value: result?.data[0].amount,
+          formatted: formatAndRoundBigNumber(result.data[0].amount, 18),
+        }
+      : {
+          value: constants.Zero,
+          formatted: "0",
+        },
+  } as unknown as Pop.HookResult<BigNumberWithFormatted>;
 };

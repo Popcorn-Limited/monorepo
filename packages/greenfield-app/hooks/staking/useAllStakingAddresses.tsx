@@ -26,9 +26,13 @@ export default function useAllStakingAddresses(): StakingAddressWithMetadata[] {
   const { popStaking: localhostPopStaking } = useDeployment(ChainId.Localhost);
   const localhostStakingAddresses = useStakingContracts(ChainId.Localhost);
 
+  //Optimism
+  const { popStaking: optimismPopStaking } = useDeployment(ChainId.Optimism);
+
   return [
     { chainId: ChainId.Ethereum, stakingType: StakingType.PopLocker, address: ethereumPopStaking },
     { chainId: ChainId.Polygon, stakingType: StakingType.PopLocker, address: polygonPopStaking },
+    { chainId: ChainId.Optimism, stakingType: StakingType.PopLocker, address: optimismPopStaking },
     { chainId: ChainId.Localhost, stakingType: StakingType.PopLocker, address: localhostPopStaking },
     ...(ethereumStakingAddresses?.length ? ethereumStakingAddresses : []).map(
       (address) => ({ chainId: ChainId.Ethereum, stakingType: StakingType.StakingPool, address } || {}),

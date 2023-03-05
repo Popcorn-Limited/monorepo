@@ -43,7 +43,10 @@ export const useClaimableBalance: Pop.Hook<BigNumberWithFormatted> = ({
           value,
           formatted: data && formatAndRoundBigNumber(value as BigNumber, 18),
         }
-      : undefined,
+      : {
+          value: constants.Zero,
+          formatted: "0",
+        },
     status,
   } as Pop.HookResult<BigNumberWithFormatted>;
 };

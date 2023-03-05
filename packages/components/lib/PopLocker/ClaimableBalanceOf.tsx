@@ -1,7 +1,7 @@
 import { BigNumber } from "ethers";
 import { useEffect } from "react";
 import { usePrice } from "../Price";
-import { Pop } from "../types";
+import { BigNumberWithFormatted, Pop } from "../types";
 import { useMultiStatus } from "../utils";
 import { withBigNumberFormatting } from "../utils/hocs/withBigNumberFormatting";
 import { withLoading } from "../utils/hocs/withLoading";
@@ -9,7 +9,7 @@ import { useClaimableToken } from "../utils/hooks/useClaimableToken";
 import { useClaimableBalance } from "./hooks/useClaimableBalance";
 
 const eth_call =
-  (Component: Pop.FC<{ data?: BigNumber }>) =>
+  (Component: Pop.FC<{ data?: BigNumberWithFormatted }>) =>
   ({
     ...props
   }: Pop.StdProps & {
@@ -17,7 +17,7 @@ const eth_call =
       price?: BigNumber;
       address?: string;
       chainId?: Number;
-      balance?: BigNumber;
+      balance?: BigNumberWithFormatted;
       decimals?: number;
       status?: Pop.HookResult["status"];
     }) => React.ReactElement;
@@ -29,10 +29,10 @@ const eth_call =
     const status = useMultiStatus([claimableTokenStatus, balanceStatus]);
 
     useEffect(() => {
-      if (status === "success" && data?.gt(0)) {
-        props.callback?.(data);
+      if (status === "success" && data?.value.gt(0)) {
+        props.callback?.(data?.value);
       }
-    }, [status, data?._hex]);
+    }, [status, data?.value]);
 
     if (props.render) {
       return (
@@ -51,6 +51,6 @@ const eth_call =
     return <Component {...props} data={data} status={status} />;
   };
 
-export const ClaimableBalanceOf = eth_call(withBigNumberFormatting(withLoading(({ data }) => <>{data?.formatted}</>)));
+export const ClaimableBalanceOf = eth_call(withLoading(({ data }) => <>{data?.formatted}</>));
 
 export default ClaimableBalanceOf;

@@ -4,7 +4,7 @@
 pragma solidity ^0.8.15;
 
 import { IOwned } from "../IOwned.sol";
-import { IERC4626 } from "./IERC4626.sol";
+import { IERC4626Upgradeable as IERC4626 } from "openzeppelin-contracts-upgradeable/interfaces/IERC4626Upgradeable.sol";
 import { IPermit } from "../IPermit.sol";
 import { IPausable } from "../IPausable.sol";
 
@@ -16,8 +16,6 @@ interface IAdapter is IERC4626, IOwned, IPermit, IPausable {
   function strategyDeposit(uint256 assets, uint256 shares) external;
 
   function strategyWithdraw(uint256 assets, uint256 shares) external;
-
-  function claim() external;
 
   function supportsInterface(bytes4 interfaceId) external view returns (bool);
 
@@ -40,4 +38,8 @@ interface IAdapter is IERC4626, IOwned, IPermit, IPausable {
     address externalRegistry,
     bytes memory adapterData
   ) external;
+
+  function decimals() external view returns (uint8);
+
+  function decimalOffset() external view returns (uint8);
 }

@@ -4,7 +4,7 @@ pragma solidity ^0.8.15;
 
 import { SafeERC20Upgradeable as SafeERC20 } from "openzeppelin-contracts-upgradeable/token/ERC20/utils/SafeERC20Upgradeable.sol";
 import { Owned } from "../utils/Owned.sol";
-import { IVault, VaultInitParams, VaultFees } from "../interfaces/vault/IVault.sol";
+import { IVault, VaultInitParams, VaultFees, IERC4626, IERC20 } from "../interfaces/vault/IVault.sol";
 import { IMultiRewardStaking } from "../interfaces/IMultiRewardStaking.sol";
 import { IMultiRewardEscrow } from "../interfaces/IMultiRewardEscrow.sol";
 import { IDeploymentController, ICloneRegistry } from "../interfaces/vault/IDeploymentController.sol";
@@ -12,7 +12,6 @@ import { ITemplateRegistry, Template } from "../interfaces/vault/ITemplateRegist
 import { IPermissionRegistry, Permission } from "../interfaces/vault/IPermissionRegistry.sol";
 import { IVaultRegistry, VaultMetadata } from "../interfaces/vault/IVaultRegistry.sol";
 import { IAdminProxy } from "../interfaces/vault/IAdminProxy.sol";
-import { IERC4626, IERC20 } from "../interfaces/vault/IERC4626.sol";
 import { IStrategy } from "../interfaces/vault/IStrategy.sol";
 import { IAdapter } from "../interfaces/vault/IAdapter.sol";
 import { IPausable } from "../interfaces/IPausable.sol";
@@ -75,22 +74,25 @@ contract VaultController is Owned {
 
   event VaultDeployed(address indexed vault, address indexed staking, address indexed adapter);
 
+  error InvalidConfig();
+
   /**
    * @notice Deploy a new Vault. Optionally with an Adapter and Staking. Caller must be owner.
    * @param vaultData Vault init params.
    * @param adapterData Encoded adapter init data.
    * @param strategyData Encoded strategy init data.
-   * @param staking Address of staking contract to use for the vault. If 0, a new staking contract will be deployed.
+   * @param deployStaking Should we deploy a staking contract for the vault?
    * @param rewardsData Encoded data to add a rewards to the staking contract
    * @param metadata Vault metadata for the `VaultRegistry` (Will be used by the frontend for additional informations)
    * @param initialDeposit Initial deposit to the vault. If 0, no deposit will be made.
    * @dev This function is the one stop solution to create a new vault with all necessary admin functions or auxiliery contracts.
+   * @dev If `rewardsData` is not empty `deployStaking` must be true
    */
   function deployVault(
     VaultInitParams memory vaultData,
     DeploymentArgs memory adapterData,
     DeploymentArgs memory strategyData,
-    address staking,
+    bool deployStaking,
     bytes memory rewardsData,
     VaultMetadata memory metadata,
     uint256 initialDeposit
@@ -98,18 +100,25 @@ contract VaultController is Owned {
     IDeploymentController _deploymentController = deploymentController;
 
     _verifyToken(address(vaultData.asset));
-    _verifyAdapterConfiguration(address(vaultData.adapter), adapterData.id);
+    if (
+      address(vaultData.adapter) != address(0) &&
+      (adapterData.id > 0 || !cloneRegistry.cloneExists(address(vaultData.adapter)))
+    ) revert InvalidConfig();
 
     if (adapterData.id > 0)
       vaultData.adapter = IERC4626(_deployAdapter(vaultData.asset, adapterData, strategyData, _deploymentController));
 
     vault = _deployVault(vaultData, _deploymentController);
 
-    if (staking == address(0)) staking = _deployStaking(IERC20(address(vault)), _deploymentController);
+    address staking;
+    if (deployStaking) staking = _deployStaking(IERC20(address(vault)), _deploymentController);
 
     _registerCreatedVault(vault, staking, metadata);
 
-    if (rewardsData.length > 0) _handleVaultStakingRewards(vault, rewardsData);
+    if (rewardsData.length > 0) {
+      if (!deployStaking) revert InvalidConfig();
+      _handleVaultStakingRewards(vault, rewardsData);
+    }
 
     emit VaultDeployed(vault, staking, address(vaultData.adapter));
 
@@ -235,7 +244,11 @@ contract VaultController is Owned {
 
     adapter = abi.decode(returnData, (address));
 
-    adminProxy.execute(adapter, abi.encodeWithSelector(IAdapter.setPerformanceFee.selector, performanceFee));
+    (success, returnData) = adminProxy.execute(
+      adapter,
+      abi.encodeWithSelector(IAdapter.setPerformanceFee.selector, performanceFee)
+    );
+    if (!success) revert UnderlyingError(returnData);
   }
 
   /// @notice Encodes adapter init call. Was moved into its own function to fix "stack too deep" error.
@@ -375,6 +388,72 @@ contract VaultController is Owned {
       (bool success, bytes memory returnData) = adminProxy.execute(
         vaults[i],
         abi.encodeWithSelector(IVault.changeFees.selector)
+      );
+      if (!success) revert UnderlyingError(returnData);
+    }
+  }
+
+  /**
+   * @notice Sets new Quit Periods for Vaults. Caller must be creator of the vaults.
+   * @param vaults Addresses of the vaults to change
+   * @param quitPeriods QuitPeriod in seconds
+   * @dev Minimum value is 1 day max is 7 days.
+   * @dev Cant be called if recently a new fee or adapter has been proposed
+   */
+  function setVaultQuitPeriods(address[] calldata vaults, uint256[] calldata quitPeriods) external {
+    uint8 len = uint8(vaults.length);
+
+    _verifyEqualArrayLength(len, quitPeriods.length);
+
+    for (uint8 i = 0; i < len; i++) {
+      _verifyCreator(vaults[i]);
+
+      (bool success, bytes memory returnData) = adminProxy.execute(
+        vaults[i],
+        abi.encodeWithSelector(IVault.setQuitPeriod.selector, quitPeriods[i])
+      );
+      if (!success) revert UnderlyingError(returnData);
+    }
+  }
+
+  /**
+   * @notice Sets new Fee Recipients for Vaults. Caller must be creator of the vaults.
+   * @param vaults Addresses of the vaults to change
+   * @param feeRecipients fee recipient for this vault
+   * @dev address must not be 0
+   */
+  function setVaultFeeRecipients(address[] calldata vaults, address[] calldata feeRecipients) external {
+    uint8 len = uint8(vaults.length);
+
+    _verifyEqualArrayLength(len, feeRecipients.length);
+
+    for (uint8 i = 0; i < len; i++) {
+      _verifyCreator(vaults[i]);
+
+      (bool success, bytes memory returnData) = adminProxy.execute(
+        vaults[i],
+        abi.encodeWithSelector(IVault.setFeeRecipient.selector, feeRecipients[i])
+      );
+      if (!success) revert UnderlyingError(returnData);
+    }
+  }
+
+  /**
+   * @notice Sets new DepositLimit for Vaults. Caller must be creator of the vaults.
+   * @param vaults Addresses of the vaults to change
+   * @param depositLimits Maximum amount of assets that can be deposited.
+   */
+  function setVaultDepositLimits(address[] calldata vaults, uint256[] calldata depositLimits) external {
+    uint8 len = uint8(vaults.length);
+
+    _verifyEqualArrayLength(len, depositLimits.length);
+
+    for (uint8 i = 0; i < len; i++) {
+      _verifyCreator(vaults[i]);
+
+      (bool success, bytes memory returnData) = adminProxy.execute(
+        vaults[i],
+        abi.encodeWithSelector(IVault.setDepositLimit.selector, depositLimits[i])
       );
       if (!success) revert UnderlyingError(returnData);
     }
@@ -602,13 +681,24 @@ contract VaultController is Owned {
     //////////////////////////////////////////////////////////////*/
 
   /// @notice Pause Deposits and withdraw all funds from the underlying protocol. Caller must be owner or creator of the Vault.
-  function pauseAdapters(address[] calldata vaults) external {
+  function pauseAdapters(address[] calldata vaults) external onlyOwner {
     uint8 len = uint8(vaults.length);
     for (uint256 i = 0; i < len; i++) {
-      _verifyCreatorOrOwner(vaults[i]);
       (bool success, bytes memory returnData) = adminProxy.execute(
         IVault(vaults[i]).adapter(),
         abi.encodeWithSelector(IPausable.pause.selector)
+      );
+      if (!success) revert UnderlyingError(returnData);
+    }
+  }
+
+  /// @notice Unpause Deposits and deposit all funds into the underlying protocol. Caller must be owner or creator of the Vault.
+  function unpauseAdapters(address[] calldata vaults) external onlyOwner {
+    uint8 len = uint8(vaults.length);
+    for (uint256 i = 0; i < len; i++) {
+      (bool success, bytes memory returnData) = adminProxy.execute(
+        IVault(vaults[i]).adapter(),
+        abi.encodeWithSelector(IPausable.unpause.selector)
       );
       if (!success) revert UnderlyingError(returnData);
     }
@@ -618,23 +708,10 @@ contract VaultController is Owned {
   function pauseVaults(address[] calldata vaults) external {
     uint8 len = uint8(vaults.length);
     for (uint256 i = 0; i < len; i++) {
-      _verifyCreatorOrOwner(vaults[i]);
+      _verifyCreator(vaults[i]);
       (bool success, bytes memory returnData) = adminProxy.execute(
         vaults[i],
         abi.encodeWithSelector(IPausable.pause.selector)
-      );
-      if (!success) revert UnderlyingError(returnData);
-    }
-  }
-
-  /// @notice Unpause Deposits and deposit all funds into the underlying protocol. Caller must be owner or creator of the Vault.
-  function unpauseAdapters(address[] calldata vaults) external {
-    uint8 len = uint8(vaults.length);
-    for (uint256 i = 0; i < len; i++) {
-      _verifyCreatorOrOwner(vaults[i]);
-      (bool success, bytes memory returnData) = adminProxy.execute(
-        IVault(vaults[i]).adapter(),
-        abi.encodeWithSelector(IPausable.unpause.selector)
       );
       if (!success) revert UnderlyingError(returnData);
     }
@@ -644,7 +721,7 @@ contract VaultController is Owned {
   function unpauseVaults(address[] calldata vaults) external {
     uint8 len = uint8(vaults.length);
     for (uint256 i = 0; i < len; i++) {
-      _verifyCreatorOrOwner(vaults[i]);
+      _verifyCreator(vaults[i]);
       (bool success, bytes memory returnData) = adminProxy.execute(
         vaults[i],
         abi.encodeWithSelector(IPausable.unpause.selector)
@@ -660,13 +737,12 @@ contract VaultController is Owned {
   error NotSubmitterNorOwner(address caller);
   error NotSubmitter(address caller);
   error NotAllowed(address subject);
-  error AdapterConfigFaulty();
   error ArrayLengthMissmatch();
 
   /// @notice Verify that the caller is the creator of the vault or owner of `VaultController` (admin rights).
   function _verifyCreatorOrOwner(address vault) internal returns (VaultMetadata memory metadata) {
     metadata = vaultRegistry.getVault(vault);
-    if (msg.sender != metadata.creator || msg.sender != owner) revert NotSubmitterNorOwner(msg.sender);
+    if (msg.sender != metadata.creator && msg.sender != owner) revert NotSubmitterNorOwner(msg.sender);
   }
 
   /// @notice Verify that the caller is the creator of the vault.
@@ -686,14 +762,6 @@ contract VaultController is Owned {
       cloneRegistry.cloneExists(token) ||
       token == address(0)
     ) revert NotAllowed(token);
-  }
-
-  /// @notice Verify that the adapter configuration is valid.
-  function _verifyAdapterConfiguration(address adapter, bytes32 adapterId) internal view {
-    if (adapter != address(0)) {
-      if (adapterId > 0) revert AdapterConfigFaulty();
-      if (!cloneRegistry.cloneExists(adapter)) revert AdapterConfigFaulty();
-    }
   }
 
   /// @notice Verify that the array lengths are equal.
@@ -839,9 +907,26 @@ contract VaultController is Owned {
 
     emit DeploymentControllerChanged(address(deploymentController), address(_deploymentController));
 
+    // Dont try to change ownership on construction
+    if (address(deploymentController) != address(0)) _transferDependencyOwnership(address(_deploymentController));
+
     deploymentController = _deploymentController;
     cloneRegistry = _deploymentController.cloneRegistry();
     templateRegistry = _deploymentController.templateRegistry();
+  }
+
+  function _transferDependencyOwnership(address _deploymentController) internal {
+    (bool success, bytes memory returnData) = adminProxy.execute(
+      address(deploymentController),
+      abi.encodeWithSelector(IDeploymentController.nominateNewDependencyOwner.selector, _deploymentController)
+    );
+    if (!success) revert UnderlyingError(returnData);
+
+    (success, returnData) = adminProxy.execute(
+      _deploymentController,
+      abi.encodeWithSelector(IDeploymentController.acceptDependencyOwnership.selector, "")
+    );
+    if (!success) revert UnderlyingError(returnData);
   }
 
   /*//////////////////////////////////////////////////////////////
