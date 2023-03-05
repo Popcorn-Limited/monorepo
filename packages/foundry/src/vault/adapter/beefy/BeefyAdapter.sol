@@ -105,10 +105,6 @@ contract BeefyAdapter is AdapterBase, WithRewards {
     return _rewardTokens;
   }
 
-  /*//////////////////////////////////////////////////////////////
-                        ACCOUNTING LOGIC
-    //////////////////////////////////////////////////////////////*/
-
   /// @notice `previewWithdraw` that takes beefy withdrawal fees into account
   function previewWithdraw(uint256 assets) public view override returns (uint256) {
     IBeefyStrat strat = IBeefyStrat(beefyVault.strategy());

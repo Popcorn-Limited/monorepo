@@ -89,22 +89,26 @@ contract CompoundV2Adapter is AdapterBase, WithRewards {
                             ACCOUNTING LOGIC
     //////////////////////////////////////////////////////////////*/
 
+  function _totalAssets() internal view override returns (uint256) {
+    return _viewUnderlyingBalanceOf(address(cToken), address(this));
+  }
+
   function _viewUnderlyingBalanceOf(address token, address user) internal view returns (uint256) {
     ICToken token = ICToken(token);
     return LibCompound.viewUnderlyingBalanceOf(token, user);
   }
 
-  function _totalAssets() internal view override returns (uint256) {
-    return _viewUnderlyingBalanceOf(address(cToken), address(this));
-  }
-
   /// @notice The amount of compound shares to withdraw given an mount of adapter shares
-  function convertToUnderlyingShares(
-    uint256 assets,
-    uint256 shares
-  ) public view override returns (uint256) {
+  function convertToUnderlyingShares(uint256 assets, uint256 shares) public view override returns (uint256) {
     uint256 supply = totalSupply();
     return supply == 0 ? shares : shares.mulDiv(cToken.balanceOf(address(this)), supply, Math.Rounding.Up);
+  }
+
+  /// @notice The token rewarded if compound liquidity mining is active
+  function rewardTokens() external view override returns (address[] memory) {
+    address[] memory _rewardTokens = new address[](1);
+    if (isActiveCompRewards == false) return _rewardTokens;
+    _rewardTokens[0] = comptroller.getCompAddress();
   }
 
   /*//////////////////////////////////////////////////////////////
@@ -122,11 +126,16 @@ contract CompoundV2Adapter is AdapterBase, WithRewards {
     cToken.redeem(compoundShares);
   }
 
-  /// @notice The token rewarded if compound liquidity mining is active
-  function rewardTokens() external view override returns (address[] memory) {
-    address[] memory _rewardTokens = new address[](1);
-    if (isActiveCompRewards == false) return _rewardTokens;
-    _rewardTokens[0] = comptroller.getCompAddress();
+  /*//////////////////////////////////////////////////////////////
+                            STRATEGY LOGIC
+    //////////////////////////////////////////////////////////////*/
+
+  error IncentivesNotActive();
+
+  /// @notice Claim additional rewards given that it's active.
+  function claim() public override onlyStrategy {
+    if (isActiveCompRewards == false) revert IncentivesNotActive();
+    comptroller.claimComp(address(this));
   }
 
   /*//////////////////////////////////////////////////////////////
