@@ -260,7 +260,6 @@ contract VaultControllerTest is Test {
     bool endorsed,
     bool rejected
   ) public {
-    emit log_named_address("target", target);
     address[] memory targets = new address[](1);
     Permission[] memory permissions = new Permission[](1);
     targets[0] = target;
