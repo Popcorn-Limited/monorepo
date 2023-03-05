@@ -115,7 +115,7 @@ contract CompounderStrategyBase {
 
   // Claim rewards from underlying protocol.
   function _claimRewards() internal virtual {
-    IAdapter(address(this)).claim();
+    IWithRewards(address(this)).claim();
   }
 
   // Deposit assetToken or lpPair into underlying protocol.
