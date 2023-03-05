@@ -24,8 +24,11 @@ contract StargateAdapter is AdapterBase, WithRewards {
   string internal _name;
   string internal _symbol;
 
+  uint256 scalar;
+
   /// @notice The poolId inside Stargate staking contract for relevant sToken.
   uint256 public pid;
+  uint256 public stakingPid;
 
   /// @notice The Stargate sToken contract
   ISToken public sToken;
@@ -43,7 +46,8 @@ contract StargateAdapter is AdapterBase, WithRewards {
                             CONSTRUCTOR
     //////////////////////////////////////////////////////////////*/
 
-  error DifferentAssets(address asset, address underlying);
+  error StakingIdOutOfBounds();
+  error DifferentAssets();
 
   /**
    * @notice Initialize a new Stargate Adapter.
@@ -54,30 +58,32 @@ contract StargateAdapter is AdapterBase, WithRewards {
 
   function initialize(
     bytes memory adapterInitData,
-    address,
+    address registry,
     bytes memory stargateInitData
   ) public initializer {
     __AdapterBase_init(adapterInitData);
 
-    _name = string.concat("Popcorn Stargate", IERC20Metadata(asset()).name(), " Adapter");
-    _symbol = string.concat("popB-", IERC20Metadata(asset()).symbol());
+    uint256 _stakingPid = abi.decode(stargateInitData, (uint256));
 
-    (address _stargateStaking, uint256 _pid) = abi.decode(stargateInitData, (address, uint256));
+    stargateStaking = IStargateStaking(registry);
+    if (_stakingPid >= stargateStaking.poolLength()) revert StakingIdOutOfBounds();
 
-    stargateStaking = IStargateStaking(_stargateStaking);
-    pid = _pid;
-
-    (address _sToken, , , ) = stargateStaking.poolInfo(pid);
+    (address _sToken, , , ) = stargateStaking.poolInfo(_stakingPid);
     sToken = ISToken(_sToken);
+    if (sToken.token() != asset()) revert DifferentAssets();
+
+    pid = sToken.poolId();
+    stakingPid = _stakingPid;
+
+    scalar = 10**(sToken.localDecimals() - 6);
 
     stargateRouter = IStargateRouter(sToken.router());
 
     IERC20(asset()).approve(address(stargateRouter), type(uint256).max);
     sToken.approve(address(stargateStaking), type(uint256).max);
 
-    if (address(stargateStaking) != address(0)) {
-      isActiveIncentives = stargateStaking.pendingStargate(pid, address(this)) > 0 ? true : false;
-    }
+    _name = string.concat("Popcorn Stargate", IERC20Metadata(asset()).name(), " Adapter");
+    _symbol = string.concat("popB-", IERC20Metadata(asset()).symbol());
   }
 
   function name() public view override(IERC20Metadata, ERC20) returns (string memory) {
@@ -93,8 +99,8 @@ contract StargateAdapter is AdapterBase, WithRewards {
   //////////////////////////////////////////////////////////////*/
 
   function _totalAssets() internal view override returns (uint256) {
-    (uint256 stake, ) = stargateStaking.userInfo(pid, address(this));
-    return sToken.balanceOf(address(this)) + stake;
+    (uint256 stake, ) = stargateStaking.userInfo(stakingPid, address(this));
+    return stake * scalar;
   }
 
   /// @notice The token rewarded if the stargate liquidity mining is active
@@ -108,69 +114,22 @@ contract StargateAdapter is AdapterBase, WithRewards {
   /*//////////////////////////////////////////////////////////////
                           INTERNAL HOOKS LOGIC
     //////////////////////////////////////////////////////////////*/
-  function calculateSTokenConversions(uint256 assets) public view virtual returns (uint256) {
-    uint256 BP_DENOMINATOR = 10000;
-
-    uint256 _amountLD = (assets / sToken.convertRate()) * sToken.convertRate();
-    uint256 _amountSD = _amountLD / sToken.convertRate();
-
-    uint256 _mintFeeSD = (_amountSD * sToken.mintFeeBP()) / BP_DENOMINATOR;
-    _amountSD = _amountSD - _mintFeeSD;
-
-    uint256 amountLPTokens = (_amountSD * sToken.totalSupply()) / sToken.totalLiquidity();
-    uint256 conversionRate = _amountSD - amountLPTokens;
-    return conversionRate;
-  }
-
-  error TestError(uint256 amount);
-
-  function convertToUnderlyingShares(uint256 assets, uint256 shares) public view virtual override returns (uint256) {
-    // revert TestError(calculateSTokenMintFee(assets));
-    return assets / 10**12 - calculateSTokenConversions(assets);
-  }
 
   /// @notice Deposit into stargate pool
-  function _protocolDeposit(uint256 assets, uint256 shares) internal virtual override {
-    // liquidity pid = staking pid + 1
-    stargateRouter.addLiquidity(pid + 1, assets, address(this));
+  function _protocolDeposit(uint256 assets, uint256) internal override {
+    stargateRouter.addLiquidity(pid, assets, address(this));
+    uint256 sTokenBal = sToken.balanceOf(address(this));
 
-    uint256 sTokenDeposit = sToken.balanceOf(address(this));
-    assets = convertToUnderlyingShares(assets, shares);
-
-    stargateStaking.deposit(pid, assets);
+    stargateStaking.deposit(stakingPid, sTokenBal);
   }
 
   /// @notice Withdraw from stargate pool
-  function _protocolWithdraw(uint256 assets, uint256 shares) internal virtual override {
-    shares = convertToUnderlyingShares(assets, shares);
-    stargateStaking.withdraw(pid, shares);
+  function _protocolWithdraw(uint256 assets, uint256) internal override {
+    stargateStaking.withdraw(pid, assets);
 
-    // liquidity pid = staking pid + 1
-    uint16 srcPoolId = uint16(pid + 1);
-    uint256 sTokenDeposit = sToken.balanceOf(address(this));
+    uint256 sTokenBal = sToken.balanceOf(address(this));
 
-    stargateRouter.instantRedeemLocal(srcPoolId, sTokenDeposit, address(this));
-  }
-
-  function _convertToShares(uint256 assets, Math.Rounding rounding)
-    internal
-    view
-    virtual
-    override
-    returns (uint256 shares)
-  {
-    return
-      (assets.mulDiv(totalSupply() + 10**decimalOffset, totalAssets() + 1, rounding) -
-        calculateSTokenConversions(assets)) /
-      10**12 -
-      12000132000;
-  }
-
-  function _convertToAssets(uint256 shares, Math.Rounding rounding) internal view virtual override returns (uint256) {
-    return
-      (shares.mulDiv(totalAssets() + 1, totalSupply() + 10**decimalOffset, rounding) + 12) *
-      10**12 +
-      sToken.convertRate();
+    stargateRouter.instantRedeemLocal(uint16(stakingPid), sTokenBal, address(this));
   }
 
   /*//////////////////////////////////////////////////////////////
@@ -182,7 +141,7 @@ contract StargateAdapter is AdapterBase, WithRewards {
   /// @notice Claim additional rewards given that it's active.
   function claim() public override onlyStrategy {
     if (isActiveIncentives == false) revert IncentivesNotActive();
-    stargateStaking.deposit(pid, 0);
+    stargateStaking.deposit(stakingPid, 0);
   }
 
   /*//////////////////////////////////////////////////////////////

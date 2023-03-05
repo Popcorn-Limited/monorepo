@@ -6,8 +6,7 @@ pragma solidity ^0.8.15;
 import { ITestConfigStorage } from "../abstract/ITestConfigStorage.sol";
 
 struct StargateTestConfig {
-  address stargateStaking;
-  uint256 pid;
+  uint256 stakingPid;
 }
 
 contract StargateTestConfigStorage is ITestConfigStorage {
@@ -15,11 +14,11 @@ contract StargateTestConfigStorage is ITestConfigStorage {
 
   constructor() {
     // Polygon - sDAI
-    testConfigs.push(StargateTestConfig(0x8731d54E9D02c286767d56ac03e8037C07e01e98, 2));
+    testConfigs.push(StargateTestConfig(3));
   }
 
   function getTestConfig(uint256 i) public view returns (bytes memory) {
-    return abi.encode(testConfigs[i].stargateStaking, testConfigs[i].pid);
+    return abi.encode(testConfigs[i].stakingPid);
   }
 
   function getTestConfigLength() public view returns (uint256) {

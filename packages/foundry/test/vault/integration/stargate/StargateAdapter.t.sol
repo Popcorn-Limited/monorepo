@@ -14,11 +14,13 @@ contract StargateAdapterTest is AbstractAdapterTest {
 
   ISToken sToken;
   IStargateRouter stargateRouter;
-  IStargateStaking stargateStaking;
+  IStargateStaking stargateStaking = IStargateStaking(0xB0D502E938ed5f4df2E681fE6E419ff29631d62b);
+
   uint256 pid;
+  uint256 stakingPid;
 
   function setUp() public {
-    uint256 forkId = vm.createSelectFork(vm.rpcUrl("polygon"));
+    uint256 forkId = vm.createSelectFork(vm.rpcUrl("mainnet"));
     vm.selectFork(forkId);
 
     testConfigStorage = ITestConfigStorage(address(new StargateTestConfigStorage()));
@@ -31,16 +33,15 @@ contract StargateAdapterTest is AbstractAdapterTest {
   }
 
   function _setUpTest(bytes memory testConfig) internal {
-    createAdapter();
-    (address _stargateStaking, uint256 _pid) = abi.decode(testConfig, (address, uint256));
+    uint256 _stakingPid = abi.decode(testConfig, (uint256));
 
-    stargateStaking = IStargateStaking(_stargateStaking);
-    pid = _pid;
-
-    (address _sToken, , , ) = stargateStaking.poolInfo(pid);
+    (address _sToken, , , ) = stargateStaking.poolInfo(_stakingPid);
 
     sToken = ISToken(_sToken);
     asset = IERC20(sToken.token());
+
+    pid = sToken.poolId();
+    stakingPid = _stakingPid;
 
     stargateRouter = IStargateRouter(sToken.router());
 
@@ -54,7 +55,7 @@ contract StargateAdapterTest is AbstractAdapterTest {
 
     adapter.initialize(abi.encode(asset, address(this), strategy, 0, sigs, ""), externalRegistry, testConfig);
 
-    defaultAmount = 10**IERC20Metadata(address(asset)).decimals();
+    minFuzz = defaultAmount;
   }
 
   /*//////////////////////////////////////////////////////////////
@@ -104,5 +105,20 @@ contract StargateAdapterTest is AbstractAdapterTest {
 
     assertEq(asset.allowance(address(adapter), address(stargateRouter)), type(uint256).max, "allowance");
     assertEq(sToken.allowance(address(adapter), address(stargateStaking)), type(uint256).max, "allowance");
+  }
+
+  function test__stargate() public {
+    _mintFor(1e18, address(this));
+    asset.approve(address(stargateRouter), type(uint256).max);
+    stargateRouter.addLiquidity(pid, 1e18, address(this));
+
+    uint256 sTokenBal = sToken.balanceOf(address(this));
+    emit log_named_uint("sTokenBal", sTokenBal);
+
+    sToken.approve(address(stargateStaking), type(uint256).max);
+    stargateStaking.deposit(stakingPid, sTokenBal);
+
+    (uint256 stake, ) = stargateStaking.userInfo(stakingPid, address(this));
+    emit log_named_uint("stake", stake);
   }
 }

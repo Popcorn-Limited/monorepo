@@ -20,6 +20,10 @@ interface ISToken {
   function totalSupply() external view returns (uint256);
 
   function totalLiquidity() external view returns (uint256);
+
+  function poolId() external view returns (uint256);
+
+  function localDecimals() external view returns (uint256);
 }
 
 interface IStargateStaking {
@@ -32,6 +36,8 @@ interface IStargateStaking {
       uint256 lastRewardBlock,
       uint256 accStargatePerShare
     );
+
+  function poolLength() external view returns (uint256);
 
   function pendingStargate(uint256 pid, address user) external view returns (uint256);
 

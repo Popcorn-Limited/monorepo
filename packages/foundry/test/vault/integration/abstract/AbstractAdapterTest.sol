@@ -312,9 +312,11 @@ contract AbstractAdapterTest is PropertyTest {
       if (i > 0) overrideSetup(testConfigStorage.getTestConfig(i));
 
       uint256 reqAssets = (adapter.previewMint(adapter.previewWithdraw(amount)) * 10) / 8;
+      emit log_named_uint("req",reqAssets);
       _mintFor(reqAssets, bob);
       vm.prank(bob);
       adapter.deposit(reqAssets, bob);
+      emit log_named_uint("ta",adapter.totalAssets());
       prop_withdraw(bob, bob, amount, testId);
 
       _mintFor(reqAssets, bob);
