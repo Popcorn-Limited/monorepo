@@ -20,9 +20,15 @@ contract MasterChefAdapter is AdapterBase, WithRewards {
 
   string internal _name;
   string internal _symbol;
-  uint256 public pid;
 
+  // @notice The MasterChef contract
   IMasterChef public masterChef;
+
+  // @notice The address of the reward token
+  address public rewardsToken;
+
+  // @notice The pool ID
+  uint256 public pid;
 
   /**
    * @notice Initialize a new MasterChef Adapter.
@@ -30,26 +36,26 @@ contract MasterChefAdapter is AdapterBase, WithRewards {
    * @dev `_pid` - The poolId for lpToken.
    * @dev This function is called by the factory contract when deploying a new vault.
    */
+
   function initialize(
     bytes memory adapterInitData,
     address registry,
     bytes memory masterchefInitData
   ) external initializer {
-    //need to check that the poolID and the asset is correct
-    uint256 _pid = abi.decode(masterchefInitData, (uint256));
+    (uint256 _pid, address _rewardsToken) = abi.decode(masterchefInitData, (uint256, address));
 
     masterChef = IMasterChef(registry);
 
     __AdapterBase_init(adapterInitData);
 
     pid = _pid;
-
-    IMasterChef.PoolInfo memory info = masterChef.poolInfo(_pid);
+    rewardsToken = _rewardsToken;
+    IMasterChef.PoolInfo memory pool = masterChef.poolInfo(_pid);
 
     _name = string.concat("Popcorn MasterChef", IERC20Metadata(asset()).name(), " Adapter");
     _symbol = string.concat("popB-", IERC20Metadata(asset()).symbol());
 
-    IERC20(info.lpToken).approve(address(masterChef), type(uint256).max);
+    IERC20(pool.lpToken).approve(address(masterChef), type(uint256).max);
   }
 
   function name() public view override(IERC20Metadata, ERC20) returns (string memory) {
@@ -68,8 +74,8 @@ contract MasterChefAdapter is AdapterBase, WithRewards {
   /// @return The total amount of underlying tokens the Vault holds.
 
   function _totalAssets() internal view override returns (uint256) {
-    IMasterChef.UserInfo memory info = masterChef.userInfo(pid, address(this));
-    return info.amount;
+    IMasterChef.UserInfo memory user = masterChef.userInfo(pid, address(this));
+    return user.amount;
   }
 
   /*//////////////////////////////////////////////////////////////
@@ -82,6 +88,20 @@ contract MasterChefAdapter is AdapterBase, WithRewards {
 
   function _protocolWithdraw(uint256 amount, uint256) internal virtual override {
     masterChef.withdraw(pid, amount);
+  }
+
+  /*//////////////////////////////////////////////////////////////
+                            STRATEGY LOGIC
+    //////////////////////////////////////////////////////////////*/
+  /// @notice Claim rewards from the masterChef
+  function claim() public override onlyStrategy {
+    masterChef.deposit(pid, 0);
+  }
+
+  /// @notice The token rewarded
+  function rewardTokens() external view override returns (address[] memory) {
+    address[] memory _rewardTokens = new address[](1);
+    _rewardTokens[0] = rewardsToken;
   }
 
   /*//////////////////////////////////////////////////////////////
