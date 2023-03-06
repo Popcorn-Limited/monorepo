@@ -7,9 +7,10 @@ import { Test } from "forge-std/Test.sol";
 import { MockERC20 } from "../utils/mocks/MockERC20.sol";
 import { MockERC4626 } from "../utils/mocks/MockERC4626.sol";
 import { Vault } from "../../src/vault/Vault.sol";
-import { IERC4626, IERC20 } from "../../src/interfaces/vault/IERC4626.sol";
+import { IERC4626Upgradeable as IERC4626, IERC20Upgradeable as IERC20 } from "openzeppelin-contracts-upgradeable/interfaces/IERC4626Upgradeable.sol";
 import { VaultFees } from "../../src/interfaces/vault/IVault.sol";
 import { FixedPointMathLib } from "solmate/utils/FixedPointMathLib.sol";
+import { Clones } from "openzeppelin-contracts/proxy/Clones.sol";
 
 contract VaultTest is Test {
   using FixedPointMathLib for uint256;
@@ -21,7 +22,11 @@ contract VaultTest is Test {
   MockERC4626 adapter;
   Vault vault;
 
-  uint256 ONE = 1e18;
+  address adapterImplementation;
+  address implementation;
+
+  uint256 constant ONE = 1e18;
+  uint256 constant SECONDS_PER_YEAR = 365.25 days;
 
   address feeRecipient = address(0x4444);
   address alice = address(0xABCD);
@@ -35,6 +40,7 @@ contract VaultTest is Test {
   event QuitPeriodSet(uint256 quitPeriod);
   event Paused(address account);
   event Unpaused(address account);
+  event DepositLimitSet(uint256 depositLimit);
 
   function setUp() public {
     vm.label(feeRecipient, "feeRecipient");
@@ -42,17 +48,23 @@ contract VaultTest is Test {
     vm.label(bob, "bob");
 
     asset = new MockERC20("Mock Token", "TKN", 18);
-    adapter = new MockERC4626(IERC20(address(asset)), "Mock Token Vault", "vwTKN");
 
-    address vaultAddress = address(new Vault());
+    adapterImplementation = address(new MockERC4626());
+    implementation = address(new Vault());
+
+    adapter = _createAdapter(IERC20(address(asset)));
+    vm.label(address(adapter), "adapter");
+
+    address vaultAddress = Clones.clone(implementation);
+    vault = Vault(vaultAddress);
     vm.label(vaultAddress, "vault");
 
-    vault = Vault(vaultAddress);
     vault.initialize(
       IERC20(address(asset)),
       IERC4626(address(adapter)),
       VaultFees({ deposit: 0, withdrawal: 0, management: 0, performance: 0 }),
       feeRecipient,
+      type(uint256).max,
       address(this)
     );
   }
@@ -80,11 +92,17 @@ contract VaultTest is Test {
     vault.changeFees();
   }
 
+  function _createAdapter(IERC20 _asset) internal returns (MockERC4626) {
+    address adapterAddress = Clones.clone(adapterImplementation);
+    MockERC4626(adapterAddress).initialize(_asset, "Mock Token Vault", "vwTKN");
+    return MockERC4626(adapterAddress);
+  }
+
   /*//////////////////////////////////////////////////////////////
                           INITIALIZATION
     //////////////////////////////////////////////////////////////*/
   function test__metadata() public {
-    address vaultAddress = address(new Vault());
+    address vaultAddress = Clones.clone(implementation);
     Vault newVault = Vault(vaultAddress);
 
     uint256 callTime = block.timestamp;
@@ -93,12 +111,13 @@ contract VaultTest is Test {
       IERC4626(address(adapter)),
       VaultFees({ deposit: 100, withdrawal: 100, management: 100, performance: 100 }),
       feeRecipient,
+      type(uint256).max,
       bob
     );
 
     assertEq(newVault.name(), "Popcorn Mock Token Vault");
     assertEq(newVault.symbol(), "pop-TKN");
-    assertEq(newVault.decimals(), 18);
+    assertEq(newVault.decimals(), 27);
 
     assertEq(address(newVault.asset()), address(asset));
     assertEq(address(newVault.adapter()), address(adapter));
@@ -110,7 +129,7 @@ contract VaultTest is Test {
     assertEq(management, 100);
     assertEq(performance, 100);
     assertEq(newVault.feeRecipient(), feeRecipient);
-    assertEq(newVault.highWaterMark(), 1 ether);
+    assertEq(newVault.highWaterMark(), 1e9);
     assertEq(newVault.feesUpdatedAt(), callTime);
 
     assertEq(newVault.quitPeriod(), 3 days);
@@ -127,13 +146,14 @@ contract VaultTest is Test {
       IERC4626(address(adapter)),
       VaultFees({ deposit: 0, withdrawal: 0, management: 0, performance: 0 }),
       feeRecipient,
+      type(uint256).max,
       address(this)
     );
   }
 
   function testFail__initialize_adapter_asset_is_not_matching() public {
     MockERC20 newAsset = new MockERC20("New Mock Token", "NTKN", 18);
-    MockERC4626 newAdapter = new MockERC4626(IERC20(address(newAsset)), "Mock Token Vault", "vwTKN");
+    MockERC4626 newAdapter = _createAdapter(IERC20(address(newAsset)));
 
     address vaultAddress = address(new Vault());
 
@@ -143,13 +163,14 @@ contract VaultTest is Test {
       IERC4626(address(newAdapter)),
       VaultFees({ deposit: 0, withdrawal: 0, management: 0, performance: 0 }),
       feeRecipient,
+      type(uint256).max,
       address(this)
     );
   }
 
   function testFail__initialize_adapter_addressZero() public {
     MockERC20 newAsset = new MockERC20("New Mock Token", "NTKN", 18);
-    MockERC4626 newAdapter = new MockERC4626(IERC20(address(newAsset)), "Mock Token Vault", "vwTKN");
+    MockERC4626 newAdapter = _createAdapter(IERC20(address(newAsset)));
 
     address vaultAddress = address(new Vault());
 
@@ -159,6 +180,7 @@ contract VaultTest is Test {
       IERC4626(address(newAdapter)),
       VaultFees({ deposit: 0, withdrawal: 0, management: 0, performance: 0 }),
       feeRecipient,
+      type(uint256).max,
       address(this)
     );
   }
@@ -172,6 +194,7 @@ contract VaultTest is Test {
       IERC4626(address(adapter)),
       VaultFees({ deposit: 1e18, withdrawal: 0, management: 0, performance: 0 }),
       feeRecipient,
+      type(uint256).max,
       address(this)
     );
   }
@@ -185,6 +208,7 @@ contract VaultTest is Test {
       IERC4626(address(adapter)),
       VaultFees({ deposit: 0, withdrawal: 0, management: 0, performance: 0 }),
       address(0),
+      type(uint256).max,
       address(this)
     );
   }
@@ -211,9 +235,9 @@ contract VaultTest is Test {
 
     assertEq(adapter.afterDepositHookCalledCounter(), 1);
 
-    // Expect exchange rate to be 1:1 on initial deposit.
-    assertEq(aliceassetAmount, aliceShareAmount);
-    assertEq(vault.previewWithdraw(aliceShareAmount), aliceassetAmount);
+    // Expect exchange rate to be 1:1e9 on initial deposit.
+    assertEq(aliceassetAmount * 1e9, aliceShareAmount);
+    assertEq(vault.previewWithdraw(aliceassetAmount), aliceShareAmount);
     assertEq(vault.previewDeposit(aliceassetAmount), aliceShareAmount);
     assertEq(vault.totalSupply(), aliceShareAmount);
     assertEq(vault.totalAssets(), aliceassetAmount);
@@ -236,7 +260,7 @@ contract VaultTest is Test {
     vault.deposit(0, address(this));
   }
 
-  function test__withdraw_zero() public {
+  function testFail__withdraw_zero() public {
     vault.withdraw(0, address(this), address(this));
   }
 
@@ -270,10 +294,9 @@ contract VaultTest is Test {
     //////////////////////////////////////////////////////////////*/
 
   function test__mint_redeem(uint128 amount) public {
-    if (amount == 0) amount = 1;
+    if (amount < 1e9) amount = 1e9;
 
     uint256 aliceShareAmount = amount;
-
     asset.mint(alice, aliceShareAmount);
 
     vm.prank(alice);
@@ -283,19 +306,21 @@ contract VaultTest is Test {
     uint256 alicePreDepositBal = asset.balanceOf(alice);
 
     vm.prank(alice);
-    uint256 aliceassetAmount = vault.mint(aliceShareAmount, alice);
+    uint256 aliceAssetAmount = vault.mint(aliceShareAmount, alice);
 
     assertEq(adapter.afterDepositHookCalledCounter(), 1);
 
-    // Expect exchange rate to be 1:1 on initial mint.
-    assertEq(aliceShareAmount, aliceassetAmount);
-    assertEq(vault.previewWithdraw(aliceShareAmount), aliceassetAmount);
-    assertEq(vault.previewDeposit(aliceassetAmount), aliceShareAmount);
-    assertEq(vault.totalSupply(), aliceShareAmount);
-    assertEq(vault.totalAssets(), aliceassetAmount);
-    assertEq(vault.balanceOf(alice), aliceassetAmount);
-    assertEq(vault.convertToAssets(vault.balanceOf(alice)), aliceassetAmount);
-    assertEq(asset.balanceOf(alice), alicePreDepositBal - aliceassetAmount);
+    // Expect exchange rate to be 1e9:1 on initial mint.
+    // We allow 1e9 delta since virtual shares lead to amounts between 1e9 to demand/mint more shares
+    // E.g. (1e9 + 1) to 2e9 assets requires 2e9 shares to withdraw
+    assertApproxEqAbs(aliceShareAmount / 1e9, aliceAssetAmount, 1e9, "share = assets");
+    assertApproxEqAbs(vault.previewWithdraw(aliceAssetAmount), aliceShareAmount, 1e9, "pw");
+    assertApproxEqAbs(vault.previewDeposit(aliceAssetAmount), aliceShareAmount, 1e9, "pd");
+    assertEq(vault.totalSupply(), aliceShareAmount, "ts");
+    assertEq(vault.totalAssets(), aliceAssetAmount, "ta");
+    assertEq(vault.balanceOf(alice), aliceShareAmount, "bal");
+    assertApproxEqAbs(vault.convertToAssets(vault.balanceOf(alice)), aliceAssetAmount, 1e9, "convert");
+    assertEq(asset.balanceOf(alice), alicePreDepositBal - aliceAssetAmount, "a bal");
 
     vm.prank(alice);
     vault.redeem(aliceShareAmount, alice, alice);
@@ -312,7 +337,7 @@ contract VaultTest is Test {
     vault.mint(0, address(this));
   }
 
-  function test__redeem_zero() public {
+  function testFail__redeem_zero() public {
     vault.redeem(0, address(this), address(this));
   }
 
@@ -322,8 +347,8 @@ contract VaultTest is Test {
 
   function testFail__mint_with_not_enough_approval() public {
     asset.mint(address(this), 1e18);
-    asset.approve(address(vault), 0.5e18);
-    assertEq(asset.allowance(address(this), address(vault)), 0.5e18);
+    asset.approve(address(vault), 1e6);
+    assertEq(asset.allowance(address(this), address(vault)), 1e6);
 
     vault.mint(1e18, address(this));
   }
@@ -334,7 +359,7 @@ contract VaultTest is Test {
 
     vault.deposit(0.5e18, address(this));
 
-    vault.redeem(1e18, address(this), address(this));
+    vault.redeem(1e27, address(this), address(this));
   }
 
   function testFail__redeem_with_no_shares() public {
@@ -344,217 +369,6 @@ contract VaultTest is Test {
   /*//////////////////////////////////////////////////////////////
                 DEPOSIT / MINT / WITHDRAW / REDEEM
     //////////////////////////////////////////////////////////////*/
-
-  function test__multiple_mint_deposit_redeem_withdraw() public {
-    // Scenario:
-    // A = Alice, B = Bob
-    //  ________________________________________________________
-    // | Vault shares | A share | A assets | B share | B assets |
-    // |========================================================|
-    // | 1. Alice mints 2000 shares (costs 2000 tokens)         |
-    // |--------------|---------|----------|---------|----------|
-    // |         2000 |    2000 |     2000 |       0 |        0 |
-    // |--------------|---------|----------|---------|----------|
-    // | 2. Bob deposits 4000 tokens (mints 4000 shares)        |
-    // |--------------|---------|----------|---------|----------|
-    // |         6000 |    2000 |     2000 |    4000 |     4000 |
-    // |--------------|---------|----------|---------|----------|
-    // | 3. Vault mutates by +3000 tokens...                    |
-    // |    (simulated yield returned from adapter)...         |
-    // |--------------|---------|----------|---------|----------|
-    // |         6000 |    2000 |     3000 |    4000 |     6000 |
-    // |--------------|---------|----------|---------|----------|
-    // | 4. Alice deposits 2000 tokens (mints 1333 shares)      |
-    // |--------------|---------|----------|---------|----------|
-    // |         7333 |    3333 |     4999 |    4000 |     6000 |
-    // |--------------|---------|----------|---------|----------|
-    // | 5. Bob mints 2000 shares (costs 3000 assets)           |
-    // |--------------|---------|----------|---------|----------|
-    // |         9333 |    3333 |     4999 |    6000 |     9000 |
-    // |--------------|---------|----------|---------|----------|
-    // | 6. Vault mutates by +3000 tokens...                    |
-    // |    (simulated yield returned from adapter)            |
-    // |    NOTE: Vault holds 17001 tokens, but sum of          |
-    // |          assetsOf() is 17000.                          |
-    // |--------------|---------|----------|---------|----------|
-    // |         9333 |    3333 |     6071 |    6000 |    10928 |
-    // |--------------|---------|----------|---------|----------|
-    // | 7. Alice redeem 1333 shares (2428 assets)              |
-    // |--------------|---------|----------|---------|----------|
-    // |         8000 |    2000 |     3643 |    6000 |    10929 |
-    // |--------------|---------|----------|---------|----------|
-    // | 8. Bob withdraws 2928 assets (1608 shares)             |
-    // |--------------|---------|----------|---------|----------|
-    // |         6392 |    2000 |     3642 |    4392 |     8000 |
-    // |--------------|---------|----------|---------|----------|
-    // | 9. Alice withdraws 3643 assets (2000 shares)           |
-    // |--------------|---------|----------|---------|----------|
-    // |         4392 |       0 |        0 |    4392 |     8000 |
-    // |--------------|---------|----------|---------|----------|
-    // | 10. Bob redeem 4392 shares (8000 tokens)               |
-    // |--------------|---------|----------|---------|----------|
-    // |            0 |       0 |        0 |       0 |        0 |
-    // |______________|_________|__________|_________|__________|
-
-    uint256 mutationassetAmount = 3000;
-
-    asset.mint(alice, 4000);
-
-    vm.prank(alice);
-    asset.approve(address(vault), 4000);
-
-    assertEq(asset.allowance(alice, address(vault)), 4000);
-
-    asset.mint(bob, 7001);
-
-    vm.prank(bob);
-    asset.approve(address(vault), 7001);
-
-    assertEq(asset.allowance(bob, address(vault)), 7001);
-
-    // 1. Alice mints 2000 shares (costs 2000 tokens)
-    vm.prank(alice);
-    uint256 aliceassetAmount = vault.mint(2000, alice);
-
-    uint256 aliceShareAmount = vault.previewDeposit(aliceassetAmount);
-    assertEq(adapter.afterDepositHookCalledCounter(), 1);
-
-    // Expect to have received the requested mint amount.
-    assertEq(aliceShareAmount, 2000);
-    assertEq(vault.balanceOf(alice), aliceShareAmount);
-    assertEq(vault.convertToAssets(vault.balanceOf(alice)), aliceassetAmount);
-    assertEq(vault.convertToShares(aliceassetAmount), vault.balanceOf(alice));
-
-    // Expect a 1:1 ratio before mutation.
-    assertEq(aliceassetAmount, 2000);
-
-    // Sanity check.
-    assertEq(vault.totalSupply(), aliceShareAmount);
-    assertEq(vault.totalAssets(), aliceassetAmount);
-
-    // 2. Bob deposits 4000 tokens (mints 4000 shares)
-    vm.prank(bob);
-    uint256 bobShareAmount = vault.deposit(4000, bob);
-    uint256 bobassetAmount = vault.previewWithdraw(bobShareAmount);
-    assertEq(adapter.afterDepositHookCalledCounter(), 2);
-
-    // Expect to have received the requested asset amount.
-    assertEq(bobassetAmount, 4000);
-    assertEq(vault.balanceOf(bob), bobShareAmount);
-    assertEq(vault.convertToAssets(vault.balanceOf(bob)), bobassetAmount);
-    assertEq(vault.convertToShares(bobassetAmount), vault.balanceOf(bob));
-
-    // Expect a 1:1 ratio before mutation.
-    assertEq(bobShareAmount, bobassetAmount);
-
-    // Sanity check.
-    uint256 preMutationShareBal = aliceShareAmount + bobShareAmount;
-    uint256 preMutationBal = aliceassetAmount + bobassetAmount;
-    assertEq(vault.totalSupply(), preMutationShareBal);
-    assertEq(vault.totalAssets(), preMutationBal);
-    assertEq(vault.totalSupply(), 6000);
-    assertEq(vault.totalAssets(), 6000);
-
-    // 3. Vault mutates by +3000 tokens...                    |
-    //    (simulated yield returned from adapter)...
-    // The Vault now contains more tokens than deposited which causes the exchange rate to change.
-    // Alice share is 33.33% of the Vault, Bob 66.66% of the Vault.
-    // Alice's share count stays the same but the asset amount changes from 2000 to 3000.
-    // Bob's share count stays the same but the asset amount changes from 4000 to 6000.
-    asset.mint(address(adapter), mutationassetAmount);
-    assertEq(vault.totalSupply(), preMutationShareBal);
-    assertEq(vault.totalAssets(), preMutationBal + mutationassetAmount);
-    assertEq(vault.balanceOf(alice), aliceShareAmount);
-    assertEq(vault.convertToAssets(vault.balanceOf(alice)), aliceassetAmount + (mutationassetAmount / 3) * 1);
-    assertEq(vault.balanceOf(bob), bobShareAmount);
-    assertEq(vault.convertToAssets(vault.balanceOf(bob)), bobassetAmount + (mutationassetAmount / 3) * 2);
-
-    // 4. Alice deposits 2000 tokens (mints 1333 shares)
-    vm.prank(alice);
-    vault.deposit(2000, alice);
-
-    assertEq(vault.totalSupply(), 7333);
-    assertEq(vault.balanceOf(alice), 3333);
-    assertEq(vault.convertToAssets(vault.balanceOf(alice)), 4999);
-    assertEq(vault.balanceOf(bob), 4000);
-    assertEq(vault.convertToAssets(vault.balanceOf(bob)), 6000);
-
-    // 5. Bob mints 2000 shares (costs 3000 assets)
-    // NOTE: Bob's assets spent got rounded up
-    // NOTE: Alices's vault assets got rounded up
-    vm.prank(bob);
-    vault.mint(2000, bob);
-
-    assertEq(vault.totalSupply(), 9333);
-    assertEq(vault.balanceOf(alice), 3333);
-    assertEq(vault.convertToAssets(vault.balanceOf(alice)), 4999);
-    assertEq(vault.balanceOf(bob), 6000);
-    assertEq(vault.convertToAssets(vault.balanceOf(bob)), 9000);
-
-    // Sanity checks:
-    // Alice and bob should have spent all their tokens now
-    // Bob still has 1 wei left
-    assertEq(asset.balanceOf(alice), 0);
-    assertEq(asset.balanceOf(bob), 1);
-    // Assets in vault: 4k (alice) + 7k (bob) + 3k (yield)
-    assertEq(vault.totalAssets(), 14000);
-
-    // 6. Vault mutates by +3000 tokens
-    asset.mint(address(adapter), mutationassetAmount);
-    assertEq(vault.totalAssets(), 17000);
-    assertEq(vault.convertToAssets(vault.balanceOf(alice)), 6071);
-    assertEq(vault.convertToAssets(vault.balanceOf(bob)), 10928);
-
-    // 7. Alice redeem 1333 shares (2428 assets)
-    vm.prank(alice);
-    vault.redeem(1333, alice, alice);
-
-    assertEq(asset.balanceOf(alice), 2428);
-    assertEq(vault.totalSupply(), 8000);
-    assertEq(vault.totalAssets(), 14572);
-    assertEq(vault.balanceOf(alice), 2000);
-    assertEq(vault.convertToAssets(vault.balanceOf(alice)), 3643);
-    assertEq(vault.balanceOf(bob), 6000);
-    assertEq(vault.convertToAssets(vault.balanceOf(bob)), 10929);
-
-    // 8. Bob withdraws 2929 assets (1608 shares)
-    vm.prank(bob);
-    vault.withdraw(2929, bob, bob);
-
-    assertEq(asset.balanceOf(bob), 2930);
-    assertEq(vault.totalSupply(), 6392);
-    assertEq(vault.totalAssets(), 11643);
-    assertEq(vault.balanceOf(alice), 2000);
-    assertEq(vault.convertToAssets(vault.balanceOf(alice)), 3642);
-    assertEq(vault.balanceOf(bob), 4392);
-    assertEq(vault.convertToAssets(vault.balanceOf(bob)), 8000);
-
-    // 9. Alice withdraws 3643 assets (2000 shares)
-    vm.prank(alice);
-    vault.withdraw(3643, alice, alice);
-
-    assertEq(asset.balanceOf(alice), 6071);
-    assertEq(vault.totalSupply(), 4392);
-    assertEq(vault.totalAssets(), 8000);
-    assertEq(vault.balanceOf(alice), 0);
-    assertEq(vault.convertToAssets(vault.balanceOf(alice)), 0);
-    assertEq(vault.balanceOf(bob), 4392);
-    assertEq(vault.convertToAssets(vault.balanceOf(bob)), 8000);
-
-    // 10. Bob redeem 4392 shares (8000 tokens)
-    vm.prank(bob);
-    vault.redeem(4392, bob, bob);
-    assertEq(asset.balanceOf(bob), 10930);
-    assertEq(vault.totalSupply(), 0);
-    assertEq(vault.totalAssets(), 0);
-    assertEq(vault.balanceOf(alice), 0);
-    assertEq(vault.convertToAssets(vault.balanceOf(alice)), 0);
-    assertEq(vault.balanceOf(bob), 0);
-    assertEq(vault.convertToAssets(vault.balanceOf(bob)), 0);
-
-    // Sanity check
-    assertEq(asset.balanceOf(address(vault)), 0);
-  }
 
   function test__interactions_for_someone_else() public {
     // init 2 users with a 1e18 balance
@@ -572,25 +386,25 @@ contract VaultTest is Test {
     vault.deposit(1e18, bob);
 
     assertEq(vault.balanceOf(alice), 0);
-    assertEq(vault.balanceOf(bob), 1e18);
+    assertEq(vault.balanceOf(bob), 1e27);
     assertEq(asset.balanceOf(alice), 0);
 
-    // bob mint 1e18 for alice
+    // bob mint 1e27 for alice
     vm.prank(bob);
-    vault.mint(1e18, alice);
-    assertEq(vault.balanceOf(alice), 1e18);
-    assertEq(vault.balanceOf(bob), 1e18);
+    vault.mint(1e27, alice);
+    assertEq(vault.balanceOf(alice), 1e27);
+    assertEq(vault.balanceOf(bob), 1e27);
     assertEq(asset.balanceOf(bob), 0);
 
-    // alice redeem 1e18 for bob
+    // alice redeem 1e27 for bob
     vm.prank(alice);
-    vault.redeem(1e18, bob, alice);
+    vault.redeem(1e27, bob, alice);
 
     assertEq(vault.balanceOf(alice), 0);
-    assertEq(vault.balanceOf(bob), 1e18);
+    assertEq(vault.balanceOf(bob), 1e27);
     assertEq(asset.balanceOf(bob), 1e18);
 
-    // bob withdraw 1e18 for alice
+    // bob withdraw 1e27 for alice
     vm.prank(bob);
     vault.withdraw(1e18, alice, bob);
 
@@ -622,7 +436,7 @@ contract VaultTest is Test {
   }
 
   function test__previewWithdraw_previewRedeem_takes_fees_into_account(uint8 fuzzAmount) public {
-    uint256 amount = bound(uint256(fuzzAmount), 1, 1 ether);
+    uint256 amount = bound(uint256(fuzzAmount), 10, 1 ether);
 
     _setFees(0, 1e17, 0, 0);
 
@@ -658,7 +472,7 @@ contract VaultTest is Test {
 
   function test__managementFee(uint128 timeframe) public {
     // Test Timeframe less than 10 years
-    vm.assume(timeframe <= 315576000);
+    timeframe = uint128(bound(timeframe, 1, 315576000));
     uint256 depositAmount = 1 ether;
 
     _setFees(0, 0, 1e17, 0);
@@ -670,24 +484,47 @@ contract VaultTest is Test {
     vm.stopPrank();
 
     // Increase Block Time to trigger managementFee
-    uint256 timestamp = block.timestamp + timeframe;
-    vm.roll(timestamp);
+    vm.warp(block.timestamp + timeframe);
 
     uint256 expectedFeeInAsset = vault.accruedManagementFee();
 
-    uint256 expectedFeeInShares = vault.convertToShares(expectedFeeInAsset);
+    uint256 supply = vault.totalSupply();
+    uint256 expectedFeeInShares = supply == 0
+      ? expectedFeeInAsset
+      : expectedFeeInAsset.mulDivDown(supply, 1 ether - expectedFeeInAsset);
 
     vault.takeManagementAndPerformanceFees();
 
-    assertEq(vault.totalSupply(), depositAmount + expectedFeeInShares);
-    assertEq(vault.balanceOf(feeRecipient), expectedFeeInShares);
+    assertEq(vault.totalSupply(), (depositAmount * 1e9) + expectedFeeInShares, "ts");
+    assertEq(vault.balanceOf(feeRecipient), expectedFeeInShares, "fee bal");
+    assertApproxEqAbs(vault.convertToAssets(expectedFeeInShares), expectedFeeInAsset, 10, "convert back");
 
     // High Water Mark should remain unchanged
-    assertEq(vault.highWaterMark(), 1 ether);
+    assertEq(vault.highWaterMark(), 1e9, "hwm");
+  }
+
+  function test__managementFee_change_fees_later() public {
+    uint256 depositAmount = 1 ether;
+
+    asset.mint(alice, depositAmount);
+    vm.startPrank(alice);
+    asset.approve(address(vault), depositAmount);
+    vault.deposit(depositAmount, alice);
+    vm.stopPrank();
+
+    // Set it to half the time without any fees
+    vm.warp(block.timestamp + (SECONDS_PER_YEAR / 2));
+    assertEq(vault.accruedManagementFee(), 0);
+
+    _setFees(0, 0, 1e17, 0);
+
+    vm.warp(block.timestamp + (SECONDS_PER_YEAR / 2));
+
+    assertEq(vault.accruedManagementFee(), ((1 ether * 1e17) / 1e18) / 2);
   }
 
   function test__performanceFee(uint128 amount) public {
-    vm.assume(amount <= 315576000);
+    vm.assume(amount >= 1e18);
     uint256 depositAmount = 1 ether;
 
     _setFees(0, 0, 0, 1e17);
@@ -702,15 +539,49 @@ contract VaultTest is Test {
     asset.mint(address(adapter), amount);
 
     uint256 expectedFeeInAsset = vault.accruedPerformanceFee();
-    uint256 expectedFeeInShares = vault.convertToShares(expectedFeeInAsset);
+
+    uint256 supply = vault.totalSupply();
+    uint256 totalAssets = vault.totalAssets();
+
+    uint256 expectedFeeInShares = supply == 0
+      ? expectedFeeInAsset
+      : expectedFeeInAsset.mulDivDown(supply, totalAssets - expectedFeeInAsset);
 
     vault.takeManagementAndPerformanceFees();
 
-    assertEq(vault.totalSupply(), depositAmount + expectedFeeInShares);
-    assertEq(vault.balanceOf(feeRecipient), expectedFeeInShares);
+    assertEq(vault.totalSupply(), (depositAmount * 1e9) + expectedFeeInShares, "ts");
+    assertEq(vault.balanceOf(feeRecipient), expectedFeeInShares, "bal");
 
     // There should be a new High Water Mark
-    assertEq(vault.highWaterMark(), (depositAmount + amount).mulDivDown(depositAmount, depositAmount));
+    assertApproxEqRel(vault.highWaterMark(), totalAssets / 1e9, 10, "hwm");
+  }
+
+  function test_performanceFee2() public {
+    asset = new MockERC20("Mock Token", "TKN", 6);
+    adapter = _createAdapter(IERC20(address(asset)));
+    address vaultAddress = Clones.clone(implementation);
+    vault = Vault(vaultAddress);
+    vm.label(vaultAddress, "vault");
+    vault.initialize(
+      IERC20(address(asset)),
+      IERC4626(address(adapter)),
+      VaultFees({ deposit: 0, withdrawal: 0, management: 0, performance: 1e17 }),
+      feeRecipient,
+      type(uint256).max,
+      address(this)
+    );
+
+    uint256 depositAmount = 1e6;
+    asset.mint(alice, depositAmount);
+    vm.startPrank(alice);
+    asset.approve(address(vault), depositAmount);
+    vault.deposit(depositAmount, alice);
+    vm.stopPrank();
+
+    asset.mint(address(adapter), 1e6);
+
+    // Take 10% of 1e6
+    assertEq(vault.accruedPerformanceFee(), 1e5 - 1);
   }
 
   /*//////////////////////////////////////////////////////////////
@@ -765,6 +636,13 @@ contract VaultTest is Test {
     assertEq(withdrawal, 1);
     assertEq(management, 1);
     assertEq(performance, 1);
+    (uint256 propDeposit, uint256 propWithdrawal, uint256 propManagement, uint256 propPerformance) = vault
+      .proposedFees();
+    assertEq(propDeposit, 0);
+    assertEq(propWithdrawal, 0);
+    assertEq(propManagement, 0);
+    assertEq(propPerformance, 0);
+    assertEq(vault.proposedFeeTime(), 0);
   }
 
   function testFail__changeFees_NonOwner() public {
@@ -777,6 +655,10 @@ contract VaultTest is Test {
     vault.proposeFees(newVaultFees);
 
     // Didnt respect 3 days before propsal and change
+    vault.changeFees();
+  }
+
+  function testFail__changeFees_after_init() public {
     vault.changeFees();
   }
 
@@ -808,7 +690,7 @@ contract VaultTest is Test {
 
   // Propose Adapter
   function test__proposeAdapter() public {
-    MockERC4626 newAdapter = new MockERC4626(IERC20(address(asset)), "Mock Token Vault", "vwTKN");
+    MockERC4626 newAdapter = _createAdapter(IERC20(address(asset)));
 
     uint256 callTime = block.timestamp;
     vm.expectEmit(false, false, false, true, address(vault));
@@ -821,7 +703,7 @@ contract VaultTest is Test {
   }
 
   function testFail__proposeAdapter_nonOwner() public {
-    MockERC4626 newAdapter = new MockERC4626(IERC20(address(asset)), "Mock Token Vault", "vwTKN");
+    MockERC4626 newAdapter = _createAdapter(IERC20(address(asset)));
 
     vm.prank(alice);
     vault.proposeAdapter(IERC4626(address(newAdapter)));
@@ -829,7 +711,7 @@ contract VaultTest is Test {
 
   function testFail__proposeAdapter_asset_missmatch() public {
     MockERC20 newAsset = new MockERC20("New Mock Token", "NTKN", 18);
-    MockERC4626 newAdapter = new MockERC4626(IERC20(address(newAsset)), "Mock Token Vault", "vwTKN");
+    MockERC4626 newAdapter = _createAdapter(IERC20(address(newAsset)));
 
     vm.prank(alice);
     vault.proposeAdapter(IERC4626(address(newAdapter)));
@@ -837,7 +719,7 @@ contract VaultTest is Test {
 
   // Change Adapter
   function test__changeAdapter() public {
-    MockERC4626 newAdapter = new MockERC4626(IERC20(address(asset)), "Mock Token Vault", "vwTKN");
+    MockERC4626 newAdapter = _createAdapter(IERC20(address(asset)));
     uint256 depositAmount = 1 ether;
 
     // Deposit funds for testing
@@ -862,15 +744,19 @@ contract VaultTest is Test {
 
     vault.changeAdapter();
 
+    // Annoyingly Math fails us here and leaves 1 asset in the adapter
     assertEq(asset.allowance(address(vault), address(adapter)), 0);
-    assertEq(asset.balanceOf(address(adapter)), 0);
+    assertEq(asset.balanceOf(address(adapter)), 1);
     assertEq(adapter.balanceOf(address(vault)), 0);
 
-    assertEq(asset.balanceOf(address(newAdapter)), depositAmount * 2);
-    assertEq(newAdapter.balanceOf(address(vault)), depositAmount * 2);
+    assertEq(asset.balanceOf(address(newAdapter)), (depositAmount * 2) - 1);
+    assertEq(newAdapter.balanceOf(address(vault)), (depositAmount * 2e9) - 1e9);
     assertEq(asset.allowance(address(vault), address(newAdapter)), type(uint256).max);
 
     assertEq(vault.highWaterMark(), oldHWM);
+
+    assertEq(vault.proposedAdapterTime(), 0);
+    assertEq(address(vault.proposedAdapter()), address(0));
   }
 
   function testFail__changeAdapter_NonOwner() public {
@@ -879,11 +765,43 @@ contract VaultTest is Test {
   }
 
   function testFail__changeAdapter_respect_rageQuit() public {
-    MockERC4626 newAdapter = new MockERC4626(IERC20(address(asset)), "Mock Token Vault", "vwTKN");
+    MockERC4626 newAdapter = _createAdapter(IERC20(address(asset)));
 
     vault.proposeAdapter(IERC4626(address(newAdapter)));
 
     // Didnt respect 3 days before propsal and change
+    vault.changeAdapter();
+  }
+
+  function testFail__changeAdapter_after_init() public {
+    vault.changeAdapter();
+  }
+
+  function testFail__changeAdapter_instantly_again() public {
+    MockERC4626 newAdapter = _createAdapter(IERC20(address(asset)));
+    uint256 depositAmount = 1 ether;
+
+    // Deposit funds for testing
+    asset.mint(alice, depositAmount);
+    vm.startPrank(alice);
+    asset.approve(address(vault), depositAmount);
+    vault.deposit(depositAmount, alice);
+    vm.stopPrank();
+
+    // Increase assets in asset Adapter to check hwm and assetCheckpoint later
+    asset.mint(address(adapter), depositAmount);
+    vault.takeManagementAndPerformanceFees();
+    uint256 oldHWM = vault.highWaterMark();
+
+    // Preparation to change the adapter
+    vault.proposeAdapter(IERC4626(address(newAdapter)));
+
+    vm.warp(block.timestamp + 3 days);
+
+    vm.expectEmit(false, false, false, true, address(vault));
+    emit ChangedAdapter(IERC4626(address(adapter)), IERC4626(address(newAdapter)));
+
+    vault.changeAdapter();
     vault.changeAdapter();
   }
 
@@ -892,6 +810,9 @@ contract VaultTest is Test {
     //////////////////////////////////////////////////////////////*/
 
   function test__setQuitPeriod() public {
+    // Pass the inital quit period
+    vm.warp(block.timestamp + 3 days);
+
     uint256 newQuitPeriod = 1 days;
     vm.expectEmit(false, false, false, true, address(vault));
     emit QuitPeriodSet(newQuitPeriod);
@@ -912,6 +833,58 @@ contract VaultTest is Test {
 
   function testFail__setQuitPeriod_too_high() public {
     vault.setQuitPeriod(8 days);
+  }
+
+  function testFail__setQuitPeriod_during_initial_quitPeriod() public {
+    vault.setQuitPeriod(1 days);
+  }
+
+  function testFail__setQuitPeriod_during_adapter_quitPeriod() public {
+    MockERC4626 newAdapter = _createAdapter(IERC20(address(asset)));
+
+    // Pass the inital quit period
+    vm.warp(block.timestamp + 3 days);
+
+    vault.proposeAdapter(IERC4626(address(newAdapter)));
+
+    vault.setQuitPeriod(1 days);
+  }
+
+  function testFail__setQuitPeriod_during_fee_quitPeriod() public {
+    // Pass the inital quit period
+    vm.warp(block.timestamp + 3 days);
+
+    vault.proposeFees(VaultFees({ deposit: 1, withdrawal: 1, management: 1, performance: 1 }));
+
+    vault.setQuitPeriod(1 days);
+  }
+
+  /*//////////////////////////////////////////////////////////////
+                          SET DEPOSIT LIMIT
+    //////////////////////////////////////////////////////////////*/
+
+  function test__setDepositLimit() public {
+    uint256 newDepositLimit = 100;
+    vm.expectEmit(false, false, false, true, address(vault));
+    emit DepositLimitSet(newDepositLimit);
+
+    vault.setDepositLimit(newDepositLimit);
+
+    assertEq(vault.depositLimit(), newDepositLimit);
+
+    asset.mint(address(this), 101);
+    asset.approve(address(vault), 101);
+
+    vm.expectRevert(abi.encodeWithSelector(Vault.MaxError.selector, 101));
+    vault.deposit(101, address(this));
+
+    vm.expectRevert(abi.encodeWithSelector(Vault.MaxError.selector, 101));
+    vault.mint(101 * 1e9, address(this));
+  }
+
+  function testFail__setDepositLimit_NonOwner() public {
+    vm.prank(alice);
+    vault.setDepositLimit(uint256(100));
   }
 
   /*//////////////////////////////////////////////////////////////

@@ -1,6 +1,7 @@
 export default function DisclaimerPage(): JSX.Element {
   return (
     <div className="space-y-4">
+      <h1 className="text-6xl leading-12">Popcorndao.finance Disclaimer</h1>
       <h2 className="font-bold underline">Introduction</h2>
       <p>
         Please read this <span className="font-bold">disclaimer</span> carefully before accessing, interacting with, or
@@ -41,7 +42,7 @@ export default function DisclaimerPage(): JSX.Element {
         Software or any product or system containing or used in conjunction with the Popcorn Software.
       </p>
       <p>
-        The Popcorn Software has been provided "as is", without warranty of any kind, express or implied, including but
+        The Popcorn Software has been provided “as is”, without warranty of any kind, express or implied, including but
         not limited to the warranties of merchantability, fitness for a particular purpose, and non-infringement.
       </p>
       <h2 className="font-bold underline">Assumption of Risks of Cryptographic Token, Currencies, and Systems</h2>
@@ -81,10 +82,10 @@ export default function DisclaimerPage(): JSX.Element {
       <p>
         The use of the Popcorn Software is prohibited for persons or entities who reside in, are citizens of, are
         incorporated in, are located in, or have a registered office in the United States of America, Russian
-        Federation, Myanmar (Burma), Cote D'Ivoire (Ivory Coast), Cuba, Crimea and Sevastopol, Democratic Republic of
-        Congo, Iran, Iraq, Libya, Mali, Nicaragua, Democratic People’s Republic of Korea (North Korea), Somalia, Sudan,
-        Syria, Yemen, Zimbabwe, or are listed, or associated with any person or entity listed, on any sanction list of
-        the governments of the United States, United Kingdom and/or any member state of the European Union.
+        Federation, Myanmar (Burma), Cote D&apos;Ivoire (Ivory Coast), Cuba, Crimea and Sevastopol, Democratic Republic
+        of Congo, Iran, Iraq, Libya, Mali, Nicaragua, Democratic People’s Republic of Korea (North Korea), Somalia,
+        Sudan, Syria, Yemen, Zimbabwe, or are listed, or associated with any person or entity listed, on any sanction
+        list of the governments of the United States, United Kingdom and/or any member state of the European Union.
       </p>
       <p>
         The Popcorn Software could be impacted by one or more regulatory inquiries or regulatory actions, which could

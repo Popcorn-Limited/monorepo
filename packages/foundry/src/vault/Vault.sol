@@ -3,15 +3,13 @@
 
 pragma solidity ^0.8.15;
 
+import { ERC4626Upgradeable, IERC20MetadataUpgradeable as IERC20Metadata, ERC20Upgradeable as ERC20 } from "openzeppelin-contracts-upgradeable/token/ERC20/extensions/ERC4626Upgradeable.sol";
 import { SafeERC20Upgradeable as SafeERC20 } from "openzeppelin-contracts-upgradeable/token/ERC20/utils/SafeERC20Upgradeable.sol";
 import { ReentrancyGuardUpgradeable } from "openzeppelin-contracts-upgradeable/security/ReentrancyGuardUpgradeable.sol";
 import { PausableUpgradeable } from "openzeppelin-contracts-upgradeable/security/PausableUpgradeable.sol";
-import { IERC4626, IERC20 } from "../interfaces/vault/IERC4626.sol";
-import { IERC20Metadata } from "openzeppelin-contracts/token/ERC20/extensions/IERC20Metadata.sol";
-import { VaultFees } from "../interfaces/vault/IVault.sol";
 import { MathUpgradeable as Math } from "openzeppelin-contracts-upgradeable/utils/math/MathUpgradeable.sol";
 import { OwnedUpgradeable } from "../utils/OwnedUpgradeable.sol";
-import { ERC20Upgradeable } from "openzeppelin-contracts-upgradeable/token/ERC20/ERC20Upgradeable.sol";
+import { VaultFees, IERC4626, IERC20 } from "../interfaces/vault/IVault.sol";
 
 /**
  * @title   Vault
@@ -23,14 +21,17 @@ import { ERC20Upgradeable } from "openzeppelin-contracts-upgradeable/token/ERC20
  * It allows for multiple type of fees which are taken by issuing new vault shares.
  * Adapter and fees can be changed by the owner after a ragequit time.
  */
-contract Vault is ERC20Upgradeable, ReentrancyGuardUpgradeable, PausableUpgradeable, OwnedUpgradeable {
+contract Vault is ERC4626Upgradeable, ReentrancyGuardUpgradeable, PausableUpgradeable, OwnedUpgradeable {
   using SafeERC20 for IERC20;
   using Math for uint256;
 
-  uint256 constant SECONDS_PER_YEAR = 365.25 days;
+  uint256 internal constant SECONDS_PER_YEAR = 365.25 days;
 
-  IERC20 public asset;
   uint8 internal _decimals;
+  uint8 public constant decimalOffset = 9;
+
+  string internal _name;
+  string internal _symbol;
 
   bytes32 public contractName;
 
@@ -39,12 +40,17 @@ contract Vault is ERC20Upgradeable, ReentrancyGuardUpgradeable, PausableUpgradea
   error InvalidAsset();
   error InvalidAdapter();
 
+  constructor() {
+    _disableInitializers();
+  }
+
   /**
    * @notice Initialize a new Vault.
    * @param asset_ Underlying Asset which users will deposit.
    * @param adapter_ Adapter which will be used to interact with the wrapped protocol.
    * @param fees_ Desired fees in 1e18. (1e18 = 100%, 1e14 = 1 BPS)
    * @param feeRecipient_ Recipient of all vault fees. (Must not be zero address)
+   * @param depositLimit_ Maximum amount of assets which can be deposited.
    * @param owner Owner of the contract. Controls management functions.
    * @dev This function is called by the factory contract when deploying a new vault.
    * @dev Usually the adapter should already be pre configured. Otherwise a new one can only be added after a ragequit time.
@@ -54,28 +60,23 @@ contract Vault is ERC20Upgradeable, ReentrancyGuardUpgradeable, PausableUpgradea
     IERC4626 adapter_,
     VaultFees calldata fees_,
     address feeRecipient_,
+    uint256 depositLimit_,
     address owner
   ) external initializer {
-    __ERC20_init(
-      string.concat("Popcorn ", IERC20Metadata(address(asset_)).name(), " Vault"),
-      string.concat("pop-", IERC20Metadata(address(asset_)).symbol())
-    );
+    __ERC4626_init(IERC20Metadata(address(asset_)));
     __Owned_init(owner);
 
     if (address(asset_) == address(0)) revert InvalidAsset();
     if (address(asset_) != adapter_.asset()) revert InvalidAdapter();
 
-    asset = asset_;
     adapter = adapter_;
 
-    asset.approve(address(adapter_), type(uint256).max);
+    asset_.approve(address(adapter_), type(uint256).max);
 
-    _decimals = IERC20Metadata(address(asset_)).decimals();
+    _decimals = IERC20Metadata(address(asset_)).decimals() + decimalOffset; // Asset decimals + decimal offset to combat inflation attacks
 
     INITIAL_CHAIN_ID = block.chainid;
     INITIAL_DOMAIN_SEPARATOR = computeDomainSeparator();
-
-    feesUpdatedAt = block.timestamp;
 
     if (fees_.deposit >= 1e18 || fees_.withdrawal >= 1e18 || fees_.management >= 1e18 || fees_.performance >= 1e18)
       revert InvalidVaultFees();
@@ -86,10 +87,26 @@ contract Vault is ERC20Upgradeable, ReentrancyGuardUpgradeable, PausableUpgradea
 
     contractName = keccak256(abi.encodePacked("Popcorn", name(), block.timestamp, "Vault"));
 
-    emit VaultInitialized(contractName, address(asset));
+    feesUpdatedAt = block.timestamp;
+    highWaterMark = 1e9;
+    quitPeriod = 3 days;
+    depositLimit = depositLimit_;
+
+    emit VaultInitialized(contractName, address(asset_));
+
+    _name = string.concat("Popcorn ", IERC20Metadata(address(asset_)).name(), " Vault");
+    _symbol = string.concat("pop-", IERC20Metadata(address(asset_)).symbol());
   }
 
-  function decimals() public view override returns (uint8) {
+  function name() public view override(IERC20Metadata, ERC20) returns (string memory) {
+    return _name;
+  }
+
+  function symbol() public view override(IERC20Metadata, ERC20) returns (string memory) {
+    return _symbol;
+  }
+
+  function decimals() public view override(IERC20Metadata, ERC20) returns (uint8) {
     return _decimals;
   }
 
@@ -97,16 +114,9 @@ contract Vault is ERC20Upgradeable, ReentrancyGuardUpgradeable, PausableUpgradea
                         DEPOSIT/WITHDRAWAL LOGIC
     //////////////////////////////////////////////////////////////*/
 
-  event Deposit(address indexed caller, address indexed owner, uint256 assets, uint256 shares);
-  event Withdraw(
-    address indexed caller,
-    address indexed receiver,
-    address indexed owner,
-    uint256 assets,
-    uint256 shares
-  );
-
+  error ZeroAmount();
   error InvalidReceiver();
+  error MaxError(uint256 amount);
 
   function deposit(uint256 assets) public returns (uint256) {
     return deposit(assets, msg.sender);
@@ -120,22 +130,27 @@ contract Vault is ERC20Upgradeable, ReentrancyGuardUpgradeable, PausableUpgradea
    */
   function deposit(uint256 assets, address receiver)
     public
+    override
     nonReentrant
     whenNotPaused
-    syncFeeCheckpoint
     returns (uint256 shares)
   {
     if (receiver == address(0)) revert InvalidReceiver();
+    if (assets > maxDeposit(receiver)) revert MaxError(assets);
 
-    uint256 feeShares = convertToShares(assets.mulDiv(uint256(fees.deposit), 1e18, Math.Rounding.Down));
+    uint256 feeShares = _convertToShares(
+      assets.mulDiv(uint256(fees.deposit), 1e18, Math.Rounding.Down),
+      Math.Rounding.Down
+    );
 
-    shares = convertToShares(assets) - feeShares;
+    shares = _convertToShares(assets, Math.Rounding.Down) - feeShares;
+    if (shares == 0) revert ZeroAmount();
 
     if (feeShares > 0) _mint(feeRecipient, feeShares);
 
     _mint(receiver, shares);
 
-    asset.safeTransferFrom(msg.sender, address(this), assets);
+    IERC20(asset()).safeTransferFrom(msg.sender, address(this), assets);
 
     adapter.deposit(assets, address(this));
 
@@ -152,26 +167,23 @@ contract Vault is ERC20Upgradeable, ReentrancyGuardUpgradeable, PausableUpgradea
    * @param receiver Receiver of issued vault shares.
    * @return assets Quantity of assets deposited by caller.
    */
-  function mint(uint256 shares, address receiver)
-    public
-    nonReentrant
-    whenNotPaused
-    syncFeeCheckpoint
-    returns (uint256 assets)
-  {
+  function mint(uint256 shares, address receiver) public override nonReentrant whenNotPaused returns (uint256 assets) {
     if (receiver == address(0)) revert InvalidReceiver();
+    if (shares == 0) revert ZeroAmount();
 
     uint256 depositFee = uint256(fees.deposit);
 
     uint256 feeShares = shares.mulDiv(depositFee, 1e18 - depositFee, Math.Rounding.Down);
 
-    assets = convertToAssets(shares + feeShares);
+    assets = _convertToAssets(shares + feeShares, Math.Rounding.Up);
+    
+    if (assets > maxMint(receiver)) revert MaxError(assets);
 
     if (feeShares > 0) _mint(feeRecipient, feeShares);
 
     _mint(receiver, shares);
 
-    asset.safeTransferFrom(msg.sender, address(this), assets);
+    IERC20(asset()).safeTransferFrom(msg.sender, address(this), assets);
 
     adapter.deposit(assets, address(this));
 
@@ -193,10 +205,12 @@ contract Vault is ERC20Upgradeable, ReentrancyGuardUpgradeable, PausableUpgradea
     uint256 assets,
     address receiver,
     address owner
-  ) public nonReentrant syncFeeCheckpoint returns (uint256 shares) {
+  ) public override nonReentrant returns (uint256 shares) {
     if (receiver == address(0)) revert InvalidReceiver();
+    if (assets > maxWithdraw(owner)) revert MaxError(assets);
 
-    shares = convertToShares(assets);
+    shares = _convertToShares(assets, Math.Rounding.Up);
+    if (shares == 0) revert ZeroAmount();
 
     uint256 withdrawalFee = uint256(fees.withdrawal);
 
@@ -230,14 +244,16 @@ contract Vault is ERC20Upgradeable, ReentrancyGuardUpgradeable, PausableUpgradea
     uint256 shares,
     address receiver,
     address owner
-  ) public nonReentrant returns (uint256 assets) {
+  ) public override nonReentrant returns (uint256 assets) {
     if (receiver == address(0)) revert InvalidReceiver();
+    if (shares == 0) revert ZeroAmount();
+    if (shares > maxRedeem(owner)) revert MaxError(shares);
 
     if (msg.sender != owner) _approve(owner, msg.sender, allowance(owner, msg.sender) - shares);
 
     uint256 feeShares = shares.mulDiv(uint256(fees.withdrawal), 1e18, Math.Rounding.Down);
 
-    assets = convertToAssets(shares - feeShares);
+    assets = _convertToAssets(shares - feeShares, Math.Rounding.Up);
 
     _burn(owner, shares);
 
@@ -253,30 +269,8 @@ contract Vault is ERC20Upgradeable, ReentrancyGuardUpgradeable, PausableUpgradea
     //////////////////////////////////////////////////////////////*/
 
   /// @return Total amount of underlying `asset` token managed by vault. Delegates to adapter.
-  function totalAssets() public view returns (uint256) {
+  function totalAssets() public view override returns (uint256) {
     return adapter.convertToAssets(adapter.balanceOf(address(this)));
-  }
-
-  /**
-   * @notice Amount of shares the vault would exchange for given amount of assets, in an ideal scenario.
-   * @param assets Exact amount of assets
-   * @return Exact amount of shares
-   */
-  function convertToShares(uint256 assets) public view returns (uint256) {
-    uint256 supply = totalSupply(); // Saves an extra SLOAD if totalSupply is non-zero.
-
-    return supply == 0 ? assets : assets.mulDiv(supply, totalAssets(), Math.Rounding.Down);
-  }
-
-  /**
-   * @notice Amount of assets the vault would exchange for given amount of shares, in an ideal scenario.
-   * @param shares Exact amount of shares
-   * @return Exact amount of assets
-   */
-  function convertToAssets(uint256 shares) public view returns (uint256) {
-    uint256 supply = totalSupply(); // Saves an extra SLOAD if totalSupply is non-zero.
-
-    return supply == 0 ? shares : shares.mulDiv(totalAssets(), supply, Math.Rounding.Down);
   }
 
   /**
@@ -285,7 +279,7 @@ contract Vault is ERC20Upgradeable, ReentrancyGuardUpgradeable, PausableUpgradea
    * @return shares of the vault issued in exchange to the user for `assets`
    * @dev This method accounts for issuance of accrued fee shares.
    */
-  function previewDeposit(uint256 assets) public view returns (uint256 shares) {
+  function previewDeposit(uint256 assets) public view override returns (uint256 shares) {
     shares = adapter.previewDeposit(assets - assets.mulDiv(uint256(fees.deposit), 1e18, Math.Rounding.Down));
   }
 
@@ -295,7 +289,7 @@ contract Vault is ERC20Upgradeable, ReentrancyGuardUpgradeable, PausableUpgradea
    * @return assets quantity of underlying needed in exchange to mint `shares`.
    * @dev This method accounts for issuance of accrued fee shares.
    */
-  function previewMint(uint256 shares) public view returns (uint256 assets) {
+  function previewMint(uint256 shares) public view override returns (uint256 assets) {
     uint256 depositFee = uint256(fees.deposit);
 
     shares += shares.mulDiv(depositFee, 1e18 - depositFee, Math.Rounding.Up);
@@ -309,7 +303,7 @@ contract Vault is ERC20Upgradeable, ReentrancyGuardUpgradeable, PausableUpgradea
    * @return shares to be burned in exchange for `assets`
    * @dev This method accounts for both issuance of fee shares and withdrawal fee.
    */
-  function previewWithdraw(uint256 assets) external view returns (uint256 shares) {
+  function previewWithdraw(uint256 assets) public view override returns (uint256 shares) {
     uint256 withdrawalFee = uint256(fees.withdrawal);
 
     assets += assets.mulDiv(withdrawalFee, 1e18 - withdrawalFee, Math.Rounding.Up);
@@ -323,10 +317,24 @@ contract Vault is ERC20Upgradeable, ReentrancyGuardUpgradeable, PausableUpgradea
    * @return assets quantity of underlying returned in exchange for `shares`.
    * @dev This method accounts for both issuance of fee shares and withdrawal fee.
    */
-  function previewRedeem(uint256 shares) public view returns (uint256 assets) {
+  function previewRedeem(uint256 shares) public view override returns (uint256 assets) {
     assets = adapter.previewRedeem(shares);
 
     assets -= assets.mulDiv(uint256(fees.withdrawal), 1e18, Math.Rounding.Down);
+  }
+
+  function _convertToShares(uint256 assets, Math.Rounding rounding)
+    internal
+    view
+    virtual
+    override
+    returns (uint256 shares)
+  {
+    return assets.mulDiv(totalSupply() + 10**decimalOffset, totalAssets() + 1, rounding);
+  }
+
+  function _convertToAssets(uint256 shares, Math.Rounding rounding) internal view virtual override returns (uint256) {
+    return shares.mulDiv(totalAssets() + 1, totalSupply() + 10**decimalOffset, rounding);
   }
 
   /*//////////////////////////////////////////////////////////////
@@ -334,23 +342,29 @@ contract Vault is ERC20Upgradeable, ReentrancyGuardUpgradeable, PausableUpgradea
     //////////////////////////////////////////////////////////////*/
 
   /// @return Maximum amount of underlying `asset` token that may be deposited for a given address. Delegates to adapter.
-  function maxDeposit(address caller) public view returns (uint256) {
-    return adapter.maxDeposit(caller);
+  function maxDeposit(address) public view override returns (uint256) {
+    uint256 assets = totalAssets();
+    uint256 depositLimit_ = depositLimit;
+    if (paused() || assets >= depositLimit_) return 0;
+    return Math.min(depositLimit_ - assets, adapter.maxDeposit(address(this)));
   }
 
   /// @return Maximum amount of vault shares that may be minted to given address. Delegates to adapter.
-  function maxMint(address caller) external view returns (uint256) {
-    return adapter.maxMint(caller);
+  function maxMint(address) public view override returns (uint256) {
+    uint256 assets = totalAssets();
+    uint256 depositLimit_ = depositLimit;
+    if (paused() || assets >= depositLimit_) return 0;
+    return Math.min(depositLimit_ - assets, adapter.maxMint(address(this)));
   }
 
   /// @return Maximum amount of underlying `asset` token that can be withdrawn by `caller` address. Delegates to adapter.
-  function maxWithdraw(address caller) external view returns (uint256) {
-    return adapter.maxWithdraw(caller);
+  function maxWithdraw(address) public view override returns (uint256) {
+    return adapter.maxWithdraw(address(this));
   }
 
   /// @return Maximum amount of shares that may be redeemed by `caller` address. Delegates to adapter.
-  function maxRedeem(address caller) external view returns (uint256) {
-    return adapter.maxRedeem(caller);
+  function maxRedeem(address) public view override returns (uint256) {
+    return adapter.maxRedeem(address(this));
   }
 
   /*//////////////////////////////////////////////////////////////
@@ -388,8 +402,8 @@ contract Vault is ERC20Upgradeable, ReentrancyGuardUpgradeable, PausableUpgradea
     uint256 performanceFee = fees.performance;
 
     return
-      performanceFee > 0 && shareValue > highWaterMark
-        ? performanceFee.mulDiv((shareValue - highWaterMark) * totalSupply(), 1e36, Math.Rounding.Down)
+      performanceFee > 0 && shareValue > highWaterMark_
+        ? performanceFee.mulDiv((shareValue - highWaterMark_) * totalSupply(), 1e36, Math.Rounding.Down)
         : 0;
   }
 
@@ -397,7 +411,7 @@ contract Vault is ERC20Upgradeable, ReentrancyGuardUpgradeable, PausableUpgradea
                             FEE LOGIC
     //////////////////////////////////////////////////////////////*/
 
-  uint256 public highWaterMark = 1e18;
+  uint256 public highWaterMark;
   uint256 public assetsCheckpoint;
   uint256 public feesUpdatedAt;
 
@@ -415,16 +429,17 @@ contract Vault is ERC20Upgradeable, ReentrancyGuardUpgradeable, PausableUpgradea
 
     if (shareValue > highWaterMark) highWaterMark = shareValue;
 
-    if (managementFee > 0) feesUpdatedAt = block.timestamp;
+    if (totalFee > 0 && currentAssets > 0) {
+      uint256 supply = totalSupply();
+      uint256 feeInShare = supply == 0
+        ? totalFee
+        : totalFee.mulDiv(supply, currentAssets - totalFee, Math.Rounding.Down);
+      _mint(feeRecipient, feeInShare);
+    }
 
-    if (totalFee > 0 && currentAssets > 0) _mint(feeRecipient, convertToShares(totalFee));
+    feesUpdatedAt = block.timestamp;
 
     _;
-  }
-
-  modifier syncFeeCheckpoint() {
-    _;
-    highWaterMark = convertToAssets(1e18);
   }
 
   /*//////////////////////////////////////////////////////////////
@@ -467,7 +482,9 @@ contract Vault is ERC20Upgradeable, ReentrancyGuardUpgradeable, PausableUpgradea
     if (proposedFeeTime == 0 || block.timestamp < proposedFeeTime + quitPeriod) revert NotPassedQuitPeriod(quitPeriod);
 
     emit ChangedFees(fees, proposedFees);
+
     fees = proposedFees;
+    feesUpdatedAt = block.timestamp;
 
     delete proposedFees;
     delete proposedFeeTime;
@@ -504,7 +521,7 @@ contract Vault is ERC20Upgradeable, ReentrancyGuardUpgradeable, PausableUpgradea
    * @param newAdapter A new ERC4626 that should be used as a yield adapter for this asset.
    */
   function proposeAdapter(IERC4626 newAdapter) external onlyOwner {
-    if (newAdapter.asset() != address(asset)) revert VaultAssetMismatchNewAdapterAsset();
+    if (newAdapter.asset() != asset()) revert VaultAssetMismatchNewAdapterAsset();
 
     proposedAdapter = newAdapter;
     proposedAdapterTime = block.timestamp;
@@ -524,15 +541,15 @@ contract Vault is ERC20Upgradeable, ReentrancyGuardUpgradeable, PausableUpgradea
 
     adapter.redeem(adapter.balanceOf(address(this)), address(this), address(this));
 
-    asset.approve(address(adapter), 0);
+    IERC20(asset()).approve(address(adapter), 0);
 
     emit ChangedAdapter(adapter, proposedAdapter);
 
     adapter = proposedAdapter;
 
-    asset.approve(address(adapter), type(uint256).max);
+    IERC20(asset()).approve(address(adapter), type(uint256).max);
 
-    adapter.deposit(asset.balanceOf(address(this)), address(this));
+    adapter.deposit(IERC20(asset()).balanceOf(address(this)), address(this));
 
     delete proposedAdapterTime;
     delete proposedAdapter;
@@ -542,7 +559,7 @@ contract Vault is ERC20Upgradeable, ReentrancyGuardUpgradeable, PausableUpgradea
                           RAGE QUIT LOGIC
     //////////////////////////////////////////////////////////////*/
 
-  uint256 public quitPeriod = 3 days;
+  uint256 public quitPeriod;
 
   event QuitPeriodSet(uint256 quitPeriod);
 
@@ -553,11 +570,31 @@ contract Vault is ERC20Upgradeable, ReentrancyGuardUpgradeable, PausableUpgradea
    * @param _quitPeriod Time to rage quit after proposal.
    */
   function setQuitPeriod(uint256 _quitPeriod) external onlyOwner {
+    if (block.timestamp < proposedAdapterTime + quitPeriod || block.timestamp < proposedFeeTime + quitPeriod)
+      revert NotPassedQuitPeriod(quitPeriod);
     if (_quitPeriod < 1 days || _quitPeriod > 7 days) revert InvalidQuitPeriod();
 
     quitPeriod = _quitPeriod;
 
     emit QuitPeriodSet(quitPeriod);
+  }
+
+  /*//////////////////////////////////////////////////////////////
+                          DEPOSIT LIMIT LOGIC
+    //////////////////////////////////////////////////////////////*/
+
+  uint256 public depositLimit;
+
+  event DepositLimitSet(uint256 depositLimit);
+
+  /**
+   * @notice Sets a limit for deposits in assets. Caller must be Owner.
+   * @param _depositLimit Maximum amount of assets that can be deposited.
+   */
+  function setDepositLimit(uint256 _depositLimit) external onlyOwner {
+    depositLimit = _depositLimit;
+
+    emit DepositLimitSet(_depositLimit);
   }
 
   /*//////////////////////////////////////////////////////////////

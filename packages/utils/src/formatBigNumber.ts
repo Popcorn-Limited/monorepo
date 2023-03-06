@@ -20,9 +20,9 @@ export function formatAndRoundBigNumber(value: BigNumber, decimals: number): str
       })}k`;
     }
 
-    return parseFloat(formatedValue.toFixed(4)).toLocaleString(undefined, {
-      maximumFractionDigits: formatedValue > 1 ? 2 : 4,
-      // If number < 1, max fractional units are 4, else 2
+    return parseFloat(formatedValue.toFixed(6)).toLocaleString(undefined, {
+      maximumFractionDigits: formatedValue > 1 ? 2 : 6,
+      // If number < 1, max fractional units are 6, else 2
     });
   }
   return `Invalid val: ${value}`;

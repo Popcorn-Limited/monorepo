@@ -52,6 +52,7 @@ contract BeefyAdapter is AdapterBase, WithRewards {
     __AdapterBase_init(adapterInitData);
 
     if (!IPermissionRegistry(registry).endorsed(_beefyVault)) revert NotEndorsed(_beefyVault);
+    if (!IPermissionRegistry(registry).endorsed(_beefyBooster)) revert NotEndorsed(_beefyBooster);
     if (IBeefyVault(_beefyVault).want() != asset()) revert InvalidBeefyVault(_beefyVault);
     if (_beefyBooster != address(0) && IBeefyBooster(_beefyBooster).stakedToken() != _beefyVault)
       revert InvalidBeefyBooster(_beefyBooster);
@@ -91,12 +92,9 @@ contract BeefyAdapter is AdapterBase, WithRewards {
   }
 
   /// @notice The amount of beefy shares to withdraw given an amount of adapter shares
-  function _convertToUnderlyingShares(
-    uint256,
-    uint256 shares,
-    uint256 supply
-  ) internal view override returns (uint256) {
-    return shares.mulDiv(beefyBalanceCheck.balanceOf(address(this)), supply, Math.Rounding.Up);
+  function convertToUnderlyingShares(uint256 assets, uint256 shares) public view override returns (uint256) {
+    uint256 supply = totalSupply();
+    return supply == 0 ? shares : shares.mulDiv(beefyBalanceCheck.balanceOf(address(this)), supply, Math.Rounding.Up);
   }
 
   /// @notice The token rewarded if a beefy booster is configured
@@ -107,15 +105,11 @@ contract BeefyAdapter is AdapterBase, WithRewards {
     return _rewardTokens;
   }
 
-  /*//////////////////////////////////////////////////////////////
-                        ACCOUNTING LOGIC
-    //////////////////////////////////////////////////////////////*/
-
   /// @notice `previewWithdraw` that takes beefy withdrawal fees into account
   function previewWithdraw(uint256 assets) public view override returns (uint256) {
     IBeefyStrat strat = IBeefyStrat(beefyVault.strategy());
     uint256 beefyFee = strat.withdrawalFee();
-    if (beefyFee > 0) assets = assets.mulDiv(BPS_DENOMINATOR, BPS_DENOMINATOR - beefyFee, Math.Rounding.Up);
+    if (beefyFee > 0) assets -= assets.mulDiv(beefyFee, BPS_DENOMINATOR, Math.Rounding.Up);
 
     return _convertToShares(assets, Math.Rounding.Up);
   }

@@ -97,12 +97,25 @@ contract YearnAdapter is AdapterBase {
   }
 
   /// @notice The amount of aave shares to withdraw given an mount of adapter shares
-  function _convertToUnderlyingShares(
-    uint256,
-    uint256 shares,
-    uint256 supply
-  ) internal view override returns (uint256) {
-    return shares.mulDiv(yVault.balanceOf(address(this)), supply, Math.Rounding.Up);
+  function convertToUnderlyingShares(uint256, uint256 shares) public view override returns (uint256) {
+    uint256 supply = totalSupply();
+    return supply == 0 ? shares : shares.mulDiv(yVault.balanceOf(address(this)), supply, Math.Rounding.Up);
+  }
+
+  function previewDeposit(uint256 assets) public view virtual override returns (uint256) {
+    return paused() ? 0 : _convertToShares(assets - 10, Math.Rounding.Down);
+  }
+
+  function previewMint(uint256 shares) public view virtual override returns (uint256) {
+    return paused() ? 0 : _convertToAssets(shares + 10, Math.Rounding.Up);
+  }
+
+  function previewWithdraw(uint256 assets) public view virtual override returns (uint256) {
+    return _convertToShares(assets + 10, Math.Rounding.Up);
+  }
+
+  function previewRedeem(uint256 shares) public view virtual override returns (uint256) {
+    return _convertToAssets(shares - 10, Math.Rounding.Down);
   }
 
   /*//////////////////////////////////////////////////////////////
