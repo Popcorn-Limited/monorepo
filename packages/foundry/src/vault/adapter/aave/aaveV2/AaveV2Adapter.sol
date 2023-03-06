@@ -122,13 +122,13 @@ contract AaveV2Adapter is AdapterBase, WithRewards {
                             STRATEGY LOGIC
     //////////////////////////////////////////////////////////////*/
 
-  error MiningNotActive();
+  error IncentivesNotActive();
 
   /// @notice Claim liquidity mining rewards given that it's active
   function claim() public override onlyStrategy {
     address[] memory assets = new address[](1);
     assets[0] = address(aToken);
-    if (isActiveMining == false) revert MiningNotActive();
+    if (isActiveMining == false) revert IncentivesNotActive();
     aaveMining.claimRewards(assets, type(uint256).max, address(this));
   }
 
