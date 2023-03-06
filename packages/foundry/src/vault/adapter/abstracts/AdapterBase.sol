@@ -93,7 +93,7 @@ abstract contract AdapterBase is
                         DEPOSIT/WITHDRAWAL LOGIC
     //////////////////////////////////////////////////////////////*/
 
-  error MaxError(uint256 amount, uint256 max);
+  error MaxError(uint256 amount);
   error ZeroAmount();
 
   /**
@@ -102,7 +102,7 @@ abstract contract AdapterBase is
    * @param receiver Receiver of the shares.
    */
   function deposit(uint256 assets, address receiver) public virtual override returns (uint256) {
-    if (assets > maxDeposit(receiver)) revert MaxError(assets, maxDeposit(receiver));
+    if (assets > maxDeposit(receiver)) revert MaxError(assets);
 
     uint256 shares = _convertToShares(assets, Math.Rounding.Down);
     _deposit(_msgSender(), receiver, assets, shares);
@@ -116,7 +116,7 @@ abstract contract AdapterBase is
    * @param receiver Receiver of the shares.
    */
   function mint(uint256 shares, address receiver) public virtual override returns (uint256) {
-    if (shares > maxMint(receiver)) revert MaxError(shares, maxMint(receiver));
+    if (shares > maxMint(receiver)) revert MaxError(shares);
 
     uint256 assets = _convertToAssets(shares, Math.Rounding.Up);
     _deposit(_msgSender(), receiver, assets, shares);
@@ -144,9 +144,6 @@ abstract contract AdapterBase is
     emit Deposit(caller, receiver, assets, shares);
   }
 
-  error Shares(uint256 shares);
-  error PING(uint256 ping);
-
   /**
    * @notice Withdraws `assets` from the underlying protocol and burns vault shares from `owner`.
    * @param assets Amount of assets to withdraw.
@@ -158,12 +155,9 @@ abstract contract AdapterBase is
     address receiver,
     address owner
   ) public virtual override returns (uint256) {
-    // revert PING(1);
-    if (assets > maxWithdraw(owner)) revert MaxError(assets, maxWithdraw(owner));
+    if (assets > maxWithdraw(owner)) revert MaxError(assets);
 
     uint256 shares = _convertToShares(assets, Math.Rounding.Up);
-
-    // revert Shares(shares);
 
     _withdraw(_msgSender(), receiver, owner, assets, shares);
 
@@ -181,15 +175,13 @@ abstract contract AdapterBase is
     address receiver,
     address owner
   ) public virtual override returns (uint256) {
-    if (shares > maxRedeem(owner)) revert MaxError(shares, maxRedeem(owner));
+    if (shares > maxRedeem(owner)) revert MaxError(shares);
 
     uint256 assets = _convertToAssets(shares, Math.Rounding.Down);
     _withdraw(_msgSender(), receiver, owner, assets, shares);
 
     return assets;
   }
-
-  error TestError2(uint256 amount1, uint256 amount2);
 
   /**
    * @notice Withdraws `assets` from the underlying protocol and burns vault shares from `owner`.
@@ -210,12 +202,7 @@ abstract contract AdapterBase is
       _protocolWithdraw(assets, shares);
     }
 
-    // revert Shares(shares);
-    // revert TestError2(shares, IERC20(asset()).balanceOf(address(this)));
-
     _burn(owner, shares);
-
-    revert TestError2(assets, IERC20(asset()).balanceOf(address(this)));
 
     IERC20(asset()).safeTransfer(receiver, assets);
 

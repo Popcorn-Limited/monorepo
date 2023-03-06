@@ -125,7 +125,7 @@ contract StargateAdapter is AdapterBase, WithRewards {
 
   /// @notice Withdraw from stargate pool
   function _protocolWithdraw(uint256 assets, uint256) internal override {
-    stargateStaking.withdraw(pid, assets);
+    stargateStaking.withdraw(pid, assets / scalar);
 
     uint256 sTokenBal = sToken.balanceOf(address(this));
 

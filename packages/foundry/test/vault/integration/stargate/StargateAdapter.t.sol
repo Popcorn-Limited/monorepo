@@ -121,4 +121,11 @@ contract StargateAdapterTest is AbstractAdapterTest {
     (uint256 stake, ) = stargateStaking.userInfo(stakingPid, address(this));
     emit log_named_uint("stake", stake);
   }
+
+  function test__withdrawOnly() public {
+    _mintFor(1e18, address(this));
+    adapter.deposit(1e18, address(this));
+
+    adapter.withdraw((uint256(1e18) * uint256(9)) / uint256(10), address(this), address(this));
+  }
 }
