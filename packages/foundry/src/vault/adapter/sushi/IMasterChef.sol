@@ -3,11 +3,10 @@
 
 pragma solidity ^0.8.15;
 
-import { IERC20Upgradeable as IERC20 } from "openzeppelin-contracts-upgradeable/token/ERC20/IERC20Upgradeable.sol";
 
 interface IMasterChef {
   struct PoolInfo {
-    IERC20 lpToken;
+    address lpToken;
     uint256 allocPoint;
     uint256 lastRewardBlock;
     uint256 accSushiPerShare;

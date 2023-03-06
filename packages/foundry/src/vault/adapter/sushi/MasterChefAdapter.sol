@@ -30,10 +30,17 @@ contract MasterChefAdapter is AdapterBase, WithRewards {
   // @notice The pool ID
   uint256 public pid;
 
+  /*//////////////////////////////////////////////////////////////
+                            INITIALIZATION
+    //////////////////////////////////////////////////////////////*/
+
+  error InvalidAsset();
+
   /**
    * @notice Initialize a new MasterChef Adapter.
    * @param adapterInitData Encoded data for the base adapter initialization.
    * @dev `_pid` - The poolId for lpToken.
+   * @dev `_rewardsToken` - The token rewarded by the MasterChef contract (Sushi, Cake...)
    * @dev This function is called by the factory contract when deploying a new vault.
    */
 
@@ -42,15 +49,17 @@ contract MasterChefAdapter is AdapterBase, WithRewards {
     address registry,
     bytes memory masterchefInitData
   ) external initializer {
+    __AdapterBase_init(adapterInitData);
+
     (uint256 _pid, address _rewardsToken) = abi.decode(masterchefInitData, (uint256, address));
 
     masterChef = IMasterChef(registry);
+    IMasterChef.PoolInfo memory pool = masterChef.poolInfo(_pid);
 
-    __AdapterBase_init(adapterInitData);
+    if (pool.lpToken != asset()) revert InvalidAsset();
 
     pid = _pid;
     rewardsToken = _rewardsToken;
-    IMasterChef.PoolInfo memory pool = masterChef.poolInfo(_pid);
 
     _name = string.concat("Popcorn MasterChef", IERC20Metadata(asset()).name(), " Adapter");
     _symbol = string.concat("popB-", IERC20Metadata(asset()).symbol());
@@ -82,11 +91,11 @@ contract MasterChefAdapter is AdapterBase, WithRewards {
                           INTERNAL HOOKS LOGIC
     //////////////////////////////////////////////////////////////*/
 
-  function _protocolDeposit(uint256 amount, uint256) internal virtual override {
+  function _protocolDeposit(uint256 amount, uint256) internal override {
     masterChef.deposit(pid, amount);
   }
 
-  function _protocolWithdraw(uint256 amount, uint256) internal virtual override {
+  function _protocolWithdraw(uint256 amount, uint256) internal override {
     masterChef.withdraw(pid, amount);
   }
 

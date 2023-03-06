@@ -28,18 +28,14 @@ contract MasterChefAdapterTest is AbstractAdapterTest {
     _setUpTest(testConfig);
   }
 
-  function testCall() public {}
-
   function _setUpTest(bytes memory testConfig) internal {
-    createAdapter();
-
     (uint256 _pid, address _rewardsToken) = abi.decode(testConfig, (uint256, address));
 
     pid = _pid;
     rewardsToken = _rewardsToken;
     IMasterChef.PoolInfo memory info = masterChef.poolInfo(_pid);
 
-    setUpBaseTest(info.lpToken, adapter, address(masterChef), 10, "MasterChef", true);
+    setUpBaseTest(IERC20(info.lpToken), address(new MasterChefAdapter()), address(masterChef), 10, "MasterChef", true);
 
     vm.label(address(masterChef), "masterChef");
     vm.label(address(asset), "asset");
@@ -51,10 +47,6 @@ contract MasterChefAdapterTest is AbstractAdapterTest {
   /*//////////////////////////////////////////////////////////////
                           HELPER
     //////////////////////////////////////////////////////////////*/
-
-  function createAdapter() public override {
-    adapter = IAdapter(address(new MasterChefAdapter()));
-  }
 
   // Verify that totalAssets returns the expected amount
   function verify_totalAssets() public override {
