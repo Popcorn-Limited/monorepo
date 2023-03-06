@@ -28,22 +28,16 @@ contract LidoAdapter is AdapterBase {
 
   int128 private constant WETHID = 0;
   int128 private constant STETHID = 1;
-  ICurveFi public constant StableSwapSTETH = ICurveFi(0xDC24316b9AE028F1497c275EB9192a3Ea0f67022);
-  uint256 public constant DENOMINATOR = 10000;
-  uint256 public slippage; // = 100; //out of 10000. 100 = 1%
+  ICurveFi public constant stableSwapSTETH = ICurveFi(0xDC24316b9AE028F1497c275EB9192a3Ea0f67022);
+  uint256 public slippage; // 100% = 1e18
 
-  /// @notice The poolId inside Convex booster for relevant Curve lpToken.
-  uint256 public pid;
-
-  /// @notice The booster address for Convex
   ILido public lido;
 
   // address public immutable weth;
   IWETH public weth;
 
+  // TODO We need to figure out how to get this referral
   address private referal = address(0); //stratms. for recycling and redepositing
-
-  // We need to figure out how to get this referral
 
   /*//////////////////////////////////////////////////////////////
                                 INITIALIZATION
@@ -52,36 +46,46 @@ contract LidoAdapter is AdapterBase {
   /**
    * @notice Initialize a new Lido Adapter.
    * @param adapterInitData Encoded data for the base adapter initialization.
-   * @param lidoInitData Encoded data for the Lido adapter initialization.
-   * @dev `_lidoAddress` - The vault address for Lido.
-   * @dev `_pid` - The poolId for lpToken.
+   * @param registry Lido address.
+   * @param lidoInitData init data
+   * @dev `_slippage` - The poolId for lpToken.
    * @dev This function is called by the factory contract when deploying a new vault.
    */
   function initialize(
     bytes memory adapterInitData,
-    address _wethAddress,
+    address registry,
     bytes memory lidoInitData
   ) public initializer {
     __AdapterBase_init(adapterInitData);
+    uint256 _slippage = abi.decode(lidoInitData, (uint256));
 
-    (address _lidoAddress, uint256 _pid) = abi.decode(lidoInitData, (address, uint256));
-
-    lido = ILido(ILido(_lidoAddress).token());
-    pid = _pid;
-    weth = IWETH(ILido(_lidoAddress).weth());
-    slippage = 100;
+    lido = ILido(ILido(registry).token());
+    weth = IWETH(ILido(registry).weth());
+    slippage = _slippage;
 
     _name = string.concat("Popcorn Lido ", IERC20Metadata(address(weth)).name(), " Adapter");
     _symbol = string.concat("popL-", IERC20Metadata(address(weth)).symbol());
 
     IERC20(address(lido)).approve(address(lido), type(uint256).max);
-    IERC20(address(lido)).approve(address(StableSwapSTETH), type(uint256).max);
-    IERC20(address(weth)).approve(address(StableSwapSTETH), type(uint256).max);
+    IERC20(address(lido)).approve(address(stableSwapSTETH), type(uint256).max);
     IERC20(address(weth)).approve(address(lido), type(uint256).max);
+    IERC20(address(weth)).approve(address(stableSwapSTETH), type(uint256).max);
   }
 
-  //we get eth
-  receive() external payable {}
+
+  // Lido sends us ETH so we need to have this function
+  event Log(string func, uint256 gas);
+
+  // Fallback function must be declared as external.
+  fallback() external payable {
+    // send / transfer (forwards 2300 gas to this fallback function)
+    // call (forwards all of the gas)
+    emit Log("fallback", gasleft());
+  }
+
+  receive() external payable {
+    emit Log("receive", gasleft());
+  }
 
   function name() public view override(IERC20Metadata, ERC20) returns (string memory) {
     return _name;
@@ -95,90 +99,43 @@ contract LidoAdapter is AdapterBase {
                             ACCOUNTING LOGIC
     //////////////////////////////////////////////////////////////*/
 
-  function _underlyingBalance() internal view returns (uint256) {
-    return lido.sharesOf(address(this));
-  }
-
   function _totalAssets() internal view override returns (uint256) {
     return lido.balanceOf(address(this)); // this can be higher than the total assets deposited due to staking rewards
-  }
-
-  /*//////////////////////////////////////////////////////////////
-                          INTERNAL HOOKS LOGIC
-    //////////////////////////////////////////////////////////////*/
-
-  /// @notice Deposit into LIDO pool
-  function _protocolDeposit(uint256 assets, uint256) internal virtual override {
-    weth.withdraw(assets); // Grab native Eth from Weth contract
-    lido.submit{ value: assets }(referal); // Submit to Lido Contract
-  }
-
-  /// @notice Withdraw from LIDO pool
-  function _protocolWithdraw(uint256 assets, uint256 shares) internal virtual override {
-    uint256 slippageAllowance = assets.mulDiv(DENOMINATOR.sub(slippage), DENOMINATOR, Math.Rounding.Down);
-    uint256 amountRecieved = StableSwapSTETH.exchange(STETHID, WETHID, assets, slippageAllowance);
-    weth.deposit{ value: amountRecieved }(); // get wrapped eth back
   }
 
   /**
    * @notice Simulate the effects of a withdraw at the current block, given current on-chain conditions.
    * @dev Override this function if the underlying protocol has a unique withdrawal logic and/or withdraw fees.
    */
-  function previewWithdraw(uint256 assets) public view virtual override returns (uint256) {
-    uint256 slippageAllowance = assets.mul(DENOMINATOR.add(slippage)).div(DENOMINATOR);
-    // return StableSwapSTETH.get_dy(WETHID, STETHID, assets);
-    return _convertToShares(slippageAllowance, Math.Rounding.Down);
+  function previewWithdraw(uint256 assets) public view override returns (uint256) {
+    return _convertToShares(assets.mulDiv(slippage, 1e18, Math.Rounding.Down), Math.Rounding.Up);
   }
 
   /**
    * @notice Simulate the effects of a redeem at the current block, given current on-chain conditions.
    * @dev Override this function if the underlying protocol has a unique redeem logic and/or redeem fees.
    */
-  function previewRedeem(uint256 shares) public view virtual override returns (uint256) {
-    uint256 slippageAllowance = shares.mul(DENOMINATOR.sub(slippage)).div(DENOMINATOR);
-    // return StableSwapSTETH.get_dy(STETHID, WETHID, shares);
-    return _convertToAssets(slippageAllowance, Math.Rounding.Down);
+  function previewRedeem(uint256 shares) public view override returns (uint256) {
+    return _convertToAssets(shares.mulDiv(slippage, 1e18, Math.Rounding.Down), Math.Rounding.Down);
   }
 
-  /**
-   * @notice Withdraws `assets` from the underlying protocol and burns vault shares from `owner`.
-   * @dev Executes harvest if `harvestCooldown` is passed since last invocation.
-   */
-  function _withdraw(
-    address caller,
-    address receiver,
-    address owner,
-    uint256 assets,
-    uint256 shares
-  ) internal virtual override {
-    if (caller != owner) {
-      _spendAllowance(owner, caller, shares);
-    }
+  /*//////////////////////////////////////////////////////////////
+                          INTERNAL HOOKS LOGIC
+    //////////////////////////////////////////////////////////////*/
 
-    uint256 balanceInitial = IERC20(asset()).balanceOf(address(this));
+  event log(uint256);
 
-    if (!paused()) {
-      _protocolWithdraw(assets, shares);
-    }
-
-    _burn(owner, shares);
-
-    uint256 balanceNow = IERC20(asset()).balanceOf(address(this));
-
-    uint256 amountReceived = balanceNow.sub(balanceInitial);
-
-    IERC20(asset()).safeTransfer(receiver, amountReceived);
-
-    harvest();
-
-    emit Withdraw(caller, receiver, owner, assets, shares);
+  /// @notice Deposit into LIDO pool
+  function _protocolDeposit(uint256 assets, uint256) internal override {
+    emit log(IERC20(address(weth)).balanceOf(address(this)));
+    weth.withdraw(assets); // Grab native Eth from Weth contract
+    lido.submit{ value: assets }(referal); // Submit to Lido Contract
   }
 
-  function _convertToShares(uint256 assets, Math.Rounding rounding) internal view virtual override returns (uint256) {
-    return assets.mulDiv(totalSupply() + 10**decimalOffset, totalAssets() + 1, rounding);
-  }
-
-  function _convertToAssets(uint256 shares, Math.Rounding rounding) internal view virtual override returns (uint256) {
-    return shares.mulDiv(totalAssets() + 1, totalSupply() + 10**decimalOffset, rounding);
+  /// @notice Withdraw from LIDO pool
+  function _protocolWithdraw(uint256 assets, uint256 shares) internal override {
+    uint256 slippageAllowance = assets.mulDiv(slippage, 1e18, Math.Rounding.Down);
+    uint256 amountRecieved = stableSwapSTETH.exchange(STETHID, WETHID, assets, slippageAllowance);
+    weth.deposit{ value: amountRecieved }(); // get wrapped eth back
   }
 }

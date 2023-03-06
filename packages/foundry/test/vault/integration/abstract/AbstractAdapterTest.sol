@@ -90,7 +90,7 @@ contract AbstractAdapterTest is PropertyTest {
   }
 
   // Clone a new Adapter and set it to `adapter`
-  function createAdapter() public virtual {
+  function createAdapter() public {
     adapter = IAdapter(Clones.clone(implementation));
   }
 
