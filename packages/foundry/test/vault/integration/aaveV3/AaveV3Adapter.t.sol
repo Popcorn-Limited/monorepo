@@ -107,4 +107,7 @@ contract AaveV3AdapterTest is AbstractAdapterTest {
     uint128 supplyRate = data.currentLiquidityRate;
     return uint256(supplyRate / 1e9);
   }
+
+    // TODO add claim test
+  // TODO add rewardTokens test
 }

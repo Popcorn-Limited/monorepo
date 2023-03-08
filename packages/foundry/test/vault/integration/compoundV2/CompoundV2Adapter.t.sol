@@ -157,4 +157,7 @@ contract CompoundV2AdapterTest is AbstractAdapterTest {
     adapter.deposit(1e18, bob);
     adapter.mint(1e18, bob);
   }
+
+  // TODO add claim test
+  // TODO add rewardTokens test
 }

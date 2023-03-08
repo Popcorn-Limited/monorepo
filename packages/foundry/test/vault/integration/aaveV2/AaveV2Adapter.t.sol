@@ -95,4 +95,7 @@ contract AaveV2AdapterTest is AbstractAdapterTest {
 
     assertEq(asset.allowance(address(adapter), address(lendingPool)), type(uint256).max, "allowance");
   }
+
+  // TODO add claim test
+  // TODO add rewardTokens test
 }
