@@ -10,7 +10,6 @@ import { IERC4626Upgradeable as IERC4626, IERC20Upgradeable as IERC20 } from "op
 import { LidoTestConfigStorage, LidoTestConfig } from "./LidoTestConfigStorage.sol";
 import { AbstractAdapterTest, ITestConfigStorage, IAdapter } from "../abstract/AbstractAdapterTest.sol";
 import { SafeMath } from "openzeppelin-contracts/utils/math/SafeMath.sol";
-import "hardhat/console.sol";
 import { ICurveFi } from "../../../../src/vault/adapter/lido/ICurveFi.sol";
 
 contract LidoAdapterTest is AbstractAdapterTest {
@@ -20,7 +19,7 @@ contract LidoAdapterTest is AbstractAdapterTest {
   VaultAPI lidoVault;
   VaultAPI lidoBooster;
   uint256 maxAssetsNew;
-  IAdapter adapterTest;
+  ILido adapterTest;
   int128 private constant WETHID = 0;
   int128 private constant STETHID = 1;
   uint8 internal constant decimalOffset = 9;
@@ -47,11 +46,16 @@ contract LidoAdapterTest is AbstractAdapterTest {
   }
 
   function _setUpTest(bytes memory testConfig) internal {
-    createAdapter();
-
     address _asset = abi.decode(testConfig, (address));
 
-    setUpBaseTest(IERC20(_asset), address(adapter), 0x34dCd573C5dE4672C8248cd12A99f875Ca112Ad8, 10, "Lido  ", false);
+    setUpBaseTest(
+      IERC20(_asset),
+      address(new LidoAdapter()),
+      0x34dCd573C5dE4672C8248cd12A99f875Ca112Ad8,
+      10,
+      "Lido  ",
+      false
+    );
 
     lidoBooster = VaultAPI(externalRegistry);
 
@@ -77,7 +81,9 @@ contract LidoAdapterTest is AbstractAdapterTest {
   }
 
   function increasePricePerShare(uint256 amount) public override {
-    deal(address(asset), address(adapter), asset.balanceOf(address(adapter)) + amount);
+    deal(address(adapter), 100 ether);
+    vm.prank(address(adapter));
+    ILido(address(lidoVault)).submit{ value: 100 ether }(address(0));
   }
 
   function iouBalance() public view override returns (uint256) {
@@ -101,7 +107,6 @@ contract LidoAdapterTest is AbstractAdapterTest {
     );
 
     uint256 pricePerShare = (adapter.totalAssets()).mulDiv(1, adapter.totalSupply(), Math.Rounding.Up);
-    console.log("priceperShare", pricePerShare);
     assertApproxEqAbs(
       adapter.totalAssets(),
       iouBalance(), // didnt multiply by price per share as it causes it to fail
@@ -195,45 +200,6 @@ contract LidoAdapterTest is AbstractAdapterTest {
                           ROUNDTRIP TESTS
     //////////////////////////////////////////////////////////////*/
 
-  function test__harvest() public virtual override {
-    uint256 performanceFee = 1e16;
-    uint256 hwm = 1e9;
-    _mintFor(defaultAmount, bob);
-
-    vm.prank(bob);
-    adapter.deposit(defaultAmount, bob);
-
-    uint256 oldTotalAssets = adapter.totalAssets();
-    adapter.setPerformanceFee(performanceFee);
-    increasePricePerShare(raise);
-    console.log("first", adapter.convertToAssets(1e18));
-    console.log("second", adapter.highWaterMark());
-    uint256 gain = ((adapter.convertToAssets(1e18) - adapter.highWaterMark()) * adapter.totalSupply()) / 1e18;
-    uint256 fee = (gain * performanceFee) / 1e18;
-    uint256 expectedFee = adapter.convertToShares(fee);
-
-    vm.expectEmit(false, false, false, true, address(adapter));
-    emit Harvested();
-
-    adapter.harvest();
-
-    // Multiply with the decimal offset
-    assertApproxEqAbs(adapter.totalSupply(), defaultAmount * 1e9 + expectedFee, _delta_, "totalSupply");
-    assertApproxEqAbs(adapter.balanceOf(feeRecipient), expectedFee, _delta_, "expectedFee");
-  }
-
-  // NOTE - The yearn adapter suffers often from an off-by-one error which "steals" 1 wei from the user
-  function test__RT_mint_withdraw() public override {
-    _mintFor(adapter.previewMint(defaultAmount), bob);
-
-    vm.startPrank(bob);
-    uint256 assets = adapter.mint(defaultAmount, bob);
-    uint256 shares = adapter.withdraw(assets - 1, bob, bob);
-    vm.stopPrank();
-
-    assertGe(shares, defaultAmount, testId);
-  }
-
   // Because withdrawing loses some tokens due to slippage when swapping StEth for Weth
   function test__unpause() public virtual override {
     _mintFor(defaultAmount * 3, bob);
@@ -261,6 +227,28 @@ contract LidoAdapterTest is AbstractAdapterTest {
     vm.startPrank(bob);
     adapter.deposit(defaultAmount, bob);
     adapter.mint(defaultAmount, bob);
+  }
+
+  function test__RT_mint_withdraw() public virtual override {
+    _mintFor(adapter.previewMint(defaultAmount), bob);
+
+    vm.startPrank(bob);
+    uint256 assets = adapter.mint(defaultAmount, bob);
+    uint256 shares = adapter.withdraw(assets - 1, bob, bob);
+    vm.stopPrank();
+
+    assertApproxEqAbs(shares, defaultAmount, 1, testId);
+  }
+
+  function test__RT_deposit_withdraw() public virtual override {
+    _mintFor(defaultAmount, bob);
+
+    vm.startPrank(bob);
+    uint256 shares1 = adapter.deposit(defaultAmount, bob);
+    uint256 shares2 = adapter.withdraw(defaultAmount - 1, bob, bob);
+    vm.stopPrank();
+
+    assertApproxGeAbs(shares2, shares1, 1);
   }
 
   function test__pause() public virtual override {
@@ -292,120 +280,5 @@ contract LidoAdapterTest is AbstractAdapterTest {
     // Withdraw and Redeem dont revert
     adapter.withdraw(defaultAmount / 10, bob, bob);
     adapter.redeem(defaultAmount / 10, bob, bob);
-  }
-
-  function test__initialization() public virtual override {
-    adapterTest = IAdapter(address(new LidoAdapter()));
-    uint256 callTime = block.timestamp;
-
-    if (address(strategy) != address(0)) {
-      vm.expectEmit(false, false, false, true, address(strategy));
-      emit SelectorsVerified();
-      vm.expectEmit(false, false, false, true, address(strategy));
-      emit AdapterVerified();
-      vm.expectEmit(false, false, false, true, address(strategy));
-      emit StrategySetup();
-    }
-    vm.expectEmit(false, false, false, true, address(adapterTest));
-    emit Initialized(uint8(1));
-    adapterTest.initialize(
-      abi.encode(asset, address(this), address(0), 0, sigs, ""),
-      externalRegistry,
-      abi.encode(0x34dCd573C5dE4672C8248cd12A99f875Ca112Ad8, 1)
-    );
-
-    assertEq(adapterTest.owner(), address(this), "owner");
-    assertEq(adapterTest.strategy(), address(strategy), "strategy");
-    assertEq(adapterTest.harvestCooldown(), 0, "harvestCooldown");
-    assertEq(adapterTest.strategyConfig(), "", "strategyConfig");
-    assertEq(
-      IERC20Metadata(address(adapterTest)).decimals(),
-      IERC20Metadata(address(asset)).decimals() + decimalOffset,
-      "decimals"
-    );
-
-    verify_adapterInit();
-  }
-
-  // This test fails on the original implementation due to the fact that the amount of assets returned when we withdraw will be lower because of the swap slippage
-  function test__withdraw(uint8 fuzzAmount) public virtual override {
-    uint256 amount = bound(uint256(fuzzAmount), 10, defaultAmount);
-    uint8 len = uint8(testConfigStorage.getTestConfigLength());
-    for (uint8 i; i < len; i++) {
-      if (i > 0) overrideSetup(testConfigStorage.getTestConfig(i));
-
-      uint256 reqAssets = (amount * 10) / 8;
-      _mintFor(reqAssets, bob);
-      vm.prank(bob);
-      adapter.deposit(reqAssets, bob);
-      emit log_named_uint("ts", adapter.totalSupply());
-      emit log_named_uint("ta", adapter.totalAssets());
-      prop_withdraw(bob, bob, amount, testId);
-
-      _mintFor(reqAssets, bob);
-      vm.prank(bob);
-      adapter.deposit(reqAssets, bob);
-
-      increasePricePerShare(raise);
-
-      vm.prank(bob);
-      adapter.approve(alice, type(uint256).max);
-      prop_withdraw(alice, bob, amount, testId);
-    }
-  }
-
-  function test__deposit(uint8 fuzzAmount) public virtual override {
-    // overriden to ensure that we dont use more assets than is available in Weth contract
-    uint256 amount = bound(uint256(fuzzAmount), minFuzz, defaultAmount);
-    uint8 len = uint8(testConfigStorage.getTestConfigLength());
-    for (uint8 i; i < len; i++) {
-      if (i > 0) overrideSetup(testConfigStorage.getTestConfig(i));
-
-      _mintFor(amount, bob);
-      prop_deposit(bob, bob, amount, testId);
-
-      increasePricePerShare(raise);
-
-      _mintFor(amount, bob);
-      prop_deposit(bob, alice, amount, testId);
-    }
-  }
-
-  function test__RT_deposit_withdraw() public virtual override {
-    _mintFor(defaultAmount, bob);
-    uint256 slippageAllowance = defaultAmount.mulDiv(DENOMINATOR.sub(100), DENOMINATOR, Math.Rounding.Down);
-    vm.startPrank(bob);
-    uint256 shares1 = adapter.deposit(defaultAmount, bob);
-    uint256 shares2 = adapter.withdraw(slippageAllowance, bob, bob);
-    vm.stopPrank();
-
-    assertGe(shares1, shares2, testId);
-    // Youll have less shares as slippage robs us
-  }
-
-  // // This test fails on the original implementation due to the fact that the amount of assets returned when we withdraw will be lower because of the swap slippage
-  function test__redeem(uint8 fuzzAmount) public virtual override {
-    uint256 amount = bound(uint256(fuzzAmount), 10, defaultAmount);
-    uint8 len = uint8(testConfigStorage.getTestConfigLength());
-    for (uint8 i; i < len; i++) {
-      if (i > 0) overrideSetup(testConfigStorage.getTestConfig(i));
-
-      uint256 reqAssets = adapter.previewWithdraw(amount);
-      _mintFor(amount, bob);
-      vm.prank(bob);
-      uint256 initialSharesReceived = adapter.deposit(amount, bob);
-      console.log("balance of adapter: ", IERC20(address(lidoVault)).balanceOf(address(adapter)));
-      prop_redeem(bob, bob, initialSharesReceived, testId);
-
-      _mintFor(amount, bob);
-      vm.prank(bob);
-      uint256 sharesReceived = adapter.deposit(amount, bob);
-
-      increasePricePerShare(raise);
-
-      vm.prank(bob);
-      adapter.approve(alice, type(uint256).max);
-      prop_redeem(alice, bob, sharesReceived, testId);
-    }
   }
 }

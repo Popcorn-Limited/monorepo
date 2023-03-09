@@ -24,6 +24,24 @@ interface ILido {
 
   function getTotalShares() external view returns (uint256);
 
+  function asset() external view returns (address);
+
+  function initialize(
+    bytes memory adapterInitData,
+    address _wethAddress,
+    bytes memory lidoInitData
+  ) external;
+
+  function getSharesByPooledEth(uint256 _ethAmount) external view returns (uint256);
+
+  function owner() external view returns (address);
+
+  function strategy() external view returns (address);
+
+  function harvestCooldown() external view returns (uint256);
+
+  function strategyConfig() external view returns (bytes memory);
+
   function sharesOf(address _account) external view returns (uint256);
 
   function balanceOf(address _account) external view returns (uint256);
