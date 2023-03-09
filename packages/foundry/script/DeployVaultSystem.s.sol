@@ -8,7 +8,7 @@ import { CloneFactory } from "../src/vault/CloneFactory.sol";
 import { PermissionRegistry } from "../src/vault/PermissionRegistry.sol";
 import { TemplateRegistry, Template } from "../src/vault/TemplateRegistry.sol";
 import { DeploymentController } from "../src/vault/DeploymentController.sol";
-import { VaultController, IAdapter, VaultInitParams, VaultMetadata } from "../src/vault/VaultController.sol";
+import { VaultController, IAdapter, VaultInitParams, VaultMetadata, IERC4626, IERC20, VaultFees } from "../src/vault/VaultController.sol";
 import { Vault } from "../src/vault/Vault.sol";
 import { AdminProxy } from "../src/vault/AdminProxy.sol";
 import { VaultRegistry } from "../src/vault/VaultRegistry.sol";
@@ -68,7 +68,10 @@ contract DeployVaultSystem is Script {
   bytes4[8] requiredSigs;
   address[8] swapTokenAddresses;
 
-  event log(string str);
+  event log(string );
+  event log_uint(uint256);
+  event log_address(address);
+
   event log_named_address(string str, address addr);
 
   function run() public {
@@ -113,13 +116,39 @@ contract DeployVaultSystem is Script {
     controller.addTemplateCategories(templateCategories);
 
     addTemplate("Staking", "MultiRewardStaking", stakingImpl, address(0), true, true);
-    addTemplate("Adapter", "YearnAdapter", yearnImpl, address(0x50c1a2eA0a861A967D9d0FFE2AE4012c2E053804), false, true);
+    addTemplate("Adapter", "YearnAdapter", yearnImpl, address(0x50c1a2eA0a861A967D9d0FFE2AE4012c2E053804), true, true);
     addTemplate("Adapter", "BeefyAdapter", beefyImpl, address(permissionRegistry), true, true);
+    addTemplate("Vault", "V1", vaultImpl, address(0), true, true);
 
     emit log("!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
     emit log_named_address("VaultController: ", address(controller));
     emit log_named_address("VaultRegistry: ", address(vaultRegistry));
     emit log("!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+
+    controller.deployVault(
+      VaultInitParams({
+        asset: IERC20(0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48),
+        adapter: IERC4626(address(0)),
+        fees: VaultFees({ deposit: 100, withdrawal: 200, management: 300, performance: 400 }),
+        feeRecipient: feeRecipient,
+        depositLimit: type(uint256).max,
+        owner: deployer
+      }),
+      DeploymentArgs({ id: "YearnAdapter", data: "" }),
+      DeploymentArgs({ id: "", data: "" }),
+      false,
+      "",
+      VaultMetadata({
+        vault: address(0),
+        staking: address(0),
+        creator: address(this),
+        metadataCID: metadataCid,
+        swapTokenAddresses: swapTokenAddresses,
+        swapAddress: address(0x5555),
+        exchange: uint256(1)
+      }),
+      0
+    );
 
     vm.stopBroadcast();
   }
