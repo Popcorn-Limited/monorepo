@@ -19,4 +19,6 @@ interface IGauge {
 
 interface IGaugeFactory {
   function mint(address _gauge) external;
+
+  function get_gauge(uint256 _gaugeId) external view returns (address);
 }

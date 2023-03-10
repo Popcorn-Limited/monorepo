@@ -14,7 +14,7 @@ import { IGauge, IGaugeFactory } from "./ICurve.sol";
  * An ERC4626 compliant Wrapper for https://github.com/sushiswap/sushiswap/blob/archieve/canary/contracts/MasterChefV2.sol.
  * Allows wrapping MasterChef Vaults.
  */
-contract MasterChefAdapter is AdapterBase, WithRewards {
+contract CurveAdapter is AdapterBase, WithRewards {
   using SafeERC20 for IERC20;
   using Math for uint256;
 
@@ -52,11 +52,11 @@ contract MasterChefAdapter is AdapterBase, WithRewards {
   ) external initializer {
     __AdapterBase_init(adapterInitData);
 
-    (address _crv, address _gauge, address _gaugeFactory) = abi.decode(curveInitData, (address, address, address));
+    (address _crv, address _gaugeFactory, uint256 _gaugeId) = abi.decode(curveInitData, (address, address, uint256));
 
     crv = _crv;
-    gauge = IGauge(_gauge);
     gaugeFactory = IGaugeFactory(_gaugeFactory);
+    gauge = IGauge(gaugeFactory.get_gauge(_gaugeId));
 
     if (gauge.lp_token() != asset()) revert InvalidAsset();
 
