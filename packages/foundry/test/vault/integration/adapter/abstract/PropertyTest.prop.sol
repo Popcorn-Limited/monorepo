@@ -3,7 +3,7 @@
 
 pragma solidity ^0.8.15;
 
-import { EnhancedTest } from "../../../utils/EnhancedTest.sol";
+import { EnhancedTest } from "../../../../utils/EnhancedTest.sol";
 import { IERC4626Upgradeable as IERC4626, IERC20Upgradeable as IERC20 } from "openzeppelin-contracts-upgradeable/interfaces/IERC4626Upgradeable.sol";
 
 contract PropertyTest is EnhancedTest {

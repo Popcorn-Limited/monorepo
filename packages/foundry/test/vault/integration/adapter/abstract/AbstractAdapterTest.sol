@@ -6,11 +6,11 @@ pragma solidity ^0.8.15;
 import { Test } from "forge-std/Test.sol";
 
 import { PropertyTest } from "./PropertyTest.prop.sol";
-import { IAdapter, IERC4626 } from "../../../../src/interfaces/vault/IAdapter.sol";
-import { IStrategy } from "../../../../src/interfaces/vault/IStrategy.sol";
+import { IAdapter, IERC4626 } from "../../../../../src/interfaces/vault/IAdapter.sol";
+import { IStrategy } from "../../../../../src/interfaces/vault/IStrategy.sol";
 import { IERC20Upgradeable as IERC20, IERC20MetadataUpgradeable as IERC20Metadata } from "openzeppelin-contracts-upgradeable/token/ERC20/extensions/IERC20MetadataUpgradeable.sol";
 import { ITestConfigStorage } from "./ITestConfigStorage.sol";
-import { MockStrategy } from "../../../utils/mocks/MockStrategy.sol";
+import { MockStrategy } from "../../../../utils/mocks/MockStrategy.sol";
 import { Math } from "openzeppelin-contracts/utils/math/Math.sol";
 import { Clones } from "openzeppelin-contracts/proxy/Clones.sol";
 
@@ -558,13 +558,13 @@ contract AbstractAdapterTest is PropertyTest {
     //////////////////////////////////////////////////////////////*/
 
   // OPTIONAL
-  function testClaim() public virtual {}
+  function test__claim() public virtual {}
 
   /*//////////////////////////////////////////////////////////////
                               PERMIT
     //////////////////////////////////////////////////////////////*/
 
-  function testPermit() public {
+  function test__permit() public {
     uint256 privateKey = 0xBEEF;
     address owner = vm.addr(privateKey);
 

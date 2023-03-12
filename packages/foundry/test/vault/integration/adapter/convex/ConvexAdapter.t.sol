@@ -3,9 +3,11 @@ pragma solidity ^0.8.15;
 
 import { Test } from "forge-std/Test.sol";
 
-import { ConvexAdapter, SafeERC20, IERC20, IERC20Metadata, Math, IConvexBooster, IConvexRewards } from "../../../../src/vault/adapter/convex/ConvexAdapter.sol";
+import { ConvexAdapter, SafeERC20, IERC20, IERC20Metadata, Math, IConvexBooster, IConvexRewards, IWithRewards } from "../../../../../src/vault/adapter/convex/ConvexAdapter.sol";
 import { ConvexTestConfigStorage, ConvexTestConfig } from "./ConvexTestConfigStorage.sol";
 import { AbstractAdapterTest, ITestConfigStorage, IAdapter } from "../abstract/AbstractAdapterTest.sol";
+import { Clones } from "openzeppelin-contracts/proxy/Clones.sol";
+import { MockStrategyClaimer } from "../../../../utils/mocks/MockStrategyClaimer.sol";
 
 contract ConvexAdapterTest is AbstractAdapterTest {
   using Math for uint256;
@@ -87,5 +89,36 @@ contract ConvexAdapterTest is AbstractAdapterTest {
     );
 
     assertEq(asset.allowance(address(adapter), address(convexBooster)), type(uint256).max, "allowance");
+  }
+
+  /*//////////////////////////////////////////////////////////////
+                              CLAIM
+    //////////////////////////////////////////////////////////////*/
+
+  // OPTIONAL
+  function test__claim() public override {
+    uint256 forkId = vm.createSelectFork(vm.rpcUrl("mainnet"), 15717986);
+    vm.selectFork(forkId);
+
+    testConfigStorage = ITestConfigStorage(address(new ConvexTestConfigStorage()));
+
+    _setUpTest(testConfigStorage.getTestConfig(0));
+
+    adapter = IAdapter(Clones.clone(address(new ConvexAdapter())));
+    adapter.initialize(
+      abi.encode(asset, address(this), strategy, 0, sigs, ""), //address(new MockStrategyClaimer())
+      externalRegistry,
+      testConfigStorage.getTestConfig(0)
+    );
+
+    _mintFor(defaultAmount * 10000, bob);
+
+    vm.prank(bob);
+    adapter.deposit(defaultAmount * 10000, bob);
+
+    vm.warp(100 days);
+
+    vm.prank(bob);
+    IWithRewards(address(adapter)).claim();
   }
 }

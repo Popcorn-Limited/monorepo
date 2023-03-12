@@ -125,7 +125,7 @@ contract ConvexAdapter is AdapterBase, WithRewards {
   error MiningNotActive();
 
   /// @notice Claim liquidity mining rewards given that it's active
-  function claim() public override onlyStrategy {
+  function claim() public override {
     convexRewards.getReward(address(this), true);
   }
 

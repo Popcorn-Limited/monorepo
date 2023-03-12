@@ -5,11 +5,11 @@ pragma solidity ^0.8.15;
 
 import { Test } from "forge-std/Test.sol";
 
-import { BeefyAdapter, SafeERC20, IERC20, IERC20Metadata, IBeefyVault, IBeefyBooster, IBeefyBalanceCheck } from "../../../../src/vault/adapter/beefy/BeefyAdapter.sol";
+import { BeefyAdapter, SafeERC20, IERC20, IERC20Metadata, IBeefyVault, IBeefyBooster, IBeefyBalanceCheck } from "../../../../../src/vault/adapter/beefy/BeefyAdapter.sol";
 import { BeefyTestConfigStorage, BeefyTestConfig } from "./BeefyTestConfigStorage.sol";
 import { AbstractAdapterTest, ITestConfigStorage, IAdapter, Math } from "../abstract/AbstractAdapterTest.sol";
-import { IPermissionRegistry, Permission } from "../../../../src/interfaces/vault/IPermissionRegistry.sol";
-import { PermissionRegistry } from "../../../../src/vault/PermissionRegistry.sol";
+import { IPermissionRegistry, Permission } from "../../../../../src/interfaces/vault/IPermissionRegistry.sol";
+import { PermissionRegistry } from "../../../../../src/vault/PermissionRegistry.sol";
 
 contract BeefyAdapterTest is AbstractAdapterTest {
   using Math for uint256;

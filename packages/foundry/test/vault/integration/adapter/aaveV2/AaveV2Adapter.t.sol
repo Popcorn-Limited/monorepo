@@ -5,22 +5,22 @@ pragma solidity ^0.8.15;
 
 import { Test } from "forge-std/Test.sol";
 
-import { AaveV3Adapter, SafeERC20, IERC20, IERC20Metadata, Math, ILendingPool, IAaveIncentives, IAToken, IProtocolDataProvider, DataTypes } from "../../../../src/vault/adapter/aave/aaveV3/AaveV3Adapter.sol";
-import { AaveV3TestConfigStorage, AaveV3TestConfig } from "./AaveV3TestConfigStorage.sol";
+import { AaveV2Adapter, SafeERC20, IERC20, IERC20Metadata, Math, ILendingPool, IAaveMining, IAToken, IProtocolDataProvider, DataTypes } from "../../../../../src/vault/adapter/aave/aaveV2/AaveV2Adapter.sol";
+import { AaveV2TestConfigStorage, AaveV2TestConfig } from "./AaveV2TestConfigStorage.sol";
 import { AbstractAdapterTest, ITestConfigStorage, IAdapter } from "../abstract/AbstractAdapterTest.sol";
 
-contract AaveV3AdapterTest is AbstractAdapterTest {
+contract AaveV2AdapterTest is AbstractAdapterTest {
   using Math for uint256;
 
   ILendingPool lendingPool;
-  IAaveIncentives aaveIncentives;
+  IAaveMining aaveMining;
   IAToken aToken;
 
   function setUp() public {
     uint256 forkId = vm.createSelectFork(vm.rpcUrl("polygon"));
     vm.selectFork(forkId);
 
-    testConfigStorage = ITestConfigStorage(address(new AaveV3TestConfigStorage()));
+    testConfigStorage = ITestConfigStorage(address(new AaveV2TestConfigStorage()));
 
     _setUpTest(testConfigStorage.getTestConfig(0));
   }
@@ -35,23 +35,17 @@ contract AaveV3AdapterTest is AbstractAdapterTest {
 
     aToken = IAToken(_aToken);
     lendingPool = ILendingPool(aToken.POOL());
-    aaveIncentives = IAaveIncentives(aToken.getIncentivesController());
+    aaveMining = IAaveMining(aToken.getIncentivesController());
 
-    setUpBaseTest(IERC20(_asset), address(new AaveV3Adapter()), aaveDataProvider, 10, "AaveV2 ", true);
+    setUpBaseTest(IERC20(_asset), address(new AaveV2Adapter()), aaveDataProvider, 10, "AaveV2 ", true);
 
     vm.label(address(aToken), "aToken");
     vm.label(address(lendingPool), "lendingPool");
-    vm.label(address(aaveIncentives), "aaveIncentives");
+    vm.label(address(aaveMining), "aaveMining");
     vm.label(address(asset), "asset");
     vm.label(address(this), "test");
 
     adapter.initialize(abi.encode(asset, address(this), strategy, 0, sigs, ""), externalRegistry, "");
-    
-    defaultAmount = 10**IERC20Metadata(address(asset)).decimals();
-    minFuzz = defaultAmount * 10;
-    raise = defaultAmount * 100_000_000;
-    maxAssets = defaultAmount * 100;
-    maxShares = maxAssets / 2;
   }
 
   /*//////////////////////////////////////////////////////////////
@@ -100,11 +94,5 @@ contract AaveV3AdapterTest is AbstractAdapterTest {
     );
 
     assertEq(asset.allowance(address(adapter), address(lendingPool)), type(uint256).max, "allowance");
-  }
-
-  function getApy() public view returns (uint256) {
-    DataTypes.ReserveData memory data = lendingPool.getReserveData(address(asset));
-    uint128 supplyRate = data.currentLiquidityRate;
-    return uint256(supplyRate / 1e9);
   }
 }
