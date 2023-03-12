@@ -24,6 +24,8 @@ const SweetVaults: NextPage = () => {
   const { data: hhVaults = [] } = useAllVaults(selectedNetworks.includes(ChainId.Hardhat) ? ChainId.Hardhat : undefined);
   const allVaults = [...hhVaults]
 
+  // TODO refactor hero to be reusable
+
   return (
     <main>
       <NoSSR>

@@ -42,6 +42,7 @@ function SweetVault({ vaultAddress, chainId, searchString }: { chainId: ChainId;
   const { data: vault } = useToken({ address: vaultAddress as Address, chainId })
   const { data: token } = useVaultToken(vaultAddress, chainId);
 
+  // TODO pass these from sweet-vaults and add values to hero
   function addToDeposit(value: BigNumber) {
     console.log("addToDeposit", value.toString());
   }
@@ -49,6 +50,11 @@ function SweetVault({ vaultAddress, chainId, searchString }: { chainId: ChainId;
   function addToTVL(value: BigNumber) {
     console.log("addToTVL", value.toString());
   }
+
+  // TODO mobile css
+  // TODO add protocol badge
+  // TODO add beefy apy resolver
+  // TODO test deposit/withdraw flow
 
   return (
     <VaultMetadata chainId={chainId} vaultAddress={vaultAddress}>

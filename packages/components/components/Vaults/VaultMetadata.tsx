@@ -2,6 +2,7 @@ import type { BigNumber } from "ethers";
 import { useVaultRegistry } from "@popcorn/components/hooks/vaults";
 import { Address, useContractRead } from "wagmi";
 
+// TODO use proper ipfs fetch
 
 function useGetIpfsMetadata(cid?: string): IpfsMetadata {
   return {
