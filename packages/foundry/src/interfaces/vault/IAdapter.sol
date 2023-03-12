@@ -11,6 +11,8 @@ import { IPausable } from "../IPausable.sol";
 interface IAdapter is IERC4626, IOwned, IPermit, IPausable {
   function strategy() external view returns (address);
 
+  function convertAssetsToUnderlyingShares(uint256 assets) external returns (uint256);
+
   function strategyConfig() external view returns (bytes memory);
 
   function strategyDeposit(uint256 assets, uint256 shares) external;
