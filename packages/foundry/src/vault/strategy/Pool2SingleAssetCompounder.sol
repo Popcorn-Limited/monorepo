@@ -65,3 +65,22 @@ contract Pool2SingleAssetCompounder is StrategyBase {
     IAdapter(address(this)).strategyDeposit(ERC20(asset).balanceOf(address(this)), 0);
   }
 }
+
+
+// asset -> asset
+// asset -> curve pool2
+// asset -> curve pool3
+// asset -> curve custom pool -- how many?
+// asset -> uniV2
+// asset -> uniV3
+// asset -> velo?
+// asset -> balancer -- how many?
+// split asset to mitigate slippage
+
+
+// Use 1Inch Router 
+// 1. Get Spot price
+// 2. Calc Min
+// 3. Trade using router
+// 4. Potentially LP
+// Trade to usdc first? and than trade all together to asset? Or just each reward on their own

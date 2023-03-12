@@ -12,7 +12,7 @@ import { IAdapter } from "../../../interfaces/vault/IAdapter.sol";
 contract WithRewards is EIP165, OnlyStrategy {
   function rewardTokens() external view virtual returns (address[] memory) {}
 
-  function claim() public virtual onlyStrategy {}
+  function claim() public virtual {}
 
   /*//////////////////////////////////////////////////////////////
                       EIP-165 LOGIC
