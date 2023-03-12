@@ -1,13 +1,13 @@
 import { Fragment } from "react";
 import { Address, useAccount, useToken } from "wagmi";
-import { constants } from "ethers";
+import { BigNumber, constants } from "ethers";
 
-import { BalanceOf } from "@popcorn/components/lib/Erc20";
+import { BalanceOf, ValueOfBalance } from "@popcorn/components/lib/Erc20";
 import useVaultToken from "@popcorn/components/hooks/useVaultToken";
 
 import { ChainId, formatAndRoundBigNumber } from "@popcorn/utils";
 import Title from "@popcorn/components/components/content/Title";
-import { Tvl } from "@popcorn/components/lib/Contract";
+import { Tvl, Value } from "@popcorn/components/lib/Contract";
 import { Apy } from "@popcorn/components/lib/Staking";
 import VaultMetadata from "@popcorn/components/components/Vaults/VaultMetadata";
 import MarkdownRenderer from "./MarkdownRenderer";
@@ -36,6 +36,10 @@ function SweetVault({ vaultAddress, chainId, searchString }: { chainId: ChainId;
   const { address } = useAccount();
   const { data: vault } = useToken({ address: vaultAddress as Address, chainId })
   const { data: token } = useVaultToken(vaultAddress, chainId);
+
+  function addToDeposit(value: BigNumber) {
+    console.log("addToDeposit", value.toString());
+  }
 
   return (
     <VaultMetadata chainId={chainId} vaultAddress={vaultAddress}>
@@ -68,7 +72,15 @@ function SweetVault({ vaultAddress, chainId, searchString }: { chainId: ChainId;
                         </td>
                         <td>
                           <Title level={2} fontWeight="font-normal" as="span" className="mr-1">
-                            <BalanceOf account={address} chainId={chainId} address={vaultAddress} />
+                            <BalanceOf
+                              account={address}
+                              chainId={chainId}
+                              address={vaultAddress}
+                              resolver={"vault"}
+                              render={(data) =>
+                                <Value status={data.status} balance={data.balance?.value} price={data.price?.value} callback={addToDeposit} />
+                              }
+                            />
                           </Title>
                           <span className="text-secondaryLight">{vault?.symbol}</span>
                         </td>
