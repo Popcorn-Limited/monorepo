@@ -51,7 +51,7 @@ export default function NetworkFilter({ supportedNetworks, selectNetwork }: Netw
             label={<Image src={networkLogos[network]} alt={ChainId[network]} height="24" width="24" />}
             handleClick={() => setActiveAndSelectedNetwork(network)}
             isActive={activeNetwork == network}
-            extraClasses="h-12 w-18 border border-customLightGray rounded-3xl text-primary flex justify-center items-center"
+            extraClasses="h-12 w-18 border border-customLightGray rounded-3xl text-primary flex justify-center items-center bg-white"
           />
         ))}
       </div>

@@ -1,7 +1,7 @@
 import type { ContractWriteArgs } from "@popcorn/components/lib/types";
 import type { BigNumber } from "ethers";
 import { constants } from "ethers";
-import { useContractRead, useContractWrite, usePrepareContractWrite } from "wagmi";
+import { Address, useContractWrite, usePrepareContractWrite } from "wagmi";
 import { useNamedAccounts } from "@popcorn/components/lib/utils/hooks";
 import { ChainId } from "@popcorn/utils";
 import { useTypedReadCall } from "./wagmi";
@@ -17,7 +17,7 @@ export const useDepositVaultBalance = (
   wagmiConfig?: ContractWriteArgs,
 ) => {
   const { config } = usePrepareContractWrite({
-    address: vaultAddress,
+    address: vaultAddress as Address,
     abi: ["function deposit(uint256 assets) public returns (uint256)"],
     functionName: "deposit",
     args: [balance],
@@ -43,7 +43,7 @@ export const useRedeemVaultBalance = (
   wagmiConfig?: ContractWriteArgs,
 ) => {
   const { config } = usePrepareContractWrite({
-    address: vaultAddress,
+    address: vaultAddress as Address,
     abi: ["function redeem(uint256 shares) public returns (uint256)"],
     functionName: "redeem",
     args: [balance],
@@ -72,8 +72,9 @@ export const useVaultRegistry = (chainId: any) => {
  */
 export const useAllVaults = (chainId?: ChainId, config?: ContractWriteArgs) => {
   const registry = useVaultRegistry(chainId);
+  
   return useTypedReadCall<string[]>({
-    address: registry?.address,
+    address: registry?.address as Address,
     abi: ["function getRegisteredAddresses() external view returns (address[])"],
     functionName: "getRegisteredAddresses",
     chainId,

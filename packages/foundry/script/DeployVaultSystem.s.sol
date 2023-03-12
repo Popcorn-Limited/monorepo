@@ -68,7 +68,7 @@ contract DeployVaultSystem is Script {
   bytes4[8] requiredSigs;
   address[8] swapTokenAddresses;
 
-  event log(string );
+  event log(string);
   event log_uint(uint256);
   event log_address(address);
 
@@ -77,6 +77,8 @@ contract DeployVaultSystem is Script {
   function run() public {
     uint256 deployerPrivateKey = vm.envUint("PRIVATE_KEY");
     deployer = vm.addr(deployerPrivateKey);
+
+    emit log_address(deployer);
 
     vm.startBroadcast(deployerPrivateKey);
 
@@ -125,6 +127,7 @@ contract DeployVaultSystem is Script {
     emit log_named_address("VaultRegistry: ", address(vaultRegistry));
     emit log("!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
 
+    // deploy usdc yearn vault
     controller.deployVault(
       VaultInitParams({
         asset: IERC20(0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48),
@@ -149,6 +152,43 @@ contract DeployVaultSystem is Script {
       }),
       0
     );
+
+    // beefyVault stEth/eth = 0xa7739fd3d12ac7F16D8329AF3Ee407e19De10D8D
+    setPermission(0xa7739fd3d12ac7F16D8329AF3Ee407e19De10D8D, true, false);
+    // beefyBooster = 0xAe3F0C61F3Dc48767ccCeF3aD50b29437BE4b1a4
+    setPermission(0xAe3F0C61F3Dc48767ccCeF3aD50b29437BE4b1a4, true, false);
+
+    // crvSthEth/Eth = 0x06325440D014e39736583c165C2963BA99fAf14E
+    // deploy stEth/eth beefy vault
+    address beefy = controller.deployVault(
+      VaultInitParams({
+        asset: IERC20(0x06325440D014e39736583c165C2963BA99fAf14E),
+        adapter: IERC4626(address(0)),
+        fees: VaultFees({ deposit: 0, withdrawal: 0, management: 0, performance: 0 }),
+        feeRecipient: 0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266,
+        depositLimit: type(uint256).max,
+        owner: 0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266
+      }),
+      DeploymentArgs({
+        id: "BeefyAdapter",
+        data: abi.encode(0xa7739fd3d12ac7F16D8329AF3Ee407e19De10D8D, 0xAe3F0C61F3Dc48767ccCeF3aD50b29437BE4b1a4)
+      }),
+      DeploymentArgs({ id: "", data: "" }),
+      false,
+      "",
+      VaultMetadata({
+        vault: address(0),
+        staking: address(0),
+        creator: 0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266,
+        metadataCID: "QmbWqxBEKC3P8tqsKc98xmWNzrzDtRLMiMPL8wBuTGsMnR",
+        swapTokenAddresses: swapTokenAddresses,
+        swapAddress: address(0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48),
+        exchange: uint256(1)
+      }),
+      0
+    );
+
+    emit log_named_address("BeefyVault: ", beefy);
 
     vm.stopBroadcast();
   }
@@ -193,5 +233,13 @@ contract DeployVaultSystem is Script {
     templateCategories[0] = templateCategory;
     templateIds[0] = templateId;
     if (endorse) controller.toggleTemplateEndorsements(templateCategories, templateIds);
+  }
+
+  function setPermission(address target, bool endorsed, bool rejected) public {
+    address[] memory targets = new address[](1);
+    Permission[] memory permissions = new Permission[](1);
+    targets[0] = target;
+    permissions[0] = Permission(endorsed, rejected);
+    controller.setPermissions(targets, permissions);
   }
 }
