@@ -2,7 +2,7 @@ import { Fragment } from "react";
 import { Address, useAccount, useToken } from "wagmi";
 import { BigNumber, constants } from "ethers";
 
-import { BalanceOf, ValueOfBalance } from "@popcorn/components/lib/Erc20";
+import { BalanceOf, TotalSupply, ValueOfBalance } from "@popcorn/components/lib/Erc20";
 import useVaultToken from "@popcorn/components/hooks/useVaultToken";
 
 import { ChainId, formatAndRoundBigNumber } from "@popcorn/utils";
@@ -19,6 +19,11 @@ import { FetchTokenResult } from "wagmi/dist/actions";
 import { NetworkSticker } from "@popcorn/app/components/NetworkSticker";
 
 const HUNDRED = constants.Zero.add(100);
+
+const VAULT_APY_RESOLVER = {
+  "Beefy": "beefy",
+  "Yearn": "yearnAsset"
+}
 
 function AssetWithName({ vault, token, chainId }: { vault: FetchTokenResult; token: string, chainId: ChainId }) {
   return <div className="flex items-center gap-4">
@@ -41,9 +46,13 @@ function SweetVault({ vaultAddress, chainId, searchString }: { chainId: ChainId;
     console.log("addToDeposit", value.toString());
   }
 
+  function addToTVL(value: BigNumber) {
+    console.log("addToTVL", value.toString());
+  }
+
   return (
     <VaultMetadata chainId={chainId} vaultAddress={vaultAddress}>
-      {(registryMetadata) => {
+      {(vaultMetadata) => {
         return (
           (searchString === "" || vault?.name.toLowerCase().includes(searchString) || vault?.symbol.toLowerCase().includes(searchString)) ?
             <Accordion
@@ -88,6 +97,7 @@ function SweetVault({ vaultAddress, chainId, searchString }: { chainId: ChainId;
                           <Apy
                             address={vaultAddress}
                             chainId={chainId}
+                            resolver={VAULT_APY_RESOLVER[vaultMetadata?.metadata.protocol.name]}
                             render={(apy) => {
                               return (
                                 <Apy
@@ -107,7 +117,9 @@ function SweetVault({ vaultAddress, chainId, searchString }: { chainId: ChainId;
                           />
                         </Title>
                         <Title as="td" level={2} fontWeight="font-normal">
-                          <Tvl chainId={chainId} address={vaultAddress} />
+                          <TotalSupply chainId={chainId} address={vaultAddress} render={(data) =>
+                            <Value status={data.status} balance={data.balance?.value} price={data.price?.value} callback={addToTVL} />
+                          } />
                         </Title>
                       </tr>
                     </tbody>
@@ -124,10 +136,10 @@ function SweetVault({ vaultAddress, chainId, searchString }: { chainId: ChainId;
                 <section className="bg-white rounded-lg border border-customLightGray w-full md:w-8/12 p-8">
                   <AssetWithName vault={vault} token={token?.address} chainId={chainId} />
                   <div className="mt-8">
-                    <MarkdownRenderer content={registryMetadata?.metadata.displayText.token} />
+                    <MarkdownRenderer content={`# ${vaultMetadata?.metadata.protocol.name} \n${vaultMetadata?.metadata.protocol.description}`} />
                   </div>
                   <div className="mt-8">
-                    <MarkdownRenderer content={`# Strategy \n${registryMetadata?.metadata.displayText.description}`} />
+                    <MarkdownRenderer content={`# Strategy \n${vaultMetadata?.metadata.strategy.description}`} />
                   </div>
                 </section>
               </div>

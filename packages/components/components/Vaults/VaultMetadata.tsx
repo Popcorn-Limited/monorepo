@@ -3,8 +3,22 @@ import { useVaultRegistry } from "@popcorn/components/hooks/vaults";
 import { Address, useContractRead } from "wagmi";
 
 
-function useGetIpfsMetadata(cid?: string): any {
-  return { displayText: { token: "Token Description", description: "Strategy Description" }, curveLink: "https://curve.fi/" }
+function useGetIpfsMetadata(cid?: string): IpfsMetadata {
+  return {
+    token: {
+      name: "Token",
+      description: "Token Description"
+    },
+    protocol: {
+      name: "Yearn",
+      description: "Protocol Description"
+    },
+    strategy: {
+      name: "Strategy",
+      description: "Strategy Description"
+    },
+    getTokenUrl: "https://curve.fi/"
+  }
 }
 
 type VaultMetadataProps = {
@@ -104,11 +118,19 @@ export type VaultMetadata = {
 };
 
 export type IpfsMetadata = {
-  displayText: {
-    token: string;
+  token: {
+    name: string;
     description: string;
   };
-  curveLink: string;
+  protocol: {
+    name: string;
+    description: string;
+  }
+  strategy: {
+    name: string;
+    description: string;
+  }
+  getTokenUrl: string;
 }
 
 export default VaultMetadata;
