@@ -4,6 +4,8 @@ import { constants } from "ethers";
 import useVaultFees from "hooks/vaults/useVaultFees";
 import { formatAndRoundBigNumber } from "@popcorn/utils";
 import FeeBreakdown from "./FeeBreakdown";
+import { useAllowance } from "@popcorn/components/lib/Erc20/hooks";
+import { Address } from "wagmi";
 
 function Deposit({
   vault,
@@ -14,8 +16,7 @@ function Deposit({
   vaultTokenAddress: string;
   chainId: any;
 }) {
-  const [vaultRouter] = useNamedAccounts(chainId, ["vaultRouter"]);
-  const fees = useVaultFees(vault);
+  const { data: allowance } = useAllowance({ address: vaultTokenAddress, account: vault as Address, chainId })
 
   return (
     <div className="flex flex-col">
@@ -32,7 +33,7 @@ function Deposit({
             args: [balance],
           };
         }}
-        allowance={constants.MaxUint256}
+        allowance={allowance?.value}
       >
         {({ ActionableComponent }) => {
           return <FeeBreakdown vault={vault} ActionableComponent={ActionableComponent} />;

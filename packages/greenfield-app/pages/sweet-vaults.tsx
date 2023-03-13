@@ -14,15 +14,41 @@ import HeroBg from "@popcorn/components/public/images/swHeroBg.svg";
 import useNetworkFilter from "hooks/useNetworkFilter";
 import { MagnifyingGlassIcon } from "@heroicons/react/24/outline";
 import { useState } from "react";
+import { BigNumber, constants } from "ethers";
 
 const SUPPORTED_NETWORKS = [ChainId.ALL, ChainId.Hardhat]
+
+interface Bal {
+  [key: string]: BigNumber;
+}
 
 const SweetVaults: NextPage = () => {
   const [selectedNetworks, selectNetwork] = useNetworkFilter(SUPPORTED_NETWORKS);
   const [searchString, handleSearch] = useState("")
+  const [tvl, setTvl] = useState<Bal>({});
+  const [deposit, setDeposit] = useState<Bal>({});
 
   const { data: hhVaults = [] } = useAllVaults(selectedNetworks.includes(ChainId.Hardhat) ? ChainId.Hardhat : undefined);
   const allVaults = [...hhVaults]
+
+
+  const addToTvl = (key:string, value?: BigNumber) => {
+    if (value?.gt(0)) {
+      setTvl((balances) => ({
+        ...balances,
+        [key]: value,
+      }));
+    }
+  };
+
+  const addToDeposit = (key:string, value?: BigNumber) => {
+    if (value?.gt(0)) {
+      setDeposit((balances) => ({
+        ...balances,
+        [key]: value,
+      }));
+    }
+  };
 
   // TODO refactor hero to be reusable
 
@@ -53,11 +79,15 @@ const SweetVaults: NextPage = () => {
               <div className="col-span-5 md:col-span-3" />
               <div className="col-span-5 md:col-span-3">
                 <p className="leading-6 text-base font-light md:font-normal">TVL</p>
-                <div className="text-3xl font-light md:font-medium">${formatAndRoundBigNumber(parseUnits("1000"), 18)}</div>
+                <div className="text-3xl font-light md:font-medium">
+                  ${formatAndRoundBigNumber(Object.keys(tvl).reduce((total, key) => total.add(tvl[key]), constants.Zero), 18)}
+                </div>
               </div>
               <div className="col-span-5 md:col-span-3">
                 <p className="leading-6 text-base font-light md:font-normal">Deposits</p>
-                <div className="text-3xl font-light md:font-medium">${formatAndRoundBigNumber(parseUnits("10"), 18)}</div>
+                <div className="text-3xl font-light md:font-medium">
+                  ${formatAndRoundBigNumber(Object.keys(deposit).reduce((total, key) => total.add(deposit[key]), constants.Zero), 18)}
+                </div>
               </div>
             </div>
             <div className="md:hidden">
@@ -76,14 +106,21 @@ const SweetVaults: NextPage = () => {
               type="text"
               placeholder="Search..."
               onChange={(e) => handleSearch(e.target.value.toLowerCase())}
-              value={searchString}
+              defaultValue={searchString}
             />
           </div>
         </section>
 
         <section className="flex flex-col gap-8">
           {allVaults.map((vaultAddress) => {
-            return <SweetVault key={`sv-${vaultAddress}`} chainId={ChainId.Hardhat} vaultAddress={vaultAddress} searchString={searchString} />;
+            return <SweetVault
+              key={`sv-${vaultAddress}`}
+              chainId={ChainId.Hardhat}
+              vaultAddress={vaultAddress}
+              searchString={searchString}
+              addToTVL={addToTvl}
+              addToDeposit={addToDeposit}
+            />;
           })}
         </section>
 

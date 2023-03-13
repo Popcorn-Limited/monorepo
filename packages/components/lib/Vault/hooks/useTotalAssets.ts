@@ -3,14 +3,14 @@ import { BigNumber } from "ethers/lib/ethers";
 import { formatAndRoundBigNumber } from "@popcorn/utils";
 import { BigNumberWithFormatted, Pop } from "../../types";
 
-export const useTotalSupply: Pop.Hook<BigNumberWithFormatted> = ({ chainId, address }) => {
+export const useTotalAssets: Pop.Hook<BigNumberWithFormatted> = ({ chainId, address }) => {
   return useContractRead({
     address,
     chainId: Number(chainId),
-    abi: ["function totalSupply() external view returns (uint256)"],
-    functionName: "totalSupply",
+    abi: ["function totalAssets() external view returns (uint256)"],
+    functionName: "totalAssets",
     cacheOnBlock: true,
-    scopeKey: `totalSupply:${chainId}:${address}`,
+    scopeKey: `totalAssets:${chainId}:${address}`,
     enabled: !!address && !!chainId,
     select: (data) => {
       return {
