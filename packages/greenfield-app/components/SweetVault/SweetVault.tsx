@@ -76,8 +76,8 @@ function SweetVault({ vaultAddress, chainId, searchString, addToTVL, addToDeposi
       addToTVL(
         vaultAddress,
         parseUnits(String(
-          ((Number(price?.value?.toString()) * Number(totalAssets?.value?.toString())) / 
-          (10 ** (token?.decimals * 2))))
+          ((Number(price?.value?.toString()) * Number(totalAssets?.value?.toString())) /
+            (10 ** (token?.decimals * 2))))
         )
       );
     }
@@ -119,12 +119,7 @@ function SweetVault({ vaultAddress, chainId, searchString, addToTVL, addToDeposi
                         </td>
                         <td>
                           <Title level={2} fontWeight="font-normal" as="span" className="mr-1">
-                            <BalanceOf
-                              account={address}
-                              chainId={chainId}
-                              address={vaultAddress}
-                              render={(data) => <>{formatAndRoundBigNumber(data?.balance?.value, vault?.decimals)}</>}
-                            />
+                            {formatAndRoundBigNumber(balance?.value, vault?.decimals)}
                           </Title>
                           <span className="text-secondaryLight">{vault?.symbol}</span>
                         </td>
@@ -153,7 +148,7 @@ function SweetVault({ vaultAddress, chainId, searchString, addToTVL, addToDeposi
                         </Title>
                         <Title as="td" level={2} fontWeight="font-normal">
                           ${price?.value && totalAssets?.value ? formatAndRoundBigNumber(
-                            BigNumber.from(Number(price?.value?.toString()) * Number(totalAssets?.value?.toString())),
+                            BigNumber.from(String(Number(price?.value?.toString()) * Number(totalAssets?.value?.toString()))),
                             token?.decimals * 2) : 0}
                         </Title>
                       </tr>
