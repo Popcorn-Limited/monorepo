@@ -8,6 +8,8 @@ import ContentLoader from "react-content-loader";
 import { NetworkSticker } from "@popcorn/app/components/NetworkSticker";
 import { Tvl } from "@popcorn/components/lib/Contract";
 import { Staking, Contract } from "@popcorn/components/lib";
+import { ValueOfBalance } from "@popcorn/components/lib/Erc20";
+import { Address } from "wagmi";
 
 interface StakeCardProps {
   stakingAddress: string;
@@ -21,8 +23,7 @@ const StakeCard: React.FC<StakeCardProps> = ({ stakingAddress, stakingType, chai
 
   function onSelectPool() {
     router?.push(
-      `/${networkMap[chainId]?.toLowerCase()}/staking/${
-        stakingType === StakingType.PopLocker ? "pop" : stakingAddress
+      `/${networkMap[chainId]?.toLowerCase()}/staking/${stakingType === StakingType.PopLocker ? "pop" : stakingAddress
       }`,
     );
   }
@@ -72,17 +73,22 @@ const StakeCard: React.FC<StakeCardProps> = ({ stakingAddress, stakingType, chai
                     <div className="w-1/2 md:w-1/4 mt-6 md:mt-0">
                       <p className="text-primaryLight leading-6">vAPR</p>
                       <p className="text-primary text-2xl md:text-3xl leading-6 md:leading-8">
-                        {chainId === ChainId.Optimism ? (
-                          "New ✨"
-                        ) : (
-                          <Staking.Apy chainId={chainId} address={stakingAddress} />
-                        )}
+                        <Staking.Apy chainId={chainId} address={stakingAddress} />
                       </p>
                     </div>
                     <div className="w-1/2 md:w-1/4 mt-6 md:mt-0">
                       <p className="text-primaryLight leading-6">TVL</p>
                       <div className="text-primary text-2xl md:text-3xl leading-6 md:leading-8">
-                        {chainId === ChainId.Optimism ? "New ✨" : <Tvl chainId={chainId} address={stakingAddress} />}
+                        {/* Somehow the Convex Staking Contract breaks on optimism. Therefore we simply check the balanceOf pop token in the staking contract */}
+                        {chainId === ChainId.Optimism ? (
+                          <ValueOfBalance
+                            chainId={chainId}
+                            address={"0x6F0fecBC276de8fC69257065fE47C5a03d986394"}
+                            account={stakingAddress as Address}
+                          />
+                        ) : (
+                          <Tvl chainId={chainId} address={stakingAddress} />
+                        )}
                       </div>
                     </div>
                     <div className="w-full md:w-1/2 mt-6 md:mt-0">

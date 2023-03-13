@@ -31,7 +31,7 @@ export namespace Pop {
     chainId: number;
   }
   export interface Account {
-    account: `0x${string}`;
+    account: string;
   }
   export interface Enabled {
     enabled: boolean;

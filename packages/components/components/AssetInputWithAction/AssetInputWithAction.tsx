@@ -1,5 +1,5 @@
 import { FormEventHandler, useMemo, useState } from "react";
-import { useAccount, useBalance } from "wagmi";
+import { Address, useAccount, useBalance, useToken } from "wagmi";
 import { BigNumber, constants, utils } from "ethers";
 import toast from "react-hot-toast";
 
@@ -39,6 +39,7 @@ function AssetInputWithAction({
   const { address: account } = useAccount();
   const [inputBalance, setInputBalance] = useState<number>();
   const { data: metadata, status } = useContractMetadata({ chainId, assetAddress });
+  const { data: asset } = useToken({ chainId, address: assetAddress as Address})
   const { data: userBalance } = useBalance({
     chainId,
     address: account,
@@ -47,8 +48,8 @@ function AssetInputWithAction({
   });
 
   const formattedInputBalance = useMemo(() => {
-    return utils.parseUnits(validateInput(inputBalance || "0").formatted, metadata?.decimals);
-  }, [inputBalance, metadata?.decimals]);
+    return utils.parseUnits(validateInput(inputBalance || "0").formatted, asset?.decimals);
+  }, [inputBalance, asset?.decimals]);
 
   const ACTION = typeof action === "function" ? action(formattedInputBalance) : action;
 
@@ -121,7 +122,7 @@ function AssetInputWithAction({
     <>
       <InputTokenWithError
         captionText={`${ACTION.label} Amount`}
-        onSelectToken={() => {}}
+        onSelectToken={() => { }}
         onMaxClick={handleMaxClick}
         chainId={chainId}
         value={inputBalance}
@@ -129,6 +130,7 @@ function AssetInputWithAction({
         selectedToken={
           {
             ...metadata,
+            decimals:asset?.decimals,
             address: assetAddress,
             balance: userBalance?.value || constants.Zero,
           } as any
@@ -161,6 +163,6 @@ type AssetAction = {
 
 type ActionOrCallback = AssetAction | ((balance: BigNumber) => AssetAction);
 
-function noOp() {}
+function noOp() { }
 
 export default AssetInputWithAction;

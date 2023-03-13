@@ -52,7 +52,11 @@ contract AaveV2Adapter is AdapterBase, WithRewards {
    * @param aaveDataProvider Encoded data for the base adapter initialization.
    * @dev This function is called by the factory contract when deploying a new vault.
    */
-  function initialize(bytes memory adapterInitData, address aaveDataProvider, bytes memory) external initializer {
+  function initialize(
+    bytes memory adapterInitData,
+    address aaveDataProvider,
+    bytes memory
+  ) external initializer {
     __AdapterBase_init(adapterInitData);
 
     _name = string.concat("Popcorn AaveV2", IERC20Metadata(asset()).name(), " Adapter");
@@ -89,15 +93,7 @@ contract AaveV2Adapter is AdapterBase, WithRewards {
   //////////////////////////////////////////////////////////////*/
 
   function _totalAssets() internal view override returns (uint256) {
-    uint256 underlyingBalance_ = underlyingBalance;
-    return
-      underlyingBalance_ == 0
-        ? 0
-        : (underlyingBalance * lendingPool.getReserveNormalizedIncome(asset()) + halfRAY) / RAY;
-  }
-
-  function _underlyingBalance() internal view override returns (uint256) {
-    return aToken.scaledBalanceOf(address(this));
+    return aToken.balanceOf(address(this));
   }
 
   /// @notice The token rewarded if the aave liquidity mining is active
@@ -126,13 +122,13 @@ contract AaveV2Adapter is AdapterBase, WithRewards {
                             STRATEGY LOGIC
     //////////////////////////////////////////////////////////////*/
 
-  error MiningNotActive();
+  error IncentivesNotActive();
 
   /// @notice Claim liquidity mining rewards given that it's active
   function claim() public override onlyStrategy {
     address[] memory assets = new address[](1);
     assets[0] = address(aToken);
-    if (isActiveMining == false) revert MiningNotActive();
+    if (isActiveMining == false) revert IncentivesNotActive();
     aaveMining.claimRewards(assets, type(uint256).max, address(this));
   }
 

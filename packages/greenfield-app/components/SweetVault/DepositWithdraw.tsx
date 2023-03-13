@@ -14,7 +14,7 @@ function DepositWithdraw({
   vaultTokenAddress,
   chainId,
 }: {
-  vault: Pop.NamedAccountsMetadata;
+  vault: string;
   vaultTokenAddress: string;
   chainId: any;
 }) {

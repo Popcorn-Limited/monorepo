@@ -12,9 +12,10 @@ const eth_call = (Component: Pop.FC<BigNumberWithFormatted>) =>
     price?: { value: BigNumber; decimals: number };
     balance?: BigNumberWithFormatted;
     status?: "loading" | "success" | "error" | "idle";
-  }>) {
+  }> & { resolver?: string; }) {
     const { data, status } = useBalanceOf(props);
     const { data: price } = usePrice({ ...props });
+
     if (props.render) {
       return (
         <>

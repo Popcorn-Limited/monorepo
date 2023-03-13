@@ -38,6 +38,10 @@ Additionally we included 2 utility contracts that are used alongside the vault s
 
 **Note:** The `AdapterBase.sol` still has a TODO to use a deterministic address for `feeRecipient`. As we didnt deploy this proxy yet on our target chains it remains a placeholder value for the moment. Once the proxy exists we will simply switch out the palceholder address.
 
+All `Adapters`, `Vaults`, `Strategies` and `MultiRewardStaking` contracts are intended to be deployed as non-upgradeable clones.
+
+Contracts in `src/vault/strategy` are intended as samples of how strategies could look like but are in the current state still wip. They are NOT part of the audit.
+
 
 # Security
 There are multiple possible targets for attacks.
@@ -65,32 +69,7 @@ There are multiple possible targets for attacks.
 Most of these attacks are only possible when the `VaultController` is misconfigured on deployment or its `owner` is compromised. The `owner` of `VaultController` should be a MultiSig which should make this process harder but nonetheless not impossible.
 
 ## Inflation Attack
-EIP-4626 is vulnerable to the so-called [inflation attacks](https://ethereum-magicians.org/t/address-eip-4626-inflation-attacks-with-virtual-shares-and-assets/12677). This attack results from the possibility to manipulate the exchange rate and front run a victim’s deposit when the vault has low liquidity volume.  A similiar issue that affects yearn is already known. See Finding 3, "Division rounding may affect issuance of shares" in [Yearn's ToB audit](https://github.com/yearn/yearn-security/blob/master/audits/20210719_ToB_yearn_vaultsv2/ToB_-_Yearn_Vault_v_2_Smart_Contracts_Audit_Report.pdf) for the details. In order to combat this `AdapterBase.sol` ignores gifted assets when calculating `totalAssets`. (To ensure correct functionality of rebasing tokens is the responsibility of the concrete `adapter`-implementations).
-Additionally `creators` can send an initial deposit on vault/adapter creation to create some inital volume.
-
-## Scoping Details 
-```
-- If you have a public code repo, please share it here:  
-- How many contracts are in scope?: 36
-- Total SLoC for these contracts?: 2728
-- How many external imports are there?: 8
-- How many separate interfaces and struct definitions are there for the contracts within scope?: 18 interfaces, 10 structs
-- Does most of your code generally use composition or inheritance?: inheritance  
-- How many external calls?: 21   
-- What is the overall line coverage percentage provided by your tests?: 94.52%
-- Is there a need to understand a separate part of the codebase / get context in order to audit this part of the protocol?: no
-- Please describe required context: -
-- Does it use an oracle?: no  
-- Does the token conform to the ERC20 standard?: yes  
-- Are there any novel or unique curve logic or mathematical models?: no 
-- Does it use a timelock function?: yes  
-- Is it an NFT?: no 
-- Does it have an AMM?: no   
-- Is it a fork of a popular project?: no   
-- Does it use rollups?: no   
-- Is it multi-chain?:  no
-- Does it use a side-chain?: no
-```
+EIP-4626 is vulnerable to the so-called [inflation attacks](https://ethereum-magicians.org/t/address-eip-4626-inflation-attacks-with-virtual-shares-and-assets/12677). This attack results from the possibility to manipulate the exchange rate and front run a victim’s deposit when the vault has low liquidity volume.  A similiar issue that affects yearn is already known. See Finding 3, "Division rounding may affect issuance of shares" in [Yearn's ToB audit](https://github.com/yearn/yearn-security/blob/master/audits/20210719_ToB_yearn_vaultsv2/ToB_-_Yearn_Vault_v_2_Smart_Contracts_Audit_Report.pdf) for the details. In order to combat this we are using virtual shares by a difference of 1e9. This approach was added in the latest release of openZeppelin. [OZ PR](https://github.com/OpenZeppelin/openzeppelin-contracts/pull/3979)
 
 # Tests
 ## Quickstart command

@@ -4,7 +4,7 @@ pragma solidity ^0.8.15;
 
 import { Script } from "forge-std/Script.sol";
 import { MockERC4626, IERC20Metadata } from "../test/utils/mocks/MockERC4626.sol";
-import { IERC4626, IERC20 } from "../src/interfaces/vault/IERC4626.sol";
+import { IERC4626Upgradeable as IERC4626, IERC20Upgradeable as IERC20 } from "openzeppelin-contracts-upgradeable/interfaces/IERC4626Upgradeable.sol";
 import { ERC20 } from "openzeppelin-contracts/token/ERC20/ERC20.sol";
 import { Vault, VaultFees } from "../src/vault/Vault.sol";
 import { VaultRegistry, VaultMetadata } from "../src/vault/VaultRegistry.sol";
@@ -38,7 +38,8 @@ contract VaultDemoData is Script {
 
     vm.startBroadcast(deployerPrivateKey);
 
-    adapter = new MockERC4626(asset, "Mock Token Vault", "vwTKN");
+    adapter = new MockERC4626();
+    adapter.initialize(asset, "Mock Token Vault", "vwTKN");
 
     address vaultAddress = address(new Vault());
     vault = Vault(vaultAddress);
@@ -47,6 +48,7 @@ contract VaultDemoData is Script {
       IERC4626(address(adapter)),
       VaultFees({ deposit: 0, withdrawal: 0, management: 5e15, performance: 0 }),
       feeRecipient,
+      type(uint256).max,
       deployer
     );
 
