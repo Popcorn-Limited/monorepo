@@ -1,78 +1,44 @@
-import type { FormattedInput } from "@/lib/inputs";
-import { utils } from "ethers";
-import { useBigNumberFormattedInput, useFormattedInputHandler } from "@/lib/inputs";
 import Section from "@/components/content/Section";
 import Fieldset from "@/components/content/Fieldset";
 import Input from "@/components/content/Input";
+import { useAtom } from "jotai";
+import { feeAtom } from "@/lib/fees";
+import { formatUnits, parseUnits } from "ethers/lib/utils.js";
+
+const FEE_INPUTS = [
+  { name: "Deposit Fee", key: "deposit" },
+  { name: "Withdrawal Fee", key: "withdrawal" },
+  { name: "Performance Fee", key: "performance" },
+  { name: "Management Fee", key: "management" }
+]
 
 function FeeConfiguration() {
-  const depositFee = useNumberHandler("depositFee");
-  const withdrawalFee = useNumberHandler("withdrawalFee");
-  const performanceFee = useNumberHandler("performanceFee");
-  const managementFee = useNumberHandler("managementFee");
+  const [fees, setFee] = useAtom(feeAtom)
 
-  const feeRecipientHandler = useFormattedInputHandler<string>(undefined, {
-    formatter: (t) => (utils.isAddress(t) ? t : ""),
-    isPersistent: true,
-    stateScopeOrId: `fee.ih.address`,
-  });
-
-  const fees: Array<StatefulInput> = [
-    {
-      label: "1. Deposit fee",
-      handler: depositFee,
-    },
-    {
-      label: "2. Withdrawal fee",
-      handler: withdrawalFee,
-    },
-    {
-      label: "3. Performance fee",
-      handler: performanceFee,
-    },
-    {
-      label: "4. Management fee",
-      handler: managementFee,
-    },
-  ];
+  function handleChange(value: string, key: string) {
+    setFee({ ...fees, [key]: value });
+  }
 
   return (
     <Section title="Fee Configuration">
       <section className="flex flex-wrap gap-x-12 gap-y-4">
-        {fees.map((fee) => {
+        {FEE_INPUTS.map((input) => {
           return (
-            <div key={`fee-element-${fee.label}`} className="flex gap-4">
-              <Fieldset className="flex-grow" label={fee.label}>
-                <Input onChange={fee.handler.onChangeHandler} value={fee.handler.value} placeholder="0.00" />
+            <div key={`fee-element-${input.name}`} className="flex gap-4">
+              <Fieldset className="flex-grow" label={input.name}>
+                <Input onChange={e => handleChange((e.target as HTMLInputElement).value, input.key)} value={"0"} placeholder="0.00" />
               </Fieldset>
             </div>
           );
         })}
+        <div className="flex gap-4">
+          <Fieldset className="flex-grow" label="Fee Recipient">
+            <Input onChange={e => setFee(prefState => { return { ...prefState, recipient: (e.target as HTMLInputElement).value } })} value={fees.recipient} placeholder="0x00" />
+          </Fieldset>
+        </div>
       </section>
-      <Fieldset className="font-semibold" label="Fee Recipient">
-        <Input
-          className="font-normal"
-          onChange={feeRecipientHandler.onChangeHandler}
-          value={feeRecipientHandler.value}
-          placeholder="0x00"
-        />
-      </Fieldset>
     </Section>
   );
-}
-
-type StatefulInput = {
-  label: string;
-  handler: FormattedInput<any>;
-};
-
-function useNumberHandler(stateScopeOrId: string) {
-  const numberHandler = useBigNumberFormattedInput<number>(undefined, {
-    isPersistent: true,
-    stateScopeOrId: `fee.ih.${stateScopeOrId}-number`,
-  });
-
-  return numberHandler;
 }
 
 export default FeeConfiguration;

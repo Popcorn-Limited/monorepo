@@ -1,0 +1,87 @@
+[
+  {
+    "logoURI": "https://forum.popcorn.network/uploads/default/optimized/1X/4ad0b80c41129e6d8b04d49799bbbfcc6c8e9a91_2_32x32.png",
+    "name": "Yearn Adapter",
+    "key": "YearnAdapter",
+    "protocol": "Yearn"
+  },
+  {
+    "logoURI": "https://forum.popcorn.network/uploads/default/optimized/1X/4ad0b80c41129e6d8b04d49799bbbfcc6c8e9a91_2_32x32.png",
+    "name": "Beefy Adapter",
+    "key": "BeefyAdapter",
+    "protocol": "Beefy",
+    "initParams": [
+      {
+        "name": "BeefyVault",
+        "type": "Address",
+        "requirements": ["Required", "NotAddressZero"],
+        "description": "Address of the Beefy Vault to use"
+      },
+      {
+        "name": "BeefyBooster",
+        "type": "Address",
+        "description": "Address of the BeefyBooster to use if the BeefyVault has any."
+      }
+    ]
+  },
+  {
+    "logoURI": "https://forum.popcorn.network/uploads/default/optimized/1X/4ad0b80c41129e6d8b04d49799bbbfcc6c8e9a91_2_32x32.png",
+    "name": "AaveV2 Adapter",
+    "key": "AaveV2Adapter",
+    "protocol": "Aave"
+  },
+  {
+    "logoURI": "https://forum.popcorn.network/uploads/default/optimized/1X/4ad0b80c41129e6d8b04d49799bbbfcc6c8e9a91_2_32x32.png",
+    "name": "AaveV3 Adapter",
+    "key": "AaveV3Adapter",
+    "protocol": "Aave"
+  },
+  {
+    "logoURI": "https://forum.popcorn.network/uploads/default/optimized/1X/4ad0b80c41129e6d8b04d49799bbbfcc6c8e9a91_2_32x32.png",
+    "name": "CompoundV2 Adapter",
+    "key": "CompoundV2Adapter",
+    "protocol": "Compound",
+    "initParams": [
+      {
+        "name": "CToken",
+        "type": "Address",
+        "requirements": ["Required", "NotAddressZero"],
+        "description": "Address of the fitting CToken for the asset"
+      }
+    ]
+  },
+  {
+    "logoURI": "https://forum.popcorn.network/uploads/default/optimized/1X/4ad0b80c41129e6d8b04d49799bbbfcc6c8e9a91_2_32x32.png",
+    "name": "Convex Adapter",
+    "key": "ConvexAdapter",
+    "protocol": "Convex",
+    "initParams": [
+      {
+        "name": "Pid",
+        "type": "BigNumber",
+        "requirements": ["Required"],
+        "description": "Pid of the Convex Pool"
+      }
+    ]
+  },
+  {
+    "logoURI": "https://forum.popcorn.network/uploads/default/optimized/1X/4ad0b80c41129e6d8b04d49799bbbfcc6c8e9a91_2_32x32.png",
+    "name": "Sushi Adapter",
+    "key": "MasterChefAdapter",
+    "protocol": "Sushi",
+    "initParams": [
+      {
+        "name": "Pid",
+        "type": "BigNumber",
+        "requirements": ["Required"],
+        "description": "Pid of the Convex Pool"
+      },
+      {
+        "name": "RewardsToken",
+        "type": "Address",
+        "requirements": ["Required", "NotAddressZero"],
+        "description": "RewardToken of the MasterChef contract"
+      }
+    ]
+  }
+]

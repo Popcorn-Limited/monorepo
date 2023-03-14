@@ -1,0 +1,32 @@
+[
+  {
+    "chainId": 1,
+    "name": "Yearn",
+    "logoURI": "https://cryptologos.cc/logos/yearn-finance-yfi-logo.png?v=024"
+  },
+  {
+    "chainId": 1,
+    "name": "Beefy",
+    "logoURI": "https://cryptologos.cc/logos/beefy-finance-bifi-logo.png?v=024"
+  },
+  {
+    "chainId": 1,
+    "name": "Aave",
+    "logoURI": "https://cryptologos.cc/logos/aave-aave-logo.png?v=024"
+  },
+  {
+    "chainId": 1,
+    "name": "Compound",
+    "logoURI": "https://cdn.furucombo.app/assets/img/token/COMP.svg"
+  },
+  {
+    "chainId": 1,
+    "name": "Convex",
+    "logoURI": "https://cdn.furucombo.app/assets/img/token/CVX.png"
+  },
+  {
+    "chainId": 1,
+    "name": "Sushi",
+    "logoURI": "https://cdn.furucombo.app/assets/img/token/SUSHI.png"
+  }
+]
