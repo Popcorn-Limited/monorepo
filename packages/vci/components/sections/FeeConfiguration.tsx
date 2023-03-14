@@ -56,8 +56,11 @@ function FeeConfiguration() {
               placeholder="0x00"
               autoComplete="off"
               autoCorrect="off"
-              // @ts-ignore
-              className={Object.keys(fees).some(key => Number(formatUnits(fees[key])) > 0) && !utils.isAddress(fees.recipient) ? "border border-red-500" : ""}
+              className={!utils.isAddress(fees.recipient) ||
+                // @ts-ignore
+                (Object.keys(fees).some(key => Number(formatUnits(fees[key])) > 0) && fees.recipient === constants.AddressZero) ?
+                "border border-red-500" : ""
+              }
             />
           </Fieldset>
         </div>
