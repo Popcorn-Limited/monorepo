@@ -3,6 +3,7 @@ import Image from "next/image";
 
 import asset_logo from "@/assets/logo.png";
 import { useAccount } from "wagmi";
+import { beautifyAddress } from "@/lib/helpers";
 
 
 export default function Navbar(): JSX.Element {
@@ -14,7 +15,7 @@ export default function Navbar(): JSX.Element {
           <Image src={asset_logo} alt="" />
         </figure>
         <div className="flex-grow" />
-        {account ? <p>{account}</p> : <ConnectButton />}
+        {account ? <p>{beautifyAddress(account)}</p> : <ConnectButton />}
       </nav>
     </section>
   )
