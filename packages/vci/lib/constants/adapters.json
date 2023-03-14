@@ -13,13 +13,13 @@
     "initParams": [
       {
         "name": "BeefyVault",
-        "type": "Address",
+        "type": "address",
         "requirements": ["Required", "NotAddressZero"],
         "description": "Address of the Beefy Vault to use"
       },
       {
         "name": "BeefyBooster",
-        "type": "Address",
+        "type": "address",
         "description": "Address of the BeefyBooster to use if the BeefyVault has any."
       }
     ]
@@ -44,7 +44,7 @@
     "initParams": [
       {
         "name": "CToken",
-        "type": "Address",
+        "type": "address",
         "requirements": ["Required", "NotAddressZero"],
         "description": "Address of the fitting CToken for the asset"
       }
@@ -58,7 +58,7 @@
     "initParams": [
       {
         "name": "Pid",
-        "type": "BigNumber",
+        "type": "uint256",
         "requirements": ["Required"],
         "description": "Pid of the Convex Pool"
       }
@@ -72,13 +72,13 @@
     "initParams": [
       {
         "name": "Pid",
-        "type": "BigNumber",
+        "type": "uint256",
         "requirements": ["Required"],
         "description": "Pid of the Convex Pool"
       },
       {
         "name": "RewardsToken",
-        "type": "Address",
+        "type": "address",
         "requirements": ["Required", "NotAddressZero"],
         "description": "RewardToken of the MasterChef contract"
       }

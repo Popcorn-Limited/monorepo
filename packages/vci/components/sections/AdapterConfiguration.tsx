@@ -1,14 +1,22 @@
 import Section from "@/components/content/Section";
 import Fieldset from "@/components/content/Fieldset";
 import Input from "@/components/content/Input";
-import { adapterAtom, adapterConfigAtom, InitParamRequirement } from "@/lib/adapter";
+import { adapterAtom, adapterConfigAtom, checkInitParamValidity, InitParam, InitParamRequirement } from "@/lib/adapter";
 import { useAtom } from "jotai";
+import { useEffect } from "react";
+import { RESET } from "jotai/utils";
+import { constants, utils } from "ethers";
+
+const DEFAULT_VALUE = {
+  address: constants.AddressZero,
+  uint256: 0,
+}
 
 function AdapterConfiguration() {
   const [adapter,] = useAtom(adapterAtom);
   const [adapterConfig, setAdapterConfig] = useAtom(adapterConfigAtom);
 
-  function handleChange(value: string, index: number) {
+  function handleChange(value: string, index: number, paramType: string) {
     const newConfig = [...adapterConfig];
     if (newConfig.length < index) {
       newConfig.push(value)
@@ -17,6 +25,13 @@ function AdapterConfiguration() {
     }
     setAdapterConfig(newConfig);
   }
+
+  useEffect(() =>
+    setAdapterConfig(!!adapter?.initParams && adapter?.initParams.length > 0 ?
+      // @ts-ignore
+      adapter?.initParams.map((param) => DEFAULT_VALUE[param.type])
+      : RESET),
+    [adapter])
 
   return (
     <Section title="Adapter Configuration">
@@ -27,10 +42,19 @@ function AdapterConfiguration() {
               <div key={`fee-element-${initParam.name}`} className="flex gap-4">
                 <Fieldset className="flex-grow" label={initParam.name}>
                   <Input
-                    onChange={e => handleChange((e.target as HTMLInputElement).value, i)}
-                    value={adapterConfig[i] || ""}
-                    placeholder={initParam.type.name === "address" ? "0x00" : "0.00"}
-                    required={initParam.requirements?.includes(InitParamRequirement.Required)} />
+                    onChange={e => handleChange((e.target as HTMLInputElement).value, i, String(initParam.type))}
+                    defaultValue={adapterConfig[i] || ""}
+                    autoComplete="off"
+                    autoCorrect="off"
+                    type="text"
+                    pattern="^[0-9]*[.,]?[0-9]*$"
+                    placeholder={String(initParam.type) === "address" ? "0x00" : "0.0"}
+                    minLength={1}
+                    maxLength={79}
+                    spellCheck="false"
+                    className={checkInitParamValidity(adapterConfig[i], initParam) ? "border border-red-500" : ""}
+                  />
+
                 </Fieldset>
               </div>
             );

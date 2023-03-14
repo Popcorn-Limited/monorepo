@@ -1,18 +1,18 @@
 import { BigNumber, constants, ethers } from "ethers";
 import { useTypedWriteCall } from "@/lib/wagmi";
 import { useAccount } from "wagmi";
-import { adapterAtom, adapterConfigAtom } from "../adapter";
+import { adapterAtom, adapterConfigAtom, adapterDeploymentAtom } from "../adapter";
 import { useAtom } from "jotai";
 import { assetAtom } from "../assets";
 import { ParamType } from "ethers/lib/utils.js";
+import { feeAtom } from "../fees";
 
 
 export const useDeployVault = () => {
   const { address: account } = useAccount();
   const [asset,] = useAtom(assetAtom);
-  const [adapter,] = useAtom(adapterAtom);
-  const [adapterConfig,] = useAtom(adapterConfigAtom);
-
+  const [adapterData,] = useAtom(adapterDeploymentAtom);
+  const [fees,] = useAtom(feeAtom);
 
   return useTypedWriteCall({
     address: "0xd855ce0c298537ad5b5b96060cf90e663696bbf6",
@@ -23,19 +23,16 @@ export const useDeployVault = () => {
         asset: asset?.address || constants.AddressZero,
         adapter: constants.AddressZero,
         fees: {
-          deposit: BigNumber.from("0"),
-          withdrawal: BigNumber.from("0"),
-          management: BigNumber.from("0"),
-          performance: BigNumber.from("0")
+          deposit: fees.deposit,
+          withdrawal: fees.withdrawal,
+          management: fees.management,
+          performance: fees.performance
         },
-        feeRecipient: "0x",
+        feeRecipient: fees.recipient,
         depositLimit: constants.MaxUint256,
         owner: account
       },
-      {
-        id: ethers.utils.formatBytes32String(adapter?.key || ""),
-        data: "0x"
-      },
+      adapterData,
       {
         id: ethers.utils.formatBytes32String(""),
         data: "0x"
