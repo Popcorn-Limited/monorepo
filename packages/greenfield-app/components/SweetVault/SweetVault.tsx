@@ -22,6 +22,7 @@ import { PriceOf, usePrice } from "@popcorn/components/lib/Price";
 import { TotalAssets } from "@popcorn/components/lib/Vault";
 import { parseUnits } from "ethers/lib/utils.js";
 import { useTotalAssets } from "@popcorn/components/lib/Vault/hooks";
+import { formatNumber } from "@popcorn/utils/formatBigNumber";
 
 const HUNDRED = constants.Zero.add(100);
 
@@ -43,7 +44,15 @@ function AssetWithName({ vault, token, chainId, protocol }: { vault: FetchTokenR
   </div>
 }
 
-function SweetVault({ vaultAddress, chainId, searchString, addToTVL, addToDeposit }: { chainId: ChainId; vaultAddress: string, searchString: string, addToTVL: (key: string, value: BigNumber) => void, addToDeposit: (key: string, value: BigNumber) => void }) {
+function SweetVault({ vaultAddress, chainId, searchString, addToTVL, addToDeposit }:
+  {
+    chainId: ChainId;
+    vaultAddress: string,
+    searchString: string,
+    addToTVL: (key: string, value: BigNumber) => void,
+    addToDeposit: (key: string, value: BigNumber) => void
+  }
+) {
   const { address } = useAccount();
   const { data: vault } = useToken({ address: vaultAddress as Address, chainId })
   const { data: token } = useVaultToken(vaultAddress, chainId);
@@ -51,6 +60,7 @@ function SweetVault({ vaultAddress, chainId, searchString, addToTVL, addToDeposi
   const { data: price } = usePrice({ address: token?.address as Address, chainId });
   const { data: totalAssets } = useTotalAssets({ address: vaultAddress as Address, chainId, account: address });
   const { data: totalSupply } = useTotalSupply({ address: vaultAddress as Address, chainId, account: address });
+
 
   // TODO mobile css
   // TODO add beefy apy resolver
@@ -147,9 +157,7 @@ function SweetVault({ vaultAddress, chainId, searchString, addToTVL, addToDeposi
                           />
                         </Title>
                         <Title as="td" level={2} fontWeight="font-normal">
-                          ${price?.value && totalAssets?.value ? formatAndRoundBigNumber(
-                            BigNumber.from(String(Number(price?.value?.toString()) * Number(totalAssets?.value?.toString()))),
-                            token?.decimals * 2) : 0}
+                          $ {formatNumber((Number(price?.value?.toString()) * Number(totalAssets?.value?.toString())) / (10 ** (token?.decimals * 2)))}
                         </Title>
                       </tr>
                     </tbody>

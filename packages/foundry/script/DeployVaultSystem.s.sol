@@ -160,39 +160,39 @@ contract DeployVaultSystem is Script {
     // beefyBooster = 0xAe3F0C61F3Dc48767ccCeF3aD50b29437BE4b1a4
     setPermission(0xAe3F0C61F3Dc48767ccCeF3aD50b29437BE4b1a4, true, false);
 
-    // IERC20(0x06325440D014e39736583c165C2963BA99fAf14E).approve(address(controller), 10e18);
+    IERC20(0x06325440D014e39736583c165C2963BA99fAf14E).approve(address(controller), 10e18);
 
-    // // crvSthEth/Eth = 0x06325440D014e39736583c165C2963BA99fAf14E
-    // // deploy stEth/eth beefy vault
-    // address beefy = controller.deployVault(
-    //   VaultInitParams({
-    //     asset: IERC20(0x06325440D014e39736583c165C2963BA99fAf14E),
-    //     adapter: IERC4626(address(0)),
-    //     fees: VaultFees({ deposit: 0, withdrawal: 0, management: 0, performance: 0 }),
-    //     feeRecipient: 0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266,
-    //     depositLimit: type(uint256).max,
-    //     owner: 0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266
-    //   }),
-    //   DeploymentArgs({
-    //     id: "BeefyAdapter",
-    //     data: abi.encode(0xa7739fd3d12ac7F16D8329AF3Ee407e19De10D8D, 0xAe3F0C61F3Dc48767ccCeF3aD50b29437BE4b1a4)
-    //   }),
-    //   DeploymentArgs({ id: "", data: "" }),
-    //   false,
-    //   "",
-    //   VaultMetadata({
-    //     vault: address(0),
-    //     staking: address(0),
-    //     creator: 0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266,
-    //     metadataCID: "QmbWqxBEKC3P8tqsKc98xmWNzrzDtRLMiMPL8wBuTGsMnR",
-    //     swapTokenAddresses: swapTokenAddresses,
-    //     swapAddress: address(0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48),
-    //     exchange: uint256(1)
-    //   }),
-    //   10e18
-    // );
+    // crvSthEth/Eth = 0x06325440D014e39736583c165C2963BA99fAf14E
+    // deploy stEth/eth beefy vault
+    address beefy = controller.deployVault(
+      VaultInitParams({
+        asset: IERC20(0x06325440D014e39736583c165C2963BA99fAf14E),
+        adapter: IERC4626(address(0)),
+        fees: VaultFees({ deposit: 0, withdrawal: 0, management: 0, performance: 0 }),
+        feeRecipient: 0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266,
+        depositLimit: type(uint256).max,
+        owner: 0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266
+      }),
+      DeploymentArgs({
+        id: "BeefyAdapter",
+        data: abi.encode(0xa7739fd3d12ac7F16D8329AF3Ee407e19De10D8D, 0xAe3F0C61F3Dc48767ccCeF3aD50b29437BE4b1a4)
+      }),
+      DeploymentArgs({ id: "", data: "" }),
+      false,
+      "",
+      VaultMetadata({
+        vault: address(0),
+        staking: address(0),
+        creator: 0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266,
+        metadataCID: "QmbWqxBEKC3P8tqsKc98xmWNzrzDtRLMiMPL8wBuTGsMnR",
+        swapTokenAddresses: swapTokenAddresses,
+        swapAddress: address(0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48),
+        exchange: uint256(1)
+      }),
+      10e18
+    );
 
-    // emit log_named_address("BeefyVault: ", beefy);
+    emit log_named_address("BeefyVault: ", beefy);
 
     vm.stopBroadcast();
   }
