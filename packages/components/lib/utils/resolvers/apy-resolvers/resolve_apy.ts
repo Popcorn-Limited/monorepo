@@ -28,6 +28,6 @@ export async function resolve_apy({
   } else {
     apy = await ApyResolvers.default(address, Number(chainId), rpc);
   }
-  console.log(apy)
+
   return { ...apy, formatted: formatAndRoundBigNumber(apy.value, apy.decimals) + "%" };
 }
