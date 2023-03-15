@@ -10,6 +10,7 @@ import { useDeployVault } from "@/lib/vaults";
 import { noOp } from "@/lib/helpers";
 import { IoMdArrowBack, IoMdArrowForward } from "react-icons/io";
 import { useRouter } from "next/router";
+import { AbiCoder, formatUnits } from "ethers/lib/utils.js";
 
 
 export default function Preview(): JSX.Element {
@@ -18,13 +19,20 @@ export default function Preview(): JSX.Element {
   const [asset,] = useAtom(assetAtom);
   const [adapter,] = useAtom(adapterAtom);
   const [adapterConfig,] = useAtom(adapterConfigAtom);
-  const [adapterData,] = useAtom(adapterDeploymentAtom);
+  const [adapterData, setAdapterData] = useAtom(adapterDeploymentAtom);
   const [fees,] = useAtom(feeAtom);
 
   const { write: deployVault = noOp } = useDeployVault();
 
 
-  useEffect(() => { }, [adapterConfig]);
+  useEffect(() => {
+    setAdapterData({
+      id: ethers.utils.formatBytes32String(adapter.key ? adapter.key : ""),
+      data: !!adapter.initParams ?
+        ethers.utils.defaultAbiCoder.encode(adapter.initParams?.map(param => param.type), adapterConfig)
+        : "0x"
+    })
+  }, [adapterConfig]);
 
   return (
     <section>
@@ -40,18 +48,18 @@ export default function Preview(): JSX.Element {
           <div>
             <p>Fees: </p>
             <div>
-              <p>Deposit: {fees.deposit.toString()}</p>
-              <p>Withdrawal: {fees.withdrawal.toString()}</p>
-              <p>Management: {fees.management.toString()}</p>
-              <p>Performance: {fees.performance.toString()}</p>
+              <p>Deposit: {Number(fees.deposit.hex)} ({formatUnits(fees.deposit)})</p>
+              <p>Withdrawal: {Number(fees.withdrawal.hex)} ({formatUnits(fees.withdrawal)})</p>
+              <p>Management: {Number(fees.management.hex)} ({formatUnits(fees.management)})</p>
+              <p>Performance: {Number(fees.performance.hex)} ({formatUnits(fees.performance)})</p>
               <p>Recipient: {fees.recipient}</p>
             </div>
           </div>
         </Section>
         <Section title="Adapter Configuration">
           <p>Name: {adapter.name}</p>
-          <p>Id: {ethers.utils.formatBytes32String("")}</p>
-          <p>Data: 0x</p>
+          <p>Id: {adapterData.id}</p>
+          <p>Data: {adapterData.data}</p>
           <div>
             <p>Params: </p>
             <div>
@@ -105,7 +113,7 @@ export default function Preview(): JSX.Element {
             </button>
             <button
               className="flex group gap-2 items-center bg-blue-600 text-white font-bold px-6 py-4 rounded-xl shadow"
-              onClick={() => deployVault()}
+              onClick={() => { console.log("done"); deployVault() }}
             >
               <span>Deploy Vault</span>
               <IoMdArrowForward className="text-[150%] group-hover:translate-x-px" />

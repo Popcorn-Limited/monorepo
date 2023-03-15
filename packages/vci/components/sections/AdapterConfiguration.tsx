@@ -1,11 +1,11 @@
 import Section from "@/components/content/Section";
 import Fieldset from "@/components/content/Fieldset";
 import Input from "@/components/content/Input";
-import { adapterAtom, adapterConfigAtom, checkInitParamValidity, InitParam, InitParamRequirement } from "@/lib/adapter";
+import { adapterAtom, adapterConfigAtom, checkInitParamValidity } from "@/lib/adapter";
 import { useAtom } from "jotai";
 import { useEffect } from "react";
 import { RESET } from "jotai/utils";
-import { constants, utils } from "ethers";
+import { constants,  } from "ethers";
 
 const DEFAULT_VALUE = {
   address: constants.AddressZero,
@@ -52,7 +52,7 @@ function AdapterConfiguration() {
                     minLength={1}
                     maxLength={79}
                     spellCheck="false"
-                    className={checkInitParamValidity(adapterConfig[i], initParam) ? "border border-red-500" : ""}
+                    className={checkInitParamValidity(adapterConfig[i], initParam) ? "" : "border border-red-500"}
                   />
 
                 </Fieldset>

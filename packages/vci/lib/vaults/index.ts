@@ -1,10 +1,9 @@
-import { BigNumber, constants, ethers } from "ethers";
+import { constants, ethers } from "ethers";
 import { useTypedWriteCall } from "@/lib/wagmi";
-import { useAccount } from "wagmi";
-import { adapterAtom, adapterConfigAtom, adapterDeploymentAtom } from "../adapter";
+import { useAccount, useContractWrite, usePrepareContractWrite } from "wagmi";
+import { adapterAtom, adapterDeploymentAtom } from "../adapter";
 import { useAtom } from "jotai";
 import { assetAtom } from "../assets";
-import { ParamType } from "ethers/lib/utils.js";
 import { feeAtom } from "../fees";
 
 
@@ -14,13 +13,14 @@ export const useDeployVault = () => {
   const [adapterData,] = useAtom(adapterDeploymentAtom);
   const [fees,] = useAtom(feeAtom);
 
-  return useTypedWriteCall({
+  const { config, error: configError } = usePrepareContractWrite({
     address: "0xd855ce0c298537ad5b5b96060cf90e663696bbf6",
     abi,
     functionName: "deployVault",
+    chainId: 1337,
     args: [
       {
-        asset: asset?.address || constants.AddressZero,
+        asset: asset.address,
         adapter: constants.AddressZero,
         fees: {
           deposit: fees.deposit,
@@ -59,6 +59,24 @@ export const useDeployVault = () => {
       0
     ],
   });
+
+  // const { config, error: configError } = usePrepareContractWrite({
+  //   address: "0xd855ce0c298537ad5b5b96060cf90e663696bbf6",
+  //   abi,
+  //   functionName: "deployAdapter",
+  //   chainId: 1337,
+  //   args: [
+  //     asset.address,
+  //     adapterData,
+  //     {
+  //       id: ethers.utils.formatBytes32String(""),
+  //       data: "0x"
+  //     },
+  //     0
+  //   ]
+  // })
+
+  return useContractWrite(config)
 };
 
 

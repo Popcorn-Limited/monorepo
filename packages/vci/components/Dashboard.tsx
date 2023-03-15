@@ -19,8 +19,9 @@ function Dashboard() {
   const [adapterConfig,] = useAtom(adapterConfigAtom);
   const [fees,] = useAtom(feeAtom)
 
-  const validFees = ([fees.deposit, fees.withdrawal, fees.management, fees.performance].some(fee => Number(formatUnits(fee)) >= 1) && fees.recipient != constants.AddressZero)
+  const validFees = ([fees.deposit, fees.withdrawal, fees.management, fees.performance].some(fee => Number(formatUnits(fee)) > 0) && fees.recipient != constants.AddressZero)
     && utils.isAddress(fees.recipient)
+    && [fees.deposit, fees.withdrawal, fees.management, fees.performance].every(fee => Number(formatUnits(fee)) < 1)
   const validAdapter = !!adapter
   const validAdapterConfig = typeof adapter.initParams === "undefined"
     || (!!adapter.initParams && adapter.initParams.length > 0 && adapterConfig.length === adapter.initParams.length &&

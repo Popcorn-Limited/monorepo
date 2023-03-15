@@ -4,14 +4,16 @@ import type { AppProps } from "next/app";
 
 import { Roboto } from "@next/font/google";
 import { WagmiConfig, createClient, configureChains } from "wagmi";
-import { goerli } from "wagmi/chains";
+import { goerli, localhost } from "wagmi/chains";
 import { publicProvider } from "wagmi/providers/public";
 import { getDefaultWallets, RainbowKitProvider } from "@rainbow-me/rainbowkit";
 import { Toaster } from "react-hot-toast";
 import Head from "next/head";
 import Page from "@/components/content/Page";
+import { jsonRpcProvider } from "wagmi/providers/jsonRpc";
+import { alchemyProvider } from "wagmi/providers/alchemy";
 
-const { provider, chains } = configureChains([goerli], [publicProvider()]);
+const { provider, chains } = configureChains([goerli, localhost], [publicProvider()]);
 
 const { connectors } = getDefaultWallets({
   appName: "app.pop.network",

@@ -5,7 +5,6 @@ import { useAtom } from "jotai";
 import { feeAtom, validateBigNumberInput } from "@/lib/fees";
 import { formatUnits, parseUnits } from "ethers/lib/utils.js";
 import { constants, utils } from "ethers";
-import { ObjectFlags } from "typescript";
 
 const FEE_INPUTS = [
   { name: "Deposit Fee", key: "deposit" },
