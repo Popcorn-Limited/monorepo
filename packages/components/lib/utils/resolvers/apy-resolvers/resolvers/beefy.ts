@@ -14,5 +14,5 @@ export const beefy = async (address, chainId, rpc): Promise<{ value: BigNumber; 
 
   const beefyVaultObj = beefyVaults.find((vault) => vault.earnContractAddress.toLowerCase() === beefyVault);
   const apy = apyRes[Object.keys(apyRes).find((key) => key === beefyVaultObj.id)];
-  return { value: parseUnits(String(apy.totalApy * 100)), decimals: 18 };
+  return { value: parseUnits(String(apy.totalApy)), decimals: 18 };
 };

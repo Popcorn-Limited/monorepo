@@ -4,14 +4,14 @@ import { Address, useContractRead } from "wagmi";
 
 // TODO use proper ipfs fetch
 
-function useGetIpfsMetadata(cid?: string): IpfsMetadata {
+function useGetIpfsMetadata(address: string, cid?: string): IpfsMetadata {
   return {
     token: {
       name: "Token",
       description: "Token Description"
     },
     protocol: {
-      name: "Yearn",
+      name: address.toLowerCase() === "0xB76fe239133EA8b92432C6D4b1E322063eEb6445".toLowerCase() ? "Yearn" : "Beefy",
       description: "Protocol Description"
     },
     strategy: {
@@ -93,7 +93,7 @@ function VaultMetadata({ chainId, children, vaultAddress }: VaultMetadataProps) 
       "type": "function"
     }],
   });
-  const ipfsMetadata = useGetIpfsMetadata(data?.metadataCID);
+  const ipfsMetadata = useGetIpfsMetadata(vaultAddress, data?.metadataCID);
 
 
   return children({ ...data, metadata: ipfsMetadata } as VaultMetadata);
