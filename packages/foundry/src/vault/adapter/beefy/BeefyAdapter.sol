@@ -43,16 +43,13 @@ contract BeefyAdapter is AdapterBase, WithRewards {
    * @dev `_beefyBooster` - An optional beefy booster.
    * @dev This function is called by the factory contract when deploying a new vault.
    */
-  function initialize(
-    bytes memory adapterInitData,
-    address registry,
-    bytes memory beefyInitData
-  ) external initializer {
+  function initialize(bytes memory adapterInitData, address registry, bytes memory beefyInitData) external initializer {
     (address _beefyVault, address _beefyBooster) = abi.decode(beefyInitData, (address, address));
     __AdapterBase_init(adapterInitData);
 
     if (!IPermissionRegistry(registry).endorsed(_beefyVault)) revert NotEndorsed(_beefyVault);
-    if (!IPermissionRegistry(registry).endorsed(_beefyBooster)) revert NotEndorsed(_beefyBooster);
+    if (_beefyBooster != address(0) && !IPermissionRegistry(registry).endorsed(_beefyBooster))
+      revert NotEndorsed(_beefyBooster);
     if (IBeefyVault(_beefyVault).want() != asset()) revert InvalidBeefyVault(_beefyVault);
     if (_beefyBooster != address(0) && IBeefyBooster(_beefyBooster).stakedToken() != _beefyVault)
       revert InvalidBeefyBooster(_beefyBooster);

@@ -8,7 +8,6 @@ import asset_bg from "../assets/sv-bg.png";
 import { ChainId, formatAndRoundBigNumber } from "@popcorn/utils";
 import NoSSR from "react-no-ssr";
 import NetworkFilter from "@popcorn/components/components/NetworkFilter";
-import { parseUnits } from "ethers/lib/utils.js";
 import HeroBgMobile from "@popcorn/components/public/images/swHeroBgmobile.svg";
 import HeroBg from "@popcorn/components/public/images/swHeroBg.svg";
 import useNetworkFilter from "hooks/useNetworkFilter";
@@ -16,7 +15,7 @@ import { MagnifyingGlassIcon } from "@heroicons/react/24/outline";
 import { useState } from "react";
 import { BigNumber, constants } from "ethers";
 
-const SUPPORTED_NETWORKS = [ChainId.ALL, ChainId.Hardhat]
+const SUPPORTED_NETWORKS = [ChainId.ALL, ChainId.Hardhat, ChainId.Fantom]
 
 interface Bal {
   [key: string]: BigNumber;
@@ -29,10 +28,14 @@ const SweetVaults: NextPage = () => {
   const [deposit, setDeposit] = useState<Bal>({});
 
   const { data: hhVaults = [] } = useAllVaults(selectedNetworks.includes(ChainId.Hardhat) ? ChainId.Hardhat : undefined);
-  const allVaults = [...hhVaults]
+  const { data: ftmVaults = [] } = useAllVaults(selectedNetworks.includes(ChainId.Fantom) ? ChainId.Fantom : undefined);
+  const allVaults = [
+    ...hhVaults.map(vault => { return { address: vault, chainId: ChainId.Hardhat } }),
+    ...ftmVaults.map(vault => { return { address: vault, chainId: ChainId.Fantom } })
+  ]
 
 
-  const addToTvl = (key:string, value?: BigNumber) => {
+  const addToTvl = (key: string, value?: BigNumber) => {
     if (value?.gt(0)) {
       setTvl((balances) => ({
         ...balances,
@@ -41,7 +44,7 @@ const SweetVaults: NextPage = () => {
     }
   };
 
-  const addToDeposit = (key:string, value?: BigNumber) => {
+  const addToDeposit = (key: string, value?: BigNumber) => {
     if (value?.gt(0)) {
       setDeposit((balances) => ({
         ...balances,
@@ -112,11 +115,11 @@ const SweetVaults: NextPage = () => {
         </section>
 
         <section className="flex flex-col gap-8">
-          {allVaults.map((vaultAddress) => {
+          {allVaults.map((vault) => {
             return <SweetVault
-              key={`sv-${vaultAddress}`}
-              chainId={ChainId.Hardhat}
-              vaultAddress={vaultAddress}
+              key={`sv-${vault.address}-${vault.chainId}`}
+              chainId={vault.chainId}
+              vaultAddress={vault.address}
               searchString={searchString}
               addToTVL={addToTvl}
               addToDeposit={addToDeposit}
