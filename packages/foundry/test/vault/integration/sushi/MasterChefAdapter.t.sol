@@ -109,7 +109,7 @@ contract MasterChefAdapterTest is AbstractAdapterTest {
 
     address[] memory rewardTokens = IWithRewards(address(adapter)).rewardTokens();
     assertEq(rewardTokens[0], rewardsToken);
-    
-    assertGt(IERC20(0x6B3595068778DD592e39A122f4f5a5cF09C90fE2).balanceOf(bob), 0);
+
+    assertGt(IERC20(0x6B3595068778DD592e39A122f4f5a5cF09C90fE2).balanceOf(address(adapter)), 0);
   }
 }
