@@ -46,11 +46,7 @@ contract ConvexAdapter is AdapterBase, WithRewards {
    * @dev `_pid` - The poolId for lpToken.
    * @dev This function is called by the factory contract when deploying a new vault.
    */
-  function initialize(
-    bytes memory adapterInitData,
-    address registry,
-    bytes memory convexInitData
-  ) public initializer {
+  function initialize(bytes memory adapterInitData, address registry, bytes memory convexInitData) public initializer {
     __AdapterBase_init(adapterInitData);
 
     uint256 _pid = abi.decode(convexInitData, (uint256));
@@ -92,9 +88,11 @@ contract ConvexAdapter is AdapterBase, WithRewards {
   function rewardTokens() external view override returns (address[] memory) {
     uint256 len = convexRewards.extraRewardsLength();
 
-    address[] memory tokens = new address[](len);
+    address[] memory tokens = new address[](len + 1);
+    tokens[0] = 0xD533a949740bb3306d119CC777fa900bA034cd52; // CRV
+
     for (uint256 i; i < len; i++) {
-      tokens[i] = convexRewards.extraRewards(i).rewardToken();
+      tokens[i + 1] = convexRewards.extraRewards(i).rewardToken();
     }
     return tokens;
   }
