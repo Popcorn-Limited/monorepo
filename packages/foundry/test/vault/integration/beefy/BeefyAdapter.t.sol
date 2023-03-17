@@ -5,11 +5,12 @@ pragma solidity ^0.8.15;
 
 import { Test } from "forge-std/Test.sol";
 
-import { BeefyAdapter, SafeERC20, IERC20, IERC20Metadata, IBeefyVault, IBeefyBooster, IBeefyBalanceCheck } from "../../../../src/vault/adapter/beefy/BeefyAdapter.sol";
+import { BeefyAdapter, SafeERC20, IERC20, IERC20Metadata, IBeefyVault, IBeefyBooster, IBeefyBalanceCheck, IWithRewards, IStrategy } from "../../../../src/vault/adapter/beefy/BeefyAdapter.sol";
 import { BeefyTestConfigStorage, BeefyTestConfig } from "./BeefyTestConfigStorage.sol";
 import { AbstractAdapterTest, ITestConfigStorage, IAdapter, Math } from "../abstract/AbstractAdapterTest.sol";
 import { IPermissionRegistry, Permission } from "../../../../src/interfaces/vault/IPermissionRegistry.sol";
 import { PermissionRegistry } from "../../../../src/vault/PermissionRegistry.sol";
+import { MockStrategyClaimer } from "../../../utils/mocks/MockStrategyClaimer.sol";
 
 contract BeefyAdapterTest is AbstractAdapterTest {
   using Math for uint256;
@@ -46,7 +47,14 @@ contract BeefyAdapterTest is AbstractAdapterTest {
       setPermission(_beefyBooster, true, false);
     }
 
-    setUpBaseTest(IERC20(IBeefyVault(beefyVault).want()), address(new BeefyAdapter()), address(permissionRegistry), 10, "Beefy ", true);
+    setUpBaseTest(
+      IERC20(IBeefyVault(beefyVault).want()),
+      address(new BeefyAdapter()),
+      address(permissionRegistry),
+      10,
+      "Beefy ",
+      true
+    );
 
     vm.label(_beefyVault, "beefyVault");
     vm.label(_beefyBooster, "beefyBooster");
@@ -90,11 +98,7 @@ contract BeefyAdapterTest is AbstractAdapterTest {
     );
   }
 
-  function setPermission(
-    address target,
-    bool endorsed,
-    bool rejected
-  ) public {
+  function setPermission(address target, bool endorsed, bool rejected) public {
     address[] memory targets = new address[](1);
     Permission[] memory permissions = new Permission[](1);
     targets[0] = target;
@@ -222,5 +226,34 @@ contract BeefyAdapterTest is AbstractAdapterTest {
     vm.startPrank(bob);
     adapter.deposit(defaultAmount, bob);
     adapter.mint(defaultAmount, bob);
+  }
+
+  /*//////////////////////////////////////////////////////////////
+                              CLAIM
+    //////////////////////////////////////////////////////////////*/
+
+  function test__claim() public override {
+    strategy = IStrategy(address(new MockStrategyClaimer()));
+    createAdapter();
+    adapter.initialize(
+      abi.encode(asset, address(this), strategy, 0, sigs, ""),
+      externalRegistry,
+      testConfigStorage.getTestConfig(0)
+    );
+
+    _mintFor(1000e18, bob);
+
+    vm.prank(bob);
+    adapter.deposit(1000e18, bob);
+
+    vm.warp(block.timestamp + 10 days);
+
+    vm.prank(bob);
+    adapter.withdraw(1, bob, bob);
+
+    address[] memory rewardTokens = IWithRewards(address(adapter)).rewardTokens();
+    assertEq(rewardTokens[0], beefyBooster.rewardToken());
+
+    assertGt(IERC20(rewardTokens[0]).balanceOf(address(adapter)), 0);
   }
 }
