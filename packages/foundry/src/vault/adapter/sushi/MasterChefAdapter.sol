@@ -111,6 +111,7 @@ contract MasterChefAdapter is AdapterBase, WithRewards {
   function rewardTokens() external view override returns (address[] memory) {
     address[] memory _rewardTokens = new address[](1);
     _rewardTokens[0] = rewardsToken;
+    return _rewardTokens;
   }
 
   /*//////////////////////////////////////////////////////////////

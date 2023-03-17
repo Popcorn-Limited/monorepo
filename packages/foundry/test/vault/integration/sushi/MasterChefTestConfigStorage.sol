@@ -11,7 +11,7 @@ contract MasterChefTestConfigStorage is ITestConfigStorage {
   MasterChefTestConfig[] internal testConfigs;
 
   constructor() {
-    testConfigs.push(MasterChefTestConfig(2, 0x0E09FaBB73Bd3Ade0a17ECC321fD13a19e81cE82));
+    testConfigs.push(MasterChefTestConfig(2, 0x6B3595068778DD592e39A122f4f5a5cF09C90fE2));
   }
 
   function getTestConfig(uint256 i) public view returns (bytes memory) {

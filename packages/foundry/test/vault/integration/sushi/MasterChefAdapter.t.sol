@@ -3,9 +3,10 @@ pragma solidity ^0.8.15;
 
 import { Test } from "forge-std/Test.sol";
 
-import { MasterChefAdapter, SafeERC20, IERC20, IERC20Metadata, Math, IMasterChef } from "../../../../src/vault/adapter/sushi/MasterChefAdapter.sol";
+import { MasterChefAdapter, SafeERC20, IERC20, IERC20Metadata, Math, IMasterChef, IStrategy, IAdapter, IWithRewards } from "../../../../src/vault/adapter/sushi/MasterChefAdapter.sol";
 import { MasterChefTestConfigStorage, MasterChefTestConfig } from "./MasterChefTestConfigStorage.sol";
-import { AbstractAdapterTest, ITestConfigStorage, IAdapter } from "../abstract/AbstractAdapterTest.sol";
+import { AbstractAdapterTest, ITestConfigStorage } from "../abstract/AbstractAdapterTest.sol";
+import { MockStrategyClaimer } from "../../../utils/mocks/MockStrategyClaimer.sol";
 
 contract MasterChefAdapterTest is AbstractAdapterTest {
   using Math for uint256;
@@ -81,5 +82,34 @@ contract MasterChefAdapterTest is AbstractAdapterTest {
     );
 
     assertEq(asset.allowance(address(adapter), address(masterChef)), type(uint256).max, "allowance");
+  }
+
+  /*//////////////////////////////////////////////////////////////
+                              CLAIM
+    //////////////////////////////////////////////////////////////*/
+
+  function test__claim() public override {
+    strategy = IStrategy(address(new MockStrategyClaimer()));
+    createAdapter();
+    adapter.initialize(
+      abi.encode(asset, address(this), strategy, 0, sigs, ""),
+      externalRegistry,
+      testConfigStorage.getTestConfig(0)
+    );
+
+    _mintFor(1000e18, bob);
+
+    vm.prank(bob);
+    adapter.deposit(1000e18, bob);
+
+    vm.roll(block.number + 30);
+
+    vm.prank(bob);
+    adapter.withdraw(0, bob, bob);
+
+    address[] memory rewardTokens = IWithRewards(address(adapter)).rewardTokens();
+    assertEq(rewardTokens[0], rewardsToken);
+    
+    assertGt(IERC20(0x6B3595068778DD592e39A122f4f5a5cF09C90fE2).balanceOf(bob), 0);
   }
 }

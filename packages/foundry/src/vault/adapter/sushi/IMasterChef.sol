@@ -3,7 +3,6 @@
 
 pragma solidity ^0.8.15;
 
-
 interface IMasterChef {
   struct PoolInfo {
     address lpToken;
@@ -32,4 +31,6 @@ interface IMasterChef {
   function leaveStaking(uint256 _amount) external;
 
   function emergencyWithdraw(uint256 _pid) external;
+
+  function pendingSushi(uint256 _pid, address _user) external view returns (uint256);
 }
