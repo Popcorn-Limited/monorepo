@@ -5,9 +5,10 @@ pragma solidity ^0.8.15;
 
 import { Test } from "forge-std/Test.sol";
 
-import { CompoundV2Adapter, SafeERC20, IERC20, IERC20Metadata, Math, ICToken, IComptroller } from "../../../../src/vault/adapter/compound/compoundV2/CompoundV2Adapter.sol";
+import { CompoundV2Adapter, SafeERC20, IERC20, IERC20Metadata, Math, ICToken, IComptroller,IStrategy,IWithRewards } from "../../../../src/vault/adapter/compound/compoundV2/CompoundV2Adapter.sol";
 import { CompoundV2TestConfigStorage, CompoundV2TestConfig } from "./CompoundV2TestConfigStorage.sol";
 import { AbstractAdapterTest, ITestConfigStorage, IAdapter } from "../abstract/AbstractAdapterTest.sol";
+import { MockStrategyClaimer } from "../../../utils/mocks/MockStrategyClaimer.sol";
 
 contract CompoundV2AdapterTest is AbstractAdapterTest {
   using Math for uint256;
@@ -156,5 +157,35 @@ contract CompoundV2AdapterTest is AbstractAdapterTest {
     vm.startPrank(bob);
     adapter.deposit(1e18, bob);
     adapter.mint(1e18, bob);
+  }
+
+  function test__claim() public override {
+    uint256 forkId = vm.createSelectFork(vm.rpcUrl("optimism"));
+    vm.selectFork(forkId);
+
+    _setUpTest(abi.encode(0xAFdf91f120DEC93c65fd63DBD5ec372e5dcA5f82));
+
+    strategy = IStrategy(address(new MockStrategyClaimer()));
+    createAdapter();
+    adapter.initialize(
+      abi.encode(asset, address(this), strategy, 0, sigs, ""),
+      externalRegistry,
+      abi.encode(0xAFdf91f120DEC93c65fd63DBD5ec372e5dcA5f82)
+    );
+
+    _mintFor(10e18, bob);
+
+    vm.prank(bob);
+    adapter.deposit(1000e18, bob);
+
+    vm.roll(block.number + 30);
+
+    vm.prank(bob);
+    adapter.withdraw(0, bob, bob);
+
+    address[] memory rewardTokens = IWithRewards(address(adapter)).rewardTokens();
+    assertEq(rewardTokens[0], 0x1DB2466d9F5e10D7090E7152B68d62703a2245F0);
+
+    assertGt(IERC20(0x1DB2466d9F5e10D7090E7152B68d62703a2245F0).balanceOf(address(adapter)), 0);
   }
 }
