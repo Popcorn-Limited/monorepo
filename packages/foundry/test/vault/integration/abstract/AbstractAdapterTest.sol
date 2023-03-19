@@ -65,7 +65,7 @@ contract AbstractAdapterTest is PropertyTest {
     _asset_ = address(asset_);
     _delta_ = delta_;
 
-    defaultAmount = 10**IERC20Metadata(address(asset_)).decimals() * 1e9;
+    defaultAmount = 10 ** IERC20Metadata(address(asset_)).decimals() * 1e9;
 
     raise = defaultAmount;
     maxAssets = defaultAmount * 1000;
@@ -110,7 +110,9 @@ contract AbstractAdapterTest is PropertyTest {
   function verify_adapterInit() public virtual {}
 
   function _mintFor(uint256 amount, address receiver) internal {
+    emit log("DING");
     deal(address(asset), receiver, amount);
+    emit log("DING1");
 
     vm.prank(receiver);
     asset.approve(address(adapter), amount);
@@ -279,7 +281,10 @@ contract AbstractAdapterTest is PropertyTest {
     for (uint8 i; i < len; i++) {
       if (i > 0) overrideSetup(testConfigStorage.getTestConfig(i));
 
+      emit log("PING");
       _mintFor(amount, bob);
+
+      emit log("PING1");
       prop_deposit(bob, bob, amount, testId);
 
       increasePricePerShare(raise);
