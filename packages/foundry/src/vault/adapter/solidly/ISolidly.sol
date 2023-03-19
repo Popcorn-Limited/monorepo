@@ -10,11 +10,7 @@ interface IGauge {
 
   function balanceOf(address _user) external view returns (uint256);
 
-  function depositAndOptIn(
-    uint256 _amount,
-    uint256 _tokenId,
-    address[] memory _optInPools
-  ) external;
+  function depositAndOptIn(uint256 _amount, uint256 _tokenId, address[] memory _optInPools) external;
 
   function withdraw(uint256 _amount) external;
 
@@ -23,6 +19,10 @@ interface IGauge {
   function rewardsListLength() external view returns (uint256);
 
   function rewards(uint256 _index) external view returns (address);
+
+  function optIn(address[] memory _optTokens) external;
+
+  function optOut(address[] memory _optTokens) external;
 }
 
 interface ILpToken {

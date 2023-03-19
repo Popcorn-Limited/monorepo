@@ -122,6 +122,16 @@ contract SolidlyAdapter is AdapterBase, WithRewards {
     return _rewardTokens;
   }
 
+  /// @notice Subscribes to reward flows on gauge.
+  function optIn(address[] memory _optTokens) public {
+    gauge.optIn(_optTokens);
+  }
+
+  /// @notice Unsubscribes from reward flows on gauge.
+  function optOut(address[] memory _optTokens) public {
+    gauge.optOut(_optTokens);
+  }
+
   /*//////////////////////////////////////////////////////////////
                       EIP-165 LOGIC
   //////////////////////////////////////////////////////////////*/
