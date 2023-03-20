@@ -26,6 +26,7 @@ $EXPORTER create-deployment --named-accounts $NAMED_ACCOUNTS -n arbitrum -c 4216
 $EXPORTER create-deployment --named-accounts $NAMED_ACCOUNTS -n rinkeby -c 4  -o $OUT_DIR/rinkeby-deployment.json
 $EXPORTER create-deployment --named-accounts $NAMED_ACCOUNTS -n goerli -c 5  -o $OUT_DIR/goerli-deployment.json
 $EXPORTER create-deployment --named-accounts $NAMED_ACCOUNTS -n optimism -c 10  -o $OUT_DIR/optimism-deployment.json
+$EXPORTER create-deployment --named-accounts $NAMED_ACCOUNTS -n fantom -c 250  -o $OUT_DIR/fantom-deployment.json
 
 # this merges mainnet namedAccounts into hardhat namedAccounts so that local deploys can use forked addresses
 $EXPORTER merge --inputs $NAMED_ACCOUNTS,$OUT_DIR/hardhat-deployment.json --network mainnet --out $OUT_DIR/hardhat-merge.json -c 1337
@@ -48,8 +49,9 @@ $EXPORTER merge --inputs $NAMED_ACCOUNTS,$OUT_DIR/bsc-deployment.json --network 
 $EXPORTER merge --inputs $NAMED_ACCOUNTS,$OUT_DIR/rinkeby-deployment.json --network rinkeby --out $OUT_DIR/rinkeby-merge.json -c 4
 $EXPORTER merge --inputs $NAMED_ACCOUNTS,$OUT_DIR/goerli-deployment.json --network goerli --out $OUT_DIR/goerli-merge.json -c 5
 $EXPORTER merge --inputs $NAMED_ACCOUNTS,$OUT_DIR/optimism-deployment.json --network optimism --out $OUT_DIR/optimism-merge.json -c 10
+$EXPORTER merge --inputs $NAMED_ACCOUNTS,$OUT_DIR/fantom-deployment.json --network fantom --out $OUT_DIR/fantom-merge.json -c 250
 fi
 
-$EXPORTER combine --inputs $OUT_DIR/hardhat-merge.json,$OUT_DIR/polygon-merge.json,$OUT_DIR/arbitrum-merge.json,$OUT_DIR/mainnet-merge.json,$OUT_DIR/bsc-merge.json,$OUT_DIR/rinkeby-merge.json,$OUT_DIR/optimism-merge.json,$OUT_DIR/goerli-merge.json --out $OUT_DIR/deployments.json
+$EXPORTER combine --inputs $OUT_DIR/hardhat-merge.json,$OUT_DIR/polygon-merge.json,$OUT_DIR/arbitrum-merge.json,$OUT_DIR/mainnet-merge.json,$OUT_DIR/bsc-merge.json,$OUT_DIR/rinkeby-merge.json,$OUT_DIR/optimism-merge.json,$OUT_DIR/fantom-merge.json,$OUT_DIR/goerli-merge.json --out $OUT_DIR/deployments.json
 
 echo "exported deployments to" $PWD/$OUT_DIR/deployments.json

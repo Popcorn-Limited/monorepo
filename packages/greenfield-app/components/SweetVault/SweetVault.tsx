@@ -53,13 +53,13 @@ function SweetVault({ vaultAddress, chainId, searchString, addToTVL, addToDeposi
     addToDeposit: (key: string, value: BigNumber) => void
   }
 ) {
-  const { address } = useAccount();
+  const { address: account } = useAccount();
   const { data: vault } = useToken({ address: vaultAddress as Address, chainId })
   const { data: token } = useVaultToken(vaultAddress, chainId);
-  const { data: balance } = useBalanceOf({ address: vaultAddress as Address, chainId, account: address });
+  const { data: balance } = useBalanceOf({ address: vaultAddress as Address, chainId, account });
   const { data: price } = usePrice({ address: token?.address as Address, chainId });
-  const { data: totalAssets } = useTotalAssets({ address: vaultAddress as Address, chainId, account: address });
-  const { data: totalSupply } = useTotalSupply({ address: vaultAddress as Address, chainId, account: address });
+  const { data: totalAssets } = useTotalAssets({ address: vaultAddress as Address, chainId, account });
+  const { data: totalSupply } = useTotalSupply({ address: vaultAddress as Address, chainId, account });
 
 
   // TODO mobile css
@@ -119,17 +119,17 @@ function SweetVault({ vaultAddress, chainId, searchString, addToTVL, addToDeposi
                         <td>
                           <Title level={2} fontWeight="font-normal" as="span" className="mr-1">
                             <BalanceOf
-                              account={address}
+                              account={account}
                               chainId={chainId}
                               address={token?.address}
-                              render={(data) => <>{formatAndRoundBigNumber(data?.balance?.value, token?.decimals)}</>}
+                              render={(data) => <>{account ? formatAndRoundBigNumber(data?.balance?.value, token?.decimals) : "-"}</>}
                             />
                           </Title>
                           <span className="text-secondaryLight">{token?.symbol || "ETH"}</span>
                         </td>
                         <td>
                           <Title level={2} fontWeight="font-normal" as="span" className="mr-1">
-                            {formatAndRoundBigNumber(balance?.value, vault?.decimals)}
+                            {account ? formatAndRoundBigNumber(balance?.value, vault?.decimals) : "-"}
                           </Title>
                           <span className="text-secondaryLight">{vault?.symbol}</span>
                         </td>

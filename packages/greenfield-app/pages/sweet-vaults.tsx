@@ -14,6 +14,7 @@ import useNetworkFilter from "hooks/useNetworkFilter";
 import { MagnifyingGlassIcon } from "@heroicons/react/24/outline";
 import { useState } from "react";
 import { BigNumber, constants } from "ethers";
+import { useAccount } from "wagmi";
 
 const SUPPORTED_NETWORKS = [ChainId.ALL, ChainId.Hardhat, ChainId.Fantom]
 
@@ -22,6 +23,7 @@ interface Bal {
 }
 
 const SweetVaults: NextPage = () => {
+  const { address: account } = useAccount()
   const [selectedNetworks, selectNetwork] = useNetworkFilter(SUPPORTED_NETWORKS);
   const [searchString, handleSearch] = useState("")
   const [tvl, setTvl] = useState<Bal>({});
@@ -89,7 +91,7 @@ const SweetVaults: NextPage = () => {
               <div className="col-span-5 md:col-span-3">
                 <p className="leading-6 text-base font-light md:font-normal">Deposits</p>
                 <div className="text-3xl font-light md:font-medium">
-                  ${formatAndRoundBigNumber(Object.keys(deposit).reduce((total, key) => total.add(deposit[key]), constants.Zero), 18)}
+                  ${account ? formatAndRoundBigNumber(Object.keys(deposit).reduce((total, key) => total.add(deposit[key]), constants.Zero), 18) : "-"}
                 </div>
               </div>
             </div>
