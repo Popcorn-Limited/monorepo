@@ -124,7 +124,7 @@ contract MultiRewardStaking is ERC4626Upgradeable, OwnedUpgradeable {
     address owner,
     uint256 assets,
     uint256 shares
-  ) internal override accrueRewards(caller, receiver) {
+  ) internal override accrueRewards(owner, receiver) {
     if (caller != owner) _approve(owner, msg.sender, allowance(owner, msg.sender) - shares);
 
     _burn(owner, shares);
@@ -173,6 +173,8 @@ contract MultiRewardStaking is ERC4626Upgradeable, OwnedUpgradeable {
 
       if (rewardAmount == 0) revert ZeroRewards(_rewardTokens[i]);
 
+      accruedRewards[user][_rewardTokens[i]] = 0;
+
       EscrowInfo memory escrowInfo = escrowInfos[_rewardTokens[i]];
 
       if (escrowInfo.escrowPercentage > 0) {
@@ -182,8 +184,6 @@ contract MultiRewardStaking is ERC4626Upgradeable, OwnedUpgradeable {
         _rewardTokens[i].transfer(user, rewardAmount);
         emit RewardsClaimed(user, _rewardTokens[i], rewardAmount, false);
       }
-
-      accruedRewards[user][_rewardTokens[i]] = 0;
     }
   }
 
@@ -226,6 +226,7 @@ contract MultiRewardStaking is ERC4626Upgradeable, OwnedUpgradeable {
   error NotSubmitter(address submitter);
   error RewardsAreDynamic(IERC20 rewardToken);
   error ZeroRewardsSpeed();
+  error InvalidConfig();
 
   /**
    * @notice Adds a new rewardToken which can be earned via staking. Caller must be owner.
@@ -239,6 +240,7 @@ contract MultiRewardStaking is ERC4626Upgradeable, OwnedUpgradeable {
    * @dev The `rewardsEndTimestamp` gets calculated based on `rewardsPerSecond` and `amount`.
    * @dev If `rewardsPerSecond` is 0 the rewards will be paid out instantly. In this case `amount` must be 0.
    * @dev If `useEscrow` is `false` the `escrowDuration`, `escrowPercentage` and `offset` will be ignored.
+   * @dev The max amount of rewardTokens is 20.
    */
   function addRewardToken(
     IERC20 rewardToken,
@@ -249,6 +251,7 @@ contract MultiRewardStaking is ERC4626Upgradeable, OwnedUpgradeable {
     uint32 escrowDuration,
     uint32 offset
   ) external onlyOwner {
+    if (rewardTokens.length == 20) revert InvalidConfig();
     if (asset() == address(rewardToken)) revert RewardTokenCantBeStakingToken();
 
     RewardInfo memory rewards = rewardInfos[rewardToken];
@@ -263,6 +266,7 @@ contract MultiRewardStaking is ERC4626Upgradeable, OwnedUpgradeable {
     rewardTokens.push(rewardToken);
 
     if (useEscrow) {
+      if (escrowPercentage == 0 || escrowPercentage > 1e18) revert InvalidConfig();
       escrowInfos[rewardToken] = EscrowInfo({
         escrowPercentage: escrowPercentage,
         escrowDuration: escrowDuration,
@@ -302,14 +306,11 @@ contract MultiRewardStaking is ERC4626Upgradeable, OwnedUpgradeable {
 
     _accrueRewards(rewardToken, _accrueStatic(rewards));
 
-    uint256 remainder = rewardToken.balanceOf(address(this));
+    uint256 prevEndTime = uint256(rewards.rewardsEndTimestamp);
+    uint256 currTime = block.timestamp;
+    uint256 remainder = prevEndTime <= currTime ? 0 : uint256(rewards.rewardsPerSecond) * (prevEndTime - currTime);
 
-    uint32 prevEndTime = rewards.rewardsEndTimestamp;
-    uint32 rewardsEndTimestamp = _calcRewardsEnd(
-      prevEndTime > block.timestamp ? prevEndTime : block.timestamp.safeCastTo32(),
-      rewardsPerSecond,
-      remainder
-    );
+    uint32 rewardsEndTimestamp = _calcRewardsEnd(currTime.safeCastTo32(), rewardsPerSecond, remainder);
     rewardInfos[rewardToken].rewardsPerSecond = rewardsPerSecond;
     rewardInfos[rewardToken].rewardsEndTimestamp = rewardsEndTimestamp;
   }

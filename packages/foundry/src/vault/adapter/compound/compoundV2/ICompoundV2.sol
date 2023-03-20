@@ -72,4 +72,6 @@ interface IComptroller {
       uint256,
       bool
     );
+
+  function claimComp(address holder) external;  
 }

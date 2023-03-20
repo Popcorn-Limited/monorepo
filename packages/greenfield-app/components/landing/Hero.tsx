@@ -7,7 +7,7 @@ import TotalTVL from "@popcorn/components/lib/Contract/TotalTvl";
 import { useNamedAccounts } from "@popcorn/components/lib/utils";
 import { ChainId } from "@popcorn/utils";
 import { constants } from "ethers";
-import { formatUnits } from "ethers/lib/utils.js";
+import { formatUnits, parseUnits } from "ethers/lib/utils.js";
 import { useAccount } from "wagmi";
 
 export default function Hero(): JSX.Element {
@@ -46,9 +46,8 @@ export default function Hero(): JSX.Element {
             </TotalTVL>
           </div>
           <div
-            className={`col-span-7 md:col-span-12 rounded-lg border border-customLightGray p-5 md:py-7 md:mt-6 ${
-              !!account ? "" : "hidden"
-            }`}
+            className={`col-span-7 md:col-span-12 rounded-lg border border-customLightGray p-5 md:py-7 md:mt-6 ${!!account ? "" : "hidden"
+              }`}
           >
             <div className="flex items-center gap-2 md:gap-0 md:space-x-2 mb-1 md:mb-2">
               <p className="text-primaryLight leading-5 hidden md:block">My Net Worth</p>

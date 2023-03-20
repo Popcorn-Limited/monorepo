@@ -36,9 +36,13 @@ abstract contract AdapterBase is
   using Math for uint256;
 
   uint8 internal _decimals;
-  uint8 internal constant decimalOffset = 9;
+  uint8 public constant decimalOffset = 9;
 
   error StrategySetupFailed();
+
+  constructor() {
+    _disableInitializers();
+  }
 
   /**
    * @notice Initialize a new Adapter.
@@ -77,7 +81,7 @@ abstract contract AdapterBase is
 
     if (_strategy != address(0)) _verifyAndSetupStrategy(_requiredSigs);
 
-    highWaterMark = 1e18;
+    highWaterMark = 1e9;
     lastHarvest = block.timestamp;
   }
 
@@ -100,7 +104,7 @@ abstract contract AdapterBase is
   function deposit(uint256 assets, address receiver) public virtual override returns (uint256) {
     if (assets > maxDeposit(receiver)) revert MaxError(assets);
 
-    uint256 shares = _previewDeposit(assets);
+    uint256 shares = _convertToShares(assets, Math.Rounding.Down);
     _deposit(_msgSender(), receiver, assets, shares);
 
     return shares;
@@ -114,13 +118,11 @@ abstract contract AdapterBase is
   function mint(uint256 shares, address receiver) public virtual override returns (uint256) {
     if (shares > maxMint(receiver)) revert MaxError(shares);
 
-    uint256 assets = _previewMint(shares);
+    uint256 assets = _convertToAssets(shares, Math.Rounding.Up);
     _deposit(_msgSender(), receiver, assets, shares);
 
     return assets;
   }
-
-  event log(uint256 a);
 
   /**
    * @notice Deposit `assets` into the underlying protocol and mints vault shares to `receiver`.
@@ -135,7 +137,6 @@ abstract contract AdapterBase is
     IERC20(asset()).safeTransferFrom(caller, address(this), assets);
 
     _protocolDeposit(assets, shares);
-
     _mint(receiver, shares);
 
     harvest();
@@ -156,7 +157,7 @@ abstract contract AdapterBase is
   ) public virtual override returns (uint256) {
     if (assets > maxWithdraw(owner)) revert MaxError(assets);
 
-    uint256 shares = _previewWithdraw(assets);
+    uint256 shares = _convertToShares(assets, Math.Rounding.Up);
 
     _withdraw(_msgSender(), receiver, owner, assets, shares);
 
@@ -176,7 +177,7 @@ abstract contract AdapterBase is
   ) public virtual override returns (uint256) {
     if (shares > maxRedeem(owner)) revert MaxError(shares);
 
-    uint256 assets = _previewRedeem(shares);
+    uint256 assets = _convertToAssets(shares, Math.Rounding.Down);
     _withdraw(_msgSender(), receiver, owner, assets, shares);
 
     return assets;
@@ -214,8 +215,6 @@ abstract contract AdapterBase is
                             ACCOUNTING LOGIC
     //////////////////////////////////////////////////////////////*/
 
-  uint256 internal underlyingBalance;
-
   /**
    * @notice Total amount of underlying `asset` token managed by adapter.
    * @dev Return assets held by adapter if paused.
@@ -226,40 +225,23 @@ abstract contract AdapterBase is
 
   /**
    * @notice Total amount of underlying `asset` token managed by adapter through the underlying protocol.
-   * @dev This should utilize `underlyingBalance` to return the currently held assets and prevent inflation attacks.
    */
   function _totalAssets() internal view virtual returns (uint256) {}
 
   /**
-   * @notice Total amount of underlying balance owned by the adapter.
-   * @dev This could be the balance of shares held by the adapter or a similar balance call to prevent inflation attacks.
-   * @dev It should NOT return the actual asset amount.
-   */
-  function _underlyingBalance() internal view virtual returns (uint256) {}
-
-  /**
-   * @notice Convert either `assets` or `shares` into underlying shares
+   * @notice Convert either `assets` or `shares` into underlying shares.
    * @dev This is an optional function for underlying protocols that require deposit/withdrawal amounts in their shares.
+   * @dev Returns shares if totalSupply is 0.
    */
   function convertToUnderlyingShares(uint256 assets, uint256 shares) public view virtual returns (uint256) {}
-
-  /// @notice See _previewDeposit natspec
-  function previewDeposit(uint256 assets) public view virtual override returns (uint256) {
-    return _previewDeposit(assets);
-  }
 
   /**
    * @notice Simulate the effects of a deposit at the current block, given current on-chain conditions.
    * @dev Return 0 if paused since no further deposits are allowed.
    * @dev Override this function if the underlying protocol has a unique deposit logic and/or deposit fees.
    */
-  function _previewDeposit(uint256 assets) internal view virtual returns (uint256) {
+  function previewDeposit(uint256 assets) public view virtual override returns (uint256) {
     return paused() ? 0 : _convertToShares(assets, Math.Rounding.Down);
-  }
-
-  /// @notice See _previewMint natspec
-  function previewMint(uint256 shares) public view virtual override returns (uint256) {
-    return _previewMint(shares);
   }
 
   /**
@@ -267,40 +249,10 @@ abstract contract AdapterBase is
    * @dev Return 0 if paused since no further deposits are allowed.
    * @dev Override this function if the underlying protocol has a unique deposit logic and/or deposit fees.
    */
-  function _previewMint(uint256 shares) internal view virtual returns (uint256) {
+  function previewMint(uint256 shares) public view virtual override returns (uint256) {
     return paused() ? 0 : _convertToAssets(shares, Math.Rounding.Up);
   }
 
-  /// @notice See _previewWithdraw natspec
-  function previewWithdraw(uint256 assets) public view virtual override returns (uint256) {
-    return _previewWithdraw(assets);
-  }
-
-  /**
-   * @notice Simulate the effects of a withdraw at the current block, given current on-chain conditions.
-   * @dev Override this function if the underlying protocol has a unique withdrawal logic and/or withdraw fees.
-   */
-  function _previewWithdraw(uint256 assets) internal view virtual returns (uint256) {
-    return _convertToShares(assets, Math.Rounding.Up);
-  }
-
-  /// @notice See _previewRedeem natspec
-  function previewRedeem(uint256 shares) public view virtual override returns (uint256) {
-    return _previewRedeem(shares);
-  }
-
-  /**
-   * @notice Simulate the effects of a redeem at the current block, given current on-chain conditions.
-   * @dev Override this function if the underlying protocol has a unique redeem logic and/or redeem fees.
-   */
-  function _previewRedeem(uint256 shares) internal view virtual returns (uint256) {
-    return _convertToAssets(shares, Math.Rounding.Down);
-  }
-
-  /**
-   * @notice Amount of shares the vault would exchange for given amount of assets, in an ideal scenario.
-   * @dev Added totalAssets() check to prevent division by zero in case of rounding issues. (off-by-one issue)
-   */
   function _convertToShares(uint256 assets, Math.Rounding rounding)
     internal
     view
@@ -355,7 +307,9 @@ abstract contract AdapterBase is
   function harvest() public takeFees {
     if (address(strategy) != address(0) && ((lastHarvest + harvestCooldown) < block.timestamp)) {
       // solhint-disable
-      address(strategy).delegatecall(abi.encodeWithSignature("harvest()"));
+      (bool success, ) = address(strategy).delegatecall(abi.encodeWithSignature("harvest()"));
+      if (!success) revert();
+      lastHarvest = block.timestamp;
     }
 
     emit Harvested();
@@ -420,7 +374,7 @@ abstract contract AdapterBase is
   uint256 public highWaterMark;
 
   // TODO use deterministic fee recipient proxy
-  address FEE_RECIPIENT = address(0x4444);
+  address public constant FEE_RECIPIENT = address(0x4444);
 
   event PerformanceFeeChanged(uint256 oldFee, uint256 newFee);
 
@@ -475,16 +429,12 @@ abstract contract AdapterBase is
   /// @notice Pause Deposits and withdraw all funds from the underlying protocol. Caller must be owner.
   function pause() external onlyOwner {
     _protocolWithdraw(totalAssets(), totalSupply());
-    // Update the underlying balance to prevent inflation attacks
-    underlyingBalance = 0;
     _pause();
   }
 
   /// @notice Unpause Deposits and deposit all funds into the underlying protocol. Caller must be owner.
   function unpause() external onlyOwner {
     _protocolDeposit(totalAssets(), totalSupply());
-    // Update the underlying balance to prevent inflation attacks
-    underlyingBalance = _underlyingBalance();
     _unpause();
   }
 

@@ -321,7 +321,8 @@
   "dai": {
     "addresses": {
       "mainnet": "0x6B175474E89094C44Da98b954EedeAC495271d0F",
-      "rinkeby": "0x6B175474E89094C44Da98b954EedeAC495271d0F"
+      "rinkeby": "0x6B175474E89094C44Da98b954EedeAC495271d0F",
+      "fantom": "0x8D11eC38a3EB5E956B052f67Da8Bdc9bef8Abf3E"
     },
     "metadata": {
       "icons": ["/images/tokens/dai.webp"],
@@ -549,7 +550,6 @@
   },
   "popUsdcLpStaking": {
     "addresses": {
-      "arbitrum": "0xfaAddC93baf78e89DCf37bA67943E1bE8F37Bb8c",
       "bsc": "0xfaAddC93baf78e89DCf37bA67943E1bE8F37Bb8c",
       "polygon": "0xe6f315f4e0dB78185239fFFb368D6d188f6b926C",
       "rinkeby": "0x2B2C9812A5561DC3B0d99bbeEd8690002191Ea4D"
@@ -676,7 +676,8 @@
   },
   "vaultRegistry": {
     "addresses": {
-      "localhost": "0x82c6d3ed4cd33d8ec1e51d0b5cc1d822eaa0c3dc"
+      "localhost": "0x82c6d3ed4cd33d8ec1e51d0b5cc1d822eaa0c3dc",
+      "fantom": "0x2B1Ee9a12CaeC75601D04a4A425359a97000182b"
     },
     "metadata": null
   },
@@ -846,7 +847,8 @@
       "mainnet": "0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48",
       "polygon": "0x2791Bca1f2de4661ED88A30C99A7a9449Aa84174",
       "rinkeby": "0x649d645d1ee2ca89a798b52bbf7b5a3c27093b94",
-      "optimism": "0x7F5c764cBc14f9669B88837ca1490cCa17c31607"
+      "optimism": "0x7F5c764cBc14f9669B88837ca1490cCa17c31607",
+      "fantom": "0x04068DA6C83AFCFA0e13ba15A6696662335D5B75"
     },
     "metadata": {
       "icons": ["/images/tokens/usdc.svg"],
@@ -864,26 +866,6 @@
       "symbol": "USDT",
       "icons": ["/images/tokens/usdt.webp"]
     }
-  },
-  "vaultsRewardsEscrow": {
-    "addresses": {},
-    "metadata": null
-  },
-  "vaultsV1Controller": {
-    "addresses": {},
-    "metadata": null
-  },
-  "vaultsV1Factory": {
-    "addresses": {},
-    "metadata": null
-  },
-  "vaultsV1Zapper": {
-    "addresses": {},
-    "metadata": null
-  },
-  "vaultsV1registry": {
-    "addresses": {},
-    "metadata": null
   },
   "voting": {
     "addresses": {

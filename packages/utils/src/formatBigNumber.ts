@@ -20,12 +20,31 @@ export function formatAndRoundBigNumber(value: BigNumber, decimals: number): str
       })}k`;
     }
 
-    return parseFloat(formatedValue.toFixed(4)).toLocaleString(undefined, {
-      maximumFractionDigits: formatedValue > 1 ? 2 : 4,
-      // If number < 1, max fractional units are 4, else 2
+    return parseFloat(formatedValue.toFixed(6)).toLocaleString(undefined, {
+      maximumFractionDigits: formatedValue > 1 ? 2 : 6,
+      // If number < 1, max fractional units are 6, else 2
     });
   }
   return `Invalid val: ${value}`;
+}
+
+export function formatNumber(value: number): string {
+  if (value > MILLION) {
+    return `${(value / MILLION).toLocaleString(undefined, {
+      maximumFractionDigits: 2,
+    })}M`;
+  }
+
+  if (value > THOUSAND) {
+    return `${(value / THOUSAND).toLocaleString(undefined, {
+      maximumFractionDigits: 2,
+    })}k`;
+  }
+
+  return parseFloat(value.toFixed(6)).toLocaleString(undefined, {
+    maximumFractionDigits: value > 1 ? 2 : 6,
+    // If number < 1, max fractional units are 6, else 2
+  });
 }
 
 export function numberToBigNumber(value: number | string, decimals: number): BigNumber {

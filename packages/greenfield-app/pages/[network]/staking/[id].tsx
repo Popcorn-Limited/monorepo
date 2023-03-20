@@ -1,4 +1,4 @@
-import { ChevronLeftIcon } from "@heroicons/react/solid";
+import { ChevronLeftIcon } from "@heroicons/react/24/outline";
 import Link from "next/link";
 import { useRouter } from "next/router";
 
@@ -103,7 +103,7 @@ export default function Index(): JSX.Element {
                   />
                 </div>
                 <AssetInputWithAction
-                  assetAddress={stakingToken}
+                  assetAddress={isDeposit ? stakingToken : stakingAddress}
                   target={stakingAddress}
                   chainId={chainId}
                   action={{

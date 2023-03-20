@@ -21,5 +21,6 @@ export const useAllowance: Pop.Hook<BigNumberWithFormatted> = ({ address: target
         formatted: formatAndRoundBigNumber(data as BigNumber, 18),
       };
     },
+    watch: true
   }) as Pop.HookResult<BigNumberWithFormatted>;
 };

@@ -23,7 +23,6 @@ export async function resolve_apy({
   const _resolver = resolver || metadata?.apyResolver;
 
   let apy;
-
   if (_resolver && typeof ApyResolvers[_resolver] === "function") {
     apy = await ApyResolvers[_resolver](address, Number(chainId), rpc);
   } else {

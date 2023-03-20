@@ -29,5 +29,6 @@ export const useBalanceOf: Pop.Hook<BigNumberWithFormatted> = ({ chainId, addres
         formatted: formatAndRoundBigNumber(data as BigNumber, 18),
       };
     },
+    watch: true
   }) as Pop.HookResult<BigNumberWithFormatted>;
 };

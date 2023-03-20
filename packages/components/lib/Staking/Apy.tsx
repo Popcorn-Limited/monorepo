@@ -7,6 +7,7 @@ const eth_call = (Component: Pop.FC<BigNumberWithFormatted>) =>
     ...props
   }: Pop.BaseContractProps & {
     render?: (props: { data?: BigNumberWithFormatted; status }) => React.ReactElement<any>;
+    resolver?: string;
   }) {
     const { data, status } = useApy({ ...props });
     if (props.render) {

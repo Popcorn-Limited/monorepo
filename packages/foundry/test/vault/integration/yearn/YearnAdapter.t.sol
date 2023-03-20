@@ -28,35 +28,31 @@ contract YearnAdapterTest is AbstractAdapterTest {
   }
 
   function _setUpTest(bytes memory testConfig) internal {
-    createAdapter();
-
     address _asset = abi.decode(testConfig, (address));
 
-    setUpBaseTest(IERC20(_asset), adapter, 0x50c1a2eA0a861A967D9d0FFE2AE4012c2E053804, 10, "Yearn ", false);
+    setUpBaseTest(IERC20(_asset), address(new YearnAdapter()), 0x50c1a2eA0a861A967D9d0FFE2AE4012c2E053804, 10, "Yearn ", false);
 
     yearnVault = VaultAPI(IYearnRegistry(externalRegistry).latestVault(_asset));
-
+    
     vm.label(address(yearnVault), "yearnVault");
     vm.label(address(asset), "asset");
     vm.label(address(this), "test");
 
     adapter.initialize(abi.encode(asset, address(this), address(0), 0, sigs, ""), externalRegistry, "");
+
+    defaultAmount = 10**IERC20Metadata(address(asset)).decimals();
+    minFuzz = defaultAmount * 10_000;
+    raise = defaultAmount * 100_000_000;
+    maxAssets = defaultAmount * 1_000_000;
+    maxShares = maxAssets / 2;
   }
 
   /*//////////////////////////////////////////////////////////////
                           HELPER
     //////////////////////////////////////////////////////////////*/
 
-  function createAdapter() public override {
-    adapter = IAdapter(address(new YearnAdapter()));
-  }
-
   function increasePricePerShare(uint256 amount) public override {
-    deal(
-      address(asset),
-      address(yearnVault),
-      asset.balanceOf(address(0x336600990ae039b4acEcE630667871AeDEa46E5E)) + amount
-    );
+    deal(address(asset), address(yearnVault), asset.balanceOf(address(yearnVault)) + amount);
   }
 
   function iouBalance() public view override returns (uint256) {
@@ -78,13 +74,10 @@ contract YearnAdapterTest is AbstractAdapterTest {
       _delta_,
       string.concat("totalSupply converted != totalAssets", baseTestId)
     );
+
     assertApproxEqAbs(
       adapter.totalAssets(),
-      iouBalance().mulDiv(
-        yearnVault.pricePerShare(),
-        10**IERC20Metadata(address(adapter)).decimals(),
-        Math.Rounding.Up
-      ),
+      iouBalance().mulDiv(yearnVault.pricePerShare(), 10**IERC20Metadata(address(asset)).decimals(), Math.Rounding.Up),
       _delta_,
       string.concat("totalAssets != yearn assets", baseTestId)
     );
@@ -116,25 +109,69 @@ contract YearnAdapterTest is AbstractAdapterTest {
 
   // NOTE - The yearn adapter suffers often from an off-by-one error which "steals" 1 wei from the user
   function test__RT_deposit_withdraw() public override {
-    _mintFor(defaultAmount, bob);
+    _mintFor(minFuzz, bob);
 
     vm.startPrank(bob);
-    uint256 shares1 = adapter.deposit(defaultAmount, bob);
-    uint256 shares2 = adapter.withdraw(defaultAmount - 1, bob, bob);
+    uint256 shares1 = adapter.deposit(minFuzz, bob);
+    uint256 shares2 = adapter.withdraw(adapter.maxWithdraw(bob), bob, bob);
     vm.stopPrank();
 
-    assertGe(shares2, shares1, testId);
+    // We compare assets here with maxWithdraw since the shares of withdraw will always be lower than `compoundDefaultAmount`
+    // This tests the same assumption though. As long as you can withdraw less or equal assets to the input amount you cant round trip
+    assertGe(minFuzz, adapter.maxWithdraw(bob), testId);
   }
 
   // NOTE - The yearn adapter suffers often from an off-by-one error which "steals" 1 wei from the user
   function test__RT_mint_withdraw() public override {
-    _mintFor(adapter.previewMint(defaultAmount), bob);
+    _mintFor(adapter.previewMint(minFuzz), bob);
 
     vm.startPrank(bob);
-    uint256 assets = adapter.mint(defaultAmount, bob);
-    uint256 shares = adapter.withdraw(assets - 1, bob, bob);
+    uint256 assets = adapter.mint(minFuzz, bob);
+    uint256 shares = adapter.withdraw(adapter.maxWithdraw(bob), bob, bob);
+    vm.stopPrank();
+    // We compare assets here with maxWithdraw since the shares of withdraw will always be lower than `compoundDefaultAmount`
+    // This tests the same assumption though. As long as you can withdraw less or equal assets to the input amount you cant round trip
+    assertGe(adapter.previewMint(minFuzz), adapter.maxWithdraw(bob), testId);
+  }
+
+  function test__RT_mint_redeem() public override {
+    _mintFor(adapter.previewMint(minFuzz), bob);
+
+    vm.startPrank(bob);
+    uint256 assets1 = adapter.mint(minFuzz, bob);
+    uint256 assets2 = adapter.redeem(minFuzz, bob, bob);
     vm.stopPrank();
 
-    assertGe(shares, defaultAmount, testId);
+    assertLe(assets2, assets1, testId);
+  }
+
+  /*//////////////////////////////////////////////////////////////
+                              PAUSE
+    //////////////////////////////////////////////////////////////*/
+
+  function test__unpause() public override {
+    _mintFor(minFuzz * 3, bob);
+
+    vm.prank(bob);
+    adapter.deposit(minFuzz, bob);
+
+    uint256 oldTotalAssets = adapter.totalAssets();
+    uint256 oldTotalSupply = adapter.totalSupply();
+    uint256 oldIouBalance = iouBalance();
+
+    adapter.pause();
+    adapter.unpause();
+
+    // We simply deposit back into the external protocol
+    // TotalSupply and Assets dont change
+    assertApproxEqAbs(oldTotalAssets, adapter.totalAssets(), _delta_, "totalAssets");
+    assertApproxEqAbs(oldTotalSupply, adapter.totalSupply(), _delta_, "totalSupply");
+    assertApproxEqAbs(asset.balanceOf(address(adapter)), 0, _delta_, "asset balance");
+    assertApproxEqAbs(iouBalance(), oldIouBalance, _delta_, "iou balance");
+
+    // Deposit and mint dont revert
+    vm.startPrank(bob);
+    adapter.deposit(minFuzz, bob);
+    adapter.mint(minFuzz, bob);
   }
 }
