@@ -3,11 +3,11 @@
 
 pragma solidity ^0.8.15;
 
-import { IUniswapRouterV2 } from "../../../../interfaces/external/uni/IUniswapRouterV2.sol";
+import { ICurveMetapool } from "../../../../interfaces/external/curve/ICurveMetapool.sol";
 import { IERC20 } from "openzeppelin-contracts/token/ERC20/IERC20.sol";
 import { SafeERC20 } from "openzeppelin-contracts/token/ERC20/utils/SafeERC20.sol";
 
-contract UniV2Pool {
+contract CurveMetapool {
   using SafeERC20 for IERC20;
 
   function addLiquidity(
@@ -20,16 +20,7 @@ contract UniV2Pool {
     IERC20(underlyingTokens[0]).transferFrom(msg.sender, address(this), bal0);
     IERC20(underlyingTokens[1]).transferFrom(msg.sender, address(this), bal1);
 
-    IUniswapRouterV2(router).addLiquidity(
-      underlyingTokens[0],
-      underlyingTokens[1],
-      bal0,
-      bal1,
-      0,
-      0,
-      address(this),
-      block.timestamp
-    );
+    ICurveMetapool(router).addLiquidity([bal0, 0], 0);
 
     uint256 bal = IERC20(lpToken).balanceOf(address(this));
     IERC20(lpToken).safeTransfer(msg.sender, bal);
