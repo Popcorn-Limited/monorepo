@@ -14,7 +14,7 @@ export const useDeployVault = () => {
   const [fees,] = useAtom(feeAtom);
 
   const { config, error: configError } = usePrepareContractWrite({
-    address: "0xd855ce0c298537ad5b5b96060cf90e663696bbf6",
+    address: "0xee1eb820beeced56657ba74fa8d70748d7a6756c",
     abi,
     functionName: "deployVault",
     chainId: 1337,

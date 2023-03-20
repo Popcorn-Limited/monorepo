@@ -18,17 +18,14 @@ function AdapterSelection() {
     if (protocol) {
       const filtered = adapters.filter((adapter) => adapter.protocol === protocol.name);
       setOptions(filtered);
-      if (filtered.length == 1) {
-        setAdapter(filtered[0]);
-      } else {
-        setAdapter(RESET);
-      }
+      setAdapter(filtered[0]);
     }
   }, [protocol])
 
 
   return (
     <Section title="Adapter Selection">
+      <p>Options: {options.length}</p>
       <Selector
         selected={adapter}
         onSelect={setAdapter}

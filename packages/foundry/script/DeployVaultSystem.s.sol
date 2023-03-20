@@ -160,7 +160,7 @@ contract DeployVaultSystem is Script {
     // beefyBooster = 0xAe3F0C61F3Dc48767ccCeF3aD50b29437BE4b1a4
     setPermission(0xAe3F0C61F3Dc48767ccCeF3aD50b29437BE4b1a4, true, false);
 
-    // IERC20(0x06325440D014e39736583c165C2963BA99fAf14E).approve(address(controller), 10e18);
+    IERC20(0x06325440D014e39736583c165C2963BA99fAf14E).approve(address(controller), 10e18);
 
     // crvSthEth/Eth = 0x06325440D014e39736583c165C2963BA99fAf14E
     // deploy stEth/eth beefy vault

@@ -2,7 +2,7 @@ import { atomWithStorage } from "jotai/utils";
 import protocols from "./constants/protocols.json";
 
 export type Protocol = {
-  chainId: string;
+  chains: number[];
   name: string;
   logoURI: string;
 };

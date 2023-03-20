@@ -12,6 +12,7 @@ import { adapterAtom, adapterConfigAtom, checkInitParamValidity } from "@/lib/ad
 import { feeAtom } from "@/lib/fees";
 import { constants, utils } from "ethers";
 import { formatUnits } from "ethers/lib/utils.js";
+import NetworkSelection from "./sections/NetworkSelection";
 
 function Dashboard() {
   const router = useRouter();
@@ -36,6 +37,7 @@ function Dashboard() {
         <span>Setup New Vault</span>
       </h1>
       <div className="mb-12">
+        <NetworkSelection/>
         <ProtocolSelection />
         <AssetSelection />
         <AdapterSelection />
