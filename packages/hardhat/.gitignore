@@ -1,6 +1,5 @@
 .env
 cache/
-typechain
 coverage/
 coverage.json
 deployments/
