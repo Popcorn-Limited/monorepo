@@ -37,7 +37,7 @@ function Dashboard() {
         <span>Setup New Vault</span>
       </h1>
       <div className="mb-12">
-        <NetworkSelection/>
+        <NetworkSelection />
         <ProtocolSelection />
         <AssetSelection />
         <AdapterSelection />
@@ -54,6 +54,11 @@ function Dashboard() {
           <span>Preview Vault</span>
           <IoMdArrowForward className="text-[150%] group-hover:translate-x-px" />
         </button>
+        <div>
+          <p>ValidFees: {String(validFees)}</p>
+          <p>ValidAdapter: {String(validAdapter)}</p>
+          <p>ValidAdapterConfig: {String(validAdapterConfig)}</p>
+        </div>
       </div>
     </section>
   );
