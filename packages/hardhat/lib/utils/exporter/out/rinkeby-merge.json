@@ -1,0 +1,314 @@
+{
+  "chainId": "4",
+  "name": "rinkeby",
+  "contracts": {
+    "aclRegistry": {
+      "abi": null,
+      "address": "0x6eB155e648dc865a2687E81CFb73fff5dEbb0b56",
+      "metadata": {
+        "contractName": "ACLRegistry"
+      }
+    },
+    "balancerLBPFactory": {
+      "abi": null,
+      "address": "0xdcdbf71A870cc60C6F9B621E28a7D3Ffd6Dd4965",
+      "metadata": null
+    },
+    "balancerVault": {
+      "abi": null,
+      "address": "0xBA12222222228d8Ba445958a75a0704d566BF2C8",
+      "metadata": null
+    },
+    "butter": {
+      "abi": null,
+      "address": "0x109d2034e97eC88f50BEeBC778b5A5650F98c124",
+      "metadata": {
+        "apyResolver": "set_token",
+        "icons": [
+          "/images/icons/BTR.svg"
+        ],
+        "name": "Butter (V2)",
+        "priceResolver": "set_token",
+        "symbol": "BTR"
+      }
+    },
+    "butterBatch": {
+      "abi": null,
+      "address": "0x06b90E97Cf4b64f338d1D2106329336897bb16F3",
+      "metadata": {
+        "contractName": "ButterBatchProcessing"
+      }
+    },
+    "butterBatchZapper": {
+      "abi": null,
+      "address": "0x465aAB0388e89f52eD12Ec5C14571ae75684E626",
+      "metadata": {
+        "contractName": "ButterBatchZapper"
+      }
+    },
+    "contractRegistry": {
+      "abi": null,
+      "address": "0xe8af04AD759Ad790Aa5592f587D3cFB3ecC6A9dA",
+      "metadata": {
+        "contractName": "ContractRegistry"
+      }
+    },
+    "crvAlusd": {
+      "abi": null,
+      "address": "0x43b4FdFD4Ff969587185cDB6f0BD875c5Fc83f8c",
+      "metadata": {
+        "name": "crvAlusd"
+      }
+    },
+    "crvAlusdMetapool": {
+      "abi": null,
+      "address": "0x43b4FdFD4Ff969587185cDB6f0BD875c5Fc83f8c",
+      "metadata": null
+    },
+    "crvFrax": {
+      "abi": null,
+      "address": "0xd632f22692FaC7611d2AA1C0D552930D43CAEd3B",
+      "metadata": {
+        "name": "crvFrax"
+      }
+    },
+    "crvFraxMetapool": {
+      "abi": null,
+      "address": "0xd632f22692FaC7611d2AA1C0D552930D43CAEd3B",
+      "metadata": null
+    },
+    "crvMusd": {
+      "abi": null,
+      "address": "0x1AEf73d49Dedc4b1778d0706583995958Dc862e6",
+      "metadata": {
+        "name": "crvMusd"
+      }
+    },
+    "crvMusdMetapool": {
+      "abi": null,
+      "address": "0x8474DdbE98F5aA3179B3B3F5942D724aFcdec9f6",
+      "metadata": null
+    },
+    "crvRai": {
+      "abi": null,
+      "address": "0x6BA5b4e438FA0aAf7C1bD179285aF65d13bD3D90",
+      "metadata": {
+        "name": "crvRai"
+      }
+    },
+    "crvRaiMetapool": {
+      "abi": null,
+      "address": "0x618788357D0EBd8A37e763ADab3bc575D54c2C7d",
+      "metadata": null
+    },
+    "curveAddressProvider": {
+      "abi": null,
+      "address": "0x0000000022D53366457F9d5E68Ec105046FC4383",
+      "metadata": null
+    },
+    "curveFactoryMetapoolDepositZap": {
+      "abi": null,
+      "address": "0xA79828DF1850E8a3A3064576f380D90aECDD3359",
+      "metadata": null
+    },
+    "dai": {
+      "abi": null,
+      "address": "0x6B175474E89094C44Da98b954EedeAC495271d0F",
+      "metadata": {
+        "icons": [
+          "/images/tokens/dai.webp"
+        ],
+        "name": "DAI",
+        "symbol": "DAI"
+      }
+    },
+    "daoAgent": {
+      "abi": null,
+      "address": "0x6d8bd5d37461788182131bae19d03ff2b3c0687c",
+      "metadata": null
+    },
+    "daoTreasury": {
+      "abi": null,
+      "address": "0x6d8bd5d37461788182131bae19d03ff2b3c0687c",
+      "metadata": null
+    },
+    "merkleOrchard": {
+      "abi": null,
+      "address": "0x0F3e0c4218b7b0108a3643cFe9D3ec0d4F57c54e",
+      "metadata": null
+    },
+    "pop": {
+      "abi": null,
+      "address": "0x2F5Ff054FEa12dB200E374EF43bDD92734453E06",
+      "metadata": {
+        "buyLinkEthereum": "https://app.uniswap.org/#/swap?inputCurrency=0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48&outputCurrency=0xD0Cd466b34A24fcB2f87676278AF2005Ca8A78c4&chain=mainnet",
+        "buyLinkPolygon": "https://app.uniswap.org/#/swap?inputCurrency=0x2791Bca1f2de4661ED88A30C99A7a9449Aa84174&outputCurrency=0xc5b57e9a1e7914fda753a88f24e5703e617ee50c&chain=polygon",
+        "icons": [
+          "/images/icons/POP.svg"
+        ],
+        "name": "Popcorn",
+        "priceResolver": "pop"
+      }
+    },
+    "popStaking": {
+      "abi": null,
+      "address": "0xbd085541Cf339a7B3a5112CeA9440542a02B29E5",
+      "metadata": {
+        "apyResolver": "convex",
+        "balanceOfAdapter": {
+          "functionAbi": [
+            "function lockedBalanceOf(address) external view returns (uint256)"
+          ],
+          "functionName": "lockedBalanceOf(address)"
+        },
+        "contractName": "PopLocker",
+        "icons": [
+          "/images/icons/POP.svg"
+        ],
+        "isERC20": false,
+        "name": "Staked POP",
+        "priceResolver": "staking",
+        "symbol": "vlPOP"
+      }
+    },
+    "popUsdcLp": {
+      "abi": null,
+      "address": "0xb4302a1F94685af64b93bb621a8918Dd7ad74440",
+      "metadata": {
+        "buyLinkEthereum": "https://beta.arrakis.finance/#/vaults/0xBBA11b41407dF8793A89b44ee4b50AfAD4508555/add",
+        "buyLinkPolygon": "https://beta.arrakis.finance/#/vaults/0x6dE0500211bc3140409B345Fa1a5289cb77Af1e4/add",
+        "icons": [
+          "/images/tokens/usdc.svg",
+          "/images/icons/POP.svg"
+        ],
+        "name": "USDC/POP LP",
+        "priceResolver": "arrakis"
+      }
+    },
+    "popUsdcLpStaking": {
+      "abi": null,
+      "address": "0x2B2C9812A5561DC3B0d99bbeEd8690002191Ea4D",
+      "metadata": {
+        "apyResolver": "synthetix",
+        "claimableTokenAdapter": {
+          "tokenFunction": "rewardsToken",
+          "tokenFunctionAbi": [
+            "function rewardsToken() external view returns (address)"
+          ],
+          "type": "synthetix"
+        },
+        "icons": [
+          "/images/tokens/usdc.svg",
+          "/images/icons/POP.svg"
+        ],
+        "name": "USDC/POP LP",
+        "priceResolver": "staking",
+        "symbol": "stLP"
+      }
+    },
+    "rewardsDistribution": {
+      "abi": null,
+      "address": "",
+      "metadata": null
+    },
+    "rewardsEscrow": {
+      "abi": null,
+      "address": "0xdC7EF4A3ce57484fFAA8A61797E04A385Fdb7ACa",
+      "metadata": {
+        "balanceResolver": "escrowBalance",
+        "claimableTokenAdapter": {
+          "tokenFunction": "POP",
+          "tokenFunctionAbi": [
+            "function POP() external view returns (address)"
+          ],
+          "type": "escrow"
+        },
+        "isERC20": false,
+        "priceResolver": "pop",
+        "symbol": "POP",
+        "tvlResolver": {
+          "tokenFunction": "POP",
+          "tokenFunctionAbi": [
+            "function POP() external view returns (address)"
+          ],
+          "type": "escrow"
+        }
+      }
+    },
+    "setBasicIssuanceModule": {
+      "abi": null,
+      "address": "0xd8EF3cACe8b4907117a45B0b125c68560532F94D",
+      "metadata": null
+    },
+    "set_tokenCreator": {
+      "abi": null,
+      "address": "0xeF72D3278dC3Eba6Dc2614965308d1435FFd748a",
+      "metadata": null
+    },
+    "threeCrv": {
+      "abi": null,
+      "address": "0x6c3F90f043a72FA612cbac8115EE7e52BDe6E490",
+      "metadata": {
+        "icons": [
+          "/images/icons/3crv_icon.png"
+        ],
+        "name": "threeCrv",
+        "symbol": "3CRV"
+      }
+    },
+    "threePool": {
+      "abi": null,
+      "address": "0xbEbc44782C7dB0a1A60Cb6fe97d0b483032FF1C7",
+      "metadata": null
+    },
+    "usdc": {
+      "abi": null,
+      "address": "0x649d645d1ee2ca89a798b52bbf7b5a3c27093b94",
+      "metadata": {
+        "icons": [
+          "/images/tokens/usdc.svg"
+        ],
+        "name": "USDC",
+        "priceResolver": "defi_llama",
+        "symbol": "USDC"
+      }
+    },
+    "voting": {
+      "abi": null,
+      "address": "",
+      "metadata": null
+    },
+    "yAlusd": {
+      "abi": null,
+      "address": "0xA74d4B67b3368E83797a35382AFB776bAAE4F5C8",
+      "metadata": {
+        "apyResolver": "yearn",
+        "name": "yAlusd"
+      }
+    },
+    "yFrax": {
+      "abi": null,
+      "address": "0xB4AdA607B9d6b2c9Ee07A275e9616B84AC560139",
+      "metadata": {
+        "apyResolver": "yearn",
+        "name": "yFrax"
+      }
+    },
+    "yMusd": {
+      "abi": null,
+      "address": "0x8cc94ccd0f3841a468184aCA3Cc478D2148E1757",
+      "metadata": {
+        "apyResolver": "yearn",
+        "name": "yMusd"
+      }
+    },
+    "yRai": {
+      "abi": null,
+      "address": "0x2D5D4869381C4Fce34789BC1D38aCCe747E295AE",
+      "metadata": {
+        "apyResolver": "yearn",
+        "name": "yRai"
+      }
+    }
+  }
+}
