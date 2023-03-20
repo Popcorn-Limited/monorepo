@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
-    "build": "yarn wagmi generate && next build",
+    "build": "next build",
     "start": "next start",
     "lint": "next lint",
     "prettify": "yarn lint-staged --allow-empty",
