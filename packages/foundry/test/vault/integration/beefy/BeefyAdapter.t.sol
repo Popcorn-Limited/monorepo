@@ -21,9 +21,6 @@ contract BeefyAdapterTest is AbstractAdapterTest {
   IPermissionRegistry permissionRegistry;
 
   function setUp() public {
-    uint256 forkId = vm.createSelectFork(vm.rpcUrl("polygon"));
-    vm.selectFork(forkId);
-
     testConfigStorage = ITestConfigStorage(address(new BeefyTestConfigStorage()));
 
     _setUpTest(testConfigStorage.getTestConfig(0));
@@ -34,7 +31,14 @@ contract BeefyAdapterTest is AbstractAdapterTest {
   }
 
   function _setUpTest(bytes memory testConfig) internal {
-    (address _beefyVault, address _beefyBooster) = abi.decode(testConfig, (address, address));
+    (address _beefyVault, address _beefyBooster, string memory _network) = abi.decode(
+      testConfig,
+      (address, address, string)
+    );
+
+    uint256 forkId = vm.createSelectFork(vm.rpcUrl(_network));
+    vm.selectFork(forkId);
+
     beefyVault = IBeefyVault(_beefyVault);
     beefyBooster = IBeefyBooster(_beefyBooster);
     beefyBalanceCheck = IBeefyBalanceCheck(_beefyBooster == address(0) ? _beefyVault : _beefyBooster);
@@ -233,6 +237,7 @@ contract BeefyAdapterTest is AbstractAdapterTest {
     //////////////////////////////////////////////////////////////*/
 
   function test__claim() public override {
+    testConfigStorage = ITestConfigStorage(address(new BeefyTestConfigStorage()));
     strategy = IStrategy(address(new MockStrategyClaimer()));
     createAdapter();
     adapter.initialize(

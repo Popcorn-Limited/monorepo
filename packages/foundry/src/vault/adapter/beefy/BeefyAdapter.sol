@@ -106,7 +106,7 @@ contract BeefyAdapter is AdapterBase, WithRewards {
   function previewWithdraw(uint256 assets) public view override returns (uint256) {
     IBeefyStrat strat = IBeefyStrat(beefyVault.strategy());
     uint256 beefyFee = strat.withdrawalFee();
-    if (beefyFee > 0) assets -= assets.mulDiv(beefyFee, BPS_DENOMINATOR, Math.Rounding.Up);
+    if (beefyFee > 0) assets += assets.mulDiv(beefyFee, BPS_DENOMINATOR, Math.Rounding.Up);
 
     return _convertToShares(assets, Math.Rounding.Up);
   }
