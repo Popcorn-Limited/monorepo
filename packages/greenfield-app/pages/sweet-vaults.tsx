@@ -102,7 +102,6 @@ const SweetVaults: NextPage = () => {
             </div>
           </div>
         </section>
-
         <section className="mt-8 mb-10">
           <div className="w-full md:w-96 flex px-5 py-1 items-center rounded-lg border border-customLightGray">
             <MagnifyingGlassIcon className="w-8 h-8 text-gray-400" />
@@ -115,7 +114,6 @@ const SweetVaults: NextPage = () => {
             />
           </div>
         </section>
-
         <section className="flex flex-col gap-8">
           {allVaults.map((vault) => {
             return <SweetVault
@@ -128,7 +126,6 @@ const SweetVaults: NextPage = () => {
             />;
           })}
         </section>
-
         <figure className="overflow-hidden rounded-xl mt-24">
           <Image src={asset_bg} alt="" placeholder="blur" />
         </figure>
