@@ -9,3 +9,4 @@ lib/utils/exporter/target/
 docgen/SUMMARY.md
 docgen/.gitbook.yaml
 broadcast/
+typechain
