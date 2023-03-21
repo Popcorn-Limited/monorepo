@@ -109,64 +109,64 @@ function SweetVault({ vaultAddress, chainId, searchString, addToTVL, addToDeposi
                 <Fragment>
                   <nav className="flex items-center justify-between mb-8 select-none">
                     <AssetWithName vault={vault} token={token?.address} chainId={chainId} protocol={vaultMetadata?.metadata.protocol.name} />
-                    <AnimatedChevron className=" hidden md:flex" />
+                    <AnimatedChevron className="hidden md:flex" />
                   </nav>
                   <div className="flex flex-row flex-wrap items-center mt-0 md:mt-6 justify-between">
                     <div className="w-1/2 md:w-1/4 mt-6 md:mt-0">
                       <p className="text-primaryLight font-normal">Your Wallet</p>
                       <p className="text-primary text-2xl md:text-3xl leading-6 md:leading-8">
-                      <Title level={2} fontWeight="font-normal" as="span" className="mr-1 text-primary">
-                            <BalanceOf
-                              account={account}
-                              chainId={chainId}
-                              address={token?.address}
-                              render={(data) => <>{account ? formatAndRoundBigNumber(data?.balance?.value, token?.decimals) : "-"}</>}
-                            />
-                          </Title>
-                          <span className="text-secondaryLight text-lg md:text-2xl flex md:inline">{token?.symbol || "ETH"}</span>
+                        <Title level={2} fontWeight="font-normal" as="span" className="mr-1 text-primary">
+                          <BalanceOf
+                            account={account}
+                            chainId={chainId}
+                            address={token?.address}
+                            render={(data) => <>{account ? formatAndRoundBigNumber(data?.balance?.value, token?.decimals) : "-"}</>}
+                          />
+                        </Title>
+                        <span className="text-secondaryLight text-lg md:text-2xl flex md:inline">{token?.symbol || "ETH"}</span>
                       </p>
                     </div>
                     <div className="w-1/2 md:w-1/4 mt-6 md:mt-0">
                       <p className="text-primaryLight font-normal">Your Deposit</p>
                       <div className="text-primary text-2xl md:text-3xl leading-6 md:leading-8">
-                      <Title level={2} fontWeight="font-normal" as="span" className="mr-1 text-primary">
-                            {account ? formatAndRoundBigNumber(balance?.value, vault?.decimals) : "-"}
-                          </Title>
-                          <span className="text-secondaryLight text-lg md:text-2xl flex md:inline">{vault?.symbol}</span>
+                        <Title level={2} fontWeight="font-normal" as="span" className="mr-1 text-primary">
+                          {account ? formatAndRoundBigNumber(balance?.value, vault?.decimals) : "-"}
+                        </Title>
+                        <span className="text-secondaryLight text-lg md:text-2xl flex md:inline">{vault?.symbol}</span>
                       </div>
                     </div>
                     <div className="w-1/2 md:w-1/4 mt-6 md:mt-0">
                       <p className="font-normal text-primaryLight">vAPR</p>
                       <Title as="td" level={2} fontWeight="font-normal">
-                          <Apy
-                            address={vaultAddress}
-                            chainId={chainId}
-                            resolver={VAULT_APY_RESOLVER[vaultMetadata?.metadata.protocol.name]}
-                            render={(apy) => {
-                              return (
-                                <Apy
-                                  address={vaultAddress}
-                                  render={(stakingApy) => (
-                                    <section className="flex items-center gap-1 text-primary">
-                                      {formatAndRoundBigNumber(
-                                        HUNDRED.mul(apy?.data?.value.add(stakingApy?.data?.value || 0) || constants.Zero),
-                                        18,
-                                      )} %
-                                    </section>
-                                  )}
-                                  chainId={chainId}
-                                />
-                              );
-                            }}
-                          />
-                        </Title>
+                        <Apy
+                          address={vaultAddress}
+                          chainId={chainId}
+                          resolver={VAULT_APY_RESOLVER[vaultMetadata?.metadata.protocol.name]}
+                          render={(apy) => {
+                            return (
+                              <Apy
+                                address={vaultAddress}
+                                render={(stakingApy) => (
+                                  <section className="flex items-center gap-1 text-primary">
+                                    {formatAndRoundBigNumber(
+                                      HUNDRED.mul(apy?.data?.value.add(stakingApy?.data?.value || 0) || constants.Zero),
+                                      18,
+                                    )} %
+                                  </section>
+                                )}
+                                chainId={chainId}
+                              />
+                            );
+                          }}
+                        />
+                      </Title>
                     </div>
 
                     <div className="w-1/2 md:w-1/4 mt-6 md:mt-0">
-                      <p className="text-primaryLight leading-6 text-primaryLight">TVL</p>
+                      <p className="leading-6 text-primaryLight">TVL</p>
                       <Title as="td" level={2} fontWeight="font-normal" className="text-primary">
-                          $ {formatNumber((Number(price?.value?.toString()) * Number(totalAssets?.value?.toString())) / (10 ** (token?.decimals * 2)))}
-                        </Title>
+                        $ {formatNumber((Number(price?.value?.toString()) * Number(totalAssets?.value?.toString())) / (10 ** (token?.decimals * 2)))}
+                      </Title>
                     </div>
 
                   </div>
@@ -180,34 +180,34 @@ function SweetVault({ vaultAddress, chainId, searchString, addToTVL, addToDeposi
                   </section>
                 </div>
                 <div className="md:hidden flex w-full">
-                <Accordion
-                initiallyOpen={false}
-                containerClassName="w-full bg-white p-6"
-                header={
-                  <Fragment>
-                    <div className="w-full flex flex-row justify-between">
-                      <p className="font-normal text-customBrown">Learn</p>
-                      <div className="flex self-center">
-                        <RightArrowIcon color="827D69" />
+                  <Accordion
+                    initiallyOpen={false}
+                    containerClassName="w-full bg-white p-6"
+                    header={
+                      <Fragment>
+                        <div className="w-full flex flex-row justify-between">
+                          <p className="font-normal text-customBrown">Learn</p>
+                          <div className="flex self-center">
+                            <RightArrowIcon color="827D69" />
+                          </div>
+                        </div>
+                      </Fragment>
+                    }>
+                    <section className="bg-white rounded-lg w-full md:w-8/12 mt-6">
+                      <div className="flex flex-row items-center">
+                        <TokenIcon token={token?.address} chainId={chainId} imageSize="w-8 h-8" />
+                        <Title level={2} as="span" className="text-gray-900 mt-1.5 ml-3">
+                          {vault?.name.slice(8, -6)}
+                        </Title>
                       </div>
-                    </div>
-                  </Fragment>
-                }>
-                  <section className="bg-white rounded-lg w-full md:w-8/12 mt-6">
-                  <div className="flex flex-row items-center">
-                    <TokenIcon token={token?.address} chainId={chainId} imageSize="w-8 h-8" />
-                    <Title level={2} as="span" className="text-gray-900 mt-1.5 ml-3">
-                      {vault?.name.slice(8, -6)}
-                    </Title>
-                  </div>
-                  <div className="mt-8">
-                    <MarkdownRenderer content={`# ${vaultMetadata?.metadata.protocol.name} \n${vaultMetadata?.metadata.protocol.description}`} />
-                  </div>
-                  <div className="mt-8">
-                    <MarkdownRenderer content={`# Strategy \n${vaultMetadata?.metadata.strategy.description}`} />
-                  </div>
-                </section>
-                </Accordion>
+                      <div className="mt-8">
+                        <MarkdownRenderer content={`# ${vaultMetadata?.metadata.protocol.name} \n${vaultMetadata?.metadata.protocol.description}`} />
+                      </div>
+                      <div className="mt-8">
+                        <MarkdownRenderer content={`# Strategy \n${vaultMetadata?.metadata.strategy.description}`} />
+                      </div>
+                    </section>
+                  </Accordion>
                 </div>
                 <section className="bg-white rounded-lg border border-customLightGray w-full md:w-8/12 p-6 md:p-8 hidden md:flex flex-col">
                   <div className="flex flex-row items-center">
