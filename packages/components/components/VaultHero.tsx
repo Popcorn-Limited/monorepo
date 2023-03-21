@@ -4,9 +4,11 @@ import HeroBgMobile from "./HeroBgMobile";
 import HeroBg from "./HeroBg";
 
 interface VaultHeroProps {
-  TVL: string | JSX.Element;
+  title: string;
+  description: string;
+  info1: { title: string; value: string | JSX.Element };
+  info2: { title: string; value: string | JSX.Element };
   backgroundColorTailwind: string;
-  deposits: String | JSX.Element;
   SUPPORTED_NETWORKS: ChainId[];
   selectNetwork: (chainId: ChainId) => void;
   stripeColor: string;
@@ -14,15 +16,15 @@ interface VaultHeroProps {
 }
 
 
-export default function VaultHero({ TVL, backgroundColorTailwind, deposits, SUPPORTED_NETWORKS, selectNetwork, stripeColor, stripeColorMobile }: VaultHeroProps) {
+export default function VaultHero({ title, description, info1, info2, backgroundColorTailwind, SUPPORTED_NETWORKS, selectNetwork, stripeColor, stripeColorMobile }: VaultHeroProps) {
   return (
     <section className={`${backgroundColorTailwind || 'bg-red-400'} overflow-hidden bg-opacity-[15%] flex flex-col md:flex-row justify-between px-8 pt-10 pb-16 md:pb-[14px] relative -mt-5 xl:rounded-2xl`}>
       <div className="relative z-[1]">
         <h1 className="text-3xl md:text-4xl font-normal m-0 leading-[38px] md:leading-11 mb-4">
-          Sweet Vaults
+          {title}
         </h1>
         <p className="text-base text-primaryDark">
-          Add liquidity to earn stablecoin rewards and be part at creating social impact.
+          {description}
         </p>
         <div className="hidden md:block mt-6">
           <NetworkFilter supportedNetworks={SUPPORTED_NETWORKS} selectNetwork={selectNetwork} />
@@ -39,15 +41,15 @@ export default function VaultHero({ TVL, backgroundColorTailwind, deposits, SUPP
           <div className="col-span-5 md:col-span-3" />
           <div className="col-span-5 md:col-span-3" />
           <div className="col-span-5 md:col-span-3">
-            <p className="leading-6 text-base font-light md:font-normal">TVL</p>
+            <p className="leading-6 text-base font-light md:font-normal">{info1.title}</p>
             <div className="text-3xl font-light md:font-medium">
-              {TVL}
+              {info1.value}
             </div>
           </div>
           <div className="col-span-5 md:col-span-3">
-            <p className="leading-6 text-base font-light md:font-normal">Deposits</p>
+            <p className="leading-6 text-base font-light md:font-normal">{info2.title}</p>
             <div className="text-3xl font-light md:font-medium">
-              {deposits}
+              {info2.value}
             </div>
           </div>
         </div>

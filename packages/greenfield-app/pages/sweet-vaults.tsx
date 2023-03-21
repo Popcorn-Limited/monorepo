@@ -59,15 +59,19 @@ const SweetVaults: NextPage = () => {
   return (
     <main>
       <NoSSR>
-        <VaultHero
-          TVL={`$${formatAndRoundBigNumber(Object.keys(tvl).reduce((total, key) => total.add(tvl[key]), constants.Zero), 18)}`}
-          deposits={`$${account ? formatAndRoundBigNumber(Object.keys(deposit).reduce((total, key) => total.add(deposit[key]), constants.Zero), 18) : "-"}`}
-          backgroundColorTailwind="bg-red-400"
-          SUPPORTED_NETWORKS={SUPPORTED_NETWORKS}
-          selectNetwork={selectNetwork}
-          stripeColor="#FFA0B4"
-          stripeColorMobile="white"
-        />
+        <div className="mb-8">
+          <VaultHero
+            title="Sweet Vaults"
+            description="Add liquidity to earn stablecoin rewards and be part at creating social impact."
+            info1={{ title: 'TVL', value: `$${formatAndRoundBigNumber(Object.keys(tvl).reduce((total, key) => total.add(tvl[key]), constants.Zero), 18)}` }}
+            info2={{ title: 'Deposits', value: `$${account ? formatAndRoundBigNumber(Object.keys(deposit).reduce((total, key) => total.add(deposit[key]), constants.Zero), 18) : "-"}` }}
+            backgroundColorTailwind="bg-red-400"
+            SUPPORTED_NETWORKS={SUPPORTED_NETWORKS}
+            selectNetwork={selectNetwork}
+            stripeColor="#FFA0B4"
+            stripeColorMobile="white"
+          />
+        </div>
         <section className="flex flex-col gap-8">
           {allVaults.map((vault) => {
             return <SweetVault
