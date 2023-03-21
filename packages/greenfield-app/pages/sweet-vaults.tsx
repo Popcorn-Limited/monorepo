@@ -59,19 +59,29 @@ const SweetVaults: NextPage = () => {
   return (
     <main>
       <NoSSR>
-        <div className="mb-8">
-          <VaultHero
-            title="Sweet Vaults"
-            description="Add liquidity to earn stablecoin rewards and be part at creating social impact."
-            info1={{ title: 'TVL', value: `$${formatAndRoundBigNumber(Object.keys(tvl).reduce((total, key) => total.add(tvl[key]), constants.Zero), 18)}` }}
-            info2={{ title: 'Deposits', value: `$${account ? formatAndRoundBigNumber(Object.keys(deposit).reduce((total, key) => total.add(deposit[key]), constants.Zero), 18) : "-"}` }}
-            backgroundColorTailwind="bg-red-400"
-            SUPPORTED_NETWORKS={SUPPORTED_NETWORKS}
-            selectNetwork={selectNetwork}
-            stripeColor="#FFA0B4"
-            stripeColorMobile="white"
-          />
-        </div>
+        <VaultHero
+          title="Sweet Vaults"
+          description="Add liquidity to earn stablecoin rewards and be part at creating social impact."
+          info1={{ title: 'TVL', value: `$${formatAndRoundBigNumber(Object.keys(tvl).reduce((total, key) => total.add(tvl[key]), constants.Zero), 18)}` }}
+          info2={{ title: 'Deposits', value: `$${account ? formatAndRoundBigNumber(Object.keys(deposit).reduce((total, key) => total.add(deposit[key]), constants.Zero), 18) : "-"}` }}
+          backgroundColorTailwind="bg-red-400"
+          SUPPORTED_NETWORKS={SUPPORTED_NETWORKS}
+          selectNetwork={selectNetwork}
+          stripeColor="#FFA0B4"
+          stripeColorMobile="white"
+        />
+        <section className="mt-8 mb-10">
+          <div className="w-full md:w-96 flex px-5 py-1 items-center rounded-lg border border-customLightGray">
+            <MagnifyingGlassIcon className="w-8 h-8 text-gray-400" />
+            <input
+              className="w-10/12 md:w-80 focus:outline-none border-0 text-gray-500 leading-none mt-1"
+              type="text"
+              placeholder="Search..."
+              onChange={(e) => handleSearch(e.target.value.toLowerCase())}
+              defaultValue={searchString}
+            />
+          </div>
+        </section>
         <section className="flex flex-col gap-8">
           {allVaults.map((vault) => {
             return <SweetVault
