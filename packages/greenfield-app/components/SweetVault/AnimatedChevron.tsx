@@ -1,7 +1,7 @@
-function AnimatedChevron() {
+function AnimatedChevron({ className } : {className?: string}) {
   return (
     <svg
-      className="text-secondaryLight ml-1.5 h-5 w-5 flex-shrink-0 transition duration-300 group-open:-rotate-180"
+      className={`text-secondaryLight ml-1.5 h-5 w-5 flex-shrink-0 transition duration-300 group-open:-rotate-180 ${className}`}
       xmlns="http://www.w3.org/2000/svg"
       fill="none"
       viewBox="0 0 24 24"
