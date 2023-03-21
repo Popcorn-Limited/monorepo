@@ -5,7 +5,7 @@ pragma solidity ^0.8.15;
 
 import { Test } from "forge-std/Test.sol";
 
-import { BeefyAdapter, SafeERC20, IERC20, IERC20Metadata, IBeefyVault, IBeefyBooster, IBeefyBalanceCheck, IWithRewards, IStrategy } from "../../../../src/vault/adapter/beefy/BeefyAdapter.sol";
+import { BeefyAdapter, SafeERC20, IERC20, IERC20Metadata, IBeefyVault, IBeefyBooster, IBeefyStrat, IBeefyBalanceCheck, IWithRewards, IStrategy } from "../../../../src/vault/adapter/beefy/BeefyAdapter.sol";
 import { BeefyTestConfigStorage, BeefyTestConfig } from "./BeefyTestConfigStorage.sol";
 import { AbstractAdapterTest, ITestConfigStorage, IAdapter, Math } from "../abstract/AbstractAdapterTest.sol";
 import { IPermissionRegistry, Permission } from "../../../../src/interfaces/vault/IPermissionRegistry.sol";
@@ -114,6 +114,46 @@ contract BeefyAdapterTest is AbstractAdapterTest {
                           INITIALIZATION
     //////////////////////////////////////////////////////////////*/
 
+  function test__initialization() public override {
+    testConfigStorage = ITestConfigStorage(address(new BeefyTestConfigStorage()));
+
+    (address _beefyVault, address _beefyBooster, string memory _network) = abi.decode(
+      testConfigStorage.getTestConfig(0),
+      (address, address, string)
+    );
+
+    createAdapter();
+    uint256 callTime = block.timestamp;
+
+    if (address(strategy) != address(0)) {
+      vm.expectEmit(false, false, false, true, address(strategy));
+      emit SelectorsVerified();
+      vm.expectEmit(false, false, false, true, address(strategy));
+      emit AdapterVerified();
+      vm.expectEmit(false, false, false, true, address(strategy));
+      emit StrategySetup();
+    }
+    vm.expectEmit(false, false, false, true, address(adapter));
+    emit Initialized(uint8(1));
+    adapter.initialize(
+      abi.encode(asset, address(this), strategy, 0, sigs, ""),
+      externalRegistry,
+      abi.encode(_beefyVault, _beefyBooster)
+    );
+
+    assertEq(adapter.owner(), address(this), "owner");
+    assertEq(adapter.strategy(), address(strategy), "strategy");
+    assertEq(adapter.harvestCooldown(), 0, "harvestCooldown");
+    assertEq(adapter.strategyConfig(), "", "strategyConfig");
+    assertEq(
+      IERC20Metadata(address(adapter)).decimals(),
+      IERC20Metadata(address(asset)).decimals() + adapter.decimalOffset(),
+      "decimals"
+    );
+
+    verify_adapterInit();
+  }
+
   function verify_adapterInit() public override {
     assertEq(adapter.asset(), beefyVault.want(), "asset");
     assertEq(
@@ -171,6 +211,98 @@ contract BeefyAdapterTest is AbstractAdapterTest {
       address(permissionRegistry),
       abi.encode(_beefyVault, address(0xBb77dDe3101B8f9B71755ABe2F69b64e79AE4A41))
     );
+  }
+
+  /*//////////////////////////////////////////////////////////////
+                    DEPOSIT/MINT/WITHDRAW/REDEEM
+    //////////////////////////////////////////////////////////////*/
+
+  function test__deposit(uint8 fuzzAmount) public override {
+    testConfigStorage = ITestConfigStorage(address(new BeefyTestConfigStorage()));
+
+    uint256 amount = bound(uint256(fuzzAmount), minFuzz, maxAssets);
+    uint8 len = uint8(testConfigStorage.getTestConfigLength());
+    for (uint8 i; i < len; i++) {
+      if (i > 0) overrideSetup(testConfigStorage.getTestConfig(i));
+
+      _mintFor(amount, bob);
+      prop_deposit(bob, bob, amount, testId);
+
+      increasePricePerShare(raise);
+
+      _mintFor(amount, bob);
+      prop_deposit(bob, alice, amount, testId);
+    }
+  }
+
+  function test__mint(uint8 fuzzAmount) public override {
+    testConfigStorage = ITestConfigStorage(address(new BeefyTestConfigStorage()));
+
+    uint256 amount = bound(uint256(fuzzAmount), minFuzz, maxShares);
+    uint8 len = uint8(testConfigStorage.getTestConfigLength());
+    for (uint8 i; i < len; i++) {
+      if (i > 0) overrideSetup(testConfigStorage.getTestConfig(i));
+
+      _mintFor(adapter.previewMint(amount), bob);
+      prop_mint(bob, bob, amount, testId);
+
+      increasePricePerShare(raise);
+
+      _mintFor(adapter.previewMint(amount), bob);
+      prop_mint(bob, alice, amount, testId);
+    }
+  }
+
+  function test__withdraw(uint8 fuzzAmount) public override {
+    testConfigStorage = ITestConfigStorage(address(new BeefyTestConfigStorage()));
+
+    uint256 amount = bound(uint256(fuzzAmount), minFuzz, maxAssets);
+    uint8 len = uint8(testConfigStorage.getTestConfigLength());
+    for (uint8 i; i < len; i++) {
+      if (i > 0) overrideSetup(testConfigStorage.getTestConfig(i));
+
+      uint256 reqAssets = (adapter.previewMint(adapter.previewWithdraw(amount)) * 10) / 8;
+      _mintFor(reqAssets, bob);
+      vm.prank(bob);
+      adapter.deposit(reqAssets, bob);
+      prop_withdraw(bob, bob, amount, testId);
+
+      _mintFor(reqAssets, bob);
+      vm.prank(bob);
+      adapter.deposit(reqAssets, bob);
+
+      increasePricePerShare(raise);
+
+      vm.prank(bob);
+      adapter.approve(alice, type(uint256).max);
+      prop_withdraw(alice, bob, amount, testId);
+    }
+  }
+
+  function test__redeem(uint8 fuzzAmount) public override {
+    testConfigStorage = ITestConfigStorage(address(new BeefyTestConfigStorage()));
+
+    uint256 amount = bound(uint256(fuzzAmount), minFuzz, maxShares);
+    uint8 len = uint8(testConfigStorage.getTestConfigLength());
+    for (uint8 i; i < len; i++) {
+      if (i > 0) overrideSetup(testConfigStorage.getTestConfig(i));
+
+      uint256 reqAssets = (adapter.previewMint(amount) * 10) / 9;
+      _mintFor(reqAssets, bob);
+      vm.prank(bob);
+      adapter.deposit(reqAssets, bob);
+      prop_redeem(bob, bob, amount, testId);
+
+      _mintFor(reqAssets, bob);
+      vm.prank(bob);
+      adapter.deposit(reqAssets, bob);
+
+      increasePricePerShare(raise);
+
+      vm.prank(bob);
+      adapter.approve(alice, type(uint256).max);
+      prop_redeem(alice, bob, amount, testId);
+    }
   }
 
   /*//////////////////////////////////////////////////////////////

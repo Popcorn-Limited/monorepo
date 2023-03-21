@@ -53,5 +53,7 @@ interface IBeefyBalanceCheck {
 }
 
 interface IBeefyStrat {
+  function withdrawFee() external view returns (uint256);
+
   function withdrawalFee() external view returns (uint256);
 }

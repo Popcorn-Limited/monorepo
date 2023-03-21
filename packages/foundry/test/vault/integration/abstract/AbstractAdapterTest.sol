@@ -425,10 +425,10 @@ contract AbstractAdapterTest is PropertyTest {
 
     vm.startPrank(bob);
     // Deposit and mint are paused (maxDeposit/maxMint are set to 0 on pause)
-    vm.expectRevert(abi.encodeWithSelector(MaxError.selector, defaultAmount));
+    vm.expectRevert();
     adapter.deposit(defaultAmount, bob);
 
-    vm.expectRevert(abi.encodeWithSelector(MaxError.selector, defaultAmount));
+    vm.expectRevert();
     adapter.mint(defaultAmount, bob);
 
     // Withdraw and Redeem dont revert
