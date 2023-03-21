@@ -1,5 +1,5 @@
 import { FormEventHandler, useMemo, useState } from "react";
-import { Address, useAccount, useBalance, useToken } from "wagmi";
+import { Address, useAccount, useBalance, useNetwork, useSwitchNetwork, useToken } from "wagmi";
 import { BigNumber, constants, utils } from "ethers";
 import toast from "react-hot-toast";
 
@@ -37,9 +37,11 @@ function AssetInputWithAction({
   }) => JSX.Element;
 }) {
   const { address: account } = useAccount();
+  const { chain, chains } = useNetwork()
+  const { error, isLoading, pendingChainId, switchNetwork } = useSwitchNetwork()
   const [inputBalance, setInputBalance] = useState<number>();
   const { data: metadata, status } = useContractMetadata({ chainId, assetAddress });
-  const { data: asset } = useToken({ chainId, address: assetAddress as Address})
+  const { data: asset } = useToken({ chainId, address: assetAddress as Address })
   const { data: userBalance } = useBalance({
     chainId,
     address: account,
@@ -89,6 +91,8 @@ function AssetInputWithAction({
     if ((inputBalance || 0) == 0) return;
     // Early exit if value is ZERO
 
+    if (chain.id !== Number(chainId)) switchNetwork?.(Number(chainId));
+
     if (showApproveButton) return approve();
     // When approved continue to deposit
     mainAction();
@@ -130,7 +134,7 @@ function AssetInputWithAction({
         selectedToken={
           {
             ...metadata,
-            decimals:asset?.decimals,
+            decimals: asset?.decimals,
             address: assetAddress,
             balance: userBalance?.value || constants.Zero,
           } as any
