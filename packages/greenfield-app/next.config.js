@@ -14,6 +14,9 @@ module.exports = {
     APP_ENV: process.env.APP_ENV,
     INFURA_PROJECT_ID: process.env.INFURA_PROJECT_ID,
     ETHERSCAN_API_KEY: process.env.ETHERSCAN_API_KEY,
+    PINATA_API_SECRET: process.env.PINATA_API_SECRET,
+    PINATA_API_KEY: process.env.PINATA_API_KEY,
+    IPFS_URL: process.env.IPFS_URL,
   },
   images: {
     domains: ["rawcdn.githack.com"],
