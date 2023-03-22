@@ -61,16 +61,7 @@ function SweetVault({ vaultAddress, chainId, searchString, addToTVL, addToDeposi
   const { data: price } = usePrice({ address: token?.address as Address, chainId });
   const { data: totalAssets } = useTotalAssets({ address: vaultAddress as Address, chainId, account });
   const { data: totalSupply } = useTotalSupply({ address: vaultAddress as Address, chainId, account });
-  const [showMobileTutorial, toggleMobileTutorial] = useState<boolean>(false);
 
-
-  // TODO mobile css
-  // TODO add beefy apy resolver
-  // TODO test deposit/withdraw flow
-  // Design needs to be adjusted for mobile
-  // When they click Learn --> on mobile, it expands the box and shows all the block of text
-  // Use Transition.Root in 3x.tsx as the way to animate the clicking of the vault. Then use tailwind to hide this transition.root on desktop
-  // Make sure you add Fantom opera network to metamask and add the little snippet of code for the fantom opera contract addresses
 
   useEffect(() => {
     if (totalAssets && totalSupply && balance && price) {
