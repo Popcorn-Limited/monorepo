@@ -25,8 +25,8 @@ export const useDepositVaultBalance = (
     overrides:
       chainId === ChainId.Localhost
         ? {
-            gasLimit: GAS_LIMIT,
-          }
+          gasLimit: GAS_LIMIT,
+        }
         : {},
   });
 
@@ -51,8 +51,8 @@ export const useRedeemVaultBalance = (
     overrides:
       chainId === ChainId.Localhost
         ? {
-            gasLimit: GAS_LIMIT,
-          }
+          gasLimit: GAS_LIMIT,
+        }
         : {},
   });
 
@@ -72,7 +72,7 @@ export const useVaultRegistry = (chainId: any) => {
  */
 export const useAllVaults = (chainId?: ChainId, config?: ContractWriteArgs) => {
   const registry = useVaultRegistry(chainId);
-  
+
   return useTypedReadCall<string[]>({
     address: registry?.address as Address,
     abi: ["function getRegisteredAddresses() external view returns (address[])"],

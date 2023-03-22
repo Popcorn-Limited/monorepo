@@ -53,6 +53,8 @@ contract DeployVaultSystem is Script {
 
   VaultController controller;
 
+  IERC20 pop = IERC20(0xD0Cd466b34A24fcB2f87676278AF2005Ca8A78c4);
+
   address stakingImpl;
   address yearnImpl;
   address beefyImpl;
@@ -127,6 +129,10 @@ contract DeployVaultSystem is Script {
     emit log_named_address("VaultRegistry: ", address(vaultRegistry));
     emit log("!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
 
+    // approve pop for staking rewards
+    pop.approve(address(controller), 2000 ether);
+
+    // approve usdc for inital deposit
     IERC20(0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48).approve(address(controller), 100e6);
 
     // deploy usdc yearn vault
@@ -141,8 +147,8 @@ contract DeployVaultSystem is Script {
       }),
       DeploymentArgs({ id: "YearnAdapter", data: "" }),
       DeploymentArgs({ id: "", data: "" }),
-      false,
-      "",
+      true,
+      abi.encode(address(pop), 0.0001 ether, 1000 ether, false, 0, 0, 0),
       VaultMetadata({
         vault: address(0),
         staking: address(0),
@@ -160,6 +166,7 @@ contract DeployVaultSystem is Script {
     // beefyBooster = 0xAe3F0C61F3Dc48767ccCeF3aD50b29437BE4b1a4
     setPermission(0xAe3F0C61F3Dc48767ccCeF3aD50b29437BE4b1a4, true, false);
 
+    // approve stEth/eth for inital deposit
     IERC20(0x06325440D014e39736583c165C2963BA99fAf14E).approve(address(controller), 10e18);
 
     // crvSthEth/Eth = 0x06325440D014e39736583c165C2963BA99fAf14E
@@ -178,8 +185,8 @@ contract DeployVaultSystem is Script {
         data: abi.encode(0xa7739fd3d12ac7F16D8329AF3Ee407e19De10D8D, 0xAe3F0C61F3Dc48767ccCeF3aD50b29437BE4b1a4)
       }),
       DeploymentArgs({ id: "", data: "" }),
-      false,
-      "",
+      true,
+      abi.encode(address(pop), 0.0001 ether, 1000 ether, false, 0, 0, 0),
       VaultMetadata({
         vault: address(0),
         staking: address(0),
