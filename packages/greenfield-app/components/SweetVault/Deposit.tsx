@@ -2,6 +2,8 @@ import AssetInputWithAction from "@popcorn/components/components/AssetInputWithA
 import FeeBreakdown from "./FeeBreakdown";
 import { useAllowance } from "@popcorn/components/lib/Erc20/hooks";
 import { Address } from "wagmi";
+import Link from "next/link";
+import RightArrowIcon from "@popcorn/components/components/SVGIcons/RightArrowIcon";
 
 function Deposit({
   vault,
@@ -32,7 +34,21 @@ function Deposit({
         allowance={allowance?.value}
       >
         {({ ActionableComponent }) => {
-          return <FeeBreakdown vault={vault} ActionableComponent={ActionableComponent} />;
+          return (
+            <>
+              <Link
+                href={`https://curve.fi/`}
+                target="_blank"
+                passHref
+                className="w-full flex flex-row items-center text-primary mt-8 bg-warmGray/20 rounded-md p-2 border border-customLightGray" >
+                <p>Get Token</p>
+                <span className="ml-4">
+                  <RightArrowIcon color="827D69" />
+                </span>
+              </Link>
+              <FeeBreakdown vault={vault} />
+              <ActionableComponent />
+            </>);
         }}
       </AssetInputWithAction>
     </div>
