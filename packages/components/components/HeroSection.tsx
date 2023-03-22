@@ -3,7 +3,7 @@ import NetworkFilter from "./NetworkFilter";
 import HeroBgMobile from "./HeroBgMobile";
 import HeroBg from "./HeroBg";
 
-interface VaultHeroProps {
+interface HeroSectionProps {
   title: string;
   description: string;
   info1: { title: string; value: string | JSX.Element };
@@ -16,7 +16,7 @@ interface VaultHeroProps {
 }
 
 
-export default function VaultHero({ title, description, info1, info2, backgroundColorTailwind, SUPPORTED_NETWORKS, selectNetwork, stripeColor, stripeColorMobile }: VaultHeroProps) {
+export default function HeroSection({ title, description, info1, info2, backgroundColorTailwind, SUPPORTED_NETWORKS, selectNetwork, stripeColor, stripeColorMobile }: HeroSectionProps) {
   return (
     <section className={`${backgroundColorTailwind || 'bg-red-400'} overflow-hidden bg-opacity-[15%] flex flex-col md:flex-row justify-between px-8 pt-10 pb-16 md:pb-[14px] relative -mt-5 xl:rounded-2xl`}>
       <div className="relative z-[1]">

@@ -7,10 +7,7 @@ import SweetVault from "../components/SweetVault";
 import asset_bg from "../assets/sv-bg.png";
 import { ChainId, formatAndRoundBigNumber } from "@popcorn/utils";
 import NoSSR from "react-no-ssr";
-import NetworkFilter from "@popcorn/components/components/NetworkFilter";
-import VaultHero from "@popcorn/components/components/VaultHero";
-import HeroBgMobile from "@popcorn/components/public/images/swHeroBgmobile.svg";
-import HeroBg from "@popcorn/components/public/images/swHeroBg.svg";
+import HeroSection from "@popcorn/components/components/HeroSection";
 import useNetworkFilter from "hooks/useNetworkFilter";
 import { MagnifyingGlassIcon } from "@heroicons/react/24/outline";
 import { useState } from "react";
@@ -59,7 +56,7 @@ const SweetVaults: NextPage = () => {
   return (
     <main>
       <NoSSR>
-        <VaultHero
+        <HeroSection
           title="Sweet Vaults"
           description="Add liquidity to earn stablecoin rewards and be part at creating social impact."
           info1={{ title: 'TVL', value: `$${formatAndRoundBigNumber(Object.keys(tvl).reduce((total, key) => total.add(tvl[key]), constants.Zero), 18)}` }}
