@@ -24,6 +24,7 @@ import { parseUnits } from "ethers/lib/utils.js";
 import { useTotalAssets } from "@popcorn/components/lib/Vault/hooks";
 import { formatNumber } from "@popcorn/utils/formatBigNumber";
 import RightArrowIcon from "@popcorn/components/components/SVGIcons/RightArrowIcon";
+import { InfoIconWithTooltip } from "@popcorn/app/components/InfoIconWithTooltip";
 
 const HUNDRED = constants.Zero.add(100);
 
@@ -62,7 +63,6 @@ function SweetVault({ vaultAddress, chainId, searchString, addToTVL, addToDeposi
   const { data: totalAssets } = useTotalAssets({ address: vaultAddress as Address, chainId, account });
   const { data: totalSupply } = useTotalSupply({ address: vaultAddress as Address, chainId, account });
 
-
   useEffect(() => {
     if (totalAssets && totalSupply && balance && price) {
       const pps = Number(totalAssets?.value?.toString()) / Number(totalSupply?.value?.toString());
@@ -89,6 +89,7 @@ function SweetVault({ vaultAddress, chainId, searchString, addToTVL, addToDeposi
       );
     }
   }, [totalAssets, price])
+
 
   return (
     <VaultMetadata chainId={chainId} vaultAddress={vaultAddress}>
@@ -136,13 +137,37 @@ function SweetVault({ vaultAddress, chainId, searchString, addToTVL, addToDeposi
                           render={(apy) => {
                             return (
                               <Apy
-                                address={vaultAddress}
+                                address={vaultMetadata.staking}
+                                resolver={"multiRewardStaking"}
                                 render={(stakingApy) => (
                                   <section className="flex items-center gap-1 text-primary">
                                     {formatAndRoundBigNumber(
-                                      HUNDRED.mul(apy?.data?.value.add(stakingApy?.data?.value || 0) || constants.Zero),
+                                      HUNDRED.mul((apy?.data?.value || constants.Zero).add(stakingApy?.data?.value || constants.Zero) || constants.Zero),
                                       18,
                                     )} %
+                                    <InfoIconWithTooltip
+                                      title="APR Breakdown"
+                                      content={
+                                        <ul className="text-sm">
+                                          <li>
+                                            Staking APR:{" "}
+                                            {formatAndRoundBigNumber(
+                                              HUNDRED.mul(stakingApy?.data?.value || constants.Zero),
+                                              18,
+                                            )}
+                                            %
+                                          </li>
+                                          <li>
+                                            Vault APR:{" "}
+                                            {formatAndRoundBigNumber(
+                                              HUNDRED.mul(apy?.data?.value || constants.Zero),
+                                              18,
+                                            )}
+                                            %
+                                          </li>
+                                        </ul>
+                                      }
+                                    />
                                   </section>
                                 )}
                                 chainId={chainId}
