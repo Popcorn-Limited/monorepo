@@ -1,53 +1,8 @@
-// import Page from "@popcorn/components/components/Page";
-// import { FeatureTogglePanel } from "@popcorn/components/components/FeatureTogglePanel";
-// import { DualActionModalContainer } from "@popcorn/components/components/Modal/DualActionModalContainer";
-// import { MultiChoiceActionModalContainer } from "@popcorn/components/components/Modal/MultiChoiceActionModalContainer";
-// import { SingleActionModalContainer } from "@popcorn/components/components/Modal/SingleActionModalContainer";
-// import OfacCheck from "@popcorn/app/components/OfacCheck";
-// import { FeatureToggleProvider } from "@popcorn/components/context/FeatureToggleContext";
 import Head from "next/head";
 import Router from "next/router";
 import React, { useEffect, useState } from "react";
-// import { GlobalLinearProgressAndLoading } from "@popcorn/components/components/GlobalLinearProgressAndLoading";
-// import { StateProvider } from "@popcorn/components/context/store";
-import { RainbowKitProvider, getDefaultWallets, Chain } from "@rainbow-me/rainbowkit";
-import { configureChains, createClient, WagmiConfig } from "wagmi";
-import { mainnet, polygon, optimism, arbitrum, goerli, localhost, bsc, fantom } from 'wagmi/chains';
-import { alchemyProvider } from "wagmi/providers/alchemy";
-import { jsonRpcProvider } from "wagmi/providers/jsonRpc";
-import "@rainbow-me/rainbowkit/styles.css";
 import "../styles/globals.css";
-// import { NetworthContextProvider } from "@popcorn/components/context/Networth";
 
-const { chains, provider, webSocketProvider } = configureChains(
-  [
-    mainnet,
-    polygon,
-    optimism,
-    arbitrum,
-    bsc,
-    fantom,
-    ...(process.env.NEXT_PUBLIC_ENABLE_TESTNETS === "true" ? [goerli, localhost] : []),
-  ],
-  [
-    alchemyProvider({
-      apiKey: process.env.NEXT_PUBLIC_ALCHEMY_API_KEY,
-    }),
-    jsonRpcProvider({ rpc: (chain) => ({ http: chain.rpcUrls.default.http[0] }) }),
-  ],
-);
-
-const { connectors } = getDefaultWallets({
-  appName: "Popcorn",
-  chains,
-});
-
-const wagmiClient = createClient({
-  autoConnect: true,
-  connectors,
-  provider,
-  webSocketProvider,
-});
 
 const { title, description, socialShareImage } = {
   title: "Popcorn - Yield That Counts",
@@ -66,27 +21,9 @@ export default function MyApp(props) {
   const getLayout =
     Component.getLayout ||
     (() => (
-      // <Page>
       <Component {...pageProps} />
-      // </Page>
     ));
   const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    setLoading(true);
-    setTimeout(() => {
-      setLoading(false);
-    }, 1890);
-    Router.events.on("routeChangeStart", () => {
-      setLoading(true);
-    });
-    Router.events.on("routeChangeComplete", () => {
-      setLoading(false);
-    });
-    Router.events.on("routeChangeError", () => {
-      setLoading(false);
-    });
-  }, []);
 
   useEffect(() => {
     // Remove the server-side injected CSS.
@@ -120,23 +57,7 @@ export default function MyApp(props) {
         <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" />
         <link rel="preconnect" href="https://fonts.gstatic.com" />
       </Head>
-      {/* <StateProvider>
-        <GlobalLinearProgressAndLoading loading={loading} setLoading={setLoading} />
-        <FeatureToggleProvider> */}
-      <WagmiConfig client={wagmiClient}>
-        <RainbowKitProvider chains={chains}>
-          {/* <NetworthContextProvider>
-                <OfacCheck />
-                <SingleActionModalContainer />
-                <MultiChoiceActionModalContainer />
-                <DualActionModalContainer /> */}
-          {getLayout(<Component {...pageProps} />)}
-          {/* <FeatureTogglePanel />
-              </NetworthContextProvider> */}
-        </RainbowKitProvider>
-      </WagmiConfig>
-      {/* </FeatureToggleProvider>
-      </StateProvider> */}
+      {getLayout(<Component {...pageProps} />)}
     </React.Fragment>
   );
 }

@@ -1,6 +1,5 @@
 import { useRouter } from "next/router";
 import React, { useEffect } from "react";
-import NoSSR from "react-no-ssr";
 
 const IndexPage = () => {
   const router = useRouter();
@@ -12,11 +11,9 @@ const IndexPage = () => {
   }, [router.pathname]);
   return (
     <main>
-      <NoSSR>
         <div>
           <p>code here</p>
         </div>
-      </NoSSR>
     </main>
   );
 };
