@@ -14,7 +14,6 @@ import { RainbowKitProvider, getDefaultWallets, Chain } from "@rainbow-me/rainbo
 import { configureChains, createClient, WagmiConfig } from "wagmi";
 import { mainnet, polygon, optimism, arbitrum, goerli, localhost, bsc, fantom } from 'wagmi/chains';
 import { alchemyProvider } from "wagmi/providers/alchemy";
-import { infuraProvider } from "wagmi/providers/infura";
 import { jsonRpcProvider } from "wagmi/providers/jsonRpc";
 import "@rainbow-me/rainbowkit/styles.css";
 import "../styles/globals.css";
@@ -33,9 +32,6 @@ const { chains, provider, webSocketProvider } = configureChains(
   [
     alchemyProvider({
       apiKey: process.env.NEXT_PUBLIC_ALCHEMY_API_KEY,
-    }),
-    infuraProvider({
-      apiKey: process.env.INFURA_PROJECT_ID,
     }),
     jsonRpcProvider({ rpc: (chain) => ({ http: chain.rpcUrls.default.http[0] }) }),
   ],

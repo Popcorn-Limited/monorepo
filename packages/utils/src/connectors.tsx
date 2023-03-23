@@ -101,12 +101,11 @@ export const networkLogos = {
   [ChainId.BNB]: "/images/icons/bsc-logo.png",
 };
 export const RPC_URLS = {
-  [ChainId.Ethereum]: `https://mainnet.infura.io/v3/${process.env.INFURA_PROJECT_ID}`,
-  [ChainId.Goerli]: `https://goerli.infura.io/v3/${process.env.INFURA_PROJECT_ID}`,
-  [ChainId.Arbitrum]: `https://arbitrum-mainnet.infura.io/v3/${process.env.INFURA_PROJECT_ID}`,
-  [ChainId.Polygon]: `https://polygon-mainnet.infura.io/v3/${process.env.INFURA_PROJECT_ID}`,
+  [ChainId.Ethereum]: `https://eth-mainnet.alchemyapi.io/v2/${process.env.NEXT_PUBLIC_ALCHEMY_API_KEY}`,
+  [ChainId.Goerli]: "https://goerli.blockpi.network/v1/rpc/public",
+  [ChainId.Arbitrum]: `https://arb-mainnet.g.alchemy.com/v2/${process.env.NEXT_PUBLIC_ALCHEMY_API_KEY}`,
+  [ChainId.Polygon]: `https://polygon-mainnet.g.alchemy.com/v2/${process.env.NEXT_PUBLIC_ALCHEMY_API_KEY}`,
   [ChainId.Optimism]: `https://opt-mainnet.g.alchemy.com/v2/${process.env.NEXT_PUBLIC_ALCHEMY_API_KEY}`,
-  [ChainId.Mumbai]: `https://polygon-mumbai.infura.io/v3/${process.env.INFURA_PROJECT_ID}`,
   [ChainId.BNB]: `https://bsc-dataseed1.binance.org`,
   [ChainId.Fantom]: `https://rpc.fantom.network`,
   [ChainId.Localhost]: `http://localhost:8545`,
