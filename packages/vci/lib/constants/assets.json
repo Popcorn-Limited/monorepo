@@ -1,0 +1,90 @@
+[
+  {
+    "chainId": 1,
+    "address": "0x6c3F90f043a72FA612cbac8115EE7e52BDe6E490",
+    "name": "Curve.fi DAI/USDC/USDT",
+    "symbol": "3Crv",
+    "decimals": 18,
+    "logoURI": "https://cdn.furucombo.app/assets/img/token/3Crv.png"
+  },
+  {
+    "chainId": 1,
+    "address": "0x6B175474E89094C44Da98b954EedeAC495271d0F",
+    "name": "Dai Stablecoin",
+    "symbol": "DAI",
+    "decimals": 18,
+    "logoURI": "https://cdn.furucombo.app/assets/img/token/DAI.png"
+  },
+  {
+    "chainId": 1,
+    "address": "0x853d955aCEf822Db058eb8505911ED77F175b99e",
+    "name": "Frax",
+    "symbol": "FRAX",
+    "decimals": 18,
+    "logoURI": "https://cdn.furucombo.app/assets/img/token/FRAX.png"
+  },
+  {
+    "chainId": 1,
+    "address": "0x5f98805A4E8be255a32880FDeC7F6728C6568bA0",
+    "name": "LUSD Stablecoin",
+    "symbol": "LUSD",
+    "decimals": 18,
+    "logoURI": "https://cdn.furucombo.app/assets/img/token/LUSD.png"
+  },
+  {
+    "chainId": 1,
+    "address": "0x7D1AfA7B718fb893dB30A3aBc0Cfc608AaCfeBB0",
+    "name": "Matic Token",
+    "symbol": "MATIC",
+    "decimals": 18,
+    "logoURI": "https://cdn.furucombo.app/assets/img/token/MATIC.png"
+  },
+  {
+    "chainId": 1,
+    "address": "0x99D8a9C45b2ecA8864373A26D1459e3Dff1e17F3",
+    "name": "Magic Internet Money",
+    "symbol": "MIM",
+    "decimals": 18,
+    "logoURI": "https://cdn.furucombo.app/assets/img/token/MIM.png"
+  },
+  {
+    "chainId": 1,
+    "address": "0x383518188C0C6d7730D91b2c03a03C837814a899",
+    "name": "Olympus",
+    "symbol": "OHM",
+    "decimals": 9,
+    "logoURI": "https://cdn.furucombo.app/assets/img/token/OHM.png"
+  },
+  {
+    "chainId": 1,
+    "address": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
+    "name": "USD Coin",
+    "symbol": "USDC",
+    "decimals": 6,
+    "logoURI": "https://cdn.furucombo.app/assets/img/token/USDC.png"
+  },
+  {
+    "chainId": 1,
+    "address": "0xdAC17F958D2ee523a2206206994597C13D831ec7",
+    "name": "Tether USD",
+    "symbol": "USDT",
+    "decimals": 6,
+    "logoURI": "https://cdn.furucombo.app/assets/img/token/USDT.png"
+  },
+  {
+    "chainId": 1,
+    "address": "0x2260FAC5E5542a773Aa44fBCfeDf7C193bc2C599",
+    "name": "Wrapped BTC",
+    "symbol": "WBTC",
+    "decimals": 8,
+    "logoURI": "https://cdn.furucombo.app/assets/img/token/WBTC.png"
+  },
+  {
+    "chainId": 1,
+    "address": "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2",
+    "name": "Wrapped Ether",
+    "symbol": "WETH",
+    "decimals": 18,
+    "logoURI": "https://cdn.furucombo.app/assets/img/token/WETH.svg"
+  }
+]
