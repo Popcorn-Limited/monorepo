@@ -558,13 +558,13 @@ contract AbstractAdapterTest is PropertyTest {
     //////////////////////////////////////////////////////////////*/
 
   // OPTIONAL
-  function testClaim() public virtual {}
+  function test__claim() public virtual {}
 
   /*//////////////////////////////////////////////////////////////
                               PERMIT
     //////////////////////////////////////////////////////////////*/
 
-  function testPermit() public {
+  function test__permit() public {
     uint256 privateKey = 0xBEEF;
     address owner = vm.addr(privateKey);
 

@@ -4,7 +4,6 @@ import type { AppProps } from "next/app";
 import { RainbowKitProvider, getDefaultWallets, Chain } from "@rainbow-me/rainbowkit";
 import { chain, configureChains, createClient, WagmiConfig } from "wagmi";
 import { alchemyProvider } from "wagmi/providers/alchemy";
-import { infuraProvider } from "wagmi/providers/infura";
 import { jsonRpcProvider } from "wagmi/providers/jsonRpc";
 import { SingleActionModalContainer } from "@popcorn/components/components/Modal/SingleActionModalContainer";
 import { StateProvider } from "@popcorn/components/context/store";
@@ -31,9 +30,6 @@ const { chains, provider, webSocketProvider } = configureChains(
   [
     alchemyProvider({
       apiKey: process.env.NEXT_PUBLIC_ALCHEMY_API_KEY as string,
-    }),
-    infuraProvider({
-      apiKey: process.env.NEXT_PUBLIC_INFURA_PROJECT_ID as string,
     }),
     jsonRpcProvider({ rpc: (chain) => ({ http: chain.rpcUrls.default }) }),
   ],

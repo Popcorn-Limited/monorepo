@@ -1,8 +1,4 @@
 import AssetInputWithAction from "@popcorn/components/components/AssetInputWithAction";
-import { useNamedAccounts } from "@popcorn/components/lib/utils";
-import { constants } from "ethers";
-import useVaultFees from "hooks/vaults/useVaultFees";
-import { formatAndRoundBigNumber } from "@popcorn/utils";
 import FeeBreakdown from "./FeeBreakdown";
 import { useAllowance } from "@popcorn/components/lib/Erc20/hooks";
 import { Address } from "wagmi";

@@ -7,7 +7,7 @@ const store = {};
 const DEFAULT_GRAPH_URL = "https://api.thegraph.com/subgraphs/name/rareweasel/yearn-vaults-v2-subgraph-mainnet";
 const URL_BY_CHAIN_ID = {
   // Future updates
-  FANTOM: "https://api.thegraph.com/subgraphs/name/yearn/yearn-vaults-v2-fantom",
+  [ChainId.Fantom]: "https://api.thegraph.com/subgraphs/name/yearn/yearn-vaults-v2-fantom",
   [ChainId.Optimism]: "https://api.thegraph.com/subgraphs/name/yearn/yearn-vaults-v2-optimism",
   [ChainId.Arbitrum]: "https://api.thegraph.com/subgraphs/name/yearn/yearn-vaults-v2-arbitrum",
   [ChainId.Ethereum]: DEFAULT_GRAPH_URL,

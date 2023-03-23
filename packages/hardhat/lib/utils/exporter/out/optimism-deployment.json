@@ -1,0 +1,114 @@
+{
+  "chainId": "10",
+  "name": "optimism",
+  "contracts": {
+    "pop": {
+      "abi": null,
+      "address": "0x6F0fecBC276de8fC69257065fE47C5a03d986394",
+      "metadata": {
+        "buyLinkEthereum": "https://app.uniswap.org/#/swap?inputCurrency=0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48&outputCurrency=0xD0Cd466b34A24fcB2f87676278AF2005Ca8A78c4&chain=mainnet",
+        "buyLinkPolygon": "https://app.uniswap.org/#/swap?inputCurrency=0x2791Bca1f2de4661ED88A30C99A7a9449Aa84174&outputCurrency=0xc5b57e9a1e7914fda753a88f24e5703e617ee50c&chain=polygon",
+        "icons": [
+          "/images/icons/POP.svg"
+        ],
+        "name": "Popcorn",
+        "priceResolver": "pop"
+      }
+    },
+    "popStaking": {
+      "abi": null,
+      "address": "0x3Fcc4eA703054453D8697b58C5CB2585F8883C05",
+      "metadata": {
+        "apyResolver": "convex",
+        "balanceOfAdapter": {
+          "functionAbi": [
+            "function lockedBalanceOf(address) external view returns (uint256)"
+          ],
+          "functionName": "lockedBalanceOf(address)"
+        },
+        "contractName": "PopLocker",
+        "icons": [
+          "/images/icons/POP.svg"
+        ],
+        "isERC20": false,
+        "name": "Staked POP",
+        "priceResolver": "staking",
+        "symbol": "vlPOP"
+      }
+    },
+    "popUsdcArrakisVault": {
+      "abi": null,
+      "address": "0x2AE1231E4CF821Af69982c4D04725CD502D8B53E",
+      "metadata": {
+        "icons": [
+          "/images/tokens/usdc.svg",
+          "/images/icons/POP.svg"
+        ],
+        "name": "Arrakis USDC/POP LP",
+        "priceResolver": "arrakis"
+      }
+    },
+    "popUsdcLp": {
+      "abi": null,
+      "address": "0xae0eBAA4162941837Bb56EDa1Bc9dc6850779bd2",
+      "metadata": {
+        "buyLinkEthereum": "https://beta.arrakis.finance/#/vaults/0xBBA11b41407dF8793A89b44ee4b50AfAD4508555/add",
+        "buyLinkPolygon": "https://beta.arrakis.finance/#/vaults/0x6dE0500211bc3140409B345Fa1a5289cb77Af1e4/add",
+        "icons": [
+          "/images/tokens/usdc.svg",
+          "/images/icons/POP.svg"
+        ],
+        "name": "USDC/POP LP",
+        "priceResolver": "arrakis"
+      }
+    },
+    "popUsdcUniV3Pool": {
+      "abi": null,
+      "address": "0xae0eBAA4162941837Bb56EDa1Bc9dc6850779bd2",
+      "metadata": null
+    },
+    "rewardsEscrow": {
+      "abi": null,
+      "address": "0x432a97a2dB81bDE9978dd2430E1415fd0029a68A",
+      "metadata": {
+        "balanceResolver": "escrowBalance",
+        "claimableTokenAdapter": {
+          "tokenFunction": "POP",
+          "tokenFunctionAbi": [
+            "function POP() external view returns (address)"
+          ],
+          "type": "escrow"
+        },
+        "isERC20": false,
+        "priceResolver": "pop",
+        "symbol": "POP",
+        "tvlResolver": {
+          "tokenFunction": "POP",
+          "tokenFunctionAbi": [
+            "function POP() external view returns (address)"
+          ],
+          "type": "escrow"
+        }
+      }
+    },
+    "univ3": {
+      "abi": null,
+      "address": "0xae0ebaa4162941837bb56eda1bc9dc6850779bd2",
+      "metadata": {
+        "priceResolver": "univ3"
+      }
+    },
+    "usdc": {
+      "abi": null,
+      "address": "0x7F5c764cBc14f9669B88837ca1490cCa17c31607",
+      "metadata": {
+        "icons": [
+          "/images/tokens/usdc.svg"
+        ],
+        "name": "USDC",
+        "priceResolver": "defi_llama",
+        "symbol": "USDC"
+      }
+    }
+  }
+}

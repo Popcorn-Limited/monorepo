@@ -1,25 +1,27 @@
 import type { BigNumber } from "ethers";
 import { useVaultRegistry } from "@popcorn/components/hooks/vaults";
 import { Address, useContractRead } from "wagmi";
+import { IpfsClient } from "@popcorn/utils";
+import { useEffect, useState } from "react";
 
 // TODO use proper ipfs fetch
 
-function useGetIpfsMetadata(cid?: string): IpfsMetadata {
-  return {
-    token: {
-      name: "Token",
-      description: "Token Description"
-    },
-    protocol: {
-      name: "Yearn",
-      description: "Protocol Description"
-    },
-    strategy: {
-      name: "Strategy",
-      description: "Strategy Description"
-    },
-    getTokenUrl: "https://curve.fi/"
-  }
+function useGetIpfsMetadata(address: string, cid?: string): IpfsMetadata {
+  const [ipfsData, setIpfsData] = useState<IpfsMetadata>();
+
+  useEffect(() => {
+    if (address) {
+      IpfsClient.get<IpfsMetadata>(
+        address.toLowerCase() === "0xB76fe239133EA8b92432C6D4b1E322063eEb6445".toLowerCase() ?
+          "QmdnDwaR7ExUmVMoVADwmVwES84NWqGtWMn2yswhZgZC8b" :
+          "QmYmzycZrD28BhRw6TxZKbwfgvXccg2ygkpKJZ5JcejjFH")
+        .then(res => setIpfsData(res))
+    }
+  },
+    [address, cid]
+  )
+
+  return ipfsData;
 }
 
 type VaultMetadataProps = {
@@ -93,7 +95,7 @@ function VaultMetadata({ chainId, children, vaultAddress }: VaultMetadataProps) 
       "type": "function"
     }],
   });
-  const ipfsMetadata = useGetIpfsMetadata(data?.metadataCID);
+  const ipfsMetadata = useGetIpfsMetadata(vaultAddress, data?.metadataCID);
 
 
   return children({ ...data, metadata: ipfsMetadata } as VaultMetadata);

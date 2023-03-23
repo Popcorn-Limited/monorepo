@@ -11,6 +11,7 @@ export enum ChainId {
   BNB = 56,
   RemoteFork = 31338,
   Optimism = 10,
+  Fantom = 250,
   ALL = 0,
 }
 
@@ -26,6 +27,7 @@ export enum named {
   bnb = "56",
   remotefork = "31338",
   op = "10",
+  fantom = "250",
   ALL = 0,
 }
 
@@ -39,6 +41,7 @@ export enum ChainIdHex {
   Hardhat = "0x539",
   BNB = "0x38",
   Optimism = "0xa",
+  Fantom = "0xfa"
 }
 
 export const HexToChain = {
@@ -51,6 +54,7 @@ export const HexToChain = {
   "0x539": ChainId.Hardhat,
   "0x38": ChainId.BNB,
   "0xa": ChainId.Optimism,
+  "0xfa": ChainId.Fantom
 };
 
 export const supportedChainIds = [
@@ -64,6 +68,7 @@ export const supportedChainIds = [
   ChainId.Hardhat,
   ChainId.RemoteFork,
   ChainId.Optimism,
+  ChainId.Fantom,
   ChainId.ALL,
 ];
 
@@ -78,6 +83,7 @@ export const networkMap = {
   [ChainId.RemoteFork]: "RemoteFork",
   [ChainId.Optimism]: "Optimism",
   [ChainId.BNB]: "BNB",
+  [ChainId.Fantom]: "Fantom",
   [ChainId.ALL]: "All Networks",
 };
 
@@ -91,16 +97,17 @@ export const networkLogos = {
   [ChainId.Hardhat]: "/images/icons/testNetLogo.png",
   [ChainId.RemoteFork]: "/images/icons/testNetLogo.png",
   [ChainId.Optimism]: "/images/icons/optimism-op-logo.svg",
+  [ChainId.Fantom]: "/images/icons/fantom.png",
   [ChainId.BNB]: "/images/icons/bsc-logo.png",
 };
 export const RPC_URLS = {
-  [ChainId.Ethereum]: `https://mainnet.infura.io/v3/${process.env.INFURA_PROJECT_ID}`,
-  [ChainId.Goerli]: `https://goerli.infura.io/v3/${process.env.INFURA_PROJECT_ID}`,
-  [ChainId.Arbitrum]: `https://arbitrum-mainnet.infura.io/v3/${process.env.INFURA_PROJECT_ID}`,
-  [ChainId.Polygon]: `https://polygon-mainnet.infura.io/v3/${process.env.INFURA_PROJECT_ID}`,
+  [ChainId.Ethereum]: `https://eth-mainnet.alchemyapi.io/v2/${process.env.NEXT_PUBLIC_ALCHEMY_API_KEY}`,
+  [ChainId.Goerli]: "https://goerli.blockpi.network/v1/rpc/public",
+  [ChainId.Arbitrum]: `https://arb-mainnet.g.alchemy.com/v2/${process.env.NEXT_PUBLIC_ALCHEMY_API_KEY}`,
+  [ChainId.Polygon]: `https://polygon-mainnet.g.alchemy.com/v2/${process.env.NEXT_PUBLIC_ALCHEMY_API_KEY}`,
   [ChainId.Optimism]: `https://opt-mainnet.g.alchemy.com/v2/${process.env.NEXT_PUBLIC_ALCHEMY_API_KEY}`,
-  [ChainId.Mumbai]: `https://polygon-mumbai.infura.io/v3/${process.env.INFURA_PROJECT_ID}`,
   [ChainId.BNB]: `https://bsc-dataseed1.binance.org`,
+  [ChainId.Fantom]: `https://rpc.fantom.network`,
   [ChainId.Localhost]: `http://localhost:8545`,
   [ChainId.Hardhat]: `http://localhost:8545`,
   [ChainId.RemoteFork]: `http://localhost:8545`,
@@ -116,6 +123,7 @@ export const PRC_PROVIDERS = {
   [ChainId.Hardhat]: new ethers.providers.JsonRpcProvider(RPC_URLS[ChainId.Hardhat], ChainId.Hardhat),
   [ChainId.RemoteFork]: new ethers.providers.JsonRpcProvider(RPC_URLS[ChainId.RemoteFork], ChainId.RemoteFork),
   [ChainId.Optimism]: new ethers.providers.JsonRpcProvider(RPC_URLS[ChainId.Optimism], ChainId.Optimism),
+  [ChainId.Fantom]: new ethers.providers.JsonRpcProvider(RPC_URLS[ChainId.Fantom], ChainId.Fantom),
 };
 
 export type HardhatConfigNetworks = {
@@ -125,6 +133,8 @@ export type HardhatConfigNetworks = {
   polygon?: string;
   hardhat?: string;
   arbitrum?: string;
+  optimism?: string;
+  fantom?: string;
   localhost?: string;
   remote_fork?: string;
 };
@@ -139,5 +149,6 @@ export const HardhatConfigNetworksChainIdMapping = {
   hardhat: ChainId.Hardhat,
   localhost: ChainId.Localhost,
   arbitrum: ChainId.Arbitrum,
+  fantom: ChainId.Fantom,
   remote_fork: ChainId.RemoteFork,
 };

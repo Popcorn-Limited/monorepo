@@ -9,7 +9,6 @@ export const useTotalAssets: Pop.Hook<BigNumberWithFormatted> = ({ chainId, addr
     chainId: Number(chainId),
     abi: ["function totalAssets() external view returns (uint256)"],
     functionName: "totalAssets",
-    cacheOnBlock: true,
     scopeKey: `totalAssets:${chainId}:${address}`,
     enabled: !!address && !!chainId,
     select: (data) => {
