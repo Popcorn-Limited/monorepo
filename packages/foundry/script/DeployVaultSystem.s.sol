@@ -169,6 +169,13 @@ contract DeployVaultSystem is Script {
     IERC20(yearn).approve(yearnMetadata.staking, 100e15);
     IMultiRewardStaking(yearnMetadata.staking).deposit(100e15, deployer);
 
+    // deposit usdc and stake through the router
+    IERC20(0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48).approve(address(router), 100e6);
+    router.depositAndStake(IERC4626(yearn), 100e6, deployer);
+
+    IERC20(yearnMetadata.staking).approve(address(router), 10e15);
+    router.redeemAndWithdraw(IERC4626(yearn), 10e15, deployer, deployer);
+
     emit log_named_address("YearnVault: ", yearn);
 
     // beefyVault stEth/eth = 0xa7739fd3d12ac7F16D8329AF3Ee407e19De10D8D

@@ -11,13 +11,15 @@ const TABS = [TAB_DEPOSIT, TAB_WITHDRAW];
 
 function DepositWithdraw({
   vault,
-  vaultTokenAddress,
+  asset,
   chainId,
+  staking,
   getTokenUrl
 }: {
   vault: string;
-  vaultTokenAddress: string;
+  asset: string;
   chainId: any;
+  staking: string;
   getTokenUrl?: string;
 }) {
   const [activeTab, setActiveTab] = useState(TAB_DEPOSIT);
@@ -25,8 +27,9 @@ function DepositWithdraw({
 
   const sharedProps = {
     vault,
-    vaultTokenAddress,
+    asset,
     chainId,
+    staking
   };
 
   return (

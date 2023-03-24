@@ -1548,14 +1548,24 @@
   "1337": {
     "chainId": "1337",
     "contracts": {
-      "0x7036124464a2d2447516309169322c8498ac51e3":{
+      "0x7036124464a2d2447516309169322c8498ac51e3": {
         "abi": null,
         "address": "0x7036124464a2d2447516309169322c8498ac51e3",
         "metadata": null
       },
-      "vaultRegistry":{
+      "vaultRegistry": {
         "abi": null,
         "address": "0x7036124464a2d2447516309169322c8498ac51e3",
+        "metadata": null
+      },
+      "0x5c932424acbfab036969b3b9d94ba9ecbae7565d": {
+        "abi": null,
+        "address": "0x5c932424acbfab036969b3b9d94ba9ecbae7565d",
+        "metadata": null
+      },
+      "vaultRouter": {
+        "abi": null,
+        "address": "0x5c932424acbfab036969b3b9d94ba9ecbae7565d",
         "metadata": null
       },
       "0x0000000022D53366457F9d5E68Ec105046FC4383": {

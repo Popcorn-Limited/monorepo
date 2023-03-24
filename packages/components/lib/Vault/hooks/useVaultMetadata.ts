@@ -1,10 +1,8 @@
-import type { BigNumber } from "ethers";
-import { useVaultRegistry } from "@popcorn/components/hooks/vaults";
-import { Address, useContractRead } from "wagmi";
 import { IpfsClient } from "@popcorn/utils";
+import { BigNumber } from "ethers";
+import { useVaultRegistry } from "@popcorn/components/hooks/vaults";
 import { useEffect, useState } from "react";
-
-// TODO use proper ipfs fetch
+import { Address, useContractRead } from "wagmi";
 
 function useGetIpfsMetadata(address: string, cid?: string): IpfsMetadata {
   const [ipfsData, setIpfsData] = useState<IpfsMetadata>();
@@ -24,13 +22,7 @@ function useGetIpfsMetadata(address: string, cid?: string): IpfsMetadata {
   return ipfsData;
 }
 
-type VaultMetadataProps = {
-  chainId: any;
-  vaultAddress: any;
-  children: (metadata?: Partial<VaultMetadata>) => React.ReactElement;
-};
-
-function VaultMetadata({ chainId, children, vaultAddress }: VaultMetadataProps) {
+export default function useVaultMetadata(vaultAddress, chainId): VaultMetadata {
   const registry = useVaultRegistry(chainId);
   const { data } = useContractRead({
     address: registry.address as Address,
@@ -96,10 +88,9 @@ function VaultMetadata({ chainId, children, vaultAddress }: VaultMetadataProps) 
     }],
   });
   const ipfsMetadata = useGetIpfsMetadata(vaultAddress, data?.metadataCID);
-
-
-  return children({ ...data, metadata: ipfsMetadata } as VaultMetadata);
+  return { ...data, metadata: ipfsMetadata } as VaultMetadata;
 }
+
 
 export type VaultMetadata = {
   /** @notice Vault address*/
@@ -111,7 +102,7 @@ export type VaultMetadata = {
   /** @notice IPFS CID of vault metadata*/
   metadataCID: string;
   /** @notice Metadata pulled from IPFS*/
-  metadata: IpfsMetadata;
+  metadata?: IpfsMetadata;
   /** @notice OPTIONAL - If the asset is an Lp Token these are its underlying assets*/
   swapTokenAddresses: [Address, Address, Address, Address, Address, Address, Address, Address];
   /** @notice OPTIONAL - If the asset is an Lp Token its the pool address*/
@@ -135,5 +126,3 @@ export type IpfsMetadata = {
   }
   getTokenUrl: string;
 }
-
-export default VaultMetadata;
