@@ -1664,6 +1664,16 @@
   "1337": {
     "chainId": "1337",
     "contracts": {
+      "0x7036124464a2d2447516309169322c8498ac51e3":{
+        "abi": null,
+        "address": "0x7036124464a2d2447516309169322c8498ac51e3",
+        "metadata": null
+      },
+      "vaultRegistry":{
+        "abi": null,
+        "address": "0x7036124464a2d2447516309169322c8498ac51e3",
+        "metadata": null
+      },
       "0x0000000022D53366457F9d5E68Ec105046FC4383": {
         "abi": null,
         "address": "0x0000000022D53366457F9d5E68Ec105046FC4383",
