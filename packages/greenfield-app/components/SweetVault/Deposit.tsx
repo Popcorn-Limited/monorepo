@@ -9,10 +9,12 @@ function Deposit({
   vault,
   vaultTokenAddress,
   chainId,
+  getTokenUrl
 }: {
   vault: string;
   vaultTokenAddress: string;
   chainId: any;
+  getTokenUrl?: string;
 }) {
   const { data: allowance } = useAllowance({ address: vaultTokenAddress, account: vault as Address, chainId })
 
@@ -32,20 +34,11 @@ function Deposit({
           };
         }}
         allowance={allowance?.value}
+        getTokenUrl={getTokenUrl}
       >
         {({ ActionableComponent }) => {
           return (
             <>
-              <Link
-                href={`https://curve.fi/`}
-                target="_blank"
-                passHref
-                className="w-full flex flex-row items-center text-primary mt-8 bg-warmGray/20 rounded-md p-2 border border-customLightGray" >
-                <p>Get Token</p>
-                <span className="ml-4">
-                  <RightArrowIcon color="827D69" />
-                </span>
-              </Link>
               <FeeBreakdown vault={vault} />
               <ActionableComponent />
             </>);
