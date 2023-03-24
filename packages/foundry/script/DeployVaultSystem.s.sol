@@ -169,6 +169,8 @@ contract DeployVaultSystem is Script {
     IERC20(yearn).approve(yearnMetadata.staking, 100e15);
     IMultiRewardStaking(yearnMetadata.staking).deposit(100e15, deployer);
 
+    emit log_named_address("YearnVault: ", yearn);
+
     // beefyVault stEth/eth = 0xa7739fd3d12ac7F16D8329AF3Ee407e19De10D8D
     setPermission(0xa7739fd3d12ac7F16D8329AF3Ee407e19De10D8D, true, false);
     // beefyBooster = 0xAe3F0C61F3Dc48767ccCeF3aD50b29437BE4b1a4
@@ -211,6 +213,8 @@ contract DeployVaultSystem is Script {
     VaultMetadata memory beefyMetadata = vaultRegistry.getVault(beefy);
     IERC20(beefy).approve(beefyMetadata.staking, 10e27);
     IMultiRewardStaking(beefyMetadata.staking).deposit(10e27, deployer);
+
+    emit log_named_address("BeefyVault: ", beefy);
 
     vm.stopBroadcast();
   }

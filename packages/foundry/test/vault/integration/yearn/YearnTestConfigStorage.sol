@@ -18,6 +18,9 @@ contract YearnTestConfigStorage is ITestConfigStorage {
 
     // WETH
     // testConfigs.push(YearnTestConfig(0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2));
+
+    // DAI
+    testConfigs.push(YearnTestConfig(0x6B175474E89094C44Da98b954EedeAC495271d0F));
   }
 
   function getTestConfig(uint256 i) public view returns (bytes memory) {

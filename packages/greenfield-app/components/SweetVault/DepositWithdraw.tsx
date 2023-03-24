@@ -13,10 +13,12 @@ function DepositWithdraw({
   vault,
   vaultTokenAddress,
   chainId,
+  getTokenUrl
 }: {
   vault: string;
   vaultTokenAddress: string;
   chainId: any;
+  getTokenUrl?: string;
 }) {
   const [activeTab, setActiveTab] = useState(TAB_DEPOSIT);
   const isDepositTab = activeTab === TAB_DEPOSIT;
@@ -30,7 +32,7 @@ function DepositWithdraw({
   return (
     <Fragment>
       <TabSelector className="mb-6" availableTabs={TABS} activeTab={activeTab} setActiveTab={setActiveTab} />
-      {isDepositTab ? <Deposit {...sharedProps} /> : <Withdraw {...sharedProps} />}
+      {isDepositTab ? <Deposit {...sharedProps} getTokenUrl={getTokenUrl} /> : <Withdraw {...sharedProps} />}
     </Fragment>
   );
 }

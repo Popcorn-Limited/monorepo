@@ -2,15 +2,19 @@ import AssetInputWithAction from "@popcorn/components/components/AssetInputWithA
 import FeeBreakdown from "./FeeBreakdown";
 import { useAllowance } from "@popcorn/components/lib/Erc20/hooks";
 import { Address } from "wagmi";
+import Link from "next/link";
+import RightArrowIcon from "@popcorn/components/components/SVGIcons/RightArrowIcon";
 
 function Deposit({
   vault,
   vaultTokenAddress,
   chainId,
+  getTokenUrl
 }: {
   vault: string;
   vaultTokenAddress: string;
   chainId: any;
+  getTokenUrl?: string;
 }) {
   const { data: allowance } = useAllowance({ address: vaultTokenAddress, account: vault as Address, chainId })
 
@@ -30,9 +34,14 @@ function Deposit({
           };
         }}
         allowance={allowance?.value}
+        getTokenUrl={getTokenUrl}
       >
         {({ ActionableComponent }) => {
-          return <FeeBreakdown vault={vault} ActionableComponent={ActionableComponent} />;
+          return (
+            <>
+              <FeeBreakdown vault={vault} />
+              <ActionableComponent />
+            </>);
         }}
       </AssetInputWithAction>
     </div>

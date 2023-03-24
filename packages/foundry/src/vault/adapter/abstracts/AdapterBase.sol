@@ -97,34 +97,6 @@ abstract contract AdapterBase is
   error ZeroAmount();
 
   /**
-   * @notice Deposits assets into the underlying protocol and mints vault shares to `receiver`.
-   * @param assets Amount of assets to deposit.
-   * @param receiver Receiver of the shares.
-   */
-  function deposit(uint256 assets, address receiver) public virtual override returns (uint256) {
-    if (assets > maxDeposit(receiver)) revert MaxError(assets);
-
-    uint256 shares = _convertToShares(assets, Math.Rounding.Down);
-    _deposit(_msgSender(), receiver, assets, shares);
-
-    return shares;
-  }
-
-  /**
-   * @notice Mints vault shares to `receiver` and deposits assets into the underlying protocol.
-   * @param shares Amount of shares to mint.
-   * @param receiver Receiver of the shares.
-   */
-  function mint(uint256 shares, address receiver) public virtual override returns (uint256) {
-    if (shares > maxMint(receiver)) revert MaxError(shares);
-
-    uint256 assets = _convertToAssets(shares, Math.Rounding.Up);
-    _deposit(_msgSender(), receiver, assets, shares);
-
-    return assets;
-  }
-
-  /**
    * @notice Deposit `assets` into the underlying protocol and mints vault shares to `receiver`.
    * @dev Executes harvest if `harvestCooldown` is passed since last invocation.
    */
@@ -142,45 +114,6 @@ abstract contract AdapterBase is
     harvest();
 
     emit Deposit(caller, receiver, assets, shares);
-  }
-
-  /**
-   * @notice Withdraws `assets` from the underlying protocol and burns vault shares from `owner`.
-   * @param assets Amount of assets to withdraw.
-   * @param receiver Receiver of the assets.
-   * @param owner Owner of the shares.
-   */
-  function withdraw(
-    uint256 assets,
-    address receiver,
-    address owner
-  ) public virtual override returns (uint256) {
-    if (assets > maxWithdraw(owner)) revert MaxError(assets);
-
-    uint256 shares = _convertToShares(assets, Math.Rounding.Up);
-
-    _withdraw(_msgSender(), receiver, owner, assets, shares);
-
-    return shares;
-  }
-
-  /**
-   * @notice Burns vault shares from `owner` and withdraws `assets` from the underlying protocol.
-   * @param shares Amount of shares to burn.
-   * @param receiver Receiver of the assets.
-   * @param owner Owner of the shares.
-   */
-  function redeem(
-    uint256 shares,
-    address receiver,
-    address owner
-  ) public virtual override returns (uint256) {
-    if (shares > maxRedeem(owner)) revert MaxError(shares);
-
-    uint256 assets = _convertToAssets(shares, Math.Rounding.Down);
-    _withdraw(_msgSender(), receiver, owner, assets, shares);
-
-    return assets;
   }
 
   /**
