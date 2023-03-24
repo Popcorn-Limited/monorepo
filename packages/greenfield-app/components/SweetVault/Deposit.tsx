@@ -18,7 +18,7 @@ function Deposit({
   staking: string
   getTokenUrl?: string;
 }) {
-  const usesStaking = staking.toLowerCase() !== constants.AddressZero.toLowerCase();
+  const usesStaking = staking?.toLowerCase() !== constants.AddressZero.toLowerCase();
   const { address: account } = useAccount();
   const [router] = useNamedAccounts(chainId, ["vaultRouter"]);
 

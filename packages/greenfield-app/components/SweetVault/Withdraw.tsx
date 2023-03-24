@@ -16,7 +16,7 @@ function Withdraw({
   chainId: any;
   staking: string;
 }) {
-  const usesStaking = staking.toLowerCase() !== constants.AddressZero.toLowerCase();
+  const usesStaking = staking?.toLowerCase() !== constants.AddressZero.toLowerCase();
   const [router] = useNamedAccounts(chainId, ["vaultRouter"]);
   const { address: account } = useAccount();
 
