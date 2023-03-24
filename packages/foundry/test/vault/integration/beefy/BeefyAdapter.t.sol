@@ -356,7 +356,7 @@ contract BeefyAdapterTest is AbstractAdapterTest {
     assertApproxEqAbs(oldTotalAssets, adapter.totalAssets(), 50, "totalAssets");
     assertApproxEqAbs(oldTotalSupply, adapter.totalSupply(), 50, "totalSupply");
     assertApproxEqAbs(asset.balanceOf(address(adapter)), 0, 50, "asset balance");
-    assertApproxEqAbs(iouBalance(), oldIouBalance, 50, "iou balance");
+    assertApproxEqRel(iouBalance(), oldIouBalance, 1, "iou balance");
 
     // Deposit and mint dont revert
     vm.startPrank(bob);

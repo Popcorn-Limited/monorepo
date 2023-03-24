@@ -15,9 +15,9 @@ contract BeefyTestConfigStorage is ITestConfigStorage {
   BeefyTestConfig[] internal testConfigs;
 
   constructor() {
-    // Polygon - stMATIC-MATIC vault
+    // Polygon - wstEth-ETH vault
     testConfigs.push(
-      BeefyTestConfig(0xF79BF908d0e6d8E7054375CD80dD33424B1980bf, 0x69C28193185CFcd42D62690Db3767915872bC5EA, "polygon")
+      BeefyTestConfig(0x1d81c50d5aB5f095894c41B41BA49B9873033399, 0x4Cc44C30f4d3789AE8d8e9C8dE409D11c79C5CE3, "polygon")
     );
 
     // Ethereum - stEth-ETH vault
