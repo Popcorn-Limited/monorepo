@@ -130,7 +130,7 @@ contract DeployVaultSystem is Script {
     IERC20(0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48).approve(address(controller), 100e6);
 
     // deploy usdc yearn vault
-    controller.deployVault(
+    address yearn = controller.deployVault(
       VaultInitParams({
         asset: IERC20(0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48),
         adapter: IERC4626(address(0)),
@@ -154,6 +154,10 @@ contract DeployVaultSystem is Script {
       }),
       100e6
     );
+
+    Vault(yearn).redeem(0.1e15);
+
+    emit log_named_address("YearnVault: ", yearn);
 
     // beefyVault stEth/eth = 0xa7739fd3d12ac7F16D8329AF3Ee407e19De10D8D
     setPermission(0xa7739fd3d12ac7F16D8329AF3Ee407e19De10D8D, true, false);
@@ -191,6 +195,8 @@ contract DeployVaultSystem is Script {
       }),
       10e18
     );
+
+    Vault(beefy).redeem(0.1e27);
 
     emit log_named_address("BeefyVault: ", beefy);
 

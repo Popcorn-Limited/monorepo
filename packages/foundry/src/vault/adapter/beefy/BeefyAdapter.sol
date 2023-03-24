@@ -105,8 +105,15 @@ contract BeefyAdapter is AdapterBase, WithRewards {
   /// @notice `previewWithdraw` that takes beefy withdrawal fees into account
   function previewWithdraw(uint256 assets) public view override returns (uint256) {
     IBeefyStrat strat = IBeefyStrat(beefyVault.strategy());
-    uint256 beefyFee = strat.withdrawalFee();
-    if (beefyFee > 0) assets -= assets.mulDiv(beefyFee, BPS_DENOMINATOR, Math.Rounding.Up);
+
+    uint256 beefyFee;
+    try strat.withdrawalFee() returns (uint256 _beefyFee) {
+      beefyFee = _beefyFee;
+    } catch {
+      beefyFee = strat.withdrawFee();
+    }
+
+    if (beefyFee > 0) assets = assets.mulDiv(BPS_DENOMINATOR, BPS_DENOMINATOR - beefyFee, Math.Rounding.Up);
 
     return _convertToShares(assets, Math.Rounding.Up);
   }
@@ -116,8 +123,15 @@ contract BeefyAdapter is AdapterBase, WithRewards {
     uint256 assets = _convertToAssets(shares, Math.Rounding.Down);
 
     IBeefyStrat strat = IBeefyStrat(beefyVault.strategy());
-    uint256 beefyFee = strat.withdrawalFee();
-    if (beefyFee > 0) assets -= assets.mulDiv(beefyFee, BPS_DENOMINATOR, Math.Rounding.Up);
+
+    uint256 beefyFee;
+    try strat.withdrawalFee() returns (uint256 _beefyFee) {
+      beefyFee = _beefyFee;
+    } catch {
+      beefyFee = strat.withdrawFee();
+    }
+
+    if (beefyFee > 0) assets = assets.mulDiv(BPS_DENOMINATOR - beefyFee, BPS_DENOMINATOR, Math.Rounding.Up);
 
     return assets;
   }
@@ -135,6 +149,7 @@ contract BeefyAdapter is AdapterBase, WithRewards {
   /// @notice Withdraw from the beefy vault and optionally from the booster given its configured
   function _protocolWithdraw(uint256, uint256 shares) internal virtual override {
     uint256 beefyShares = convertToUnderlyingShares(0, shares);
+
     if (address(beefyBooster) != address(0)) beefyBooster.withdraw(beefyShares);
     beefyVault.withdraw(beefyShares);
   }
