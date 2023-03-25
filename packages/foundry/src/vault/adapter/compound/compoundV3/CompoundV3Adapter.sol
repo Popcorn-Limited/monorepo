@@ -58,8 +58,9 @@ contract CompoundV3Adapter is AdapterBase, WithRewards {
 
     IERC20(asset()).approve(address(cToken), type(uint256).max);
 
-    uint256 compSpeed = cToken.baseTrackingBorrowSpeed();
-    isActiveCompRewards = compSpeed > 0 ? true : false;
+    uint256 compBorrowSpeed = cToken.baseTrackingBorrowSpeed();
+    uint256 compSupplySpeed = cToken.baseTrackingSupplySpeed();
+    isActiveCompRewards = compBorrowSpeed + compSupplySpeed > 0 ? true : false;
   }
 
   function name() public view override(IERC20Metadata, ERC20) returns (string memory) {
