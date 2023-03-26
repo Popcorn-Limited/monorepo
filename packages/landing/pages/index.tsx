@@ -18,7 +18,7 @@ const IndexPage = () => {
   }, [router.pathname]);
   return (
     <div className="absolute left-0 flex flex-col">
-      <div className="flex-col w-full h-full smmd:h-screen w-screen relative flex">
+      <div className="flex-col w-full h-full smmd:h-screen min-h-[600px] w-screen relative flex">
         <DesktopMenu />
         <div className="flex flex-row justify-end absolute right-0 top-96 smmd:top-24 ">
           <img alt="" className="smmd:w-[50vw] w-[60vw] smmd:max-w-[700px] smmd:max-h-[80vh]" src="/images/icons/greenPopLogo.svg" />
@@ -31,14 +31,19 @@ const IndexPage = () => {
               </h1>
               <div className="w-fit flex mb-48 smmd:mb-0">
                 <MainActionButton label="Get Started" >
-                  <div className="w-full flex flex-row">
+                  <div className="w-full flex flex-row items-center gap-x-4">
                     <span>Get Started</span>
-                    <RightArrowIcon color="#FFFFFF" />
+                    <svg width="41" height="8" viewBox="0 0 41 8" fill="black" xmlns="http://www.w3.org/2000/svg">
+                      <path
+                        d="M40.3536 4.35355C40.5488 4.15829 40.5488 3.84171 40.3536 3.64645L37.1716 0.464466C36.9763 0.269204 36.6597 0.269204 36.4645 0.464466C36.2692 0.659728 36.2692 0.976311 36.4645 1.17157L39.2929 4L36.4645 6.82843C36.2692 7.02369 36.2692 7.34027 36.4645 7.53553C36.6597 7.7308 36.9763 7.7308 37.1716 7.53553L40.3536 4.35355ZM0 4.5H40V3.5H0V4.5Z"
+                        fill={`#${'black'}`}
+                      />
+                    </svg>
                   </div>
                 </MainActionButton>
               </div>
               <div className="flex smmd:flex-row items-start smmd:w-full smmd:justify-between flex-col gap-y-20 mb-16 smmd:mb-8">
-                <StatusWithLabel label="TVL" content={<p className="text-gray-900 text-8xl mt-4">$20M</p>} infoIconProps={{ id: 'idx', title: 'TVL', content: <p className="text-gray-900 text-5xl">$20M</p> }} />
+                <StatusWithLabel label="TVL" content={<p className="text-gray-900 text-8xl mt-4">$20M</p>} infoIconProps={{ id: 'idx', title: 'TVL', content: <p className="text-gray-900 text-md">This is the total amount locked on Popcorns smart contracts</p> }} />
                 <div className="smmd:align-end max-w-[500px] smmd:flex smmd:flex-col smmd:h-full smmd:justify-end">
                   <p className="smmd:text-right text-left  text-lg ">Popcorn is a ReFi yield-optimizing protocol with automated asset strategies that simultaneously fund public goods</p>
                 </div>
