@@ -18,18 +18,18 @@ const IndexPage = () => {
   }, [router.pathname]);
   return (
     <div className="absolute left-0 flex flex-col">
-      <div className="flex-col w-full h-full md:h-screen w-screen relative flex">
+      <div className="flex-col w-full h-full smmd:h-screen w-screen relative flex">
         <DesktopMenu />
-        <div className="flex flex-row justify-end absolute right-0 top-96 md:top-24 ">
-          <img alt="" className="md:w-[35vw] w-[60vw] max-w-[300px] md:max-w-[700px] md:max-h-[80vh]" src="/images/icons/greenPopLogo.svg" />
+        <div className="flex flex-row justify-end absolute right-0 top-96 smmd:top-24 ">
+          <img alt="" className="smmd:w-[50vw] w-[60vw] smmd:max-w-[700px] smmd:max-h-[80vh]" src="/images/icons/greenPopLogo.svg" />
         </div>
-        <section className="relative px-6 md:px-8 md:mb-0 md:h-[90vh] justify-between items-start w-full">
-          <div className="flex flex-col items-start md:h-full md:w-full pb-16 md:pb-0 mx-auto min-w-480 lg:flex-row">
-            <div className=" text-center z-20 md:text-left md:mx-0 flex flex-col justify-around h-full w-full">
-              <h1 className="mb-6 leading-[60px] md:leading-[72px] font-normal min-h-[80px] max-w-[450px] lglaptop:max-w-[900px] md:max-w-[700px] text-left text-5xl md:text-6xl lglaptop:text-[96px] lglaptop:leading-[90px] md:w-1/2 mt-24 md:mt-0 ">
+        <section className="relative px-6 smmd:px-8 smmd:mb-0 smmd:h-[90vh] justify-between items-start w-full">
+          <div className="flex flex-col items-start smmd:h-full smmd:w-full pb-16 smmd:pb-0 mx-auto min-w-480 lg:flex-row">
+            <div className=" text-center z-20 smmd:text-left smmd:mx-0 flex flex-col justify-around h-full w-full">
+              <h1 className="mb-6 leading-[60px] smmd:leading-[72px] font-normal min-h-[80px] max-w-[450px] lglaptop:max-w-[900px] smmd:max-w-[700px] text-left text-5xl smmd:text-6xl lglaptop:text-[96px] lglaptop:leading-[90px] smmd:w-1/2 mt-24 smmd:mt-0 ">
                 Do well and do good together with Popcorn’s innovative DeFi solutions
               </h1>
-              <div className="w-fit flex mb-48 md:mb-0">
+              <div className="w-fit flex mb-48 smmd:mb-0">
                 <MainActionButton label="Get Started" >
                   <div className="w-full flex flex-row">
                     <span>Get Started</span>
@@ -37,24 +37,24 @@ const IndexPage = () => {
                   </div>
                 </MainActionButton>
               </div>
-              <div className="flex md:flex-row items-start md:w-full md:justify-between flex-col gap-y-20 mb-16 md:mb-8">
+              <div className="flex smmd:flex-row items-start smmd:w-full smmd:justify-between flex-col gap-y-20 mb-16 smmd:mb-8">
                 <StatusWithLabel label="TVL" content={<p className="text-gray-900 text-8xl mt-4">$20M</p>} infoIconProps={{ id: 'idx', title: 'TVL', content: <p className="text-gray-900 text-5xl">$20M</p> }} />
-                <div className="md:align-end max-w-[500px]">
-                  <p className="md:text-right text-left  text-lg ">Popcorn is a ReFi yield-optimizing protocol with automated asset strategies that simultaneously fund public goods</p>
+                <div className="smmd:align-end max-w-[500px] smmd:flex smmd:flex-col smmd:h-full smmd:justify-end">
+                  <p className="smmd:text-right text-left  text-lg ">Popcorn is a ReFi yield-optimizing protocol with automated asset strategies that simultaneously fund public goods</p>
                 </div>
               </div>
 
             </div>
           </div>
         </section>
-        <div className="col-span-12 block md:col-span-8 md:col-start-4 px-6 md:px-8 pb-6">
+        <div className="col-span-12 block smmd:col-span-8 smmd:col-start-4 px-6 smmd:px-8 pb-6">
           <h6 className=" font-medium leading-6">Built With</h6>
           <SliderContainer slidesToShow={4}>
-            <img src="/images/builtWithLogos/curve.svg" alt="" className="px-2 md:px-5 w-10 h-10 object-contain" />
-            <img src="/images/builtWithLogos/synthetix.svg" alt="" className="px-2 md:px-5 w-10 h-10 object-contain" />
-            <img src="/images/builtWithLogos/setLogo.svg" alt="" className="px-2 md:px-5 w-10 h-10 object-contain" />
-            <img src="/images/builtWithLogos/yearn.svg" alt="" className="px-2 md:px-5 w-10 h-10 object-contain" />
-            <img src="/images/builtWithLogos/uniswap.svg" alt="" className="px-2 md:px-5 w-10 h-10 object-contain" />
+            <img src="/images/builtWithLogos/curve.svg" alt="" className="px-2 smmd:px-5 w-10 h-10 object-contain" />
+            <img src="/images/builtWithLogos/synthetix.svg" alt="" className="px-2 smmd:px-5 w-10 h-10 object-contain" />
+            <img src="/images/builtWithLogos/setLogo.svg" alt="" className="px-2 smmd:px-5 w-10 h-10 object-contain" />
+            <img src="/images/builtWithLogos/yearn.svg" alt="" className="px-2 smmd:px-5 w-10 h-10 object-contain" />
+            <img src="/images/builtWithLogos/uniswap.svg" alt="" className="px-2 smmd:px-5 w-10 h-10 object-contain" />
           </SliderContainer>
         </div>
       </div>
@@ -64,9 +64,7 @@ const IndexPage = () => {
         <div className="flex flex-row justify-between w-10/12 pb-12 mx-auto border-b border-gray-500">
           <div className="w-6/12">
             <Link href="/" passHref>
-              {/* <a> */}
               <img src="/images/logoFooter.png" alt="Logo" className="h-10"></img>
-              {/* </a> */}
             </Link>
             <p className="w-7/12 py-4 text-base font-normal">
               Earn high yield on your cryptoassets while helping fund
