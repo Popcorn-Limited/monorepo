@@ -3,10 +3,12 @@ import React, { useEffect } from "react";
 import Link from 'next/link';
 import DesktopMenu from '../components/DesktopMenu';
 import MainActionButton from "../components/Common/MainActionButton";
-import RightArrowIcon from "../components/SVGIcons/RightArrowIcon";
 import StatusWithLabel from "components/Common/StatusWithLabel";
 import SliderContainer from "components/SliderContainer";
-import Image from "next/image";
+import GithubIcon from "@popcorn/components/components/SVGIcons/GithubIcon";
+import DiscordIcon from "@popcorn/components/components/SVGIcons/DiscordIcon";
+import TwitterIcon from "@popcorn/components/components/SVGIcons/TwitterIcon";
+import MediumIcon from "@popcorn/components/components/SVGIcons/MediumIcon";
 
 const IndexPage = () => {
   const router = useRouter();
@@ -16,11 +18,12 @@ const IndexPage = () => {
       router.replace(window.location.pathname);
     }
   }, [router.pathname]);
+
   return (
     <div className="absolute left-0 flex flex-col">
       <div className="flex-col w-full h-full smmd:h-screen min-h-[600px] w-screen relative flex">
         <DesktopMenu />
-        <div className="flex flex-row justify-end absolute right-0 top-96 smmd:top-24 ">
+        <div className="flex flex-row justify-end absolute right-0 top-96 smmd:top-24">
           <img alt="" className="smmd:w-[50vw] w-[60vw] smmd:max-w-[700px] smmd:max-h-[80vh]" src="/images/icons/greenPopLogo.svg" />
         </div>
         <section className="relative px-6 smmd:px-8 smmd:mb-0 smmd:h-[90vh] justify-between items-start w-full">
@@ -30,7 +33,7 @@ const IndexPage = () => {
                 Do well and do good together with Popcorn’s innovative DeFi solutions
               </h1>
               <div className="w-fit flex mb-48 smmd:mb-0">
-                <MainActionButton label="Get Started" >
+                <MainActionButton label="Get Started" handleClick={() => router.push("https://app.pop.network/")}>
                   <div className="w-full flex flex-row items-center gap-x-4">
                     <span>Get Started</span>
                     <svg width="41" height="8" viewBox="0 0 41 8" fill="black" xmlns="http://www.w3.org/2000/svg">
@@ -45,7 +48,7 @@ const IndexPage = () => {
               <div className="flex smmd:flex-row items-start smmd:w-full smmd:justify-between flex-col gap-y-20 mb-16 smmd:mb-8">
                 <StatusWithLabel label="TVL" content={<p className="text-gray-900 text-8xl mt-4">$20M</p>} infoIconProps={{ id: 'idx', title: 'TVL', content: <p className="text-gray-900 text-md">This is the total amount locked on Popcorns smart contracts</p> }} />
                 <div className="smmd:align-end max-w-[500px] smmd:flex smmd:flex-col smmd:h-full smmd:justify-end">
-                  <p className="smmd:text-right text-left  text-lg ">Popcorn is a ReFi yield-optimizing protocol with automated asset strategies that simultaneously fund public goods</p>
+                  <p className="smmd:text-right text-left text-lg">Popcorn is a ReFi yield-optimizing protocol with automated asset strategies that simultaneously fund public goods</p>
                 </div>
               </div>
 
@@ -65,65 +68,78 @@ const IndexPage = () => {
       </div>
 
 
-      <section className="w-full bg-secondary pt-14">
-        <div className="flex flex-row justify-between w-10/12 pb-12 mx-auto border-b border-gray-500">
-          <div className="w-6/12">
-            <Link href="/" passHref>
-              <img src="/images/logoFooter.png" alt="Logo" className="h-10"></img>
-            </Link>
-            <p className="w-7/12 py-4 text-base font-normal">
-              Earn high yield on your cryptoassets while helping fund
-              educational, environmental and open source initiatives
-            </p>
-            <div className="flex flex-row items-center space-x-4">
-              <Link href="https://www.facebook.com/PopcornDAO" passHref>
-                <img
-                  src="/images/facebook.svg"
-                  alt="facebook"
-                  className="w-8 h-8 cursor-pointer iconblue hover:text-blue-600"
-                ></img>
+      <section className="w-full pt-14">
+        <div className="flex flex-col md:flex-row justify-between w-11/12 pb-12 mx-auto border-b border-gray-500">
+          <Link href="/" passHref>
+            <img src="/images/icons/popLogo.svg" alt="Logo" className="h-10 hidden md:block"></img>
+          </Link>
+          <div className="space-y-6 md:hidden">
+            <div className="flex flex-col space-y-3 text-base">
+              <p className="text-base font-medium uppercase">Products</p>
+              <Link href="https://app.pop.network/sweet-vaults" passHref>
+                Sweet Vaults
               </Link>
+              <Link href="https://app.pop.network/ethereum/set/3x" passHref>
+                3X
+              </Link>
+              <Link href="https://app.pop.network/ethereum/set/butter" passHref>
+                Butter
+              </Link>
+              <Link href="https://app.pop.network/staking" passHref>
+                Staking
+              </Link>
+            </div>
+            <div className="flex flex-col space-y-3 text-base">
+              <p className="text-base font-medium uppercase">Connect</p>
               <Link href="https://twitter.com/Popcorn_DAO" passHref>
-                <img
-                  src="/images/twitter.svg"
-                  alt="twitter"
-                  className="w-8 h-8 cursor-pointer iconblue hover:text-blue-600"
-                ></img>
-              </Link>
-              <Link href="https://github.com/popcorndao" passHref>
-                <img
-                  src="/images/github.svg"
-                  alt="github"
-                  className="w-8 h-8 cursor-pointer iconblue hover:text-blue-600"
-                ></img>
+                Twitter
               </Link>
               <Link href="https://discord.gg/w9zeRTSZsq" passHref>
-                <img
-                  src="/images/discord.svg"
-                  alt="discord"
-                  className="w-8 h-8 cursor-pointer iconblue hover:text-blue-600"
-                ></img>
+                Discord
+              </Link>
+              <Link href="https://github.com/popcorndao" passHref>
+                Github
+              </Link>
+            </div>
+            <div className="flex flex-col space-y-3 text-base">
+              <p className="text-base font-medium uppercase">Bug Bounty</p>
+            </div>
+          </div>
+          <div className="md:w-6/12 mt-8 md:mt-0">
+            <p className="md:w-7/12 text-base font-normal">
+              Popcorn is an audited, non-custodial DeFi wealth manager with yield-generating products that simultaneously fund nonprofit and social impact organizations.
+            </p>
+            <div className="flex flex-row items-center justify-between md:justify-start md:space-x-4 mt-4">
+              <Link href="https://twitter.com/Popcorn_DAO" passHref>
+                <TwitterIcon color={"black"} size={"24"} />
+              </Link>
+              <Link href="https://medium.com/popcorndao" passHref>
+                <MediumIcon color={"black"} size={"24"} />
+              </Link>
+              <Link href="https://discord.gg/w9zeRTSZsq" passHref>
+                <DiscordIcon color={"black"} size={"24"} />
+              </Link>
+              <Link href="https://github.com/popcorndao" passHref>
+                <GithubIcon color={"black"} size={"24"} />
               </Link>
             </div>
           </div>
-          <div className="flex flex-col space-y-3 text-base">
-            <p className="text-base font-medium uppercase">Site</p>
-            <Link href="/" passHref>
-              {/* <a className="hover:text-blue-600">Home</a> */}
-              Home
+          <div className="hidden md:flex flex-col space-y-3 text-base">
+            <p className="text-base font-medium uppercase">Products</p>
+            <Link href="https://app.pop.network/sweet-vaults" passHref>
+              Sweet Vaults
             </Link>
-
-            <Link href="https://medium.com/popcorndao" passHref>
-              Blog
+            <Link href="https://app.pop.network/ethereum/set/3x" passHref>
+              3X
             </Link>
-            <Link
-              href="https://etherscan.io/token/0xd0cd466b34a24fcb2f87676278af2005ca8a78c4"
-              passHref
-            >
-              Popcorn (POP) Token
+            <Link href="https://app.pop.network/ethereum/set/butter" passHref>
+              Butter
+            </Link>
+            <Link href="https://app.pop.network/staking" passHref>
+              Staking
             </Link>
           </div>
-          <div className="flex flex-col space-y-3 text-base">
+          <div className="hidden md:flex flex-col space-y-3 text-base">
             <p className="text-base font-medium uppercase">Connect</p>
             <Link href="https://twitter.com/Popcorn_DAO" passHref>
               Twitter
@@ -135,17 +151,10 @@ const IndexPage = () => {
               Github
             </Link>
           </div>
-          <div className="flex flex-col space-y-3 text-base">
+          <div className="hidden md:flex flex-col space-y-3 text-base">
             <p className="text-base font-medium uppercase">Bug Bounty</p>
           </div>
         </div>
-        <p className="py-4 text-center font-medium">
-          ©2021, Popcorn Ltd All Rights Reserved{' '}
-          <span className="block text-xs ">
-            Winterbotham Place Marlborough &amp; Queen Streets P.O. Box SP
-            62556 Nassau, BS
-          </span>
-        </p>
       </section>
     </div>
 

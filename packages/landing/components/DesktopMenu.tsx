@@ -2,11 +2,9 @@
 import MainActionButton from "@popcorn/app/components/MainActionButton";
 import Link from "next/link";
 import { useRouter } from "next/router";
-import { useMemo, useRef, useState, Fragment, useCallback } from "react";
 
 export default function DesktopMenu(): JSX.Element {
   const router = useRouter();
-  const [menuVisible, toggleMenu] = useState<boolean>(false);
 
   return (
     <>
@@ -19,7 +17,7 @@ export default function DesktopMenu(): JSX.Element {
           </div>
         </div>
         <div className="flex w-fit">
-          <MainActionButton label="Launch app" handleClick={() => { }} />
+          <MainActionButton label="Launch app" handleClick={() => router.push("https://app.pop.network/")} />
         </div>
       </div>
     </>
