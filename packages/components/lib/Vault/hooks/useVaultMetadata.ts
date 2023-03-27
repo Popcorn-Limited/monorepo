@@ -92,6 +92,7 @@ export default function useVaultMetadata(vaultAddress, chainId): VaultMetadata {
     }],
   });
   const ipfsMetadata = useGetIpfsMetadata(vaultAddress, data?.metadataCID);
+  
   return { ...data, metadata: ipfsMetadata } as VaultMetadata;
 }
 
