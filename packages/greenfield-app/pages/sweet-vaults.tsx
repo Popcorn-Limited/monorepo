@@ -14,7 +14,12 @@ import { useState } from "react";
 import { BigNumber, constants } from "ethers";
 import { useAccount } from "wagmi";
 
-const SUPPORTED_NETWORKS = [ChainId.ALL, ChainId.Hardhat, ChainId.Optimism, ChainId.Fantom]
+const SUPPORTED_NETWORKS = [
+  ChainId.ALL,
+  ChainId.Optimism,
+  ChainId.Fantom,
+  ...(process.env.NEXT_PUBLIC_ENABLE_TESTNETS === "true" ? [ChainId.Hardhat] : [])
+]
 
 interface Bal {
   [key: string]: BigNumber;

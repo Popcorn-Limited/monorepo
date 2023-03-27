@@ -22,13 +22,13 @@ function Deposit({
   const { address: account } = useAccount();
   const [router] = useNamedAccounts(chainId, ["vaultRouter"]);
 
-  const { data: allowance } = useAllowance({ address: asset, account: (usesStaking ? router.address : vault) as Address, chainId });
+  const { data: allowance } = useAllowance({ address: asset, account: (usesStaking ? router?.address : vault) as Address, chainId });
 
   return (
     <div className="flex flex-col">
       <AssetInputWithAction
         assetAddress={asset}
-        target={(usesStaking ? router.address : vault) as string}
+        target={(usesStaking ? router?.address : vault) as string}
         chainId={chainId}
         action={(balance) => {
           return {
