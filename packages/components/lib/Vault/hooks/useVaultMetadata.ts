@@ -9,11 +9,15 @@ function useGetIpfsMetadata(address: string, cid?: string): IpfsMetadata {
 
   useEffect(() => {
     if (address) {
-      IpfsClient.get<IpfsMetadata>(
-        address.toLowerCase() === "0xB76fe239133EA8b92432C6D4b1E322063eEb6445".toLowerCase() ?
-          "QmdnDwaR7ExUmVMoVADwmVwES84NWqGtWMn2yswhZgZC8b" :
-          "QmYmzycZrD28BhRw6TxZKbwfgvXccg2ygkpKJZ5JcejjFH")
-        .then(res => setIpfsData(res))
+      if (cid && cid !== "QmbWqxBEKC3P8tqsKc98xmWNzrzDtRLMiMPL8wBuTGsMnR") {
+        IpfsClient.get<IpfsMetadata>(cid).then(res => setIpfsData(res))
+      } else {
+        IpfsClient.get<IpfsMetadata>(
+          address.toLowerCase() === "0xB76fe239133EA8b92432C6D4b1E322063eEb6445".toLowerCase() ?
+            "QmdnDwaR7ExUmVMoVADwmVwES84NWqGtWMn2yswhZgZC8b" :
+            "QmYmzycZrD28BhRw6TxZKbwfgvXccg2ygkpKJZ5JcejjFH")
+          .then(res => setIpfsData(res))
+      }
     }
   },
     [address, cid]
