@@ -16,9 +16,7 @@
         "abi": null,
         "address": "0x06325440d014e39736583c165c2963ba99faf14e",
         "metadata": {
-          "icons": [
-            "/images/tokens/crvSeth.png"
-          ],
+          "icons": ["/images/tokens/crvSeth.png"],
           "name": "ETH/sETH LP",
           "symbol": "ETH/sETH"
         }
@@ -29,10 +27,7 @@
         "metadata": {
           "buyLinkEthereum": "https://app.uniswap.org/#/swap?outputCurrency=0x06450dEe7FD2Fb8E39061434BAbCFC05599a6Fb8&chain=ethereum",
           "buyLinkPolygon": "https://app.uniswap.org/#/swap?outputCurrency=0x2AB0e9e4eE70FFf1fB9D67031E44F6410170d00e&chain=polygon",
-          "icons": [
-            "/images/tokens/xen.png",
-            "/images/icons/POP.svg"
-          ]
+          "icons": ["/images/tokens/xen.png", "/images/icons/POP.svg"]
         }
       },
       "0x08f866c74205617B6F3903EF481798EcED10cDEC": {
@@ -61,9 +56,7 @@
             "strategy": "Deposits LP token from Curve's sETH pool to Convex Finance to earn CRV and CVX (and any other available tokens). Earned tokens are harvested, sold for more sETH pool LP tokens and then deposited back into the strategy.",
             "token": "This token represents part ownership of a Curve liquidity pool. Holders earn fees from users trading in the pool, and can also deposit the LP to Curve's gauges to earn CRV emissions. This pool contains ETH and sETH, a synthetic ETH minted via the Synthetix platform."
           },
-          "icons": [
-            "/images/tokens/crvSeth.png"
-          ],
+          "icons": ["/images/tokens/crvSeth.png"],
           "name": "ETH/sETH Vault",
           "priceResolver": "vault",
           "symbol": "pop-ETH/sETH"
@@ -79,9 +72,7 @@
         "address": "0x109d2034e97eC88f50BEeBC778b5A5650F98c124",
         "metadata": {
           "apyResolver": "set_token",
-          "icons": [
-            "/images/icons/BTR.svg"
-          ],
+          "icons": ["/images/icons/BTR.svg"],
           "name": "Butter (V2)",
           "priceResolver": "set_token",
           "symbol": "BTR"
@@ -113,9 +104,7 @@
         "abi": null,
         "address": "0x2260FAC5E5542a773Aa44fBCfeDf7C193bc2C599",
         "metadata": {
-          "icons": [
-            "/images/tokens/wbtc.webp"
-          ],
+          "icons": ["/images/tokens/wbtc.webp"],
           "name": "Wrapped Bitcoin",
           "symbol": "WBTC"
         }
@@ -133,9 +122,7 @@
             "type": "synthetix"
           },
           "contractName": "ButterStaking",
-          "icons": [
-            "/images/icons/BTR.svg"
-          ],
+          "icons": ["/images/icons/BTR.svg"],
           "isERC20": false,
           "name": "Staked BTR",
           "priceResolver": "staking",
@@ -195,9 +182,7 @@
             "type": "synthetix"
           },
           "contractName": "ThreeXStaking",
-          "icons": [
-            "/images/tokens/3X.svg"
-          ],
+          "icons": ["/images/tokens/3X.svg"],
           "isERC20": false,
           "name": "Staked 3X",
           "priceResolver": "staking",
@@ -223,9 +208,7 @@
         "address": "0x5a770DbD3Ee6bAF2802D29a901Ef11501C44797A",
         "metadata": {
           "apyResolver": "yearn",
-          "icons": [
-            "/images/tokens/sUSD.png"
-          ],
+          "icons": ["/images/tokens/sUSD.png"],
           "name": "sUSD",
           "symbol": "sUSD"
         }
@@ -235,9 +218,7 @@
         "address": "0x5e74C9036fb86BD7eCdcb084a0673EFc32eA31cb",
         "metadata": {
           "apyResolver": "yearnAsset",
-          "icons": [
-            "/images/tokens/sEth.webp"
-          ],
+          "icons": ["/images/tokens/sEth.webp"],
           "name": "sETH",
           "symbol": "sETH"
         }
@@ -259,10 +240,7 @@
             ],
             "type": "synthetix"
           },
-          "icons": [
-            "/images/tokens/usdc.svg",
-            "/images/icons/POP.svg"
-          ],
+          "icons": ["/images/tokens/usdc.svg", "/images/icons/POP.svg"],
           "isERC20": false,
           "name": "Staked Arrakis USDC/POP LP",
           "priceResolver": "staking",
@@ -283,9 +261,7 @@
         "abi": null,
         "address": "0x6B175474E89094C44Da98b954EedeAC495271d0F",
         "metadata": {
-          "icons": [
-            "/images/tokens/dai.webp"
-          ],
+          "icons": ["/images/tokens/dai.webp"],
           "name": "DAI",
           "symbol": "DAI"
         }
@@ -308,9 +284,7 @@
         "abi": null,
         "address": "0x6c3F90f043a72FA612cbac8115EE7e52BDe6E490",
         "metadata": {
-          "icons": [
-            "/images/icons/3crv_icon.png"
-          ],
+          "icons": ["/images/icons/3crv_icon.png"],
           "name": "threeCrv",
           "symbol": "3CRV"
         }
@@ -376,9 +350,7 @@
         "address": "0x8b97ADE5843c9BE7a1e8c95F32EC192E31A46cf3",
         "metadata": {
           "apyResolver": "set_token",
-          "icons": [
-            "/images/tokens/3X.svg"
-          ],
+          "icons": ["/images/tokens/3X.svg"],
           "priceResolver": "set_token",
           "symbol": "3X"
         }
@@ -432,9 +404,7 @@
         "abi": null,
         "address": "0xA3D87FffcE63B53E0d54fAa1cc983B7eB0b74A9c",
         "metadata": {
-          "icons": [
-            "/images/tokens/crvSeth.png"
-          ],
+          "icons": ["/images/tokens/crvSeth.png"],
           "name": "crv-sETH/ETH LP",
           "symbol": "crv-sETH/ETH"
         }
@@ -504,9 +474,7 @@
         "address": "0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE",
         "metadata": {
           "decimals": 18,
-          "icons": [
-            "/images/tokens/eth.png"
-          ],
+          "icons": ["/images/tokens/eth.png"],
           "name": "ETH",
           "symbol": "ETH"
         }
@@ -530,9 +498,7 @@
         "abi": null,
         "address": "0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48",
         "metadata": {
-          "icons": [
-            "/images/tokens/usdc.svg"
-          ],
+          "icons": ["/images/tokens/usdc.svg"],
           "name": "USDC",
           "priceResolver": "defi_llama",
           "symbol": "USDC"
@@ -588,10 +554,7 @@
         "abi": null,
         "address": "0xbba11b41407df8793a89b44ee4b50afad4508555",
         "metadata": {
-          "icons": [
-            "/images/tokens/usdc.svg",
-            "/images/icons/POP.svg"
-          ],
+          "icons": ["/images/tokens/usdc.svg", "/images/icons/POP.svg"],
           "name": "Arrakis USDC/POP LP",
           "priceResolver": "arrakis"
         }
@@ -612,9 +575,7 @@
         "metadata": {
           "buyLinkEthereum": "https://app.uniswap.org/#/swap?inputCurrency=0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48&outputCurrency=0xD0Cd466b34A24fcB2f87676278AF2005Ca8A78c4&chain=mainnet",
           "buyLinkPolygon": "https://app.uniswap.org/#/swap?inputCurrency=0x2791Bca1f2de4661ED88A30C99A7a9449Aa84174&outputCurrency=0xc5b57e9a1e7914fda753a88f24e5703e617ee50c&chain=polygon",
-          "icons": [
-            "/images/icons/POP.svg"
-          ],
+          "icons": ["/images/icons/POP.svg"],
           "name": "Popcorn",
           "priceResolver": "pop"
         }
@@ -638,9 +599,7 @@
         "abi": null,
         "address": "0xdAC17F958D2ee523a2206206994597C13D831ec7",
         "metadata": {
-          "icons": [
-            "/images/tokens/usdt.webp"
-          ],
+          "icons": ["/images/tokens/usdt.webp"],
           "name": "USDT",
           "symbol": "USDT"
         }
@@ -667,10 +626,7 @@
             ],
             "type": "synthetix"
           },
-          "icons": [
-            "/images/tokens/xen.png",
-            "/images/icons/POP.svg"
-          ],
+          "icons": ["/images/tokens/xen.png", "/images/icons/POP.svg"],
           "name": "Staked Xen",
           "priceResolver": "staking",
           "symbol": "stXen"
@@ -688,9 +644,7 @@
             "functionName": "lockedBalanceOf(address)"
           },
           "contractName": "PopLocker",
-          "icons": [
-            "/images/icons/POP.svg"
-          ],
+          "icons": ["/images/icons/POP.svg"],
           "isERC20": false,
           "name": "Staked POP",
           "priceResolver": "staking",
@@ -746,9 +700,7 @@
         "address": "0x109d2034e97eC88f50BEeBC778b5A5650F98c124",
         "metadata": {
           "apyResolver": "set_token",
-          "icons": [
-            "/images/icons/BTR.svg"
-          ],
+          "icons": ["/images/icons/BTR.svg"],
           "name": "Butter (V2)",
           "priceResolver": "set_token",
           "symbol": "BTR"
@@ -781,9 +733,7 @@
             "type": "synthetix"
           },
           "contractName": "ButterStaking",
-          "icons": [
-            "/images/icons/BTR.svg"
-          ],
+          "icons": ["/images/icons/BTR.svg"],
           "isERC20": false,
           "name": "Staked BTR",
           "priceResolver": "staking",
@@ -914,9 +864,7 @@
         "abi": null,
         "address": "0xA3D87FffcE63B53E0d54fAa1cc983B7eB0b74A9c",
         "metadata": {
-          "icons": [
-            "/images/tokens/crvSeth.png"
-          ],
+          "icons": ["/images/tokens/crvSeth.png"],
           "name": "crv-sETH/ETH LP",
           "symbol": "crv-sETH/ETH"
         }
@@ -955,9 +903,7 @@
         "abi": null,
         "address": "0x6B175474E89094C44Da98b954EedeAC495271d0F",
         "metadata": {
-          "icons": [
-            "/images/tokens/dai.webp"
-          ],
+          "icons": ["/images/tokens/dai.webp"],
           "name": "DAI",
           "symbol": "DAI"
         }
@@ -982,9 +928,7 @@
         "address": "0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE",
         "metadata": {
           "decimals": 18,
-          "icons": [
-            "/images/tokens/eth.png"
-          ],
+          "icons": ["/images/tokens/eth.png"],
           "name": "ETH",
           "symbol": "ETH"
         }
@@ -1037,9 +981,7 @@
         "metadata": {
           "buyLinkEthereum": "https://app.uniswap.org/#/swap?inputCurrency=0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48&outputCurrency=0xD0Cd466b34A24fcB2f87676278AF2005Ca8A78c4&chain=mainnet",
           "buyLinkPolygon": "https://app.uniswap.org/#/swap?inputCurrency=0x2791Bca1f2de4661ED88A30C99A7a9449Aa84174&outputCurrency=0xc5b57e9a1e7914fda753a88f24e5703e617ee50c&chain=polygon",
-          "icons": [
-            "/images/icons/POP.svg"
-          ],
+          "icons": ["/images/icons/POP.svg"],
           "name": "Popcorn",
           "priceResolver": "pop"
         }
@@ -1056,9 +998,7 @@
             "functionName": "lockedBalanceOf(address)"
           },
           "contractName": "PopLocker",
-          "icons": [
-            "/images/icons/POP.svg"
-          ],
+          "icons": ["/images/icons/POP.svg"],
           "isERC20": false,
           "name": "Staked POP",
           "priceResolver": "staking",
@@ -1069,10 +1009,7 @@
         "abi": null,
         "address": "0xbba11b41407df8793a89b44ee4b50afad4508555",
         "metadata": {
-          "icons": [
-            "/images/tokens/usdc.svg",
-            "/images/icons/POP.svg"
-          ],
+          "icons": ["/images/tokens/usdc.svg", "/images/icons/POP.svg"],
           "name": "Arrakis USDC/POP LP",
           "priceResolver": "arrakis"
         }
@@ -1089,10 +1026,7 @@
             ],
             "type": "synthetix"
           },
-          "icons": [
-            "/images/tokens/usdc.svg",
-            "/images/icons/POP.svg"
-          ],
+          "icons": ["/images/tokens/usdc.svg", "/images/icons/POP.svg"],
           "isERC20": false,
           "name": "Staked Arrakis USDC/POP LP",
           "priceResolver": "staking",
@@ -1105,10 +1039,7 @@
         "metadata": {
           "buyLinkEthereum": "https://beta.arrakis.finance/#/vaults/0xBBA11b41407dF8793A89b44ee4b50AfAD4508555/add",
           "buyLinkPolygon": "https://beta.arrakis.finance/#/vaults/0x6dE0500211bc3140409B345Fa1a5289cb77Af1e4/add",
-          "icons": [
-            "/images/tokens/usdc.svg",
-            "/images/icons/POP.svg"
-          ],
+          "icons": ["/images/tokens/usdc.svg", "/images/icons/POP.svg"],
           "name": "USDC/POP LP",
           "priceResolver": "arrakis"
         }
@@ -1162,9 +1093,7 @@
         "address": "0x5e74C9036fb86BD7eCdcb084a0673EFc32eA31cb",
         "metadata": {
           "apyResolver": "yearnAsset",
-          "icons": [
-            "/images/tokens/sEth.webp"
-          ],
+          "icons": ["/images/tokens/sEth.webp"],
           "name": "sETH",
           "symbol": "sETH"
         }
@@ -1173,9 +1102,7 @@
         "abi": null,
         "address": "0x06325440d014e39736583c165c2963ba99faf14e",
         "metadata": {
-          "icons": [
-            "/images/tokens/crvSeth.png"
-          ],
+          "icons": ["/images/tokens/crvSeth.png"],
           "name": "ETH/sETH LP",
           "symbol": "ETH/sETH"
         }
@@ -1191,9 +1118,7 @@
             "strategy": "Deposits LP token from Curve's sETH pool to Convex Finance to earn CRV and CVX (and any other available tokens). Earned tokens are harvested, sold for more sETH pool LP tokens and then deposited back into the strategy.",
             "token": "This token represents part ownership of a Curve liquidity pool. Holders earn fees from users trading in the pool, and can also deposit the LP to Curve's gauges to earn CRV emissions. This pool contains ETH and sETH, a synthetic ETH minted via the Synthetix platform."
           },
-          "icons": [
-            "/images/tokens/crvSeth.png"
-          ],
+          "icons": ["/images/tokens/crvSeth.png"],
           "name": "ETH/sETH Vault",
           "priceResolver": "vault",
           "symbol": "pop-ETH/sETH"
@@ -1233,9 +1158,7 @@
         "abi": null,
         "address": "0x6c3F90f043a72FA612cbac8115EE7e52BDe6E490",
         "metadata": {
-          "icons": [
-            "/images/icons/3crv_icon.png"
-          ],
+          "icons": ["/images/icons/3crv_icon.png"],
           "name": "threeCrv",
           "symbol": "3CRV"
         }
@@ -1250,9 +1173,7 @@
         "address": "0x8b97ADE5843c9BE7a1e8c95F32EC192E31A46cf3",
         "metadata": {
           "apyResolver": "set_token",
-          "icons": [
-            "/images/tokens/3X.svg"
-          ],
+          "icons": ["/images/tokens/3X.svg"],
           "priceResolver": "set_token",
           "symbol": "3X"
         }
@@ -1282,9 +1203,7 @@
             "type": "synthetix"
           },
           "contractName": "ThreeXStaking",
-          "icons": [
-            "/images/tokens/3X.svg"
-          ],
+          "icons": ["/images/tokens/3X.svg"],
           "isERC20": false,
           "name": "Staked 3X",
           "priceResolver": "staking",
@@ -1319,9 +1238,7 @@
         "abi": null,
         "address": "0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48",
         "metadata": {
-          "icons": [
-            "/images/tokens/usdc.svg"
-          ],
+          "icons": ["/images/tokens/usdc.svg"],
           "name": "USDC",
           "priceResolver": "defi_llama",
           "symbol": "USDC"
@@ -1331,9 +1248,7 @@
         "abi": null,
         "address": "0xdAC17F958D2ee523a2206206994597C13D831ec7",
         "metadata": {
-          "icons": [
-            "/images/tokens/usdt.webp"
-          ],
+          "icons": ["/images/tokens/usdt.webp"],
           "name": "USDT",
           "symbol": "USDT"
         }
@@ -1347,9 +1262,7 @@
         "abi": null,
         "address": "0x2260FAC5E5542a773Aa44fBCfeDf7C193bc2C599",
         "metadata": {
-          "icons": [
-            "/images/tokens/wbtc.webp"
-          ],
+          "icons": ["/images/tokens/wbtc.webp"],
           "name": "Wrapped Bitcoin",
           "symbol": "WBTC"
         }
@@ -1360,10 +1273,7 @@
         "metadata": {
           "buyLinkEthereum": "https://app.uniswap.org/#/swap?outputCurrency=0x06450dEe7FD2Fb8E39061434BAbCFC05599a6Fb8&chain=ethereum",
           "buyLinkPolygon": "https://app.uniswap.org/#/swap?outputCurrency=0x2AB0e9e4eE70FFf1fB9D67031E44F6410170d00e&chain=polygon",
-          "icons": [
-            "/images/tokens/xen.png",
-            "/images/icons/POP.svg"
-          ]
+          "icons": ["/images/tokens/xen.png", "/images/icons/POP.svg"]
         }
       },
       "xenStaking": {
@@ -1378,10 +1288,7 @@
             ],
             "type": "synthetix"
           },
-          "icons": [
-            "/images/tokens/xen.png",
-            "/images/icons/POP.svg"
-          ],
+          "icons": ["/images/tokens/xen.png", "/images/icons/POP.svg"],
           "name": "Staked Xen",
           "priceResolver": "staking",
           "symbol": "stXen"
@@ -1438,9 +1345,7 @@
         "address": "0x5a770DbD3Ee6bAF2802D29a901Ef11501C44797A",
         "metadata": {
           "apyResolver": "yearn",
-          "icons": [
-            "/images/tokens/sUSD.png"
-          ],
+          "icons": ["/images/tokens/sUSD.png"],
           "name": "sUSD",
           "symbol": "sUSD"
         }
@@ -1460,10 +1365,7 @@
         "abi": null,
         "address": "0x2AE1231E4CF821Af69982c4D04725CD502D8B53E",
         "metadata": {
-          "icons": [
-            "/images/tokens/usdc.svg",
-            "/images/icons/POP.svg"
-          ],
+          "icons": ["/images/tokens/usdc.svg", "/images/icons/POP.svg"],
           "name": "Arrakis USDC/POP LP",
           "priceResolver": "arrakis"
         }
@@ -1480,9 +1382,7 @@
             "functionName": "lockedBalanceOf(address)"
           },
           "contractName": "PopLocker",
-          "icons": [
-            "/images/icons/POP.svg"
-          ],
+          "icons": ["/images/icons/POP.svg"],
           "isERC20": false,
           "name": "Staked POP",
           "priceResolver": "staking",
@@ -1519,9 +1419,7 @@
         "metadata": {
           "buyLinkEthereum": "https://app.uniswap.org/#/swap?inputCurrency=0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48&outputCurrency=0xD0Cd466b34A24fcB2f87676278AF2005Ca8A78c4&chain=mainnet",
           "buyLinkPolygon": "https://app.uniswap.org/#/swap?inputCurrency=0x2791Bca1f2de4661ED88A30C99A7a9449Aa84174&outputCurrency=0xc5b57e9a1e7914fda753a88f24e5703e617ee50c&chain=polygon",
-          "icons": [
-            "/images/icons/POP.svg"
-          ],
+          "icons": ["/images/icons/POP.svg"],
           "name": "Popcorn",
           "priceResolver": "pop"
         }
@@ -1530,9 +1428,7 @@
         "abi": null,
         "address": "0x7F5c764cBc14f9669B88837ca1490cCa17c31607",
         "metadata": {
-          "icons": [
-            "/images/tokens/usdc.svg"
-          ],
+          "icons": ["/images/tokens/usdc.svg"],
           "name": "USDC",
           "priceResolver": "defi_llama",
           "symbol": "USDC"
@@ -1556,9 +1452,7 @@
         "metadata": {
           "buyLinkEthereum": "https://app.uniswap.org/#/swap?inputCurrency=0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48&outputCurrency=0xD0Cd466b34A24fcB2f87676278AF2005Ca8A78c4&chain=mainnet",
           "buyLinkPolygon": "https://app.uniswap.org/#/swap?inputCurrency=0x2791Bca1f2de4661ED88A30C99A7a9449Aa84174&outputCurrency=0xc5b57e9a1e7914fda753a88f24e5703e617ee50c&chain=polygon",
-          "icons": [
-            "/images/icons/POP.svg"
-          ],
+          "icons": ["/images/icons/POP.svg"],
           "name": "Popcorn",
           "priceResolver": "pop"
         }
@@ -1575,9 +1469,7 @@
             "functionName": "lockedBalanceOf(address)"
           },
           "contractName": "PopLocker",
-          "icons": [
-            "/images/icons/POP.svg"
-          ],
+          "icons": ["/images/icons/POP.svg"],
           "isERC20": false,
           "name": "Staked POP",
           "priceResolver": "staking",
@@ -1588,10 +1480,7 @@
         "abi": null,
         "address": "0x2AE1231E4CF821Af69982c4D04725CD502D8B53E",
         "metadata": {
-          "icons": [
-            "/images/tokens/usdc.svg",
-            "/images/icons/POP.svg"
-          ],
+          "icons": ["/images/tokens/usdc.svg", "/images/icons/POP.svg"],
           "name": "Arrakis USDC/POP LP",
           "priceResolver": "arrakis"
         }
@@ -1602,10 +1491,7 @@
         "metadata": {
           "buyLinkEthereum": "https://beta.arrakis.finance/#/vaults/0xBBA11b41407dF8793A89b44ee4b50AfAD4508555/add",
           "buyLinkPolygon": "https://beta.arrakis.finance/#/vaults/0x6dE0500211bc3140409B345Fa1a5289cb77Af1e4/add",
-          "icons": [
-            "/images/tokens/usdc.svg",
-            "/images/icons/POP.svg"
-          ],
+          "icons": ["/images/tokens/usdc.svg", "/images/icons/POP.svg"],
           "name": "USDC/POP LP",
           "priceResolver": "arrakis"
         }
@@ -1650,9 +1536,7 @@
         "abi": null,
         "address": "0x7F5c764cBc14f9669B88837ca1490cCa17c31607",
         "metadata": {
-          "icons": [
-            "/images/tokens/usdc.svg"
-          ],
+          "icons": ["/images/tokens/usdc.svg"],
           "name": "USDC",
           "priceResolver": "defi_llama",
           "symbol": "USDC"
@@ -1664,14 +1548,24 @@
   "1337": {
     "chainId": "1337",
     "contracts": {
-      "0x7036124464a2d2447516309169322c8498ac51e3":{
+      "0x7036124464a2d2447516309169322c8498ac51e3": {
         "abi": null,
         "address": "0x7036124464a2d2447516309169322c8498ac51e3",
         "metadata": null
       },
-      "vaultRegistry":{
+      "vaultRegistry": {
         "abi": null,
         "address": "0x7036124464a2d2447516309169322c8498ac51e3",
+        "metadata": null
+      },
+      "0x5c932424acbfab036969b3b9d94ba9ecbae7565d": {
+        "abi": null,
+        "address": "0x5c932424acbfab036969b3b9d94ba9ecbae7565d",
+        "metadata": null
+      },
+      "vaultRouter": {
+        "abi": null,
+        "address": "0x5c932424acbfab036969b3b9d94ba9ecbae7565d",
         "metadata": null
       },
       "0x0000000022D53366457F9d5E68Ec105046FC4383": {
@@ -1688,9 +1582,7 @@
         "abi": null,
         "address": "0x06325440d014e39736583c165c2963ba99faf14e",
         "metadata": {
-          "icons": [
-            "/images/tokens/crvSeth.png"
-          ],
+          "icons": ["/images/tokens/crvSeth.png"],
           "name": "ETH/sETH LP",
           "symbol": "ETH/sETH"
         }
@@ -1701,10 +1593,7 @@
         "metadata": {
           "buyLinkEthereum": "https://app.uniswap.org/#/swap?outputCurrency=0x06450dEe7FD2Fb8E39061434BAbCFC05599a6Fb8&chain=ethereum",
           "buyLinkPolygon": "https://app.uniswap.org/#/swap?outputCurrency=0x2AB0e9e4eE70FFf1fB9D67031E44F6410170d00e&chain=polygon",
-          "icons": [
-            "/images/tokens/xen.png",
-            "/images/icons/POP.svg"
-          ]
+          "icons": ["/images/tokens/xen.png", "/images/icons/POP.svg"]
         }
       },
       "0x08f866c74205617B6F3903EF481798EcED10cDEC": {
@@ -1733,9 +1622,7 @@
             "strategy": "Deposits LP token from Curve's sETH pool to Convex Finance to earn CRV and CVX (and any other available tokens). Earned tokens are harvested, sold for more sETH pool LP tokens and then deposited back into the strategy.",
             "token": "This token represents part ownership of a Curve liquidity pool. Holders earn fees from users trading in the pool, and can also deposit the LP to Curve's gauges to earn CRV emissions. This pool contains ETH and sETH, a synthetic ETH minted via the Synthetix platform."
           },
-          "icons": [
-            "/images/tokens/crvSeth.png"
-          ],
+          "icons": ["/images/tokens/crvSeth.png"],
           "name": "ETH/sETH Vault",
           "priceResolver": "vault",
           "symbol": "pop-ETH/sETH"
@@ -1751,9 +1638,7 @@
         "address": "0x109d2034e97eC88f50BEeBC778b5A5650F98c124",
         "metadata": {
           "apyResolver": "set_token",
-          "icons": [
-            "/images/icons/BTR.svg"
-          ],
+          "icons": ["/images/icons/BTR.svg"],
           "name": "Butter (V2)",
           "priceResolver": "set_token",
           "symbol": "BTR"
@@ -1785,9 +1670,7 @@
         "abi": null,
         "address": "0x2260FAC5E5542a773Aa44fBCfeDf7C193bc2C599",
         "metadata": {
-          "icons": [
-            "/images/tokens/wbtc.webp"
-          ],
+          "icons": ["/images/tokens/wbtc.webp"],
           "name": "Wrapped Bitcoin",
           "symbol": "WBTC"
         }
@@ -1805,9 +1688,7 @@
             "type": "synthetix"
           },
           "contractName": "ButterStaking",
-          "icons": [
-            "/images/icons/BTR.svg"
-          ],
+          "icons": ["/images/icons/BTR.svg"],
           "isERC20": false,
           "name": "Staked BTR",
           "priceResolver": "staking",
@@ -1867,9 +1748,7 @@
             "type": "synthetix"
           },
           "contractName": "ThreeXStaking",
-          "icons": [
-            "/images/tokens/3X.svg"
-          ],
+          "icons": ["/images/tokens/3X.svg"],
           "isERC20": false,
           "name": "Staked 3X",
           "priceResolver": "staking",
@@ -1895,9 +1774,7 @@
         "address": "0x5a770DbD3Ee6bAF2802D29a901Ef11501C44797A",
         "metadata": {
           "apyResolver": "yearn",
-          "icons": [
-            "/images/tokens/sUSD.png"
-          ],
+          "icons": ["/images/tokens/sUSD.png"],
           "name": "sUSD",
           "symbol": "sUSD"
         }
@@ -1907,9 +1784,7 @@
         "address": "0x5e74C9036fb86BD7eCdcb084a0673EFc32eA31cb",
         "metadata": {
           "apyResolver": "yearnAsset",
-          "icons": [
-            "/images/tokens/sEth.webp"
-          ],
+          "icons": ["/images/tokens/sEth.webp"],
           "name": "sETH",
           "symbol": "sETH"
         }
@@ -1931,10 +1806,7 @@
             ],
             "type": "synthetix"
           },
-          "icons": [
-            "/images/tokens/usdc.svg",
-            "/images/icons/POP.svg"
-          ],
+          "icons": ["/images/tokens/usdc.svg", "/images/icons/POP.svg"],
           "isERC20": false,
           "name": "Staked Arrakis USDC/POP LP",
           "priceResolver": "staking",
@@ -1955,9 +1827,7 @@
         "abi": null,
         "address": "0x6B175474E89094C44Da98b954EedeAC495271d0F",
         "metadata": {
-          "icons": [
-            "/images/tokens/dai.webp"
-          ],
+          "icons": ["/images/tokens/dai.webp"],
           "name": "DAI",
           "symbol": "DAI"
         }
@@ -1980,9 +1850,7 @@
         "abi": null,
         "address": "0x6c3F90f043a72FA612cbac8115EE7e52BDe6E490",
         "metadata": {
-          "icons": [
-            "/images/icons/3crv_icon.png"
-          ],
+          "icons": ["/images/icons/3crv_icon.png"],
           "name": "threeCrv",
           "symbol": "3CRV"
         }
@@ -2048,9 +1916,7 @@
         "address": "0x8b97ADE5843c9BE7a1e8c95F32EC192E31A46cf3",
         "metadata": {
           "apyResolver": "set_token",
-          "icons": [
-            "/images/tokens/3X.svg"
-          ],
+          "icons": ["/images/tokens/3X.svg"],
           "priceResolver": "set_token",
           "symbol": "3X"
         }
@@ -2104,9 +1970,7 @@
         "abi": null,
         "address": "0xA3D87FffcE63B53E0d54fAa1cc983B7eB0b74A9c",
         "metadata": {
-          "icons": [
-            "/images/tokens/crvSeth.png"
-          ],
+          "icons": ["/images/tokens/crvSeth.png"],
           "name": "crv-sETH/ETH LP",
           "symbol": "crv-sETH/ETH"
         }
@@ -2176,9 +2040,7 @@
         "address": "0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE",
         "metadata": {
           "decimals": 18,
-          "icons": [
-            "/images/tokens/eth.png"
-          ],
+          "icons": ["/images/tokens/eth.png"],
           "name": "ETH",
           "symbol": "ETH"
         }
@@ -2189,9 +2051,7 @@
         "metadata": {
           "buyLinkEthereum": "https://app.uniswap.org/#/swap?inputCurrency=0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48&outputCurrency=0xD0Cd466b34A24fcB2f87676278AF2005Ca8A78c4&chain=mainnet",
           "buyLinkPolygon": "https://app.uniswap.org/#/swap?inputCurrency=0x2791Bca1f2de4661ED88A30C99A7a9449Aa84174&outputCurrency=0xc5b57e9a1e7914fda753a88f24e5703e617ee50c&chain=polygon",
-          "icons": [
-            "/images/icons/POP.svg"
-          ],
+          "icons": ["/images/icons/POP.svg"],
           "name": "Popcorn",
           "priceResolver": "pop"
         }
@@ -2215,9 +2075,7 @@
         "abi": null,
         "address": "0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48",
         "metadata": {
-          "icons": [
-            "/images/tokens/usdc.svg"
-          ],
+          "icons": ["/images/tokens/usdc.svg"],
           "name": "USDC",
           "priceResolver": "defi_llama",
           "symbol": "USDC"
@@ -2273,10 +2131,7 @@
         "abi": null,
         "address": "0xbba11b41407df8793a89b44ee4b50afad4508555",
         "metadata": {
-          "icons": [
-            "/images/tokens/usdc.svg",
-            "/images/icons/POP.svg"
-          ],
+          "icons": ["/images/tokens/usdc.svg", "/images/icons/POP.svg"],
           "name": "Arrakis USDC/POP LP",
           "priceResolver": "arrakis"
         }
@@ -2310,9 +2165,7 @@
         "abi": null,
         "address": "0xdAC17F958D2ee523a2206206994597C13D831ec7",
         "metadata": {
-          "icons": [
-            "/images/tokens/usdt.webp"
-          ],
+          "icons": ["/images/tokens/usdt.webp"],
           "name": "USDT",
           "symbol": "USDT"
         }
@@ -2339,10 +2192,7 @@
             ],
             "type": "synthetix"
           },
-          "icons": [
-            "/images/tokens/xen.png",
-            "/images/icons/POP.svg"
-          ],
+          "icons": ["/images/tokens/xen.png", "/images/icons/POP.svg"],
           "name": "Staked Xen",
           "priceResolver": "staking",
           "symbol": "stXen"
@@ -2360,9 +2210,7 @@
             "functionName": "lockedBalanceOf(address)"
           },
           "contractName": "PopLocker",
-          "icons": [
-            "/images/icons/POP.svg"
-          ],
+          "icons": ["/images/icons/POP.svg"],
           "isERC20": false,
           "name": "Staked POP",
           "priceResolver": "staking",
@@ -2418,9 +2266,7 @@
         "address": "0x109d2034e97eC88f50BEeBC778b5A5650F98c124",
         "metadata": {
           "apyResolver": "set_token",
-          "icons": [
-            "/images/icons/BTR.svg"
-          ],
+          "icons": ["/images/icons/BTR.svg"],
           "name": "Butter (V2)",
           "priceResolver": "set_token",
           "symbol": "BTR"
@@ -2453,9 +2299,7 @@
             "type": "synthetix"
           },
           "contractName": "ButterStaking",
-          "icons": [
-            "/images/icons/BTR.svg"
-          ],
+          "icons": ["/images/icons/BTR.svg"],
           "isERC20": false,
           "name": "Staked BTR",
           "priceResolver": "staking",
@@ -2586,9 +2430,7 @@
         "abi": null,
         "address": "0xA3D87FffcE63B53E0d54fAa1cc983B7eB0b74A9c",
         "metadata": {
-          "icons": [
-            "/images/tokens/crvSeth.png"
-          ],
+          "icons": ["/images/tokens/crvSeth.png"],
           "name": "crv-sETH/ETH LP",
           "symbol": "crv-sETH/ETH"
         }
@@ -2627,9 +2469,7 @@
         "abi": null,
         "address": "0x6B175474E89094C44Da98b954EedeAC495271d0F",
         "metadata": {
-          "icons": [
-            "/images/tokens/dai.webp"
-          ],
+          "icons": ["/images/tokens/dai.webp"],
           "name": "DAI",
           "symbol": "DAI"
         }
@@ -2654,9 +2494,7 @@
         "address": "0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE",
         "metadata": {
           "decimals": 18,
-          "icons": [
-            "/images/tokens/eth.png"
-          ],
+          "icons": ["/images/tokens/eth.png"],
           "name": "ETH",
           "symbol": "ETH"
         }
@@ -2709,9 +2547,7 @@
         "metadata": {
           "buyLinkEthereum": "https://app.uniswap.org/#/swap?inputCurrency=0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48&outputCurrency=0xD0Cd466b34A24fcB2f87676278AF2005Ca8A78c4&chain=mainnet",
           "buyLinkPolygon": "https://app.uniswap.org/#/swap?inputCurrency=0x2791Bca1f2de4661ED88A30C99A7a9449Aa84174&outputCurrency=0xc5b57e9a1e7914fda753a88f24e5703e617ee50c&chain=polygon",
-          "icons": [
-            "/images/icons/POP.svg"
-          ],
+          "icons": ["/images/icons/POP.svg"],
           "name": "Popcorn",
           "priceResolver": "pop"
         }
@@ -2728,9 +2564,7 @@
             "functionName": "lockedBalanceOf(address)"
           },
           "contractName": "PopLocker",
-          "icons": [
-            "/images/icons/POP.svg"
-          ],
+          "icons": ["/images/icons/POP.svg"],
           "isERC20": false,
           "name": "Staked POP",
           "priceResolver": "staking",
@@ -2741,10 +2575,7 @@
         "abi": null,
         "address": "0xbba11b41407df8793a89b44ee4b50afad4508555",
         "metadata": {
-          "icons": [
-            "/images/tokens/usdc.svg",
-            "/images/icons/POP.svg"
-          ],
+          "icons": ["/images/tokens/usdc.svg", "/images/icons/POP.svg"],
           "name": "Arrakis USDC/POP LP",
           "priceResolver": "arrakis"
         }
@@ -2761,10 +2592,7 @@
             ],
             "type": "synthetix"
           },
-          "icons": [
-            "/images/tokens/usdc.svg",
-            "/images/icons/POP.svg"
-          ],
+          "icons": ["/images/tokens/usdc.svg", "/images/icons/POP.svg"],
           "isERC20": false,
           "name": "Staked Arrakis USDC/POP LP",
           "priceResolver": "staking",
@@ -2777,10 +2605,7 @@
         "metadata": {
           "buyLinkEthereum": "https://beta.arrakis.finance/#/vaults/0xBBA11b41407dF8793A89b44ee4b50AfAD4508555/add",
           "buyLinkPolygon": "https://beta.arrakis.finance/#/vaults/0x6dE0500211bc3140409B345Fa1a5289cb77Af1e4/add",
-          "icons": [
-            "/images/tokens/usdc.svg",
-            "/images/icons/POP.svg"
-          ],
+          "icons": ["/images/tokens/usdc.svg", "/images/icons/POP.svg"],
           "name": "USDC/POP LP",
           "priceResolver": "arrakis"
         }
@@ -2834,9 +2659,7 @@
         "address": "0x5e74C9036fb86BD7eCdcb084a0673EFc32eA31cb",
         "metadata": {
           "apyResolver": "yearnAsset",
-          "icons": [
-            "/images/tokens/sEth.webp"
-          ],
+          "icons": ["/images/tokens/sEth.webp"],
           "name": "sETH",
           "symbol": "sETH"
         }
@@ -2845,9 +2668,7 @@
         "abi": null,
         "address": "0x06325440d014e39736583c165c2963ba99faf14e",
         "metadata": {
-          "icons": [
-            "/images/tokens/crvSeth.png"
-          ],
+          "icons": ["/images/tokens/crvSeth.png"],
           "name": "ETH/sETH LP",
           "symbol": "ETH/sETH"
         }
@@ -2863,9 +2684,7 @@
             "strategy": "Deposits LP token from Curve's sETH pool to Convex Finance to earn CRV and CVX (and any other available tokens). Earned tokens are harvested, sold for more sETH pool LP tokens and then deposited back into the strategy.",
             "token": "This token represents part ownership of a Curve liquidity pool. Holders earn fees from users trading in the pool, and can also deposit the LP to Curve's gauges to earn CRV emissions. This pool contains ETH and sETH, a synthetic ETH minted via the Synthetix platform."
           },
-          "icons": [
-            "/images/tokens/crvSeth.png"
-          ],
+          "icons": ["/images/tokens/crvSeth.png"],
           "name": "ETH/sETH Vault",
           "priceResolver": "vault",
           "symbol": "pop-ETH/sETH"
@@ -2905,9 +2724,7 @@
         "abi": null,
         "address": "0x6c3F90f043a72FA612cbac8115EE7e52BDe6E490",
         "metadata": {
-          "icons": [
-            "/images/icons/3crv_icon.png"
-          ],
+          "icons": ["/images/icons/3crv_icon.png"],
           "name": "threeCrv",
           "symbol": "3CRV"
         }
@@ -2922,9 +2739,7 @@
         "address": "0x8b97ADE5843c9BE7a1e8c95F32EC192E31A46cf3",
         "metadata": {
           "apyResolver": "set_token",
-          "icons": [
-            "/images/tokens/3X.svg"
-          ],
+          "icons": ["/images/tokens/3X.svg"],
           "priceResolver": "set_token",
           "symbol": "3X"
         }
@@ -2954,9 +2769,7 @@
             "type": "synthetix"
           },
           "contractName": "ThreeXStaking",
-          "icons": [
-            "/images/tokens/3X.svg"
-          ],
+          "icons": ["/images/tokens/3X.svg"],
           "isERC20": false,
           "name": "Staked 3X",
           "priceResolver": "staking",
@@ -2991,9 +2804,7 @@
         "abi": null,
         "address": "0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48",
         "metadata": {
-          "icons": [
-            "/images/tokens/usdc.svg"
-          ],
+          "icons": ["/images/tokens/usdc.svg"],
           "name": "USDC",
           "priceResolver": "defi_llama",
           "symbol": "USDC"
@@ -3003,9 +2814,7 @@
         "abi": null,
         "address": "0xdAC17F958D2ee523a2206206994597C13D831ec7",
         "metadata": {
-          "icons": [
-            "/images/tokens/usdt.webp"
-          ],
+          "icons": ["/images/tokens/usdt.webp"],
           "name": "USDT",
           "symbol": "USDT"
         }
@@ -3019,9 +2828,7 @@
         "abi": null,
         "address": "0x2260FAC5E5542a773Aa44fBCfeDf7C193bc2C599",
         "metadata": {
-          "icons": [
-            "/images/tokens/wbtc.webp"
-          ],
+          "icons": ["/images/tokens/wbtc.webp"],
           "name": "Wrapped Bitcoin",
           "symbol": "WBTC"
         }
@@ -3032,10 +2839,7 @@
         "metadata": {
           "buyLinkEthereum": "https://app.uniswap.org/#/swap?outputCurrency=0x06450dEe7FD2Fb8E39061434BAbCFC05599a6Fb8&chain=ethereum",
           "buyLinkPolygon": "https://app.uniswap.org/#/swap?outputCurrency=0x2AB0e9e4eE70FFf1fB9D67031E44F6410170d00e&chain=polygon",
-          "icons": [
-            "/images/tokens/xen.png",
-            "/images/icons/POP.svg"
-          ]
+          "icons": ["/images/tokens/xen.png", "/images/icons/POP.svg"]
         }
       },
       "xenStaking": {
@@ -3050,10 +2854,7 @@
             ],
             "type": "synthetix"
           },
-          "icons": [
-            "/images/tokens/xen.png",
-            "/images/icons/POP.svg"
-          ],
+          "icons": ["/images/tokens/xen.png", "/images/icons/POP.svg"],
           "name": "Staked Xen",
           "priceResolver": "staking",
           "symbol": "stXen"
@@ -3110,9 +2911,7 @@
         "address": "0x5a770DbD3Ee6bAF2802D29a901Ef11501C44797A",
         "metadata": {
           "apyResolver": "yearn",
-          "icons": [
-            "/images/tokens/sUSD.png"
-          ],
+          "icons": ["/images/tokens/sUSD.png"],
           "name": "sUSD",
           "symbol": "sUSD"
         }
@@ -3146,9 +2945,7 @@
         "abi": null,
         "address": "0x2791Bca1f2de4661ED88A30C99A7a9449Aa84174",
         "metadata": {
-          "icons": [
-            "/images/tokens/usdc.svg"
-          ],
+          "icons": ["/images/tokens/usdc.svg"],
           "name": "USDC",
           "priceResolver": "defi_llama",
           "symbol": "USDC"
@@ -3160,10 +2957,7 @@
         "metadata": {
           "buyLinkEthereum": "https://app.uniswap.org/#/swap?outputCurrency=0x06450dEe7FD2Fb8E39061434BAbCFC05599a6Fb8&chain=ethereum",
           "buyLinkPolygon": "https://app.uniswap.org/#/swap?outputCurrency=0x2AB0e9e4eE70FFf1fB9D67031E44F6410170d00e&chain=polygon",
-          "icons": [
-            "/images/tokens/xen.png",
-            "/images/icons/POP.svg"
-          ]
+          "icons": ["/images/tokens/xen.png", "/images/icons/POP.svg"]
         }
       },
       "0x48168536Fc8834A9543C5A4383721148113fF75A": {
@@ -3175,9 +2969,7 @@
         "abi": null,
         "address": "0x5A35d30c8b23e571e4F7eFc25F353c91fD12F8E8",
         "metadata": {
-          "icons": [
-            "/images/icons/POP.svg"
-          ],
+          "icons": ["/images/icons/POP.svg"],
           "name": "Redeemable POP",
           "priceResolver": "pop"
         }
@@ -3186,10 +2978,7 @@
         "abi": null,
         "address": "0x6dE0500211bc3140409B345Fa1a5289cb77Af1e4",
         "metadata": {
-          "icons": [
-            "/images/tokens/usdc.svg",
-            "/images/icons/POP.svg"
-          ],
+          "icons": ["/images/tokens/usdc.svg", "/images/icons/POP.svg"],
           "name": "Arrakis USDC/POP LP",
           "priceResolver": "arrakis"
         }
@@ -3246,9 +3035,7 @@
         "metadata": {
           "buyLinkEthereum": "https://app.uniswap.org/#/swap?inputCurrency=0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48&outputCurrency=0xD0Cd466b34A24fcB2f87676278AF2005Ca8A78c4&chain=mainnet",
           "buyLinkPolygon": "https://app.uniswap.org/#/swap?inputCurrency=0x2791Bca1f2de4661ED88A30C99A7a9449Aa84174&outputCurrency=0xc5b57e9a1e7914fda753a88f24e5703e617ee50c&chain=polygon",
-          "icons": [
-            "/images/icons/POP.svg"
-          ],
+          "icons": ["/images/icons/POP.svg"],
           "name": "Popcorn",
           "priceResolver": "pop"
         }
@@ -3265,10 +3052,7 @@
             ],
             "type": "synthetix"
           },
-          "icons": [
-            "/images/tokens/usdc.svg",
-            "/images/icons/POP.svg"
-          ],
+          "icons": ["/images/tokens/usdc.svg", "/images/icons/POP.svg"],
           "isERC20": false,
           "name": "Staked Arrakis USDC/POP LP",
           "priceResolver": "staking",
@@ -3294,10 +3078,7 @@
             ],
             "type": "synthetix"
           },
-          "icons": [
-            "/images/tokens/usdc.svg",
-            "/images/icons/POP.svg"
-          ],
+          "icons": ["/images/tokens/usdc.svg", "/images/icons/POP.svg"],
           "name": "USDC/POP LP",
           "priceResolver": "staking",
           "symbol": "stLP"
@@ -3325,9 +3106,7 @@
             "functionName": "lockedBalanceOf(address)"
           },
           "contractName": "PopLocker",
-          "icons": [
-            "/images/icons/POP.svg"
-          ],
+          "icons": ["/images/icons/POP.svg"],
           "isERC20": false,
           "name": "Staked POP",
           "priceResolver": "staking",
@@ -3376,9 +3155,7 @@
         "metadata": {
           "buyLinkEthereum": "https://app.uniswap.org/#/swap?inputCurrency=0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48&outputCurrency=0xD0Cd466b34A24fcB2f87676278AF2005Ca8A78c4&chain=mainnet",
           "buyLinkPolygon": "https://app.uniswap.org/#/swap?inputCurrency=0x2791Bca1f2de4661ED88A30C99A7a9449Aa84174&outputCurrency=0xc5b57e9a1e7914fda753a88f24e5703e617ee50c&chain=polygon",
-          "icons": [
-            "/images/icons/POP.svg"
-          ],
+          "icons": ["/images/icons/POP.svg"],
           "name": "Popcorn",
           "priceResolver": "pop"
         }
@@ -3395,9 +3172,7 @@
             "functionName": "lockedBalanceOf(address)"
           },
           "contractName": "PopLocker",
-          "icons": [
-            "/images/icons/POP.svg"
-          ],
+          "icons": ["/images/icons/POP.svg"],
           "isERC20": false,
           "name": "Staked POP",
           "priceResolver": "staking",
@@ -3408,10 +3183,7 @@
         "abi": null,
         "address": "0x6dE0500211bc3140409B345Fa1a5289cb77Af1e4",
         "metadata": {
-          "icons": [
-            "/images/tokens/usdc.svg",
-            "/images/icons/POP.svg"
-          ],
+          "icons": ["/images/tokens/usdc.svg", "/images/icons/POP.svg"],
           "name": "Arrakis USDC/POP LP",
           "priceResolver": "arrakis"
         }
@@ -3428,10 +3200,7 @@
             ],
             "type": "synthetix"
           },
-          "icons": [
-            "/images/tokens/usdc.svg",
-            "/images/icons/POP.svg"
-          ],
+          "icons": ["/images/tokens/usdc.svg", "/images/icons/POP.svg"],
           "isERC20": false,
           "name": "Staked Arrakis USDC/POP LP",
           "priceResolver": "staking",
@@ -3450,10 +3219,7 @@
             ],
             "type": "synthetix"
           },
-          "icons": [
-            "/images/tokens/usdc.svg",
-            "/images/icons/POP.svg"
-          ],
+          "icons": ["/images/tokens/usdc.svg", "/images/icons/POP.svg"],
           "name": "USDC/POP LP",
           "priceResolver": "staking",
           "symbol": "stLP"
@@ -3514,9 +3280,7 @@
         "abi": null,
         "address": "0x2791Bca1f2de4661ED88A30C99A7a9449Aa84174",
         "metadata": {
-          "icons": [
-            "/images/tokens/usdc.svg"
-          ],
+          "icons": ["/images/tokens/usdc.svg"],
           "name": "USDC",
           "priceResolver": "defi_llama",
           "symbol": "USDC"
@@ -3526,9 +3290,7 @@
         "abi": null,
         "address": "0x5A35d30c8b23e571e4F7eFc25F353c91fD12F8E8",
         "metadata": {
-          "icons": [
-            "/images/icons/POP.svg"
-          ],
+          "icons": ["/images/icons/POP.svg"],
           "name": "Redeemable POP",
           "priceResolver": "pop"
         }
@@ -3544,10 +3306,7 @@
         "metadata": {
           "buyLinkEthereum": "https://app.uniswap.org/#/swap?outputCurrency=0x06450dEe7FD2Fb8E39061434BAbCFC05599a6Fb8&chain=ethereum",
           "buyLinkPolygon": "https://app.uniswap.org/#/swap?outputCurrency=0x2AB0e9e4eE70FFf1fB9D67031E44F6410170d00e&chain=polygon",
-          "icons": [
-            "/images/tokens/xen.png",
-            "/images/icons/POP.svg"
-          ]
+          "icons": ["/images/tokens/xen.png", "/images/icons/POP.svg"]
         }
       }
     },
@@ -3560,9 +3319,7 @@
         "abi": null,
         "address": "0x04068DA6C83AFCFA0e13ba15A6696662335D5B75",
         "metadata": {
-          "icons": [
-            "/images/tokens/usdc.svg"
-          ],
+          "icons": ["/images/tokens/usdc.svg"],
           "name": "USDC",
           "priceResolver": "defi_llama",
           "symbol": "USDC"
@@ -3577,9 +3334,7 @@
         "abi": null,
         "address": "0x8D11eC38a3EB5E956B052f67Da8Bdc9bef8Abf3E",
         "metadata": {
-          "icons": [
-            "/images/tokens/dai.webp"
-          ],
+          "icons": ["/images/tokens/dai.webp"],
           "name": "DAI",
           "symbol": "DAI"
         }
@@ -3588,9 +3343,7 @@
         "abi": null,
         "address": "0x8D11eC38a3EB5E956B052f67Da8Bdc9bef8Abf3E",
         "metadata": {
-          "icons": [
-            "/images/tokens/dai.webp"
-          ],
+          "icons": ["/images/tokens/dai.webp"],
           "name": "DAI",
           "symbol": "DAI"
         }
@@ -3599,9 +3352,7 @@
         "abi": null,
         "address": "0x04068DA6C83AFCFA0e13ba15A6696662335D5B75",
         "metadata": {
-          "icons": [
-            "/images/tokens/usdc.svg"
-          ],
+          "icons": ["/images/tokens/usdc.svg"],
           "name": "USDC",
           "priceResolver": "defi_llama",
           "symbol": "USDC"
@@ -3645,9 +3396,7 @@
         "address": "0x109d2034e97eC88f50BEeBC778b5A5650F98c124",
         "metadata": {
           "apyResolver": "set_token",
-          "icons": [
-            "/images/icons/BTR.svg"
-          ],
+          "icons": ["/images/icons/BTR.svg"],
           "name": "Butter (V2)",
           "priceResolver": "set_token",
           "symbol": "BTR"
@@ -3672,10 +3421,7 @@
             ],
             "type": "synthetix"
           },
-          "icons": [
-            "/images/tokens/usdc.svg",
-            "/images/icons/POP.svg"
-          ],
+          "icons": ["/images/tokens/usdc.svg", "/images/icons/POP.svg"],
           "name": "USDC/POP LP",
           "priceResolver": "staking",
           "symbol": "stLP"
@@ -3695,9 +3441,7 @@
         "metadata": {
           "buyLinkEthereum": "https://app.uniswap.org/#/swap?inputCurrency=0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48&outputCurrency=0xD0Cd466b34A24fcB2f87676278AF2005Ca8A78c4&chain=mainnet",
           "buyLinkPolygon": "https://app.uniswap.org/#/swap?inputCurrency=0x2791Bca1f2de4661ED88A30C99A7a9449Aa84174&outputCurrency=0xc5b57e9a1e7914fda753a88f24e5703e617ee50c&chain=polygon",
-          "icons": [
-            "/images/icons/POP.svg"
-          ],
+          "icons": ["/images/icons/POP.svg"],
           "name": "Popcorn",
           "priceResolver": "pop"
         }
@@ -3723,9 +3467,7 @@
         "abi": null,
         "address": "0x649d645d1ee2ca89a798b52bbf7b5a3c27093b94",
         "metadata": {
-          "icons": [
-            "/images/tokens/usdc.svg"
-          ],
+          "icons": ["/images/tokens/usdc.svg"],
           "name": "USDC",
           "priceResolver": "defi_llama",
           "symbol": "USDC"
@@ -3735,9 +3477,7 @@
         "abi": null,
         "address": "0x6B175474E89094C44Da98b954EedeAC495271d0F",
         "metadata": {
-          "icons": [
-            "/images/tokens/dai.webp"
-          ],
+          "icons": ["/images/tokens/dai.webp"],
           "name": "DAI",
           "symbol": "DAI"
         }
@@ -3753,9 +3493,7 @@
         "abi": null,
         "address": "0x6c3F90f043a72FA612cbac8115EE7e52BDe6E490",
         "metadata": {
-          "icons": [
-            "/images/icons/3crv_icon.png"
-          ],
+          "icons": ["/images/icons/3crv_icon.png"],
           "name": "threeCrv",
           "symbol": "3CRV"
         }
@@ -3817,10 +3555,7 @@
         "metadata": {
           "buyLinkEthereum": "https://beta.arrakis.finance/#/vaults/0xBBA11b41407dF8793A89b44ee4b50AfAD4508555/add",
           "buyLinkPolygon": "https://beta.arrakis.finance/#/vaults/0x6dE0500211bc3140409B345Fa1a5289cb77Af1e4/add",
-          "icons": [
-            "/images/tokens/usdc.svg",
-            "/images/icons/POP.svg"
-          ],
+          "icons": ["/images/tokens/usdc.svg", "/images/icons/POP.svg"],
           "name": "USDC/POP LP",
           "priceResolver": "arrakis"
         }
@@ -3842,9 +3577,7 @@
             "functionName": "lockedBalanceOf(address)"
           },
           "contractName": "PopLocker",
-          "icons": [
-            "/images/icons/POP.svg"
-          ],
+          "icons": ["/images/icons/POP.svg"],
           "isERC20": false,
           "name": "Staked POP",
           "priceResolver": "staking",
@@ -3924,9 +3657,7 @@
         "address": "0x109d2034e97eC88f50BEeBC778b5A5650F98c124",
         "metadata": {
           "apyResolver": "set_token",
-          "icons": [
-            "/images/icons/BTR.svg"
-          ],
+          "icons": ["/images/icons/BTR.svg"],
           "name": "Butter (V2)",
           "priceResolver": "set_token",
           "symbol": "BTR"
@@ -4015,9 +3746,7 @@
         "abi": null,
         "address": "0x6B175474E89094C44Da98b954EedeAC495271d0F",
         "metadata": {
-          "icons": [
-            "/images/tokens/dai.webp"
-          ],
+          "icons": ["/images/tokens/dai.webp"],
           "name": "DAI",
           "symbol": "DAI"
         }
@@ -4043,9 +3772,7 @@
         "metadata": {
           "buyLinkEthereum": "https://app.uniswap.org/#/swap?inputCurrency=0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48&outputCurrency=0xD0Cd466b34A24fcB2f87676278AF2005Ca8A78c4&chain=mainnet",
           "buyLinkPolygon": "https://app.uniswap.org/#/swap?inputCurrency=0x2791Bca1f2de4661ED88A30C99A7a9449Aa84174&outputCurrency=0xc5b57e9a1e7914fda753a88f24e5703e617ee50c&chain=polygon",
-          "icons": [
-            "/images/icons/POP.svg"
-          ],
+          "icons": ["/images/icons/POP.svg"],
           "name": "Popcorn",
           "priceResolver": "pop"
         }
@@ -4062,9 +3789,7 @@
             "functionName": "lockedBalanceOf(address)"
           },
           "contractName": "PopLocker",
-          "icons": [
-            "/images/icons/POP.svg"
-          ],
+          "icons": ["/images/icons/POP.svg"],
           "isERC20": false,
           "name": "Staked POP",
           "priceResolver": "staking",
@@ -4077,10 +3802,7 @@
         "metadata": {
           "buyLinkEthereum": "https://beta.arrakis.finance/#/vaults/0xBBA11b41407dF8793A89b44ee4b50AfAD4508555/add",
           "buyLinkPolygon": "https://beta.arrakis.finance/#/vaults/0x6dE0500211bc3140409B345Fa1a5289cb77Af1e4/add",
-          "icons": [
-            "/images/tokens/usdc.svg",
-            "/images/icons/POP.svg"
-          ],
+          "icons": ["/images/tokens/usdc.svg", "/images/icons/POP.svg"],
           "name": "USDC/POP LP",
           "priceResolver": "arrakis"
         }
@@ -4097,10 +3819,7 @@
             ],
             "type": "synthetix"
           },
-          "icons": [
-            "/images/tokens/usdc.svg",
-            "/images/icons/POP.svg"
-          ],
+          "icons": ["/images/tokens/usdc.svg", "/images/icons/POP.svg"],
           "name": "USDC/POP LP",
           "priceResolver": "staking",
           "symbol": "stLP"
@@ -4149,9 +3868,7 @@
         "abi": null,
         "address": "0x6c3F90f043a72FA612cbac8115EE7e52BDe6E490",
         "metadata": {
-          "icons": [
-            "/images/icons/3crv_icon.png"
-          ],
+          "icons": ["/images/icons/3crv_icon.png"],
           "name": "threeCrv",
           "symbol": "3CRV"
         }
@@ -4165,9 +3882,7 @@
         "abi": null,
         "address": "0x649d645d1ee2ca89a798b52bbf7b5a3c27093b94",
         "metadata": {
-          "icons": [
-            "/images/tokens/usdc.svg"
-          ],
+          "icons": ["/images/tokens/usdc.svg"],
           "name": "USDC",
           "priceResolver": "defi_llama",
           "symbol": "USDC"
@@ -4230,9 +3945,7 @@
         "abi": null,
         "address": "0x5A35d30c8b23e571e4F7eFc25F353c91fD12F8E8",
         "metadata": {
-          "icons": [
-            "/images/icons/POP.svg"
-          ],
+          "icons": ["/images/icons/POP.svg"],
           "name": "Redeemable POP",
           "priceResolver": "pop"
         }
@@ -4243,9 +3956,7 @@
         "metadata": {
           "buyLinkEthereum": "https://app.uniswap.org/#/swap?inputCurrency=0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48&outputCurrency=0xD0Cd466b34A24fcB2f87676278AF2005Ca8A78c4&chain=mainnet",
           "buyLinkPolygon": "https://app.uniswap.org/#/swap?inputCurrency=0x2791Bca1f2de4661ED88A30C99A7a9449Aa84174&outputCurrency=0xc5b57e9a1e7914fda753a88f24e5703e617ee50c&chain=polygon",
-          "icons": [
-            "/images/icons/POP.svg"
-          ],
+          "icons": ["/images/icons/POP.svg"],
           "name": "Popcorn",
           "priceResolver": "pop"
         }
@@ -4274,9 +3985,7 @@
         "abi": null,
         "address": "0xff970a61a04b1ca14834a43f5de4533ebddb5cc8",
         "metadata": {
-          "icons": [
-            "/images/tokens/usdc.svg"
-          ],
+          "icons": ["/images/tokens/usdc.svg"],
           "name": "USDC",
           "priceResolver": "defi_llama",
           "symbol": "USDC"
@@ -4313,9 +4022,7 @@
         "metadata": {
           "buyLinkEthereum": "https://app.uniswap.org/#/swap?inputCurrency=0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48&outputCurrency=0xD0Cd466b34A24fcB2f87676278AF2005Ca8A78c4&chain=mainnet",
           "buyLinkPolygon": "https://app.uniswap.org/#/swap?inputCurrency=0x2791Bca1f2de4661ED88A30C99A7a9449Aa84174&outputCurrency=0xc5b57e9a1e7914fda753a88f24e5703e617ee50c&chain=polygon",
-          "icons": [
-            "/images/icons/POP.svg"
-          ],
+          "icons": ["/images/icons/POP.svg"],
           "name": "Popcorn",
           "priceResolver": "pop"
         }
@@ -4324,9 +4031,7 @@
         "abi": null,
         "address": "0xff970a61a04b1ca14834a43f5de4533ebddb5cc8",
         "metadata": {
-          "icons": [
-            "/images/tokens/usdc.svg"
-          ],
+          "icons": ["/images/tokens/usdc.svg"],
           "name": "USDC",
           "priceResolver": "defi_llama",
           "symbol": "USDC"
@@ -4341,9 +4046,7 @@
         "abi": null,
         "address": "0x5A35d30c8b23e571e4F7eFc25F353c91fD12F8E8",
         "metadata": {
-          "icons": [
-            "/images/icons/POP.svg"
-          ],
+          "icons": ["/images/icons/POP.svg"],
           "name": "Redeemable POP",
           "priceResolver": "pop"
         }
@@ -4431,9 +4134,7 @@
         "metadata": {
           "buyLinkEthereum": "https://app.uniswap.org/#/swap?inputCurrency=0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48&outputCurrency=0xD0Cd466b34A24fcB2f87676278AF2005Ca8A78c4&chain=mainnet",
           "buyLinkPolygon": "https://app.uniswap.org/#/swap?inputCurrency=0x2791Bca1f2de4661ED88A30C99A7a9449Aa84174&outputCurrency=0xc5b57e9a1e7914fda753a88f24e5703e617ee50c&chain=polygon",
-          "icons": [
-            "/images/icons/POP.svg"
-          ],
+          "icons": ["/images/icons/POP.svg"],
           "name": "Popcorn",
           "priceResolver": "pop"
         }
@@ -4517,9 +4218,7 @@
         "metadata": {
           "buyLinkEthereum": "https://app.uniswap.org/#/swap?inputCurrency=0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48&outputCurrency=0xD0Cd466b34A24fcB2f87676278AF2005Ca8A78c4&chain=mainnet",
           "buyLinkPolygon": "https://app.uniswap.org/#/swap?inputCurrency=0x2791Bca1f2de4661ED88A30C99A7a9449Aa84174&outputCurrency=0xc5b57e9a1e7914fda753a88f24e5703e617ee50c&chain=polygon",
-          "icons": [
-            "/images/icons/POP.svg"
-          ],
+          "icons": ["/images/icons/POP.svg"],
           "name": "Popcorn",
           "priceResolver": "pop"
         }
@@ -4575,9 +4274,7 @@
         "abi": null,
         "address": "0x5A35d30c8b23e571e4F7eFc25F353c91fD12F8E8",
         "metadata": {
-          "icons": [
-            "/images/icons/POP.svg"
-          ],
+          "icons": ["/images/icons/POP.svg"],
           "name": "Redeemable POP",
           "priceResolver": "pop"
         }
@@ -4598,9 +4295,7 @@
         "metadata": {
           "buyLinkEthereum": "https://app.uniswap.org/#/swap?inputCurrency=0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48&outputCurrency=0xD0Cd466b34A24fcB2f87676278AF2005Ca8A78c4&chain=mainnet",
           "buyLinkPolygon": "https://app.uniswap.org/#/swap?inputCurrency=0x2791Bca1f2de4661ED88A30C99A7a9449Aa84174&outputCurrency=0xc5b57e9a1e7914fda753a88f24e5703e617ee50c&chain=polygon",
-          "icons": [
-            "/images/icons/POP.svg"
-          ],
+          "icons": ["/images/icons/POP.svg"],
           "name": "Popcorn",
           "priceResolver": "pop"
         }
@@ -4609,9 +4304,7 @@
         "abi": null,
         "address": "0xc2569dd7d0fd715B054fBf16E75B001E5c0C1115",
         "metadata": {
-          "icons": [
-            "/images/tokens/usdc.svg"
-          ],
+          "icons": ["/images/tokens/usdc.svg"],
           "name": "USDC",
           "priceResolver": "defi_llama",
           "symbol": "USDC"
@@ -4634,10 +4327,7 @@
             ],
             "type": "synthetix"
           },
-          "icons": [
-            "/images/tokens/usdc.svg",
-            "/images/icons/POP.svg"
-          ],
+          "icons": ["/images/tokens/usdc.svg", "/images/icons/POP.svg"],
           "name": "USDC/POP LP",
           "priceResolver": "staking",
           "symbol": "stLP"
@@ -4664,9 +4354,7 @@
         "metadata": {
           "buyLinkEthereum": "https://app.uniswap.org/#/swap?inputCurrency=0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48&outputCurrency=0xD0Cd466b34A24fcB2f87676278AF2005Ca8A78c4&chain=mainnet",
           "buyLinkPolygon": "https://app.uniswap.org/#/swap?inputCurrency=0x2791Bca1f2de4661ED88A30C99A7a9449Aa84174&outputCurrency=0xc5b57e9a1e7914fda753a88f24e5703e617ee50c&chain=polygon",
-          "icons": [
-            "/images/icons/POP.svg"
-          ],
+          "icons": ["/images/icons/POP.svg"],
           "name": "Popcorn",
           "priceResolver": "pop"
         }
@@ -4683,9 +4371,7 @@
             "functionName": "lockedBalanceOf(address)"
           },
           "contractName": "PopLocker",
-          "icons": [
-            "/images/icons/POP.svg"
-          ],
+          "icons": ["/images/icons/POP.svg"],
           "isERC20": false,
           "name": "Staked POP",
           "priceResolver": "staking",
@@ -4704,10 +4390,7 @@
             ],
             "type": "synthetix"
           },
-          "icons": [
-            "/images/tokens/usdc.svg",
-            "/images/icons/POP.svg"
-          ],
+          "icons": ["/images/tokens/usdc.svg", "/images/icons/POP.svg"],
           "name": "USDC/POP LP",
           "priceResolver": "staking",
           "symbol": "stLP"
@@ -4741,9 +4424,7 @@
         "abi": null,
         "address": "0xc2569dd7d0fd715B054fBf16E75B001E5c0C1115",
         "metadata": {
-          "icons": [
-            "/images/tokens/usdc.svg"
-          ],
+          "icons": ["/images/tokens/usdc.svg"],
           "name": "USDC",
           "priceResolver": "defi_llama",
           "symbol": "USDC"
@@ -4758,9 +4439,7 @@
         "abi": null,
         "address": "0x5A35d30c8b23e571e4F7eFc25F353c91fD12F8E8",
         "metadata": {
-          "icons": [
-            "/images/icons/POP.svg"
-          ],
+          "icons": ["/images/icons/POP.svg"],
           "name": "Redeemable POP",
           "priceResolver": "pop"
         }

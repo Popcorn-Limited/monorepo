@@ -61,7 +61,7 @@ const Products = () => {
                 },
               },
             ]}
-            route={"/sweet-vaults"}
+            route={"sweet-vaults"}
             badge="/images/newProductBadge.svg"
           />
         )}

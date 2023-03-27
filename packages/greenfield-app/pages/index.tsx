@@ -13,6 +13,7 @@ const IndexPage = () => {
       router.replace(window.location.pathname);
     }
   }, [router.pathname]);
+  
   return (
     <main>
       <NoSSR>

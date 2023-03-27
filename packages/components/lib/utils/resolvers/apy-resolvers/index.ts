@@ -1,6 +1,6 @@
 import { BigNumber } from "ethers";
 import { ChainId } from "@popcorn/utils";
-import { synthetix, set_token, yearn, yearnAsset, convex, beefy } from "./resolvers";
+import { synthetix, set_token, yearn, yearnAsset, convex, beefy,multiRewardStaking } from "./resolvers";
 
 export type ApyResolver = (
   address: string,
@@ -17,6 +17,7 @@ export const ApyResolvers = {
   set_token,
   convex,
   beefy,
+  multiRewardStaking,
   default: synthetix,
 };
 
