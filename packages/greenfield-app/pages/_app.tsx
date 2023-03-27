@@ -27,7 +27,7 @@ const { chains, provider, webSocketProvider } = configureChains(
     arbitrum,
     bsc,
     fantom,
-    ...[goerli, localhost],
+    ...(process.env.NEXT_PUBLIC_ENABLE_TESTNETS === "true" ? [goerli, localhost] : []),
   ],
   [
     alchemyProvider({
