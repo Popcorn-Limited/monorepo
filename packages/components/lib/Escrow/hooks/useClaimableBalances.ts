@@ -19,7 +19,6 @@ export const useClaimableBalances: Pop.Hook<BigNumber[]> = ({
   return useContractReads({
     enabled: _enabled,
     scopeKey: `escrow:claimable:${chainId}:${address}:${account}`,
-    cacheOnBlock: true,
     contracts: escrowIds?.map((escrowId) => ({
       address: (!!address && address) || "",
       chainId: Number(chainId),

@@ -20,7 +20,6 @@ export const useLockedBalances: Pop.Hook<{
   return useContractRead({
     enabled: _enabled,
     scopeKey: `staking:convex:lockedBalances:${chainId}:${address}:${account}`,
-    cacheOnBlock: true,
     address: (!!address && address) || "",
     chainId: Number(chainId),
     abi: [
