@@ -12,7 +12,7 @@ import { GlobalLinearProgressAndLoading } from "@popcorn/components/components/G
 import { StateProvider } from "@popcorn/components/context/store";
 import { RainbowKitProvider, getDefaultWallets, Chain } from "@rainbow-me/rainbowkit";
 import { configureChains, createClient, WagmiConfig } from "wagmi";
-import { mainnet, polygon, optimism, arbitrum, goerli, localhost, bsc, fantom } from 'wagmi/chains';
+import { mainnet, polygon, optimism, arbitrum, goerli, localhost, bsc, fantom } from "wagmi/chains";
 import { alchemyProvider } from "wagmi/providers/alchemy";
 import { jsonRpcProvider } from "wagmi/providers/jsonRpc";
 import "@rainbow-me/rainbowkit/styles.css";
@@ -35,6 +35,10 @@ const { chains, provider, webSocketProvider } = configureChains(
     }),
     jsonRpcProvider({ rpc: (chain) => ({ http: chain.rpcUrls.default.http[0] }) }),
   ],
+  {
+    pollingInterval: 10_000,
+    stallTimeout: 5_000, // time to change to another RPC if failed
+  },
 );
 
 const { connectors } = getDefaultWallets({

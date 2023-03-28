@@ -16,7 +16,6 @@ export const useClaimableToken: Pop.Hook<string> = ({ chainId, address, enabled 
   return useContractRead({
     enabled: _enabled,
     scopeKey: `claimableToken:${chainId}:${address}`,
-    cacheOnBlock: true,
     address,
     chainId: Number(chainId),
     abi: metadata?.claimableTokenAdapter?.tokenFunctionAbi,

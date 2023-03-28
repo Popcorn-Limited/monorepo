@@ -20,7 +20,6 @@ export const useTokenEmission: Pop.Hook<BigNumberWithFormatted> = ({ chainId, ad
     ],
     functionName: "getRewardForDuration",
     args: [metadata?.apyResolver === "synthetix" ? null : pop.address],
-    cacheOnBlock: true,
     scopeKey: `getRewardForDuration:${chainId}:${address}`,
     enabled: _enabled,
     select: (data) => {

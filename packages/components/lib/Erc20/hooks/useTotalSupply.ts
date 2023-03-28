@@ -9,7 +9,6 @@ export const useTotalSupply: Pop.Hook<BigNumberWithFormatted> = ({ chainId, addr
     chainId: Number(chainId),
     abi: ["function totalSupply() external view returns (uint256)"],
     functionName: "totalSupply",
-    cacheOnBlock: true,
     scopeKey: `totalSupply:${chainId}:${address}`,
     enabled: !!address && !!chainId,
     select: (data) => {
