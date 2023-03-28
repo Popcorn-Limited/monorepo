@@ -12,7 +12,7 @@ export default function StakingOverviewPage(): JSX.Element {
   const [selectedNetworks, selectNetwork] = useNetworkFilter(supportedNetworks);
 
   const stakingPools = useMemo(
-    () => stakingAddresses?.filter((staking) => selectedNetworks.includes(staking?.chainId)),
+    () => (stakingAddresses || [])?.filter((staking) => selectedNetworks.includes(staking?.chainId)),
     [selectedNetworks, stakingAddresses],
   );
 
@@ -28,16 +28,14 @@ export default function StakingOverviewPage(): JSX.Element {
       <div className="border-t border-t-customLightGray border-opacity-40">
         <div className="w-full">
           <div className="h-full ">
-            {stakingPools &&
-              stakingPools.length > 0 &&
-              stakingPools?.map((staking) => (
-                <StakeCard
-                  key={staking.chainId + staking.address}
-                  chainId={staking?.chainId}
-                  stakingAddress={staking?.address}
-                  stakingType={staking?.stakingType}
-                />
-              ))}
+            {stakingPools.map((staking) => (
+              <StakeCard
+                key={`${staking.chainId}.${staking.address}`}
+                chainId={staking?.chainId}
+                stakingAddress={staking?.address}
+                stakingType={staking?.stakingType}
+              />
+            ))}
           </div>
         </div>
       </div>
