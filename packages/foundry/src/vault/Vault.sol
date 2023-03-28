@@ -533,7 +533,7 @@ contract Vault is ERC4626Upgradeable, ReentrancyGuardUpgradeable, PausableUpgrad
     if (proposedAdapterTime == 0 || block.timestamp < proposedAdapterTime + quitPeriod)
       revert NotPassedQuitPeriod(quitPeriod);
 
-    if (address(adapter) != address(0)) adapter.redeem(adapter.balanceOf(address(this)), address(this), address(this));
+    adapter.redeem(adapter.balanceOf(address(this)), address(this), address(this));
 
     IERC20(asset()).approve(address(adapter), 0);
 
