@@ -18,6 +18,7 @@ function AssetInputWithAction({
   action,
   disabled,
   allowance,
+  getTokenUrl,
   children,
 }: {
   assetAddress: string;
@@ -26,6 +27,7 @@ function AssetInputWithAction({
   action: ActionOrCallback;
   disabled?: boolean;
   allowance: BigNumber;
+  getTokenUrl?: string;
   children: (props: {
     ActionableComponent: () => JSX.Element;
     data: {
@@ -143,6 +145,7 @@ function AssetInputWithAction({
         tokenList={
           [] // Working with vault asset only for now
         }
+        getTokenUrl={getTokenUrl}
       />
       {children({
         ActionableComponent,

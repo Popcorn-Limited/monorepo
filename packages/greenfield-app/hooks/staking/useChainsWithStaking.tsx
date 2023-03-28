@@ -1,9 +1,13 @@
 import { ChainId } from "@popcorn/utils";
 
 export function useChainsWithStaking(): ChainId[] {
-  return [ChainId.ALL, ChainId.Ethereum, ChainId.Polygon, ChainId.Optimism, ChainId.Localhost].filter((chain) =>
-    process.env.NODE_ENV === "development" ? true : chain !== ChainId.Localhost,
-  );
+  return [
+    ChainId.ALL,
+    ChainId.Ethereum,
+    ChainId.Polygon,
+    ChainId.Optimism,
+    ...(process.env.NEXT_PUBLIC_ENABLE_TESTNETS === "true" ? [ChainId.Hardhat] : [])
+  ]
 }
 
 export function useChainsWithStakingRewards(): ChainId[] {
@@ -14,6 +18,6 @@ export function useChainsWithStakingRewards(): ChainId[] {
     ChainId.Optimism,
     ChainId.BNB,
     ChainId.Arbitrum,
-    ChainId.Localhost,
-  ].filter((chain) => (process.env.NODE_ENV === "development" ? true : chain !== ChainId.Localhost));
+    ...(process.env.NEXT_PUBLIC_ENABLE_TESTNETS === "true" ? [ChainId.Hardhat] : [])
+  ]
 }

@@ -1,21 +1,23 @@
-import type { BigNumber } from "ethers";
-import { useVaultRegistry } from "@popcorn/components/hooks/vaults";
-import { Address, useContractRead } from "wagmi";
 import { IpfsClient } from "@popcorn/utils";
+import { BigNumber } from "ethers";
+import { useVaultRegistry } from "@popcorn/components/hooks/vaults";
 import { useEffect, useState } from "react";
-
-// TODO use proper ipfs fetch
+import { Address, useContractRead } from "wagmi";
 
 function useGetIpfsMetadata(address: string, cid?: string): IpfsMetadata {
   const [ipfsData, setIpfsData] = useState<IpfsMetadata>();
 
   useEffect(() => {
     if (address) {
-      IpfsClient.get<IpfsMetadata>(
-        address.toLowerCase() === "0xB76fe239133EA8b92432C6D4b1E322063eEb6445".toLowerCase() ?
-          "QmdnDwaR7ExUmVMoVADwmVwES84NWqGtWMn2yswhZgZC8b" :
-          "QmYmzycZrD28BhRw6TxZKbwfgvXccg2ygkpKJZ5JcejjFH")
-        .then(res => setIpfsData(res))
+      if (cid && cid !== "QmbWqxBEKC3P8tqsKc98xmWNzrzDtRLMiMPL8wBuTGsMnR") {
+        IpfsClient.get<IpfsMetadata>(cid).then(res => setIpfsData(res))
+      } else {
+        IpfsClient.get<IpfsMetadata>(
+          address.toLowerCase() === "0xB76fe239133EA8b92432C6D4b1E322063eEb6445".toLowerCase() ?
+            "QmdnDwaR7ExUmVMoVADwmVwES84NWqGtWMn2yswhZgZC8b" :
+            "QmYmzycZrD28BhRw6TxZKbwfgvXccg2ygkpKJZ5JcejjFH")
+          .then(res => setIpfsData(res))
+      }
     }
   },
     [address, cid]
@@ -24,13 +26,7 @@ function useGetIpfsMetadata(address: string, cid?: string): IpfsMetadata {
   return ipfsData;
 }
 
-type VaultMetadataProps = {
-  chainId: any;
-  vaultAddress: any;
-  children: (metadata?: Partial<VaultMetadata>) => React.ReactElement;
-};
-
-function VaultMetadata({ chainId, children, vaultAddress }: VaultMetadataProps) {
+export default function useVaultMetadata(vaultAddress, chainId): VaultMetadata {
   const registry = useVaultRegistry(chainId);
   const { data } = useContractRead({
     address: registry.address as Address,
@@ -96,10 +92,10 @@ function VaultMetadata({ chainId, children, vaultAddress }: VaultMetadataProps) 
     }],
   });
   const ipfsMetadata = useGetIpfsMetadata(vaultAddress, data?.metadataCID);
-
-
-  return children({ ...data, metadata: ipfsMetadata } as VaultMetadata);
+  
+  return { ...data, metadata: ipfsMetadata } as VaultMetadata;
 }
+
 
 export type VaultMetadata = {
   /** @notice Vault address*/
@@ -111,7 +107,7 @@ export type VaultMetadata = {
   /** @notice IPFS CID of vault metadata*/
   metadataCID: string;
   /** @notice Metadata pulled from IPFS*/
-  metadata: IpfsMetadata;
+  metadata?: IpfsMetadata;
   /** @notice OPTIONAL - If the asset is an Lp Token these are its underlying assets*/
   swapTokenAddresses: [Address, Address, Address, Address, Address, Address, Address, Address];
   /** @notice OPTIONAL - If the asset is an Lp Token its the pool address*/
@@ -135,5 +131,3 @@ export type IpfsMetadata = {
   }
   getTokenUrl: string;
 }
-
-export default VaultMetadata;

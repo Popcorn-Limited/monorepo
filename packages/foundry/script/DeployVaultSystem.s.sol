@@ -52,6 +52,9 @@ contract DeployVaultSystem is Script {
   IMultiRewardEscrow escrow;
 
   VaultController controller;
+  VaultRouter router;
+
+  IERC20 pop = IERC20(0xD0Cd466b34A24fcB2f87676278AF2005Ca8A78c4);
 
   address stakingImpl;
   address yearnImpl;
@@ -93,6 +96,7 @@ contract DeployVaultSystem is Script {
     permissionRegistry = IPermissionRegistry(address(new PermissionRegistry(address(adminProxy))));
     vaultRegistry = IVaultRegistry(address(new VaultRegistry(address(adminProxy))));
     escrow = IMultiRewardEscrow(address(new MultiRewardEscrow(address(adminProxy), feeRecipient)));
+    router = new VaultRouter(vaultRegistry);
 
     deployDeploymentController();
     deploymentController.nominateNewOwner(address(adminProxy));
@@ -125,12 +129,17 @@ contract DeployVaultSystem is Script {
     emit log("!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
     emit log_named_address("VaultController: ", address(controller));
     emit log_named_address("VaultRegistry: ", address(vaultRegistry));
+    emit log_named_address("VaultRouter: ", address(router));
     emit log("!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
 
+    // approve pop for staking rewards
+    pop.approve(address(controller), 2000 ether);
+
+    // approve usdc for inital deposit
     IERC20(0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48).approve(address(controller), 100e6);
 
     // deploy usdc yearn vault
-    controller.deployVault(
+    address yearn = controller.deployVault(
       VaultInitParams({
         asset: IERC20(0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48),
         adapter: IERC4626(address(0)),
@@ -141,8 +150,8 @@ contract DeployVaultSystem is Script {
       }),
       DeploymentArgs({ id: "YearnAdapter", data: "" }),
       DeploymentArgs({ id: "", data: "" }),
-      false,
-      "",
+      true,
+      abi.encode(address(pop), 0.0001 ether, 1000 ether, false, 0, 0, 0),
       VaultMetadata({
         vault: address(0),
         staking: address(0),
@@ -155,11 +164,26 @@ contract DeployVaultSystem is Script {
       100e6
     );
 
+    // approve and stake vault
+    VaultMetadata memory yearnMetadata = vaultRegistry.getVault(yearn);
+    IERC20(yearn).approve(yearnMetadata.staking, 100e15);
+    IMultiRewardStaking(yearnMetadata.staking).deposit(100e15, deployer);
+
+    // deposit usdc and stake through the router
+    IERC20(0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48).approve(address(router), 100e6);
+    router.depositAndStake(IERC4626(yearn), 100e6, deployer);
+
+    IERC20(yearnMetadata.staking).approve(address(router), 10e15);
+    router.redeemAndWithdraw(IERC4626(yearn), 10e15, deployer, deployer);
+
+    emit log_named_address("YearnVault: ", yearn);
+
     // beefyVault stEth/eth = 0xa7739fd3d12ac7F16D8329AF3Ee407e19De10D8D
     setPermission(0xa7739fd3d12ac7F16D8329AF3Ee407e19De10D8D, true, false);
     // beefyBooster = 0xAe3F0C61F3Dc48767ccCeF3aD50b29437BE4b1a4
     setPermission(0xAe3F0C61F3Dc48767ccCeF3aD50b29437BE4b1a4, true, false);
 
+    // approve stEth/eth for inital deposit
     IERC20(0x06325440D014e39736583c165C2963BA99fAf14E).approve(address(controller), 10e18);
 
     // crvSthEth/Eth = 0x06325440D014e39736583c165C2963BA99fAf14E
@@ -178,8 +202,8 @@ contract DeployVaultSystem is Script {
         data: abi.encode(0xa7739fd3d12ac7F16D8329AF3Ee407e19De10D8D, 0xAe3F0C61F3Dc48767ccCeF3aD50b29437BE4b1a4)
       }),
       DeploymentArgs({ id: "", data: "" }),
-      false,
-      "",
+      true,
+      abi.encode(address(pop), 0.0001 ether, 1000 ether, false, 0, 0, 0),
       VaultMetadata({
         vault: address(0),
         staking: address(0),
@@ -191,6 +215,11 @@ contract DeployVaultSystem is Script {
       }),
       10e18
     );
+
+    // approve and stake vault
+    VaultMetadata memory beefyMetadata = vaultRegistry.getVault(beefy);
+    IERC20(beefy).approve(beefyMetadata.staking, 10e27);
+    IMultiRewardStaking(beefyMetadata.staking).deposit(10e27, deployer);
 
     emit log_named_address("BeefyVault: ", beefy);
 

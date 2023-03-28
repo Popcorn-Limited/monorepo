@@ -2,7 +2,7 @@ import { formatAndRoundBigNumber } from "@popcorn/utils";
 import { constants } from "ethers";
 import useVaultFees from "hooks/vaults/useVaultFees";
 
-function FeeBreakdown({ vault, ActionableComponent }: { vault: string, ActionableComponent: () => JSX.Element }): JSX.Element {
+function FeeBreakdown({ vault }: { vault: string }): JSX.Element {
   const fees = useVaultFees(vault);
 
   return (
@@ -16,7 +16,6 @@ function FeeBreakdown({ vault, ActionableComponent }: { vault: string, Actionabl
           <FeeRow fee={fees.performance} title="Performance fee" />
         </div>
       </section>
-      <ActionableComponent />
     </div>
   )
 }
