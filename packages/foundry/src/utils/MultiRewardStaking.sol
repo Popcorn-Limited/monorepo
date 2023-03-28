@@ -391,9 +391,11 @@ contract MultiRewardStaking is ERC4626Upgradeable, OwnedUpgradeable {
   /// @notice Accrue global rewards for a rewardToken
   function _accrueRewards(IERC20 _rewardToken, uint256 accrued) internal {
     uint256 supplyTokens = totalSupply();
-    uint224 deltaIndex;
+    uint224 deltaIndex; // DeltaIndex is the amount of rewardsToken paid out per stakeToken
     if (supplyTokens != 0)
       deltaIndex = accrued.mulDiv(uint256(10 ** decimals()), supplyTokens, Math.Rounding.Down).safeCastTo224();
+    // rewardDecimals * stakeDecimals / stakeDecimals = rewardDecimals
+    // 1e18 * 1e6 / 10e6 = 0.1e18 | 1e6 * 1e18 / 10e18 = 0.1e6
 
     rewardInfos[_rewardToken].index += deltaIndex;
     rewardInfos[_rewardToken].lastUpdatedTimestamp = block.timestamp.safeCastTo32();
@@ -414,7 +416,9 @@ contract MultiRewardStaking is ERC4626Upgradeable, OwnedUpgradeable {
     uint256 deltaIndex = rewards.index - oldIndex;
 
     // Accumulate rewards by multiplying user tokens by rewardsPerToken index and adding on unclaimed
-    uint256 supplierDelta = balanceOf(_user).mulDiv(deltaIndex, uint256(rewards.ONE), Math.Rounding.Down);
+    uint256 supplierDelta = balanceOf(_user).mulDiv(deltaIndex, uint256(10 ** decimals()), Math.Rounding.Down);
+    // stakeDecimals  * rewardDecimals / stakeDecimals = rewardDecimals
+    // 1e18 * 1e6 / 10e18 = 0.1e18 | 1e6 * 1e18 / 10e18 = 0.1e6
 
     userIndex[_user][_rewardToken] = rewards.index;
 
