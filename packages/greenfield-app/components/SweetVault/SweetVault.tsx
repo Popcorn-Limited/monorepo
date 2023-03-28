@@ -62,7 +62,7 @@ function SweetVault({ vaultAddress, chainId, searchString, addToTVL, addToDeposi
 
   const { data: vaultBalance } = useBalanceOf({ address: vaultAddress as Address, chainId, account });
   const { data: stakedBalance } = useBalanceOf({ address: vaultMetadata?.staking as Address, chainId, account });
-  const balance = usesStaking ? stakedBalance : vaultBalance 
+  const balance = usesStaking ? stakedBalance : vaultBalance
 
   const { data: price } = usePrice({ address: token?.address as Address, chainId });
   const { data: totalAssets } = useTotalAssets({ address: vaultAddress as Address, chainId, account });
@@ -70,7 +70,8 @@ function SweetVault({ vaultAddress, chainId, searchString, addToTVL, addToDeposi
 
 
   useEffect(() => {
-    if (totalAssets && totalSupply && balance && price) {
+    if (totalAssets && totalSupply && balance && price
+      && Number(totalAssets?.value?.toString()) > 0 && Number(totalSupply?.value?.toString()) > 0) {
       const pps = Number(totalAssets?.value?.toString()) / Number(totalSupply?.value?.toString());
       const assetBal = pps * Number(balance?.value?.toString());
 
