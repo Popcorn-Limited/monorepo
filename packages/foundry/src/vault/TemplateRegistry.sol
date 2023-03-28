@@ -59,16 +59,12 @@ contract TemplateRegistry is Owned {
   }
 
   /**
-   * @notice Adds a new template to the registry. Caller must be owner. (`DeploymentController`)
+   * @notice Adds a new template to the registry.
    * @param templateCategory TemplateCategory of the new template.
    * @param templateId Unique TemplateId of the new template.
    * @param template Contains the implementation address and necessary informations to clone the implementation.
    */
-  function addTemplate(
-    bytes32 templateCategory,
-    bytes32 templateId,
-    Template memory template
-  ) external onlyOwner {
+  function addTemplate(bytes32 templateCategory, bytes32 templateId, Template memory template) external onlyOwner {
     if (!templateCategoryExists[templateCategory]) revert KeyNotFound(templateCategory);
     if (templateExists[templateId]) revert TemplateExists(templateId);
 
@@ -100,6 +96,7 @@ contract TemplateRegistry is Owned {
    * @dev Only the DAO can endorse templates via `VaultController`.
    */
   function toggleTemplateEndorsement(bytes32 templateCategory, bytes32 templateId) external onlyOwner {
+    if (!templateCategoryExists[templateCategory]) revert KeyNotFound(templateCategory);
     if (!templateExists[templateId]) revert KeyNotFound(templateId);
 
     bool oldEndorsement = templates[templateCategory][templateId].endorsed;

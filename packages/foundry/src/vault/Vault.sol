@@ -128,13 +128,10 @@ contract Vault is ERC4626Upgradeable, ReentrancyGuardUpgradeable, PausableUpgrad
    * @param receiver Receiver of issued vault shares.
    * @return shares Quantity of vault shares issued to `receiver`.
    */
-  function deposit(uint256 assets, address receiver)
-    public
-    override
-    nonReentrant
-    whenNotPaused
-    returns (uint256 shares)
-  {
+  function deposit(
+    uint256 assets,
+    address receiver
+  ) public override nonReentrant whenNotPaused returns (uint256 shares) {
     if (receiver == address(0)) revert InvalidReceiver();
     if (assets > maxDeposit(receiver)) revert MaxError(assets);
 
@@ -176,7 +173,7 @@ contract Vault is ERC4626Upgradeable, ReentrancyGuardUpgradeable, PausableUpgrad
     uint256 feeShares = shares.mulDiv(depositFee, 1e18 - depositFee, Math.Rounding.Down);
 
     assets = _convertToAssets(shares + feeShares, Math.Rounding.Up);
-    
+
     if (assets > maxMint(receiver)) revert MaxError(assets);
 
     if (feeShares > 0) _mint(feeRecipient, feeShares);
@@ -323,18 +320,15 @@ contract Vault is ERC4626Upgradeable, ReentrancyGuardUpgradeable, PausableUpgrad
     assets -= assets.mulDiv(uint256(fees.withdrawal), 1e18, Math.Rounding.Down);
   }
 
-  function _convertToShares(uint256 assets, Math.Rounding rounding)
-    internal
-    view
-    virtual
-    override
-    returns (uint256 shares)
-  {
-    return assets.mulDiv(totalSupply() + 10**decimalOffset, totalAssets() + 1, rounding);
+  function _convertToShares(
+    uint256 assets,
+    Math.Rounding rounding
+  ) internal view virtual override returns (uint256 shares) {
+    return assets.mulDiv(totalSupply() + 10 ** decimalOffset, totalAssets() + 1, rounding);
   }
 
   function _convertToAssets(uint256 shares, Math.Rounding rounding) internal view virtual override returns (uint256) {
-    return shares.mulDiv(totalAssets() + 1, totalSupply() + 10**decimalOffset, rounding);
+    return shares.mulDiv(totalAssets() + 1, totalSupply() + 10 ** decimalOffset, rounding);
   }
 
   /*//////////////////////////////////////////////////////////////
@@ -539,7 +533,7 @@ contract Vault is ERC4626Upgradeable, ReentrancyGuardUpgradeable, PausableUpgrad
     if (proposedAdapterTime == 0 || block.timestamp < proposedAdapterTime + quitPeriod)
       revert NotPassedQuitPeriod(quitPeriod);
 
-    adapter.redeem(adapter.balanceOf(address(this)), address(this), address(this));
+    if (address(adapter) != address(0)) adapter.redeem(adapter.balanceOf(address(this)), address(this), address(this));
 
     IERC20(asset()).approve(address(adapter), 0);
 

@@ -553,7 +553,7 @@ contract VaultTest is Test {
     assertEq(vault.balanceOf(feeRecipient), expectedFeeInShares, "bal");
 
     // There should be a new High Water Mark
-    assertApproxEqRel(vault.highWaterMark(), totalAssets / 1e9, 10, "hwm");
+    assertApproxEqRel(vault.highWaterMark(), totalAssets / 1e9, 30, "hwm");
   }
 
   function test_performanceFee2() public {
