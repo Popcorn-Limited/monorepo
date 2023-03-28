@@ -718,6 +718,10 @@ contract MultiRewardStakingTest is Test {
     staking.addRewardToken(iRewardToken1, 0.1 ether, 10 ether, true, 1e19, 100, 0);
   }
 
+  function testFail__addRewardToken_0_rewardsSpeed_amount_larger_0_and_0_shares() public {
+    staking.addRewardToken(iRewardToken1, 0, 10, false, 0, 0, 0);
+  }
+
   /*//////////////////////////////////////////////////////////////
                         CHANGE REWARDS SPEED LOGIC
     //////////////////////////////////////////////////////////////*/

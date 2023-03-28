@@ -245,7 +245,7 @@ contract MultiRewardStaking is ERC4626Upgradeable, OwnedUpgradeable {
     if (rewards.lastUpdatedTimestamp > 0) revert RewardTokenAlreadyExist(rewardToken);
 
     if (amount > 0) {
-      if (rewardsPerSecond == 0) revert ZeroRewardsSpeed();
+      if (rewardsPerSecond == 0 && totalSupply() == 0) revert InvalidConfig();
       rewardToken.safeTransferFrom(msg.sender, address(this), amount);
     }
 
@@ -315,7 +315,7 @@ contract MultiRewardStaking is ERC4626Upgradeable, OwnedUpgradeable {
     // Cache RewardInfo
     RewardInfo memory rewards = rewardInfos[rewardToken];
 
-    if (rewards.rewardsPerSecond == 0 && totalSupply() == 0) revert ZeroAmount();
+    if (rewards.rewardsPerSecond == 0 && totalSupply() == 0) revert InvalidConfig();
 
     // Make sure that the reward exists
     if (rewards.lastUpdatedTimestamp == 0) revert RewardTokenDoesntExist(rewardToken);
