@@ -33,15 +33,10 @@ export const useContractMetadata: Pop.Hook<ContractMetadata> = ({ chainId, addre
 
   const { data, status } = _useToken({
     chainId: Number(chainId),
-    address: address as "0x${string}",
+    address: address as any,
     scopeKey: `contract-metadata:${chainId}:${address}`,
-    cacheTime: 1000 * 60,
-    enabled:
-      typeof metadata?.isERC20 !== "undefined" && !metadata.isERC20
-        ? false
-        : typeof enabled === "boolean"
-        ? enabled && !!address && !!chainId
-        : !!address && !!chainId,
+    keepPreviousData: true,
+    enabled: Boolean(address && chainId),
   });
 
   return { data: { ...data, ...metadata }, status };
