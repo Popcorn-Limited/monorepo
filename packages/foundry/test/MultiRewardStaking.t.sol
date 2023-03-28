@@ -850,6 +850,11 @@ contract MultiRewardStakingTest is Test {
     rewardToken1.mint(address(this), 10 ether);
     rewardToken1.approve(address(staking), 10 ether);
 
+    stakingToken.mint(address(this), 1 ether);
+    stakingToken.approve(address(staking), 1 ether);
+
+    staking.deposit(1 ether);
+
     (, , uint32 oldRewardsEndTimestamp, , ) = staking.rewardInfos(iRewardToken1);
 
     vm.expectEmit(false, false, false, true, address(staking));
@@ -896,6 +901,15 @@ contract MultiRewardStakingTest is Test {
 
   function testFail__fundReward_no_rewardsToken() public {
     staking.fundReward(IERC20(address(0)), 10 ether);
+  }
+
+  function testFail__fundReward_0_rewardsSpeed_zero_shares() public {
+    _addRewardTokenWithZeroRewardsSpeed(rewardToken1);
+
+    rewardToken1.mint(address(this), 10 ether);
+    rewardToken1.approve(address(staking), 10 ether);
+
+    staking.fundReward(iRewardToken1, 10 ether);
   }
 
   /*//////////////////////////////////////////////////////////////
