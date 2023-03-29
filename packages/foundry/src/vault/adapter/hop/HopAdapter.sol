@@ -5,13 +5,13 @@ pragma solidity ^0.8.15;
 
 import { AdapterBase, IERC20, IERC20Metadata, SafeERC20, ERC20, Math, IStrategy, IAdapter } from "../abstracts/AdapterBase.sol";
 import { WithRewards, IWithRewards } from "../abstracts/WithRewards.sol";
-import { IRewardPool } from "./IHop.sol";
+import { ILiquidityPool, IStakingRewards } from "./IHop.sol";
 
 /**
  * @title   Hop Protocol Adapter
  * @notice  ERC4626 wrapper for Hop Vaults.
  *
- * An ERC4626 compliant Wrapper for https://github.com/sushiswap/sushiswap/blob/archieve/canary/contracts/MasterChefV2.sol.
+ * An ERC4626 compliant Wrapper for https://github.com/hop-exchange/contracts/blob/28ec0f1a8df497a102c0a3e779a68a81bf69b9ad/contracts/saddle/Swap.sol.
  * Allows wrapping Hop Vaults.
  */
 contract HopAdapter is AdapterBase, WithRewards {
@@ -22,42 +22,41 @@ contract HopAdapter is AdapterBase, WithRewards {
   string internal _symbol;
 
   // @notice The Reward interface
-  IRewardPool public rewardPool;
+  IStakingRewards public stakingRewards;
 
-  // @notice The address of the reward token
-  address public rewardsToken;
+  /// @notice The Hop protocol swap contract
+  ILiquidityPool public liquidityPool;
 
-  // @notice The pool ID
-  uint256 public pid;
+  // @notice The address of the LP token
+  address public LPToken;
 
   /**
    * @notice Initialize a new Hop Adapter.
    * @param adapterInitData Encoded data for the base adapter initialization.
-   * @dev `_pid` - The poolId for lpToken.
    * @dev This function is called by the factory contract when deploying a new vault.
    */
 
   function initialize(
     bytes memory adapterInitData,
     address registry,
-    bytes memory masterchefInitData
+    bytes memory hopInitData
   ) external initializer {
-    (uint256 _pid, address _rewardsToken) = abi.decode(masterchefInitData, (uint256, address));
-
-    rewardPool = IRewardPool(registry);
-
     __AdapterBase_init(adapterInitData);
 
-    pid = _pid;
-    rewardsToken = _rewardsToken;
-    IMasterChef.PoolInfo memory pool = masterChef.poolInfo(_pid);
+    (address _liquidityPool, address _stakingRewards) = abi.decode(hopInitData, (address, address));
+
+    liquidityPool = ILiquidityPool(registry);
+    stakingRewards = IStakingRewards(_stakingRewards);
+
+    ILiquidityPool.Swap memory swapStorage = liquidityPool.swapStorage();
+    LPToken = swapStorage.lpToken;
 
     _name = string.concat("Popcorn Hop", IERC20Metadata(asset()).name(), " Adapter");
     _symbol = string.concat("popB-", IERC20Metadata(asset()).symbol());
 
-    IERC20(pool.lpToken).approve(address(masterChef), type(uint256).max);
+    IERC20(LPToken).approve(address(liquidityPool), type(uint256).max);
   }
-2
+
   function name() public view override(IERC20Metadata, ERC20) returns (string memory) {
     return _name;
   }
@@ -74,34 +73,46 @@ contract HopAdapter is AdapterBase, WithRewards {
   /// @return The total amount of underlying tokens the Vault holds.
 
   function _totalAssets() internal view override returns (uint256) {
-    IMasterChef.UserInfo memory user = masterChef.userInfo(pid, address(this));
-    return user.amount;
+    return paused() ? IERC20(asset()).balanceOf(address(this)) : stakingRewards.balanceOf(address(this));
   }
 
   /*//////////////////////////////////////////////////////////////
                           INTERNAL HOOKS LOGIC
     //////////////////////////////////////////////////////////////*/
 
-  function _protocolDeposit(uint256 amount, uint256) internal virtual override {
-    masterChef.deposit(pid, amount);
+  function _protocolDeposit(
+    uint256[] calldata amounts,
+    uint256 minToMint,
+    uint256 deadline
+  ) internal virtual {
+    liquidityPool.addLiquidity(amounts, minToMint, deadline);
   }
 
-  function _protocolWithdraw(uint256 amount, uint256) internal virtual override {
-    masterChef.withdraw(pid, amount);
+  function _protocolWithdraw(
+    uint256 amount,
+    uint256[] calldata minAmounts,
+    uint256 deadline
+  ) internal virtual {
+    liquidityPool.removeLiquidity(amount, minAmounts, deadline);
   }
 
   /*//////////////////////////////////////////////////////////////
                             STRATEGY LOGIC
     //////////////////////////////////////////////////////////////*/
-  /// @notice Claim rewards from the masterChef
+  /// @notice Claim rewards from Hop
   function claim() public override onlyStrategy {
-    masterChef.deposit(pid, 0);
+    stakingRewards.getReward();
   }
 
   /// @notice The token rewarded
   function rewardTokens() external view override returns (address[] memory) {
     address[] memory _rewardTokens = new address[](1);
-    _rewardTokens[0] = rewardsToken;
+    _rewardTokens[0] = LPToken;
+    // return _rewardTokens;
+  }
+
+  function getLPTokenAdress() external view returns (address) {
+    return LPToken;
   }
 
   /*//////////////////////////////////////////////////////////////

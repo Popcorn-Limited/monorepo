@@ -3,17 +3,17 @@ pragma solidity ^0.8.15;
 
 import { Test } from "forge-std/Test.sol";
 
-import { HopAdapter, SafeERC20, IERC20, IERC20Metadata, Math, IRewardPool } from "../../../../src/vault/adapter/sushi/HopAdapter.sol";
+import { HopAdapter, SafeERC20, IERC20, IERC20Metadata, Math, ILiquidityPool, IStakingRewards } from "../../../../src/vault/adapter/hop/HopAdapter.sol";
 import { HopTestConfigStorage, HopTestConfig } from "./HopTestConfigStorage.sol";
 import { AbstractAdapterTest, ITestConfigStorage, IAdapter } from "../abstract/AbstractAdapterTest.sol";
 
 contract HopAdapterTest is AbstractAdapterTest {
   using Math for uint256;
 
-  //This is an erc token https://etherscan.io/address/0xc5102fe9359fd9a28f877a67e36b0f050d81a3cc#writeContract
-  IRewardPool public rewardPool = IRewardPool(0xc5102fE9359FD9a28f877a67E36B0F050d81a3CC);
-
-  address public want;
+  // Note: using the hop liquidity pool contract
+  // https://optimistic.etherscan.io/address/0xaa30d6bba6285d0585722e2440ff89e23ef68864#writeContract
+  ILiquidityPool public liquidityPool = ILiquidityPool(0xaa30D6bba6285d0585722e2440Ff89E23EF68864);
+  IStakingRewards public stakingRewards = IStakingRewards(0x3f27c540ADaE3a9E8c875C61e3B970b559d7F65d);
 
   function setUp() public {
     uint256 forkId = vm.createSelectFork(vm.rpcUrl("mainnet"));
@@ -29,13 +29,13 @@ contract HopAdapterTest is AbstractAdapterTest {
   }
 
   function _setUpTest(bytes memory testConfig) internal {
-    address _want = abi.decode(testConfig, (uint256, address));
+    (address _liquidityPool, address _stakingRewards) = abi.decode(testConfig, (address, address));
+    liquidityPool = ILiquidityPool(_liquidityPool);
+    stakingRewards = IStakingRewards(_stakingRewards);
 
-    want = _want;
+    setUpBaseTest(asset, address(new HopAdapter()), address(liquidityPool), 10, "Hop", true);
 
-    setUpBaseTest(IERC20(want), address(new HopAdapter()), address(rewardPool), 10, "MasterChef", true);
-
-    vm.label(address(rewardPool), "hop");
+    vm.label(address(liquidityPool), "hop");
     vm.label(address(asset), "asset");
     vm.label(address(this), "test");
 
@@ -78,6 +78,6 @@ contract HopAdapterTest is AbstractAdapterTest {
       "symbol"
     );
 
-    assertEq(asset.allowance(address(adapter), address(masterChef)), type(uint256).max, "allowance");
+    assertEq(asset.allowance(address(adapter), address(liquidityPool)), type(uint256).max, "allowance");
   }
 }
