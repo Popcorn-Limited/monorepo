@@ -46,6 +46,8 @@ contract StargateAdapter is AdapterBase, WithRewards {
                             CONSTRUCTOR
     //////////////////////////////////////////////////////////////*/
 
+  // TODO add fallback for eth
+
   error StakingIdOutOfBounds();
   error DifferentAssets();
 
@@ -75,11 +77,12 @@ contract StargateAdapter is AdapterBase, WithRewards {
     pid = sToken.poolId();
     stakingPid = _stakingPid;
 
-    scalar = 10**(sToken.localDecimals() - 6);
+    scalar = 10 ** (sToken.localDecimals() - 6);
 
     stargateRouter = IStargateRouter(sToken.router());
 
-    IERC20(asset()).approve(address(stargateRouter), type(uint256).max);
+    IERC20(asset()).approve(address(stargateRouter), 0);
+    //IERC20(asset()).approve(address(stargateRouter), type(uint256).max);
     sToken.approve(address(stargateStaking), type(uint256).max);
 
     _name = string.concat("Popcorn Stargate", IERC20Metadata(asset()).name(), " Adapter");
@@ -123,13 +126,17 @@ contract StargateAdapter is AdapterBase, WithRewards {
     stargateStaking.deposit(stakingPid, sTokenBal);
   }
 
+  event log(uint256);
+
   /// @notice Withdraw from stargate pool
   function _protocolWithdraw(uint256 assets, uint256) internal override {
-    stargateStaking.withdraw(pid, assets / scalar);
+    (uint256 stake, ) = stargateStaking.userInfo(stakingPid, address(this));
+    stargateStaking.withdraw(stakingPid, assets / scalar);
 
     uint256 sTokenBal = sToken.balanceOf(address(this));
 
-    stargateRouter.instantRedeemLocal(uint16(stakingPid), sTokenBal, address(this));
+    stargateRouter.instantRedeemLocal(uint16(pid), sTokenBal, address(this));
+    emit log(IERC20(asset()).balanceOf(address(this)));
   }
 
   /*//////////////////////////////////////////////////////////////

@@ -14,7 +14,7 @@ contract StargateAdapterTest is AbstractAdapterTest {
 
   ISToken sToken;
   IStargateRouter stargateRouter;
-  IStargateStaking stargateStaking = IStargateStaking(0xB0D502E938ed5f4df2E681fE6E419ff29631d62b);
+  IStargateStaking stargateStaking = IStargateStaking(0xB0D502E938ed5f4df2E681fE6E419ff29631d62b); //eth=0xB0D502E938ed5f4df2E681fE6E419ff29631d62b poly=0x8731d54E9D02c286767d56ac03e8037C07e01e98
 
   uint256 pid;
   uint256 stakingPid;
@@ -120,12 +120,22 @@ contract StargateAdapterTest is AbstractAdapterTest {
 
     (uint256 stake, ) = stargateStaking.userInfo(stakingPid, address(this));
     emit log_named_uint("stake", stake);
+    stargateStaking.withdraw(stakingPid, stake);
+    sTokenBal = sToken.balanceOf(address(this));
+    stargateRouter.instantRedeemLocal(uint16(pid), sTokenBal, address(this));
+    emit log_named_uint("assetBal", IERC20(asset).balanceOf(address(this)));
   }
 
   function test__withdrawOnly() public {
     _mintFor(1e18, address(this));
     adapter.deposit(1e18, address(this));
 
-    adapter.withdraw((uint256(1e18) * uint256(9)) / uint256(10), address(this), address(this));
+    emit log_named_uint("ta", adapter.totalAssets());
+    (uint256 stake, ) = stargateStaking.userInfo(stakingPid, address(adapter));
+    emit log_named_uint("stake", stake);
+
+    emit log_named_uint("mw", adapter.maxWithdraw(address(this)));
+
+    adapter.withdraw(adapter.maxWithdraw(address(this)), address(this), address(this));
   }
 }

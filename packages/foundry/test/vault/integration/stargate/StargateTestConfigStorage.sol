@@ -13,8 +13,12 @@ contract StargateTestConfigStorage is ITestConfigStorage {
   StargateTestConfig[] internal testConfigs;
 
   constructor() {
-    // Polygon - sDAI
-    testConfigs.push(StargateTestConfig(3));
+    // Ethereum - sUSDC
+    // testConfigs.push(StargateTestConfig(0));
+    // Ethereum - sUSDT
+    testConfigs.push(StargateTestConfig(1));
+    // Ethereum - sDAI
+    // testConfigs.push(StargateTestConfig(3));
   }
 
   function getTestConfig(uint256 i) public view returns (bytes memory) {

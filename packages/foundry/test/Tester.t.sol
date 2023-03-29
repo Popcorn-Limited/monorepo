@@ -9,16 +9,15 @@ import { MultiRewardEscrow, Escrow, IERC20 } from "../src/utils/MultiRewardEscro
 import { SafeCastLib } from "solmate/utils/SafeCastLib.sol";
 
 contract Tester is Test {
-  uint256[4][2] nums;
+  IERC20 usdt = IERC20(0xdAC17F958D2ee523a2206206994597C13D831ec7);
 
   function setUp() public {
-    nums[0] = [0, 1, 2, 3];
-    nums[1] = [4, 5, 6, 7];
+    uint256 forkId = vm.createSelectFork(vm.rpcUrl("mainnet"));
+    vm.selectFork(forkId);
   }
 
-  function test_sth() public {
-    for (uint256 i; i < nums.length; i++) {
-      emit log_uint(nums[i][0]);
-    }
+  function test_approval() public {
+    emit log_uint(usdt.allowance(address(this), address(0x44444))); // 0
+    usdt.approve(address(0x44444), uint256(1));
   }
 }
