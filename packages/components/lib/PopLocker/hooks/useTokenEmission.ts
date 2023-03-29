@@ -16,7 +16,6 @@ export const useTokenEmission: Pop.Hook<BigNumberWithFormatted> = ({ chainId, ad
     abi: ["function getRewardForDuration(address token) view returns (uint256)"],
     functionName: "getRewardForDuration",
     args: [pop.address],
-    cacheOnBlock: true,
     scopeKey: `getRewardForDuration:${chainId}:${address}`,
     enabled: !disabled && enabled,
     select: (data) => {

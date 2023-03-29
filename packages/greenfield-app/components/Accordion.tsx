@@ -1,8 +1,9 @@
-function Accordion({ children, header }) {
+
+function Accordion({ children, header, initiallyOpen, containerClassName }: {children, header, initiallyOpen?: boolean, containerClassName?: string}) {
   return (
     <details
-      className="group p-8 bg-warmGray/25 rounded-2xl border border-warmGray/80 [&_summary::-webkit-details-marker]:hidden"
-      open
+      className={`group p-8 bg-warmGray/25 md:rounded-2xl border border-warmGray/80 [&_summary::-webkit-details-marker]:hidden ${containerClassName}`}
+      open={initiallyOpen || false}
     >
       <summary className="block cursor-pointer marker:hidden">{header}</summary>
       {children}

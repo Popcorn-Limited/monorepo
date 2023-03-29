@@ -1,51 +1,53 @@
-import type { Pop } from "@popcorn/components/lib/types";
-import { Fragment } from "react";
-
-import useFeeModal from "@popcorn/greenfield-app/components/vaults/useFeeModal";
 import AssetInputWithAction from "@popcorn/components/components/AssetInputWithAction";
+import FeeBreakdown from "./FeeBreakdown";
+import { useAllowance } from "@popcorn/components/lib/Erc20/hooks";
+import { Address, useAccount } from "wagmi";
 import { useNamedAccounts } from "@popcorn/components/lib/utils";
 import { constants } from "ethers";
-import SecondaryActionButton from "@popcorn/components/components/SecondaryActionButton";
 
 function Deposit({
   vault,
-  vaultTokenAddress,
+  asset,
   chainId,
+  staking,
+  getTokenUrl
 }: {
-  vault: Pop.NamedAccountsMetadata;
-  vaultTokenAddress: string;
+  vault: string;
+  asset: string;
   chainId: any;
+  staking: string
+  getTokenUrl?: string;
 }) {
-  const [vaultRouter] = useNamedAccounts(chainId, ["vaultRouter"]);
-  const { openModal } = useFeeModal(vault.address);
+  const usesStaking = staking?.toLowerCase() !== constants.AddressZero.toLowerCase();
+  const { address: account } = useAccount();
+  const [router] = useNamedAccounts(chainId, ["vaultRouter"]);
+
+  const { data: allowance } = useAllowance({ address: asset, account: (usesStaking ? router?.address : vault) as Address, chainId });
 
   return (
-    <div className="flex flex-col gap-8">
+    <div className="flex flex-col">
       <AssetInputWithAction
-        assetAddress={vaultTokenAddress}
-        target={vaultRouter.address}
+        assetAddress={asset}
+        target={(usesStaking ? router?.address : vault) as string}
         chainId={chainId}
         action={(balance) => {
           return {
             label: "Deposit",
-            abi: ["function depositAndStake(address vault, uint256 assetAmount, address receiver) external"],
-            functionName: "depositAndStake",
+            abi: ["function depositAndStake(address vault, uint256 assetAmount, address receiver) external", "function deposit(uint256 assetAmount) external"],
+            functionName: usesStaking ? "depositAndStake" : "deposit",
             successMessage: "Deposit successful!",
-            args: [vault.address, balance, vaultTokenAddress],
+            args: usesStaking ? [vault, balance, account] : [balance],
           };
         }}
-        allowance={constants.MaxUint256}
+        allowance={allowance?.value}
+        getTokenUrl={getTokenUrl}
       >
         {({ ActionableComponent }) => {
           return (
-            <Fragment>
-              <div className="flex-grow" />
-              <section className="bg-warmGray/20 rounded-lg w-full">
-                <SecondaryActionButton handleClick={openModal} label="Popcorn fees breakdown" />
-              </section>
+            <>
+              <FeeBreakdown vault={vault} />
               <ActionableComponent />
-            </Fragment>
-          );
+            </>);
         }}
       </AssetInputWithAction>
     </div>

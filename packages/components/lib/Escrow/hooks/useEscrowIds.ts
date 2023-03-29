@@ -20,7 +20,6 @@ export const useEscrowIds: Pop.Hook<string[]> = ({
     chainId: Number(chainId),
     enabled: !!_enabled && !!account && !!address && !!chainId && !!isMounted.current,
     cacheTime: 30 * 1000,
-    cacheOnBlock: true,
     scopeKey: `getEscrowIdsByUser:${chainId}:${address}:${account}`,
     functionName: "getEscrowIdsByUser",
     args: (!!account && [account]) || [],

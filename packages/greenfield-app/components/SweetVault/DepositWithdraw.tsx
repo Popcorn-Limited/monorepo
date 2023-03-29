@@ -11,26 +11,31 @@ const TABS = [TAB_DEPOSIT, TAB_WITHDRAW];
 
 function DepositWithdraw({
   vault,
-  vaultTokenAddress,
+  asset,
   chainId,
+  staking,
+  getTokenUrl
 }: {
-  vault: Pop.NamedAccountsMetadata;
-  vaultTokenAddress: string;
+  vault: string;
+  asset: string;
   chainId: any;
+  staking: string;
+  getTokenUrl?: string;
 }) {
   const [activeTab, setActiveTab] = useState(TAB_DEPOSIT);
   const isDepositTab = activeTab === TAB_DEPOSIT;
 
   const sharedProps = {
     vault,
-    vaultTokenAddress,
+    asset,
     chainId,
+    staking
   };
 
   return (
     <Fragment>
       <TabSelector className="mb-6" availableTabs={TABS} activeTab={activeTab} setActiveTab={setActiveTab} />
-      {isDepositTab ? <Deposit {...sharedProps} /> : <Withdraw {...sharedProps} />}
+      {isDepositTab ? <Deposit {...sharedProps} getTokenUrl={getTokenUrl} /> : <Withdraw {...sharedProps} />}
     </Fragment>
   );
 }

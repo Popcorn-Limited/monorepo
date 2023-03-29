@@ -21,7 +21,7 @@
     "coverage": "yarn lerna run coverage",
     "prepare": "husky install",
     "circulating-supply": "yarn lerna run circulating-supply --stream",
-    "netlify-build": "cd packages/hardhat; yarn build; cd ../app; yarn build"
+    "netlify-build": "cd packages/hardhat; yarn build; cd ../greenfield-app; yarn build"
   },
   "lint-staged": {
     "*.{sol,ts,tsx}": "prettier --write"

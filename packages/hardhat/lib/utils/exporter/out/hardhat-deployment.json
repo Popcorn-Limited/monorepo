@@ -1,0 +1,24 @@
+{
+  "chainId": "1337",
+  "name": "hardhat",
+  "contracts": {
+    "pop": {
+      "abi": null,
+      "address": "0xFC4EE541377F3b6641c23CBE82F6f04388290421",
+      "metadata": {
+        "buyLinkEthereum": "https://app.uniswap.org/#/swap?inputCurrency=0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48&outputCurrency=0xD0Cd466b34A24fcB2f87676278AF2005Ca8A78c4&chain=mainnet",
+        "buyLinkPolygon": "https://app.uniswap.org/#/swap?inputCurrency=0x2791Bca1f2de4661ED88A30C99A7a9449Aa84174&outputCurrency=0xc5b57e9a1e7914fda753a88f24e5703e617ee50c&chain=polygon",
+        "icons": [
+          "/images/icons/POP.svg"
+        ],
+        "name": "Popcorn",
+        "priceResolver": "pop"
+      }
+    },
+    "uniswapRouter": {
+      "abi": null,
+      "address": "0x7a250d5630B4cF539739dF2C5dAcb4c659F2488D",
+      "metadata": null
+    }
+  }
+}

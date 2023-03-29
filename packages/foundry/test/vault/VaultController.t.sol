@@ -260,7 +260,6 @@ contract VaultControllerTest is Test {
     bool endorsed,
     bool rejected
   ) public {
-    emit log_named_address("target", target);
     address[] memory targets = new address[](1);
     Permission[] memory permissions = new Permission[](1);
     targets[0] = target;
@@ -603,6 +602,39 @@ contract VaultControllerTest is Test {
       DeploymentArgs({ id: "MockStrategy", data: "" }),
       false,
       abi.encode(address(rewardToken), 0.1 ether, 1 ether, true, 10000000, 2 days, 1 days),
+      VaultMetadata({
+        vault: address(0),
+        staking: address(0),
+        creator: address(this),
+        metadataCID: metadataCid,
+        swapTokenAddresses: swapTokenAddresses,
+        swapAddress: address(0x5555),
+        exchange: uint256(1)
+      }),
+      0
+    );
+  }
+
+  function testFail__deployVault_without_adapter_nor_adapterData() public {
+    addTemplate("Adapter", templateId, adapterImpl, true, true);
+    addTemplate("Strategy", "MockStrategy", strategyImpl, false, true);
+    addTemplate("Vault", "V1", vaultImpl, true, true);
+    controller.setPerformanceFee(uint256(1000));
+    controller.setHarvestCooldown(1 days);
+
+    controller.deployVault(
+      VaultInitParams({
+        asset: iAsset,
+        adapter: IERC4626(address(0)),
+        fees: VaultFees({ deposit: 100, withdrawal: 200, management: 300, performance: 400 }),
+        feeRecipient: feeRecipient,
+        depositLimit: type(uint256).max,
+        owner: address(this)
+      }),
+      DeploymentArgs({ id: "", data: "" }),
+      DeploymentArgs({ id: "", data: "" }),
+      false,
+      "",
       VaultMetadata({
         vault: address(0),
         staking: address(0),

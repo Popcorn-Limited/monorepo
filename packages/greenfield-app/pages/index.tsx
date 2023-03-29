@@ -3,6 +3,7 @@ import SecuritySection from "@popcorn/app/components/landing/SecuritySection";
 import { useRouter } from "next/router";
 import React, { useEffect } from "react";
 import Hero from "@popcorn/greenfield-app/components/landing/Hero";
+import NoSSR from "react-no-ssr";
 
 const IndexPage = () => {
   const router = useRouter();
@@ -12,11 +13,14 @@ const IndexPage = () => {
       router.replace(window.location.pathname);
     }
   }, [router.pathname]);
+  
   return (
     <main>
-      <Hero />
-      <Products />
-      <SecuritySection />
+      <NoSSR>
+        <Hero />
+        <Products />
+        <SecuritySection />
+      </NoSSR>
     </main>
   );
 };

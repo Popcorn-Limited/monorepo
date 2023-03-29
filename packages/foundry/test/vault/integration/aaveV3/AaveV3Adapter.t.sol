@@ -46,8 +46,8 @@ contract AaveV3AdapterTest is AbstractAdapterTest {
     vm.label(address(this), "test");
 
     adapter.initialize(abi.encode(asset, address(this), strategy, 0, sigs, ""), externalRegistry, "");
-    
-    defaultAmount = 10**IERC20Metadata(address(asset)).decimals();
+
+    defaultAmount = 10 ** IERC20Metadata(address(asset)).decimals();
     minFuzz = defaultAmount * 10;
     raise = defaultAmount * 100_000_000;
     maxAssets = defaultAmount * 100;
@@ -107,4 +107,10 @@ contract AaveV3AdapterTest is AbstractAdapterTest {
     uint128 supplyRate = data.currentLiquidityRate;
     return uint256(supplyRate / 1e9);
   }
+
+  /*//////////////////////////////////////////////////////////////
+                              CLAIM
+    //////////////////////////////////////////////////////////////*/
+
+  // Cant test claim for Aave since they dont use it yet.
 }

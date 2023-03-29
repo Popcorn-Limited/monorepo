@@ -22,7 +22,6 @@ export const useClaimableBalance: Pop.Hook<BigNumberWithFormatted> = ({
     const result = useContractRead({
       enabled: _enabled,
       scopeKey: `staking:synthetix:claimable:${chainId}:${address}:${account}`,
-      cacheOnBlock: true,
       address: (!!address && address) || "",
       chainId: Number(chainId),
       abi: ["function earned(address) external view returns (uint256)"],
@@ -39,7 +38,6 @@ export const useClaimableBalance: Pop.Hook<BigNumberWithFormatted> = ({
     const result = useContractRead({
       enabled: _enabled,
       scopeKey: `staking:convex:claimable:${chainId}:${address}:${account}`,
-      cacheOnBlock: true,
       address: (!!address && address) || "",
       chainId: Number(chainId),
       abi: [

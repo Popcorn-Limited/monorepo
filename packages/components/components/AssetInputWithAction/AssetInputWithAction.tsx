@@ -1,5 +1,5 @@
 import { FormEventHandler, useMemo, useState } from "react";
-import { useAccount, useBalance } from "wagmi";
+import { Address, useAccount, useBalance, useNetwork, useSwitchNetwork, useToken } from "wagmi";
 import { BigNumber, constants, utils } from "ethers";
 import toast from "react-hot-toast";
 
@@ -18,6 +18,7 @@ function AssetInputWithAction({
   action,
   disabled,
   allowance,
+  getTokenUrl,
   children,
 }: {
   assetAddress: string;
@@ -26,6 +27,7 @@ function AssetInputWithAction({
   action: ActionOrCallback;
   disabled?: boolean;
   allowance: BigNumber;
+  getTokenUrl?: string;
   children: (props: {
     ActionableComponent: () => JSX.Element;
     data: {
@@ -37,8 +39,11 @@ function AssetInputWithAction({
   }) => JSX.Element;
 }) {
   const { address: account } = useAccount();
+  const { chain, chains } = useNetwork()
+  const { error, isLoading, pendingChainId, switchNetwork } = useSwitchNetwork()
   const [inputBalance, setInputBalance] = useState<number>();
   const { data: metadata, status } = useContractMetadata({ chainId, assetAddress });
+  const { data: asset } = useToken({ chainId, address: assetAddress as Address })
   const { data: userBalance } = useBalance({
     chainId,
     address: account,
@@ -47,8 +52,8 @@ function AssetInputWithAction({
   });
 
   const formattedInputBalance = useMemo(() => {
-    return utils.parseUnits(validateInput(inputBalance || "0").formatted, metadata?.decimals);
-  }, [inputBalance, metadata?.decimals]);
+    return utils.parseUnits(validateInput(inputBalance || "0").formatted, asset?.decimals);
+  }, [inputBalance, asset?.decimals]);
 
   const ACTION = typeof action === "function" ? action(formattedInputBalance) : action;
 
@@ -88,6 +93,8 @@ function AssetInputWithAction({
     if ((inputBalance || 0) == 0) return;
     // Early exit if value is ZERO
 
+    if (chain.id !== Number(chainId)) switchNetwork?.(Number(chainId));
+
     if (showApproveButton) return approve();
     // When approved continue to deposit
     mainAction();
@@ -121,7 +128,7 @@ function AssetInputWithAction({
     <>
       <InputTokenWithError
         captionText={`${ACTION.label} Amount`}
-        onSelectToken={() => {}}
+        onSelectToken={() => { }}
         onMaxClick={handleMaxClick}
         chainId={chainId}
         value={inputBalance}
@@ -129,6 +136,7 @@ function AssetInputWithAction({
         selectedToken={
           {
             ...metadata,
+            decimals: asset?.decimals,
             address: assetAddress,
             balance: userBalance?.value || constants.Zero,
           } as any
@@ -137,6 +145,7 @@ function AssetInputWithAction({
         tokenList={
           [] // Working with vault asset only for now
         }
+        getTokenUrl={getTokenUrl}
       />
       {children({
         ActionableComponent,
@@ -161,6 +170,6 @@ type AssetAction = {
 
 type ActionOrCallback = AssetAction | ((balance: BigNumber) => AssetAction);
 
-function noOp() {}
+function noOp() { }
 
 export default AssetInputWithAction;

@@ -22,7 +22,7 @@ contract YearnAdapter is AdapterBase {
   string internal _symbol;
 
   VaultAPI public yVault;
-  uint256 constant DEGRADATION_COEFFICIENT = 10**18;
+  uint256 constant DEGRADATION_COEFFICIENT = 10 ** 18;
 
   /**
    * @notice Initialize a new Yearn Adapter.
@@ -31,11 +31,7 @@ contract YearnAdapter is AdapterBase {
    * @dev This function is called by the factory contract when deploying a new vault.
    * @dev The yearn registry will be used given the `asset` from `adapterInitData` to find the latest yVault.
    */
-  function initialize(
-    bytes memory adapterInitData,
-    address externalRegistry,
-    bytes memory
-  ) external initializer {
+  function initialize(bytes memory adapterInitData, address externalRegistry, bytes memory) external initializer {
     (address _asset, , , , , ) = abi.decode(adapterInitData, (address, address, address, uint256, bytes4[8], bytes));
     __AdapterBase_init(adapterInitData);
 
@@ -102,20 +98,20 @@ contract YearnAdapter is AdapterBase {
     return supply == 0 ? shares : shares.mulDiv(yVault.balanceOf(address(this)), supply, Math.Rounding.Up);
   }
 
-  function previewDeposit(uint256 assets) public view virtual override returns (uint256) {
-    return paused() ? 0 : _convertToShares(assets - 10, Math.Rounding.Down);
+  function previewDeposit(uint256 assets) public view override returns (uint256) {
+    return paused() ? 0 : _convertToShares(assets - 0, Math.Rounding.Down);
   }
 
-  function previewMint(uint256 shares) public view virtual override returns (uint256) {
-    return paused() ? 0 : _convertToAssets(shares + 10, Math.Rounding.Up);
+  function previewMint(uint256 shares) public view override returns (uint256) {
+    return paused() ? 0 : _convertToAssets(shares + 0, Math.Rounding.Up);
   }
 
-  function previewWithdraw(uint256 assets) public view virtual override returns (uint256) {
-    return _convertToShares(assets + 10, Math.Rounding.Up);
+  function previewWithdraw(uint256 assets) public view override returns (uint256) {
+    return _convertToShares(assets + 0, Math.Rounding.Up);
   }
 
-  function previewRedeem(uint256 shares) public view virtual override returns (uint256) {
-    return _convertToAssets(shares - 10, Math.Rounding.Down);
+  function previewRedeem(uint256 shares) public view override returns (uint256) {
+    return _convertToAssets(shares - 0, Math.Rounding.Down);
   }
 
   /*//////////////////////////////////////////////////////////////

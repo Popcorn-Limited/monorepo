@@ -20,7 +20,7 @@ export default function Page({ children }: PageProps) {
 
   const { pathname } = useRouter();
 
-  const compactRoutes = ["/portfolio"];
+  const compactRoutes = ["/portfolio", "/sweet-vaults"];
 
   return (
     <div className="w-full min-h-screen h-full font-khTeka flex flex-col justify-between">
@@ -30,9 +30,7 @@ export default function Page({ children }: PageProps) {
         </NoSSR>
         <Toaster position="top-right" />
         <div
-          className={classnames("pt-5 md:pt-10", {
-            "px-6 md:px-8": !compactRoutes.includes(pathname),
-          })}
+          className={classnames("pt-5 md:pt-10", {"px-6 md:px-8" : !compactRoutes.includes(pathname)})}
         >
           {children}
         </div>

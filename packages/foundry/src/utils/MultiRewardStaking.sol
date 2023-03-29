@@ -38,11 +38,7 @@ contract MultiRewardStaking is ERC4626Upgradeable, OwnedUpgradeable {
    * @param _escrow An optional escrow contract which can be used to lock rewards on claim.
    * @param _owner Owner of the contract. Controls management functions.
    */
-  function initialize(
-    IERC20 _stakingToken,
-    IMultiRewardEscrow _escrow,
-    address _owner
-  ) external initializer {
+  function initialize(IERC20 _stakingToken, IMultiRewardEscrow _escrow, address _owner) external initializer {
     __ERC4626_init(IERC20Metadata(address(_stakingToken)));
     __Owned_init(_owner);
 
@@ -134,11 +130,7 @@ contract MultiRewardStaking is ERC4626Upgradeable, OwnedUpgradeable {
   }
 
   /// @notice Internal transfer function used by `transfer()` and `transferFrom()`. Accrues rewards for `from` and `to`.
-  function _transfer(
-    address from,
-    address to,
-    uint256 amount
-  ) internal override accrueRewards(from, to) {
+  function _transfer(address from, address to, uint256 amount) internal override accrueRewards(from, to) {
     if (from == address(0) || to == address(0)) revert ZeroAddressTransfer(from, to);
 
     uint256 fromBalance = balanceOf(from);
@@ -188,12 +180,7 @@ contract MultiRewardStaking is ERC4626Upgradeable, OwnedUpgradeable {
   }
 
   /// @notice Locks a percentage of a reward in an escrow contract. Pays out the rest to the user.
-  function _lockToken(
-    address user,
-    IERC20 rewardToken,
-    uint256 rewardAmount,
-    EscrowInfo memory escrowInfo
-  ) internal {
+  function _lockToken(address user, IERC20 rewardToken, uint256 rewardAmount, EscrowInfo memory escrowInfo) internal {
     uint256 escrowed = rewardAmount.mulDiv(uint256(escrowInfo.escrowPercentage), 1e18, Math.Rounding.Down);
     uint256 payout = rewardAmount - escrowed;
 
@@ -258,7 +245,7 @@ contract MultiRewardStaking is ERC4626Upgradeable, OwnedUpgradeable {
     if (rewards.lastUpdatedTimestamp > 0) revert RewardTokenAlreadyExist(rewardToken);
 
     if (amount > 0) {
-      if (rewardsPerSecond == 0) revert ZeroRewardsSpeed();
+      if (rewardsPerSecond == 0 && totalSupply() == 0) revert InvalidConfig();
       rewardToken.safeTransferFrom(msg.sender, address(this), amount);
     }
 
@@ -275,7 +262,7 @@ contract MultiRewardStaking is ERC4626Upgradeable, OwnedUpgradeable {
       rewardToken.safeApprove(address(escrow), type(uint256).max);
     }
 
-    uint64 ONE = (10**IERC20Metadata(address(rewardToken)).decimals()).safeCastTo64();
+    uint64 ONE = (10 ** IERC20Metadata(address(rewardToken)).decimals()).safeCastTo64();
     uint32 rewardsEndTimestamp = rewardsPerSecond == 0
       ? block.timestamp.safeCastTo32()
       : _calcRewardsEnd(0, rewardsPerSecond, amount);
@@ -327,6 +314,8 @@ contract MultiRewardStaking is ERC4626Upgradeable, OwnedUpgradeable {
 
     // Cache RewardInfo
     RewardInfo memory rewards = rewardInfos[rewardToken];
+
+    if (rewards.rewardsPerSecond == 0 && totalSupply() == 0) revert InvalidConfig();
 
     // Make sure that the reward exists
     if (rewards.lastUpdatedTimestamp == 0) revert RewardTokenDoesntExist(rewardToken);
@@ -402,9 +391,11 @@ contract MultiRewardStaking is ERC4626Upgradeable, OwnedUpgradeable {
   /// @notice Accrue global rewards for a rewardToken
   function _accrueRewards(IERC20 _rewardToken, uint256 accrued) internal {
     uint256 supplyTokens = totalSupply();
-    uint224 deltaIndex;
+    uint224 deltaIndex; // DeltaIndex is the amount of rewardsToken paid out per stakeToken
     if (supplyTokens != 0)
-      deltaIndex = accrued.mulDiv(uint256(10**decimals()), supplyTokens, Math.Rounding.Down).safeCastTo224();
+      deltaIndex = accrued.mulDiv(uint256(10 ** decimals()), supplyTokens, Math.Rounding.Down).safeCastTo224();
+    // rewardDecimals * stakeDecimals / stakeDecimals = rewardDecimals
+    // 1e18 * 1e6 / 10e6 = 0.1e18 | 1e6 * 1e18 / 10e18 = 0.1e6
 
     rewardInfos[_rewardToken].index += deltaIndex;
     rewardInfos[_rewardToken].lastUpdatedTimestamp = block.timestamp.safeCastTo32();
@@ -425,7 +416,9 @@ contract MultiRewardStaking is ERC4626Upgradeable, OwnedUpgradeable {
     uint256 deltaIndex = rewards.index - oldIndex;
 
     // Accumulate rewards by multiplying user tokens by rewardsPerToken index and adding on unclaimed
-    uint256 supplierDelta = balanceOf(_user).mulDiv(deltaIndex, uint256(rewards.ONE), Math.Rounding.Down);
+    uint256 supplierDelta = balanceOf(_user).mulDiv(deltaIndex, uint256(10 ** decimals()), Math.Rounding.Down);
+    // stakeDecimals  * rewardDecimals / stakeDecimals = rewardDecimals
+    // 1e18 * 1e6 / 10e18 = 0.1e18 | 1e6 * 1e18 / 10e18 = 0.1e6
 
     userIndex[_user][_rewardToken] = rewards.index;
 

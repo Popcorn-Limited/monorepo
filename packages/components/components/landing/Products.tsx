@@ -61,7 +61,7 @@ const Products = () => {
                 },
               },
             ]}
-            route={`${networkName}/sweet-vaults`}
+            route={"sweet-vaults"}
             badge="/images/newProductBadge.svg"
           />
         )}

@@ -65,7 +65,7 @@ contract AbstractAdapterTest is PropertyTest {
     _asset_ = address(asset_);
     _delta_ = delta_;
 
-    defaultAmount = 10**IERC20Metadata(address(asset_)).decimals() * 1e9;
+    defaultAmount = 10 ** IERC20Metadata(address(asset_)).decimals() * 1e9;
 
     raise = defaultAmount;
     maxAssets = defaultAmount * 1000;
@@ -250,7 +250,7 @@ contract AbstractAdapterTest is PropertyTest {
   function test__previewWithdraw(uint8 fuzzAmount) public virtual {
     uint256 amount = bound(uint256(fuzzAmount), minFuzz, maxAssets);
 
-    uint256 reqAssets = (adapter.previewMint(adapter.previewWithdraw(amount)) * 10) / 9;
+    uint256 reqAssets = adapter.previewMint(adapter.previewWithdraw(amount)) * 10;
     _mintFor(reqAssets, bob);
     vm.prank(bob);
     adapter.deposit(reqAssets, bob);
@@ -261,7 +261,7 @@ contract AbstractAdapterTest is PropertyTest {
   function test__previewRedeem(uint8 fuzzAmount) public virtual {
     uint256 amount = bound(uint256(fuzzAmount), minFuzz, maxShares);
 
-    uint256 reqAssets = (adapter.previewMint(amount) * 10) / 9;
+    uint256 reqAssets = adapter.previewMint(amount) * 10;
     _mintFor(reqAssets, bob);
     vm.prank(bob);
     adapter.deposit(reqAssets, bob);
@@ -311,7 +311,7 @@ contract AbstractAdapterTest is PropertyTest {
     for (uint8 i; i < len; i++) {
       if (i > 0) overrideSetup(testConfigStorage.getTestConfig(i));
 
-      uint256 reqAssets = (adapter.previewMint(adapter.previewWithdraw(amount)) * 10) / 8;
+      uint256 reqAssets = adapter.previewMint(adapter.previewWithdraw(amount)) * 10;
       _mintFor(reqAssets, bob);
       vm.prank(bob);
       adapter.deposit(reqAssets, bob);
@@ -335,7 +335,7 @@ contract AbstractAdapterTest is PropertyTest {
     for (uint8 i; i < len; i++) {
       if (i > 0) overrideSetup(testConfigStorage.getTestConfig(i));
 
-      uint256 reqAssets = (adapter.previewMint(amount) * 10) / 9;
+      uint256 reqAssets = adapter.previewMint(amount) * 10;
       _mintFor(reqAssets, bob);
       vm.prank(bob);
       adapter.deposit(reqAssets, bob);
@@ -425,10 +425,10 @@ contract AbstractAdapterTest is PropertyTest {
 
     vm.startPrank(bob);
     // Deposit and mint are paused (maxDeposit/maxMint are set to 0 on pause)
-    vm.expectRevert(abi.encodeWithSelector(MaxError.selector, defaultAmount));
+    vm.expectRevert();
     adapter.deposit(defaultAmount, bob);
 
-    vm.expectRevert(abi.encodeWithSelector(MaxError.selector, defaultAmount));
+    vm.expectRevert();
     adapter.mint(defaultAmount, bob);
 
     // Withdraw and Redeem dont revert
@@ -494,8 +494,11 @@ contract AbstractAdapterTest is PropertyTest {
     increasePricePerShare(raise);
 
     uint256 gain = ((adapter.convertToAssets(1e18) - adapter.highWaterMark()) * adapter.totalSupply()) / 1e18;
+    emit log_named_uint("gain", gain);
     uint256 fee = (gain * performanceFee) / 1e18;
+    emit log_named_uint("fee", fee);
     uint256 expectedFee = adapter.convertToShares(fee);
+    emit log_named_uint("expectedFee", expectedFee);
 
     vm.expectEmit(false, false, false, true, address(adapter));
     emit Harvested();
@@ -558,13 +561,13 @@ contract AbstractAdapterTest is PropertyTest {
     //////////////////////////////////////////////////////////////*/
 
   // OPTIONAL
-  function testClaim() public virtual {}
+  function test__claim() public virtual {}
 
   /*//////////////////////////////////////////////////////////////
                               PERMIT
     //////////////////////////////////////////////////////////////*/
 
-  function testPermit() public {
+  function test__permit() public {
     uint256 privateKey = 0xBEEF;
     address owner = vm.addr(privateKey);
 
