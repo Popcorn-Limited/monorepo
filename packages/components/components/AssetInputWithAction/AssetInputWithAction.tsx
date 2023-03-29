@@ -10,6 +10,7 @@ import InputTokenWithError from "@popcorn/components/components/InputTokenWithEr
 import { useContractMetadata } from "@popcorn/components/lib/Contract";
 import useMainAction from "./internals/useMainAction";
 import MainActionButton from "@popcorn/components/components/MainActionButton";
+import { useConsistentRepolling } from "@popcorn/utils";
 
 function AssetInputWithAction({
   assetAddress,
@@ -39,17 +40,19 @@ function AssetInputWithAction({
   }) => JSX.Element;
 }) {
   const { address: account } = useAccount();
-  const { chain, chains } = useNetwork()
-  const { error, isLoading, pendingChainId, switchNetwork } = useSwitchNetwork()
+  const { chain, chains } = useNetwork();
+  const { error, isLoading, pendingChainId, switchNetwork } = useSwitchNetwork();
   const [inputBalance, setInputBalance] = useState<number>();
   const { data: metadata, status } = useContractMetadata({ chainId, assetAddress });
-  const { data: asset } = useToken({ chainId, address: assetAddress as Address })
-  const { data: userBalance } = useBalance({
-    chainId,
-    address: account,
-    token: assetAddress as any,
-    watch: true,
-  });
+  const { data: asset } = useToken({ chainId, address: assetAddress as Address });
+  const { data: userBalance } = useConsistentRepolling(
+    useBalance({
+      chainId,
+      address: account,
+      enabled: Boolean(account && assetAddress),
+      token: assetAddress as any,
+    }),
+  );
 
   const formattedInputBalance = useMemo(() => {
     return utils.parseUnits(validateInput(inputBalance || "0").formatted, asset?.decimals);
@@ -128,7 +131,7 @@ function AssetInputWithAction({
     <>
       <InputTokenWithError
         captionText={`${ACTION.label} Amount`}
-        onSelectToken={() => { }}
+        onSelectToken={() => {}}
         onMaxClick={handleMaxClick}
         chainId={chainId}
         value={inputBalance}
@@ -170,6 +173,6 @@ type AssetAction = {
 
 type ActionOrCallback = AssetAction | ((balance: BigNumber) => AssetAction);
 
-function noOp() { }
+function noOp() {}
 
 export default AssetInputWithAction;

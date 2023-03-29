@@ -1,6 +1,6 @@
 import { BigNumber } from "ethers";
 import { useContractRead } from "wagmi";
-import { formatAndRoundBigNumber } from "@popcorn/utils";
+import { formatAndRoundBigNumber, useConsistentRepolling } from "@popcorn/utils";
 import { useNamedAccounts } from "../../utils";
 import { BigNumberWithFormatted, Pop } from "../../types";
 
@@ -15,20 +15,21 @@ export const useBalanceOf: Pop.Hook<BigNumberWithFormatted> = ({ chainId, addres
   const abi = metadata?.balanceOfAdapter?.functionAbi || ["function balanceOf(address) view returns (uint256)"];
   const functionName = metadata?.balanceOfAdapter?.functionName || "balanceOf";
 
-  return useContractRead({
-    address,
-    chainId: Number(chainId),
-    abi,
-    functionName,
-    args: (!!account && [account]) || [],
-    scopeKey: `balanceOf:${chainId}:${address}:${account}`,
-    enabled: !disabled && enabled,
-    select: (data) => {
-      return {
-        value: (data as BigNumber) || BigNumber.from(0),
-        formatted: formatAndRoundBigNumber(data as BigNumber, 18),
-      };
-    },
-    watch: true
-  }) as Pop.HookResult<BigNumberWithFormatted>;
+  return useConsistentRepolling(
+    useContractRead({
+      address,
+      chainId: Number(chainId),
+      abi,
+      functionName,
+      args: (!!account && [account]) || [],
+      scopeKey: `balanceOf:${chainId}:${address}:${account}`,
+      enabled: !disabled && enabled,
+      select: (data) => {
+        return {
+          value: (data as BigNumber) || BigNumber.from(0),
+          formatted: formatAndRoundBigNumber(data as BigNumber, 18),
+        };
+      },
+    }),
+  ) as Pop.HookResult<BigNumberWithFormatted>;
 };
