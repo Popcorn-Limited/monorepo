@@ -97,6 +97,9 @@ function SweetVault({ vaultAddress, chainId, searchString, addToTVL, addToDeposi
     }
   }, [totalAssets, price])
 
+  // hide the vault for testing
+  if (vaultAddress === "0xcf0D91fB9Bc81ac605D2F1962a72Fac8901F57bE") return <></>
+
   if (!vaultMetadata) return <></>
   if (searchString === "" ||
     vault?.name.toLowerCase().includes(searchString) ||

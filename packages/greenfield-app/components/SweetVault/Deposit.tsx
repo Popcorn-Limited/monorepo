@@ -24,6 +24,9 @@ function Deposit({
 
   const { data: allowance } = useAllowance({ address: asset, account: (usesStaking ? router?.address : vault) as Address, chainId });
 
+  // dont show this for testing
+  if (getTokenUrl === "https://curve.fi/") getTokenUrl = undefined
+
   return (
     <div className="flex flex-col">
       <AssetInputWithAction
@@ -40,7 +43,8 @@ function Deposit({
           };
         }}
         allowance={allowance?.value}
-        getTokenUrl={getTokenUrl}
+        // Show the correct link for this vault for testing
+        getTokenUrl={vault === "0xb4bA0B340a1Ab76d3d92a66123390599743E314d" ? "https://app.hop.exchange/#/pool/deposit?token=USDC&sourceNetwork=optimism" : getTokenUrl}
       >
         {({ ActionableComponent }) => {
           return (
