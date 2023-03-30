@@ -62,9 +62,9 @@ contract BeefyAdapter is AdapterBase, WithRewards {
 
     beefyBalanceCheck = IBeefyBalanceCheck(_beefyBooster == address(0) ? _beefyVault : _beefyBooster);
 
-    IERC20(asset()).approve(_beefyVault, type(uint256).max);
+    IERC20(asset()).safeIncreaseAllowance(_beefyVault, type(uint256).max);
 
-    if (_beefyBooster != address(0)) IERC20(_beefyVault).approve(_beefyBooster, type(uint256).max);
+    if (_beefyBooster != address(0)) IERC20(_beefyVault).safeIncreaseAllowance(_beefyBooster, type(uint256).max);
   }
 
   function name() public view override(IERC20Metadata, ERC20) returns (string memory) {

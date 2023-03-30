@@ -30,10 +30,10 @@ contract VaultRouter {
 
     IERC20 asset = IERC20(vault.asset());
     asset.safeTransferFrom(msg.sender, address(this), assetAmount);
-    asset.approve(address(vault), assetAmount);
+    asset.safeIncreaseAllowance(address(vault), assetAmount);
 
     uint256 shares = vault.deposit(assetAmount, address(this));
-    vault.approve(metadata.staking, shares);
+    IERC20(address(vault)).safeIncreaseAllowance(metadata.staking, shares);
     IERC4626(metadata.staking).deposit(shares, receiver);
   }
 

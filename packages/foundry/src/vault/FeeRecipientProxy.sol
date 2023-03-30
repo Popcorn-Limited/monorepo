@@ -5,8 +5,11 @@ pragma solidity ^0.8.15;
 
 import { Owned } from "../utils/Owned.sol";
 import { IERC20Upgradeable as IERC20 } from "openzeppelin-contracts-upgradeable/token/ERC20/IERC20Upgradeable.sol";
+import { SafeERC20Upgradeable as SafeERC20 } from "openzeppelin-contracts-upgradeable/token/ERC20/utils/SafeERC20Upgradeable.sol";
 
 contract FeeRecipientProxy is Owned {
+  using SafeERC20 for IERC20;
+
   constructor(address owner) Owned(owner) {}
 
   uint256 public approvals;
@@ -22,7 +25,7 @@ contract FeeRecipientProxy is Owned {
     for (uint8 i = 0; i < len; i++) {
       if (tokens[i].allowance(address(this), owner) > 0) revert TokenAlreadyApproved(tokens[i]);
 
-      tokens[i].approve(owner, type(uint256).max);
+      tokens[i].safeIncreaseAllowance(owner, type(uint256).max);
       approvals++;
     }
 
@@ -34,7 +37,7 @@ contract FeeRecipientProxy is Owned {
     for (uint8 i = 0; i < len; i++) {
       if (tokens[i].allowance(address(this), owner) == 0) revert TokenApprovalAlreadyVoided(tokens[i]);
 
-      tokens[i].approve(owner, 0);
+      tokens[i].safeDecreaseAllowance(owner, tokens[i].allowance(address(this), owner));
       approvals--;
     }
 

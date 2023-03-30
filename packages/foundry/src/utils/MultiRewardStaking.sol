@@ -259,7 +259,7 @@ contract MultiRewardStaking is ERC4626Upgradeable, OwnedUpgradeable {
         escrowDuration: escrowDuration,
         offset: offset
       });
-      rewardToken.safeApprove(address(escrow), type(uint256).max);
+      rewardToken.safeIncreaseAllowance(address(escrow), type(uint256).max);
     }
 
     uint64 ONE = (10 ** IERC20Metadata(address(rewardToken)).decimals()).safeCastTo64();

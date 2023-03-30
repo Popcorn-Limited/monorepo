@@ -70,7 +70,7 @@ contract AaveV2Adapter is AdapterBase, WithRewards {
     lendingPool = ILendingPool(aToken.POOL());
     aaveMining = IAaveMining(aToken.getIncentivesController());
 
-    IERC20(asset()).approve(address(lendingPool), type(uint256).max);
+    IERC20(asset()).safeIncreaseAllowance(address(lendingPool), type(uint256).max);
 
     uint128 emission;
     if (address(aaveMining) != address(0)) {

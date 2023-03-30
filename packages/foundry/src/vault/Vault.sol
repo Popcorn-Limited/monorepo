@@ -71,7 +71,7 @@ contract Vault is ERC4626Upgradeable, ReentrancyGuardUpgradeable, PausableUpgrad
 
     adapter = adapter_;
 
-    asset_.approve(address(adapter_), type(uint256).max);
+    asset_.safeIncreaseAllowance(address(adapter_), type(uint256).max);
 
     _decimals = IERC20Metadata(address(asset_)).decimals() + decimalOffset; // Asset decimals + decimal offset to combat inflation attacks
 
@@ -535,13 +535,13 @@ contract Vault is ERC4626Upgradeable, ReentrancyGuardUpgradeable, PausableUpgrad
 
     adapter.redeem(adapter.balanceOf(address(this)), address(this), address(this));
 
-    IERC20(asset()).approve(address(adapter), 0);
+    IERC20(asset()).safeDecreaseAllowance(address(adapter), IERC20(asset()).allowance(address(this), address(adapter)));
 
     emit ChangedAdapter(adapter, proposedAdapter);
 
     adapter = proposedAdapter;
 
-    IERC20(asset()).approve(address(adapter), type(uint256).max);
+    IERC20(asset()).safeIncreaseAllowance(address(adapter), type(uint256).max);
 
     adapter.deposit(IERC20(asset()).balanceOf(address(this)), address(this));
 

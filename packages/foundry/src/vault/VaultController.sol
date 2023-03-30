@@ -177,7 +177,7 @@ contract VaultController is Owned {
   ) internal {
     if (initialDeposit > 0) {
       asset.safeTransferFrom(msg.sender, address(this), initialDeposit);
-      asset.approve(address(target), initialDeposit);
+      asset.safeIncreaseAllowance(address(target), initialDeposit);
       target.deposit(initialDeposit, msg.sender);
     }
   }
@@ -532,7 +532,7 @@ contract VaultController is Owned {
       );
       if (!success) revert UnderlyingError(returnData);
 
-      IERC20(rewardsToken).approve(staking, type(uint256).max);
+      IERC20(rewardsToken).safeIncreaseAllowance(staking, type(uint256).max);
       IERC20(rewardsToken).transferFrom(msg.sender, address(adminProxy), amount);
 
       (success, returnData) = adminProxy.execute(

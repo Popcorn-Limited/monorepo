@@ -71,7 +71,7 @@ contract CompoundV2Adapter is AdapterBase, WithRewards {
     (bool isListed, , ) = comptroller.markets(address(cToken));
     if (isListed == false) revert InvalidAsset(address(cToken));
 
-    IERC20(asset()).approve(address(cToken), type(uint256).max);
+    IERC20(asset()).safeIncreaseAllowance(address(cToken), type(uint256).max);
 
     uint256 compSpeed = comptroller.compSpeeds(address(cToken));
     isActiveCompRewards = compSpeed > 0 ? true : false;

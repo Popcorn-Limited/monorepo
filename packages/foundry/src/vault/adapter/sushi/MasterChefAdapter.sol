@@ -64,7 +64,7 @@ contract MasterChefAdapter is AdapterBase, WithRewards {
     _name = string.concat("Popcorn MasterChef", IERC20Metadata(asset()).name(), " Adapter");
     _symbol = string.concat("popB-", IERC20Metadata(asset()).symbol());
 
-    IERC20(pool.lpToken).approve(address(masterChef), type(uint256).max);
+    IERC20(pool.lpToken).safeIncreaseAllowance(address(masterChef), type(uint256).max);
   }
 
   function name() public view override(IERC20Metadata, ERC20) returns (string memory) {

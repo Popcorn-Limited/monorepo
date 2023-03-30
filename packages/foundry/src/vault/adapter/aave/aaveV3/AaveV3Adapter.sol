@@ -71,7 +71,7 @@ contract AaveV3Adapter is AdapterBase, WithRewards {
     lendingPool = ILendingPool(aToken.POOL());
     aaveIncentives = IAaveIncentives(aToken.getIncentivesController());
 
-    IERC20(asset()).approve(address(lendingPool), type(uint256).max);
+    IERC20(asset()).safeIncreaseAllowance(address(lendingPool), type(uint256).max);
 
     if (address(aaveIncentives) != address(0)) {
       availableRewards = aaveIncentives.getRewardsByAsset(asset());
