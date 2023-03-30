@@ -17,7 +17,7 @@ import { useAccount } from "wagmi";
 const SUPPORTED_NETWORKS = [
   ChainId.ALL,
   ChainId.Optimism,
-  ChainId.Fantom,
+  // ChainId.Fantom,
   ...(process.env.NEXT_PUBLIC_ENABLE_TESTNETS === "true" ? [ChainId.Hardhat] : [])
 ]
 
