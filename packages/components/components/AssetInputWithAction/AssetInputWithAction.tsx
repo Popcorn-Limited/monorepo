@@ -5,6 +5,7 @@ import toast from "react-hot-toast";
 
 import { validateInput } from "./internals/input";
 
+import useWaitForTx from "@popcorn/components/lib/utils/hooks/useWaitForTx";
 import useApproveBalance from "@popcorn/components/hooks/useApproveBalance";
 import InputTokenWithError from "@popcorn/components/components/InputTokenWithError";
 import { useContractMetadata } from "@popcorn/components/lib/Contract";
@@ -39,11 +40,12 @@ function AssetInputWithAction({
     };
   }) => JSX.Element;
 }) {
+  const { waitForTx } = useWaitForTx();
   const { address: account } = useAccount();
-  const { chain, chains } = useNetwork();
-  const { error, isLoading, pendingChainId, switchNetwork } = useSwitchNetwork();
+  const { chain } = useNetwork();
+  const { switchNetwork } = useSwitchNetwork();
   const [inputBalance, setInputBalance] = useState<number>();
-  const { data: metadata, status } = useContractMetadata({ chainId, assetAddress });
+  const { data: metadata } = useContractMetadata({ chainId, assetAddress });
   const { data: asset } = useToken({ chainId, address: assetAddress as Address });
   const { data: userBalance } = useConsistentRepolling(
     useBalance({
@@ -65,8 +67,14 @@ function AssetInputWithAction({
     isSuccess: isApproveSuccess,
     isLoading: isApproveLoading,
   } = useApproveBalance(assetAddress, target, chainId, {
-    onSuccess: () => {
-      toast.success("Assets approved!", {
+    onSuccess: (tx) => {
+      waitForTx(tx, {
+        successMessage: "Assets approved!",
+        errorMessage: "Something went wrong",
+      });
+    },
+    onError: () => {
+      toast.error("User rejected the transaction", {
         position: "top-center",
       });
     },
@@ -79,12 +87,17 @@ function AssetInputWithAction({
     chainId,
     ACTION.args || [formattedInputBalance],
     {
-      onSuccess: () => {
-        toast.success(ACTION.successMessage, {
+      onSuccess: (tx) => {
+        waitForTx(tx, {
+          successMessage: ACTION.successMessage,
+          errorMessage: "Something went wrong",
+        });
+        setInputBalance("" as any);
+      },
+      onError: () => {
+        toast.error("User rejected the transaction", {
           position: "top-center",
         });
-        // reset input balance
-        setInputBalance("" as any);
       },
     },
   );
