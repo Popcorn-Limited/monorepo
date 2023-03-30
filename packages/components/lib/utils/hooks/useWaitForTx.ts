@@ -10,7 +10,7 @@ type WaitForTx = {
 
 const useWaitForTx = ({
   successMessage,
-  loadingMessage = "Working...",
+  loadingMessage = "Loading...",
   errorMessage,
   onSuccess,
   onError,
