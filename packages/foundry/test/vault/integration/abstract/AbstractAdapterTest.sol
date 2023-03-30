@@ -109,11 +109,12 @@ contract AbstractAdapterTest is PropertyTest {
 
   function verify_adapterInit() public virtual {}
 
-  function _mintFor(uint256 amount, address receiver) internal {
-    emit log("DING");
+  function _mintAsset(uint256 amount, address receiver) internal virtual {
     deal(address(asset), receiver, amount);
-    emit log("DING1");
+  }
 
+  function _mintAssetAndApproveForAdapter(uint256 amount, address receiver) internal {
+    _mintAsset(amount, receiver);
     vm.prank(receiver);
     asset.approve(address(adapter), amount);
   }
@@ -253,7 +254,7 @@ contract AbstractAdapterTest is PropertyTest {
     uint256 amount = bound(uint256(fuzzAmount), minFuzz, maxAssets);
 
     uint256 reqAssets = adapter.previewMint(adapter.previewWithdraw(amount)) * 10;
-    _mintFor(reqAssets, bob);
+    _mintAssetAndApproveForAdapter(reqAssets, bob);
     vm.prank(bob);
     adapter.deposit(reqAssets, bob);
 
@@ -264,7 +265,7 @@ contract AbstractAdapterTest is PropertyTest {
     uint256 amount = bound(uint256(fuzzAmount), minFuzz, maxShares);
 
     uint256 reqAssets = adapter.previewMint(amount) * 10;
-    _mintFor(reqAssets, bob);
+    _mintAssetAndApproveForAdapter(reqAssets, bob);
     vm.prank(bob);
     adapter.deposit(reqAssets, bob);
 
@@ -282,14 +283,14 @@ contract AbstractAdapterTest is PropertyTest {
       if (i > 0) overrideSetup(testConfigStorage.getTestConfig(i));
 
       emit log("PING");
-      _mintFor(amount, bob);
+      _mintAssetAndApproveForAdapter(amount, bob);
 
       emit log("PING1");
       prop_deposit(bob, bob, amount, testId);
 
       increasePricePerShare(raise);
 
-      _mintFor(amount, bob);
+      _mintAssetAndApproveForAdapter(amount, bob);
       prop_deposit(bob, alice, amount, testId);
     }
   }
@@ -300,12 +301,12 @@ contract AbstractAdapterTest is PropertyTest {
     for (uint8 i; i < len; i++) {
       if (i > 0) overrideSetup(testConfigStorage.getTestConfig(i));
 
-      _mintFor(adapter.previewMint(amount), bob);
+      _mintAssetAndApproveForAdapter(adapter.previewMint(amount), bob);
       prop_mint(bob, bob, amount, testId);
 
       increasePricePerShare(raise);
 
-      _mintFor(adapter.previewMint(amount), bob);
+      _mintAssetAndApproveForAdapter(adapter.previewMint(amount), bob);
       prop_mint(bob, alice, amount, testId);
     }
   }
@@ -317,12 +318,12 @@ contract AbstractAdapterTest is PropertyTest {
       if (i > 0) overrideSetup(testConfigStorage.getTestConfig(i));
 
       uint256 reqAssets = adapter.previewMint(adapter.previewWithdraw(amount)) * 10;
-      _mintFor(reqAssets, bob);
+      _mintAssetAndApproveForAdapter(reqAssets, bob);
       vm.prank(bob);
       adapter.deposit(reqAssets, bob);
       prop_withdraw(bob, bob, amount, testId);
 
-      _mintFor(reqAssets, bob);
+      _mintAssetAndApproveForAdapter(reqAssets, bob);
       vm.prank(bob);
       adapter.deposit(reqAssets, bob);
 
@@ -341,12 +342,12 @@ contract AbstractAdapterTest is PropertyTest {
       if (i > 0) overrideSetup(testConfigStorage.getTestConfig(i));
 
       uint256 reqAssets = adapter.previewMint(amount) * 10;
-      _mintFor(reqAssets, bob);
+      _mintAssetAndApproveForAdapter(reqAssets, bob);
       vm.prank(bob);
       adapter.deposit(reqAssets, bob);
       prop_redeem(bob, bob, amount, testId);
 
-      _mintFor(reqAssets, bob);
+      _mintAssetAndApproveForAdapter(reqAssets, bob);
       vm.prank(bob);
       adapter.deposit(reqAssets, bob);
 
@@ -363,7 +364,7 @@ contract AbstractAdapterTest is PropertyTest {
     //////////////////////////////////////////////////////////////*/
 
   function test__RT_deposit_redeem() public virtual {
-    _mintFor(defaultAmount, bob);
+    _mintAssetAndApproveForAdapter(defaultAmount, bob);
 
     vm.startPrank(bob);
     uint256 shares = adapter.deposit(defaultAmount, bob);
@@ -374,7 +375,7 @@ contract AbstractAdapterTest is PropertyTest {
   }
 
   function test__RT_deposit_withdraw() public virtual {
-    _mintFor(defaultAmount, bob);
+    _mintAssetAndApproveForAdapter(defaultAmount, bob);
 
     vm.startPrank(bob);
     uint256 shares1 = adapter.deposit(defaultAmount, bob);
@@ -385,7 +386,7 @@ contract AbstractAdapterTest is PropertyTest {
   }
 
   function test__RT_mint_withdraw() public virtual {
-    _mintFor(adapter.previewMint(defaultAmount), bob);
+    _mintAssetAndApproveForAdapter(adapter.previewMint(defaultAmount), bob);
 
     vm.startPrank(bob);
     uint256 assets = adapter.mint(defaultAmount, bob);
@@ -396,7 +397,7 @@ contract AbstractAdapterTest is PropertyTest {
   }
 
   function test__RT_mint_redeem() public virtual {
-    _mintFor(adapter.previewMint(defaultAmount), bob);
+    _mintAssetAndApproveForAdapter(adapter.previewMint(defaultAmount), bob);
 
     vm.startPrank(bob);
     uint256 assets1 = adapter.mint(defaultAmount, bob);
@@ -411,7 +412,7 @@ contract AbstractAdapterTest is PropertyTest {
     //////////////////////////////////////////////////////////////*/
 
   function test__pause() public virtual {
-    _mintFor(defaultAmount, bob);
+    _mintAssetAndApproveForAdapter(defaultAmount, bob);
 
     vm.prank(bob);
     adapter.deposit(defaultAmount, bob);
@@ -447,7 +448,7 @@ contract AbstractAdapterTest is PropertyTest {
   }
 
   function test__unpause() public virtual {
-    _mintFor(defaultAmount * 3, bob);
+    _mintAssetAndApproveForAdapter(defaultAmount * 3, bob);
 
     vm.prank(bob);
     adapter.deposit(defaultAmount, bob);
@@ -489,7 +490,7 @@ contract AbstractAdapterTest is PropertyTest {
   function test__harvest() public virtual {
     uint256 performanceFee = 1e16;
     uint256 hwm = 1e9;
-    _mintFor(defaultAmount, bob);
+    _mintAssetAndApproveForAdapter(defaultAmount, bob);
 
     vm.prank(bob);
     adapter.deposit(defaultAmount, bob);

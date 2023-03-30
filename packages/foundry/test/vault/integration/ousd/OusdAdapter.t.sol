@@ -12,6 +12,7 @@ contract OusdAdapterTest is AbstractAdapterTest {
   using Math for uint256;
 
   IWousd public wousd;
+  address ousdWhale = 0x70fCE97d671E81080CA3ab4cc7A59aAc2E117137;
 
   function setUp() public {
     uint256 forkId = vm.createSelectFork(vm.rpcUrl("mainnet"));
@@ -44,6 +45,15 @@ contract OusdAdapterTest is AbstractAdapterTest {
   /*//////////////////////////////////////////////////////////////
                           HELPER
     //////////////////////////////////////////////////////////////*/
+
+  function _mintAsset(uint256 amount, address receiver) internal override {
+    vm.prank(ousdWhale);
+    IERC20(asset).transfer(receiver, amount);
+  }
+
+  function increasePricePerShare(uint256 amount) public override {
+    // _mintAsset();
+  }
 
   // Verify that totalAssets returns the expected amount
   function verify_totalAssets() public override {
