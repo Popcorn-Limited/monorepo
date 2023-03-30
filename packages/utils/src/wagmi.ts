@@ -3,7 +3,7 @@ import { useEffect, useRef, useState } from "react";
 
 export type UseContractReadReturn = ReturnType<typeof useContractRead>;
 
-export const REFETCH_TIME_IN_MS = 15_000;
+export const REFETCH_TIME_IN_MS = 8_000;
 export const MAX_RETRY_COUNT = 10;
 export const useConsistentRepolling = <T extends UseContractReadReturn = UseContractReadReturn>(wagmiReadCall: T) => {
   const [count, setCount] = useState(0);
