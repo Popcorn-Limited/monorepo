@@ -10,7 +10,7 @@ type WaitForTx = {
 
 const useWaitForTx = ({
   successMessage,
-  loadingMessage = "Sending...",
+  loadingMessage = "Working...",
   errorMessage,
   onSuccess,
   onError,
@@ -23,17 +23,16 @@ const useWaitForTx = ({
 
     const toastId = toast.loading(LOADING_MESSAGE, {
       position: "top-center",
-      duration: 7_000, // terminate after 1secs
     });
 
     (tx?.wait || Promise.resolve)()
       .then(() => {
-        toast.dismiss(toastId);
         if (SUCESS_MESSAGE) {
           toast.success(SUCESS_MESSAGE, {
             position: "top-center",
           });
         }
+        toast.dismiss(toastId);
         (overrides.onSuccess || onSuccess)?.(hash);
       })
       .catch(() => {
