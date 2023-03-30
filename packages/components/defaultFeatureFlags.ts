@@ -3,7 +3,7 @@ const defaultFeatureFlags = [
   { key: "showLocalNetwork", prod: false, dev: true },
   { key: "migrationAlert", prod: true, dev: true },
   { key: "instant3X", prod: false, dev: true },
-  { key: "sweetVaults", prod: false, dev: true },
+  { key: "sweetVaults", prod: true, dev: true },
   { key: "portfolio", prod: false, dev: true },
   { key: "optin_analytics", prod: false, dev: true },
 ];

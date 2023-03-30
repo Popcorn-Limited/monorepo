@@ -23,14 +23,14 @@ export default function Page({ children }: PageProps) {
   const compactRoutes = ["/portfolio", "/sweet-vaults"];
 
   return (
-    <div className="w-full min-h-screen h-full font-khTeka flex flex-col justify-between">
+    <div className="w-full md:w-11/12 xl:w-full 2xl:w-9/12 mx-auto min-h-screen h-full font-khTeka flex flex-col justify-between">
       <div>
         <NoSSR>
           <Navbar />
         </NoSSR>
         <Toaster position="top-right" />
         <div
-          className={classnames("pt-5 md:pt-10", {"px-6 md:px-8" : !compactRoutes.includes(pathname)})}
+          className={classnames("pt-5 md:pt-10 ", {"px-6 md:px-8" : !compactRoutes.includes(pathname)})}
         >
           {children}
         </div>

@@ -98,9 +98,6 @@ const SweetVaults: NextPage = () => {
             />;
           })}
         </section>
-        <figure className="overflow-hidden rounded-xl mt-24">
-          <Image src={asset_bg} alt="" placeholder="blur" />
-        </figure>
       </NoSSR>
     </main>
   );
