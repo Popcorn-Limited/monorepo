@@ -21,13 +21,18 @@ contract HopAdapter is AdapterBase, WithRewards {
   string internal _name;
   string internal _symbol;
 
+  uint256[] amounts;
+  uint256[] minAmounts;
+  uint256 deadline;
+  uint256 minToMint;
+
   // @notice The Reward interface
   IStakingRewards public stakingRewards;
 
   /// @notice The Hop protocol swap contract
   ILiquidityPool public liquidityPool;
 
-  // @notice The address of the LP token
+  // @notice The address of the LP token //need to stake this
   address public LPToken;
 
   /**
@@ -48,13 +53,23 @@ contract HopAdapter is AdapterBase, WithRewards {
     liquidityPool = ILiquidityPool(registry);
     stakingRewards = IStakingRewards(_stakingRewards);
 
+    require(asset() == liquidityPool.getToken(0), "Asset tokens do not match");
+
     ILiquidityPool.Swap memory swapStorage = liquidityPool.swapStorage();
+
     LPToken = swapStorage.lpToken;
+
+    require(LPToken == stakingRewards.stakingToken(), "Staking tokens do not match");
+
+    deadline = block.timestamp;
+    minToMint = liquidityPool.getVirtualPrice();
 
     _name = string.concat("Popcorn Hop", IERC20Metadata(asset()).name(), " Adapter");
     _symbol = string.concat("popB-", IERC20Metadata(asset()).symbol());
 
+    IERC20(asset()).approve(address(liquidityPool), type(uint256).max);
     IERC20(LPToken).approve(address(liquidityPool), type(uint256).max);
+    IERC20(LPToken).approve(address(stakingRewards), type(uint256).max);
   }
 
   function name() public view override(IERC20Metadata, ERC20) returns (string memory) {
@@ -80,20 +95,16 @@ contract HopAdapter is AdapterBase, WithRewards {
                           INTERNAL HOOKS LOGIC
     //////////////////////////////////////////////////////////////*/
 
-  function _protocolDeposit(
-    uint256[] calldata amounts,
-    uint256 minToMint,
-    uint256 deadline
-  ) internal virtual {
+  function _protocolDeposit(uint256 amount, uint256) internal virtual override {
+    amounts = [amount, 0];
     liquidityPool.addLiquidity(amounts, minToMint, deadline);
+    stakingRewards.stake(amount);
   }
 
-  function _protocolWithdraw(
-    uint256 amount,
-    uint256[] calldata minAmounts,
-    uint256 deadline
-  ) internal virtual {
+  function _protocolWithdraw(uint256 amount, uint256) internal virtual override {
+    minAmounts = [amount, 0];
     liquidityPool.removeLiquidity(amount, minAmounts, deadline);
+    stakingRewards.withdraw(amount);
   }
 
   /*//////////////////////////////////////////////////////////////
@@ -108,7 +119,6 @@ contract HopAdapter is AdapterBase, WithRewards {
   function rewardTokens() external view override returns (address[] memory) {
     address[] memory _rewardTokens = new address[](1);
     _rewardTokens[0] = LPToken;
-    // return _rewardTokens;
   }
 
   function getLPTokenAdress() external view returns (address) {

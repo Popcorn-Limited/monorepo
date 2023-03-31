@@ -1,9 +1,6 @@
 // SPDX-License-Identifier: AGPL-3.0-only
 pragma solidity ^0.8.10;
 
-// this is the LP token
-// https://github.com/hop-exchange/contracts/blob/28ec0f1a8df497a102c0a3e779a68a81bf69b9ad/contracts/saddle/LPToken.sol
-
 interface ILiquidityPool {
   struct Swap {
     uint256 initialA;
@@ -14,8 +11,7 @@ interface ILiquidityPool {
     uint256 adminFee;
     uint256 defaultWithdrawFee;
     address lpToken;
-    // LPToken lpToken;
-    // IERC20[] pooledTokens;
+    address[] pooledTokens;
     uint256[] tokenPrecisionMultipliers;
     uint256[] balances;
     // mapping(address => uint256) depositTimestamp;
@@ -36,12 +32,11 @@ interface ILiquidityPool {
 
   function getVirtualPrice() external view returns (uint256);
 
+  function getToken(uint8) external view returns (address);
+
   function swapStorage() external view returns (ILiquidityPool.Swap memory);
 }
 
-// this is lp token on arbitrum  https://arbiscan.io/address/0xb0cabfe930642ad3e7decdc741884d8c3f7ebc70#writeContract
-
-// they are using this contract https://github.com/Synthetixio/synthetix/blob/develop/contracts/StakingRewards.sol
 interface IStakingRewards {
   // Views
   function lastTimeRewardApplicable() external view returns (uint256);
@@ -55,6 +50,8 @@ interface IStakingRewards {
   function totalSupply() external view returns (uint256);
 
   function balanceOf(address account) external view returns (uint256);
+
+  function stakingToken() external view returns (address);
 
   // Mutative
 

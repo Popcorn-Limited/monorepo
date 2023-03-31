@@ -13,7 +13,8 @@ contract HopAdapterTest is AbstractAdapterTest {
   // Note: using the hop liquidity pool contract
   // https://optimistic.etherscan.io/address/0xaa30d6bba6285d0585722e2440ff89e23ef68864#writeContract
   ILiquidityPool public liquidityPool = ILiquidityPool(0xaa30D6bba6285d0585722e2440Ff89E23EF68864);
-  IStakingRewards public stakingRewards = IStakingRewards(0x3f27c540ADaE3a9E8c875C61e3B970b559d7F65d);
+  IStakingRewards public stakingRewards = IStakingRewards(0xfD49C7EE330fE060ca66feE33d49206eB96F146D);
+  address public LPToken;
 
   function setUp() public {
     uint256 forkId = vm.createSelectFork(vm.rpcUrl("mainnet"));
@@ -31,11 +32,19 @@ contract HopAdapterTest is AbstractAdapterTest {
   function _setUpTest(bytes memory testConfig) internal {
     (address _liquidityPool, address _stakingRewards) = abi.decode(testConfig, (address, address));
     liquidityPool = ILiquidityPool(_liquidityPool);
+
     stakingRewards = IStakingRewards(_stakingRewards);
+    address asset = liquidityPool.getToken(0);
 
-    setUpBaseTest(asset, address(new HopAdapter()), address(liquidityPool), 10, "Hop", true);
+    ILiquidityPool.Swap memory swapStorage = liquidityPool.swapStorage();
 
-    vm.label(address(liquidityPool), "hop");
+    LPToken = swapStorage.lpToken;
+
+    setUpBaseTest(IERC20(asset), address(new HopAdapter()), address(liquidityPool), 10, "Hop", true);
+
+    vm.label(address(liquidityPool), "hopLiquidityPool");
+    vm.label(address(stakingRewards), "hopStakingRewards");
+    vm.label(address(LPToken), "hopLPToken");
     vm.label(address(asset), "asset");
     vm.label(address(this), "test");
 
