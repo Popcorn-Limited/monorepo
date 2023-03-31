@@ -5,7 +5,7 @@ pragma solidity ^0.8.15;
 
 import { AdapterBase, IERC20, IERC20Metadata, SafeERC20, ERC20, Math, IStrategy, IAdapter } from "../../abstracts/AdapterBase.sol";
 import { WithRewards, IWithRewards } from "../../abstracts/WithRewards.sol";
-import { ICToken, ICometRewarder, IGovernor, IAdmin } from "./ICompoundV3.sol";
+import { ICToken, ICometRewarder, IGovernor, IAdmin, ICometConfigurator } from "./ICompoundV3.sol";
 
 /**
  * @title   CompoundV3 Adapter
@@ -29,6 +29,9 @@ contract CompoundV3Adapter is AdapterBase, WithRewards {
   /// @notice The Compound Comet rewarder contract.
   ICometRewarder public cometRewarder;
 
+  /// @notice The Compound Comet configurator contract.
+  ICometConfigurator public cometConfigurator;
+
   /// @notice Check to see if Compound liquidity mining is active on this market
   bool public isActiveCompRewards;
 
@@ -51,16 +54,22 @@ contract CompoundV3Adapter is AdapterBase, WithRewards {
     _name = string.concat("Popcorn CompoundV3", IERC20Metadata(asset()).name(), " Adapter");
     _symbol = string.concat("popB-", IERC20Metadata(asset()).symbol());
 
-    (address _cToken, address _cometRewarder) = abi.decode(compoundV3InitData, (address, address));
+    (address _cToken, address _cometRewarder, address _cometConfigurator) = abi.decode(
+      compoundV3InitData,
+      (address, address, address)
+    );
 
     cToken = ICToken(_cToken);
     cometRewarder = ICometRewarder(_cometRewarder);
+    cometConfigurator = ICometConfigurator(_cometConfigurator);
+
+    address configuratorBaseToken = cometConfigurator.getConfiguration(address(cToken)).baseToken;
+    if (asset() != configuratorBaseToken) revert InvalidAsset(configuratorBaseToken);
 
     IERC20(asset()).approve(address(cToken), type(uint256).max);
 
-    uint256 compBorrowSpeed = cToken.baseTrackingBorrowSpeed();
     uint256 compSupplySpeed = cToken.baseTrackingSupplySpeed();
-    isActiveCompRewards = compBorrowSpeed + compSupplySpeed > 0 ? true : false;
+    isActiveCompRewards = compSupplySpeed > 0 ? true : false;
   }
 
   function name() public view override(IERC20Metadata, ERC20) returns (string memory) {

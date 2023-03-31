@@ -5,7 +5,7 @@ pragma solidity ^0.8.15;
 
 import { Test } from "forge-std/Test.sol";
 
-import { CompoundV3Adapter, SafeERC20, IERC20, IERC20Metadata, Math, ICToken, ICometRewarder, IGovernor, IAdmin } from "../../../../src/vault/adapter/compound/compoundV3/CompoundV3Adapter.sol";
+import { CompoundV3Adapter, SafeERC20, IERC20, IERC20Metadata, Math, ICToken, ICometRewarder, IGovernor, IAdmin, ICometConfigurator } from "../../../../src/vault/adapter/compound/compoundV3/CompoundV3Adapter.sol";
 import { CompoundV3TestConfigStorage, CompoundV3TestConfig } from "./CompoundV3TestConfigStorage.sol";
 import { AbstractAdapterTest, ITestConfigStorage, IAdapter } from "../abstract/AbstractAdapterTest.sol";
 
@@ -14,6 +14,7 @@ contract CompoundV3AdapterTest is AbstractAdapterTest {
 
   ICToken cToken;
   ICometRewarder cometRewarder;
+  ICometConfigurator cometConfigurator;
 
   uint256 compoundDefaultAmount = 1e18;
 
@@ -31,12 +32,19 @@ contract CompoundV3AdapterTest is AbstractAdapterTest {
   }
 
   function _setUpTest(bytes memory testConfig) internal {
-    (address _cToken, address _cometRewarder) = abi.decode(testConfig, (address, address));
+    (address _cToken, address _cometRewarder, address _cometConfigurator) = abi.decode(
+      testConfig,
+      (address, address, address)
+    );
 
     cToken = ICToken(_cToken);
     cometRewarder = ICometRewarder(_cometRewarder);
+    cometConfigurator = ICometConfigurator(_cometConfigurator);
 
     asset = IERC20(cToken.baseToken());
+
+    address configuratorBaseToken = cometConfigurator.getConfiguration(address(cToken)).baseToken;
+    assertEq(address(asset), configuratorBaseToken, "InvalidAsset");
 
     setUpBaseTest(IERC20(asset), address(new CompoundV3Adapter()), address(cToken), 10, "CompoundV3", true);
 

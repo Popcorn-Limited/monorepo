@@ -8,6 +8,7 @@ import { ITestConfigStorage } from "../abstract/ITestConfigStorage.sol";
 struct CompoundV3TestConfig {
   address cToken;
   address cometRewarder;
+  address cometConfigurator;
 }
 
 contract CompoundV3TestConfigStorage is ITestConfigStorage {
@@ -16,12 +17,16 @@ contract CompoundV3TestConfigStorage is ITestConfigStorage {
   constructor() {
     // Mainnet - cUSDCv3
     testConfigs.push(
-      CompoundV3TestConfig(0xc3d688B66703497DAA19211EEdff47f25384cdc3, 0x1B0e765F6224C21223AeA2af16c1C46E38885a40)
+      CompoundV3TestConfig(
+        0xc3d688B66703497DAA19211EEdff47f25384cdc3,
+        0x1B0e765F6224C21223AeA2af16c1C46E38885a40,
+        0x316f9708bB98af7dA9c68C1C3b5e79039cD336E3
+      )
     );
   }
 
   function getTestConfig(uint256 i) public view returns (bytes memory) {
-    return abi.encode(testConfigs[i].cToken, testConfigs[i].cometRewarder);
+    return abi.encode(testConfigs[i].cToken, testConfigs[i].cometRewarder, testConfigs[i].cometConfigurator);
   }
 
   function getTestConfigLength() public view returns (uint256) {
