@@ -17,7 +17,7 @@ contract HopAdapterTest is AbstractAdapterTest {
   address public LPToken;
 
   function setUp() public {
-    uint256 forkId = vm.createSelectFork(vm.rpcUrl("mainnet"));
+    uint256 forkId = vm.createSelectFork(vm.rpcUrl("optimism"));
     vm.selectFork(forkId);
 
     testConfigStorage = ITestConfigStorage(address(new HopTestConfigStorage()));

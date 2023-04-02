@@ -19,6 +19,7 @@ remappings = [
 [rpc_endpoints]
 mainnet = "${ETH_RPC_URL}" 
 polygon = "${POLYGON_RPC_URL}" 
+optimism = "${OPTIMISM_RPC_URL}"
 
 [profile.ci]
 src = 'src'
