@@ -59,9 +59,8 @@ contract HopAdapter is AdapterBase, WithRewards {
 
     LPToken = swapStorage.lpToken;
 
-    require(LPToken == stakingRewards.stakingToken(), "Staking tokens do not match");
-
     deadline = block.timestamp;
+
     minToMint = liquidityPool.getVirtualPrice();
 
     _name = string.concat("Popcorn Hop", IERC20Metadata(asset()).name(), " Adapter");
@@ -102,7 +101,7 @@ contract HopAdapter is AdapterBase, WithRewards {
   }
 
   function _protocolWithdraw(uint256 amount, uint256) internal virtual override {
-    minAmounts = [amount, 0];
+    minAmounts = [59832501266287862, 54304784550842336];
     liquidityPool.removeLiquidity(amount, minAmounts, deadline);
     stakingRewards.withdraw(amount);
   }
@@ -119,10 +118,6 @@ contract HopAdapter is AdapterBase, WithRewards {
   function rewardTokens() external view override returns (address[] memory) {
     address[] memory _rewardTokens = new address[](1);
     _rewardTokens[0] = LPToken;
-  }
-
-  function getLPTokenAdress() external view returns (address) {
-    return LPToken;
   }
 
   /*//////////////////////////////////////////////////////////////

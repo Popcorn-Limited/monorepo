@@ -11,11 +11,6 @@ interface ILiquidityPool {
     uint256 adminFee;
     uint256 defaultWithdrawFee;
     address lpToken;
-    address[] pooledTokens;
-    uint256[] tokenPrecisionMultipliers;
-    uint256[] balances;
-    // mapping(address => uint256) depositTimestamp;
-    // mapping(address => uint256) withdrawFeeMultiplier;
   }
 
   function addLiquidity(
