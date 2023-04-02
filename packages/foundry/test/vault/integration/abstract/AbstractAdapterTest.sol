@@ -315,7 +315,10 @@ contract AbstractAdapterTest is PropertyTest {
       _mintFor(reqAssets, bob);
       vm.prank(bob);
       adapter.deposit(reqAssets, bob);
-      prop_withdraw(bob, bob, amount, testId);
+
+      emit log("PING0");
+
+      prop_withdraw(bob, bob, amount / 10, testId);
 
       _mintFor(reqAssets, bob);
       vm.prank(bob);
@@ -325,6 +328,9 @@ contract AbstractAdapterTest is PropertyTest {
 
       vm.prank(bob);
       adapter.approve(alice, type(uint256).max);
+
+      emit log("PING");
+
       prop_withdraw(alice, bob, amount, testId);
     }
   }

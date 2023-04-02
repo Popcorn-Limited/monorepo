@@ -5,7 +5,7 @@ pragma solidity ^0.8.15;
 
 import { AdapterBase, IERC20, IERC20Metadata, SafeERC20, ERC20, Math, IStrategy, IAdapter } from "../abstracts/AdapterBase.sol";
 import { WithRewards, IWithRewards } from "../abstracts/WithRewards.sol";
-import { IAuraBooster, IAuraRewards } from "./IAura.sol";
+import { IAuraBooster, IAuraRewards, IAuraStaking } from "./IAura.sol";
 
 /**
  * @title   Aura Adapter
@@ -27,6 +27,9 @@ contract AuraAdapter is AdapterBase, WithRewards {
 
   /// @notice The reward contract for Aura gauge
   IAuraRewards public auraRewards;
+
+  /// @notice The staking contract for Aura
+  IAuraStaking public auraStaking;
 
   /// @notice Aura lpToken
   address public auraLpToken;
@@ -56,10 +59,11 @@ contract AuraAdapter is AdapterBase, WithRewards {
     auraBooster = IAuraBooster(_auraBooster);
     pid = _pid;
 
+    auraStaking = IAuraStaking(auraBooster.stakerRewards());
+
     (address balancerLpToken, address _auraLpToken, address _auraGauge, address _auraRewards, , ) = auraBooster
       .poolInfo(pid);
 
-    auraGauge = IAuraGauge(_auraGauge);
     auraRewards = IAuraRewards(_auraRewards);
     auraLpToken = _auraLpToken;
 
@@ -87,7 +91,7 @@ contract AuraAdapter is AdapterBase, WithRewards {
   /// @return The total amount of underlying tokens the Vault holds.
 
   function _totalAssets() internal view override returns (uint256) {
-    return IERC20(auraLpToken).balanceOf(address(this));
+    return auraRewards.balanceOf(address(this));
   }
 
   /*//////////////////////////////////////////////////////////////
@@ -111,7 +115,13 @@ contract AuraAdapter is AdapterBase, WithRewards {
   }
 
   /// @notice The token rewarded
-  function rewardTokens() external view override returns (address[] memory) {}
+  function rewardTokens() external view override returns (address[] memory) {
+    address[] memory _rewardTokens = new address[](2);
+    _rewardTokens[0] = auraStaking.crv();
+    _rewardTokens[1] = auraStaking.cvx();
+
+    return _rewardTokens;
+  }
 
   /*//////////////////////////////////////////////////////////////
                       EIP-165 LOGIC
