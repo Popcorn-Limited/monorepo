@@ -10,10 +10,8 @@ import DiscordIcon from "@popcorn/components/components/SVGIcons/DiscordIcon";
 import TwitterIcon from "@popcorn/components/components/SVGIcons/TwitterIcon";
 import MediumIcon from "@popcorn/components/components/SVGIcons/MediumIcon";
 import SecondaryActionButton from "@popcorn/app/components/SecondaryActionButton";
-import Slider from "react-slick";
-
-const activeDot = "bg-white";
-let inactiveDot = "bg-white bg-opacity-50";
+import { ChevronRightIcon, ChevronLeftIcon } from "@heroicons/react/24/solid";
+import HeroCards from "components/HeroCards";
 
 const IndexPage = () => {
   const router = useRouter();
@@ -24,166 +22,11 @@ const IndexPage = () => {
     }
   }, [router.pathname]);
 
-  // useEffect(() => {
-  //   const scrollContainer = document.querySelector('#scrollContainer');
-  //   scrollContainer.addEventListener('wheel', (event) => {
-  //     event.preventDefault();
-
-  //     console.log(event)
-
-  //     scrollContainer.scrollBy({
-  //       left: event?.scrollLeft + event?.deltaY
-
-  //     });
-  //   });
-  // }, []);
-
-  const AMOUNT_TO_SHIFT = '35.7vw';
-
-  const [locked, setLocked] = useState(Date.now());
-  const myStateRef = useRef(locked);
-  const setMyState = data => {
-    myStateRef.current = data;
-    setLocked(data);
-  };
-
-  const [scrollPos, setScrollPos] = useState(0);
-  const scrollRef = useRef(scrollPos);
-  const _setScrollPos = data => {
-    scrollRef.current = data;
-    setScrollPos(data);
-  };
-
-  const [freeze, setFreeze] = useState(false);
-  const freezeRef = useRef(freeze);
-  const _setFreeze = data => {
-    freezeRef.current = data;
-    setFreeze(data);
-  };
-
-
-
-
-  useEffect(() => {
-    const scrollContainer = document.getElementById('scrollContainer');
-    const prevSection = document.getElementById('prev');
-    const dowell = document.getElementById('do-well');
-    const titleElementForTrigger = document.getElementById('titlex');
-    const nextSection = document.getElementById('xoxop');
-
-
-    window.addEventListener('scroll', (event) => {
-      event.preventDefault();
-      const dateNow = Date.now();
-      // let currentScrollPos = window.scrollY;
-      // const scrollDown = currentScrollPos - scrollRef.current > 0;
-      // _setScrollPos(currentScrollPos);
-
-      // // console.log(dowell.getBoundingClientRect(), currentScrollPos, 'lol');
-      // // console.log(event, 'event')
-      // if (dateNow - myStateRef.current > 100) {
-      if (dateNow - myStateRef.current > 900) {
-        if (dowell.getBoundingClientRect().bottom < 50 && titleElementForTrigger.getBoundingClientRect().top > 300) {
-          setMyState(dateNow);
-          // document.body.style.overflow = 'hidden';
-          titleElementForTrigger.scrollIntoView({ behavior: 'smooth' });
-        }
-
-        if (titleElementForTrigger.getBoundingClientRect().top < -900) {
-          setMyState(dateNow);
-          titleElementForTrigger.scrollIntoView({ behavior: 'smooth' });
-        }
-      }
-      // setFreeze(false);
-      // }
-    }, { passive: true })
-
-    // });
-
-
-
-    console.log(titleElementForTrigger.getBoundingClientRect(), 'title')
-    scrollContainer.addEventListener('wheel', (event) => {
-      event.preventDefault();
-      const dateNow = Date.now();
-
-
-      if (dateNow - myStateRef.current > 30) {
-        if (event.deltaY > 0) {
-
-          if (scrollContainer.style.transform === `translateX(-${AMOUNT_TO_SHIFT})`) {
-            console.log('oi')
-            return nextSection.scrollIntoView({ behavior: 'smooth' });
-          } else {
-            setMyState(dateNow);
-            scrollContainer.style.transform = `translateX(-${AMOUNT_TO_SHIFT})`;
-
-          }
-
-        } else if (event.deltaY < 0) {
-
-          if (scrollContainer.style.transform === `translateX(0px)`) {
-            return prevSection.scrollIntoView({ behavior: 'smooth' });
-
-          } else {
-            setMyState(dateNow);
-            scrollContainer.style.transform = `translateX(0px)`;
-            // setTimeout(() => { setMyState(false) }, 2000)
-          }
-        }
-      } else {
-        // setTimeout(() => { setMyState(false) }, 20000)
-        setMyState(dateNow)
-      }
-    });
-  }, [locked]);
-
-
-  const [currentSlide, setCurrentSlide] = useState(0);
-
-  const customSlider = useRef(null);
-
-  const gotoSlide = (id) => {
-    setCurrentSlide(id);
-    customSlider.current.slickGoTo(id);
-  };
-
-  const settings = {
-    dots: false,
-    infinite: true,
-    speed: 500,
-    slidesToShow: 1,
-    slidesToScroll: 1,
-    autoplay: false,
-    easing: "easeInOut",
-    pauseOnHover: false,
-    beforeChange: (oldIndex: number, newIndex: number) => {
-      setCurrentSlide(newIndex);
-    },
-  };
-
-  const tutorialSteps: Array<{ title: string; content: string }> = [
-    {
-      title: "Step 1 - Begin the Minting Process",
-      content:
-        "First connect your wallet. Then select the token you would like to deposit from the dropdown, enter the deposit amount and click ‘Mint’. If you are depositing for the first time, you’ll need to approve the contract.",
-    },
-    {
-      title: "Step 2 – Wait for the batch to process",
-      content: `Your deposits will be held in Butters batch processing queue. Note: To minimise gas fees, deposits are processed approximately every 24 hours. You are able to withdraw your deposits during this phase.`,
-    },
-    {
-      title: `Step 3 – Claim your minted Butter,`,
-      content: `Once the batch has been processed, you will be able to claim the new minted "Butter"`,
-    },
-  ];
-
-
-
+  const [move, setMove] = useState(0);
 
   return (
     <div className="absolute left-0 flex flex-col">
-      <div className="flex-col w-full h-full smmd:h-screen min-h-[600px] w-screen relative flex smmd:mb-[100vh]">
+      <div className="flex-col w-full h-full smmd:h-screen min-h-[600px] w-screen relative flex">
         <DesktopMenu />
         <div className="flex flex-row justify-end absolute right-0 top-96 smmd:top-24">
           <img alt="" className="smmd:w-[50vw] w-[60vw] smmd:max-w-[700px] smmd:max-h-[80vh]" src="/images/icons/greenPopLogo.svg" />
@@ -229,16 +72,31 @@ const IndexPage = () => {
         </div>
       </div>
 
-      <section className="px-8">
+      <section style={{ padding: 32 }} className="w-screen">
         <div className="mt-[200px] mb-18 flex flex-col relative">
-          <p id="titlex" className="text-6xl">Earn high returns on your crypto while funding public goods</p>
-          <div id="scrollContainer" className="flex flex-row h-[650px] overflow-x-auto transition-transform">
-            <div className="bg-black w-[467px] h-full mr-12 shrink-0">
+          <p id="titlex" className="text-6xl max-w-[60%] mb-10">Earn high returns on your crypto while funding public goods</p>
+          <div className="w-full h-12 flex flex-row justify-end">
+
+            <div onClick={() => setMove(0)} className="w-12 h-12 rounded-full border-[#645F4B] border-[1px] flex flex-col justify-center items-center mr-2 cursor-pointer">
+              <ChevronLeftIcon color="#645F4B" width={20} height={20} />
+            </div>
+            <div onClick={() => setMove(1)} className="w-12 h-12 rounded-full border-[#645F4B] border-[1px] flex flex-col justify-center items-center cursor-pointer">
+              <ChevronRightIcon color="#645F4B" width={20} height={20} />
+            </div>
+
+          </div>
+          <div id="scrollContainer" style={{ transform: move === 1 ? 'translateX(-524px)' : 'translateX(0px)' }} className={`flex flex-row h-[650px] w-fit overflow-x-auto transition-transform`}>
+            <div className="w-[467px] h-full mr-[24px] shrink-0">
+              <video className="w-full h-full cover rounded-3xl" id='video' controls poster='/images/Videocard.svg'>
+                <source src="/videos/Popcorn_V4.1.mp4" type="video/mp4" />
+              </video>
 
             </div>
 
-            <div className="flex flex-col w-screen">
-              <div className="flex flex-col w-[338px] mb-[100px]">
+            <div className="flex flex-col w-screen border-box">
+
+
+              <div className="flex flex-col w-[338px] mb-[100px] ml-[24px]">
                 <p className="text-lg">It's now easy to deposit your crypto, optimise your yield, and create positive global impact at the same time.</p>
                 <div className="flex flex-row border-x-0 border-y-customLightGray border-b-2">
                   <p className="px-1 py-2 w-full mt-2 leading-7">Create Account</p>
@@ -246,57 +104,17 @@ const IndexPage = () => {
                 </div>
               </div>
 
-              <div className="w-full h-full flex-row flex gap-x-10 w-screen">
-                <div className="w-full h-full bg-black">
 
-                </div>
-
-                <div className="w-full h-full bg-black">
-
-                </div>
-
-                <div className="w-full h-full bg-black">
-
-                </div>
+              <div className="w-full h-full flex-row flex gap-x-6 w-screen px-[24px]">
+                <HeroCards title="Deposit" color="bg-[#EBE7D4]" imgUri="/images/blackCircles.svg" description="Connect your web3 wallet, deposit your stablecoins and blue chip crypto assets into Popcorn’s DeFi products." />
+                <HeroCards title="Do Well" color="bg-[#121A27]" textColor="text-white" imgUri="/images/whiteSmile.svg" description="Optimize your returns with non-custodial vault strategies and staking products." />
+                <HeroCards title="Do Good" color="bg-[#FFE650]" imgUri="/images/blackSmiles.svg" description="Fund community-selected nonprofit and social impact organisations at no additional cost." />
               </div>
 
             </div>
           </div>
         </div>
       </section >
-
-
-      <div className="relative">
-        <Slider {...settings} ref={(slider) => (customSlider.current = slider)}>
-          {tutorialSteps.map((step, index) => (
-            <div className="" key={index}>
-              <div className="bg-customPurple rounded-lg h-110 p-8 flex flex-col justify-between text-white">
-                <h6>How It Works</h6>
-
-                <div className="py-24">
-                  <h3 className="font-medium text-2xl">{step.title}</h3>
-                  <p>{step.content}</p>
-                </div>
-
-                <div className="flex justify-end pt-6 gap-5 md:gap-0 md:space-x-5">
-                  {tutorialSteps.map((steps, index) => (
-                    <div
-                      className={`${currentSlide == index ? activeDot : inactiveDot} rounded-full h-3 w-3 transition-all`}
-                      onClick={() => gotoSlide(index)}
-                      key={index}
-                    ></div>
-                  ))}
-                </div>
-              </div>
-            </div>
-          ))}
-        </Slider>
-      </div>
-
-
-
-
-
 
       <section id="xoxop" className="w-full pt-14">
         <div className="flex flex-col md:flex-row justify-between w-11/12 pb-12 mx-auto border-b border-gray-500">
