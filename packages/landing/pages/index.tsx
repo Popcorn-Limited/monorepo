@@ -31,10 +31,11 @@ const IndexPage = () => {
         <div className="flex flex-row justify-end absolute right-0 top-96 smmd:top-24">
           <img alt="" className="smmd:w-[50vw] w-[60vw] smmd:max-w-[700px] smmd:max-h-[80vh]" src="/images/icons/greenPopLogo.svg" />
         </div>
-        <section id="prev" className="relative px-6 smmd:px-8 smmd:mb-0 smmd:h-[90vh] justify-between items-start w-full overflow-scroll">
+
+        <section className="relative px-6 smmd:px-8 smmd:mb-0 smmd:h-[90vh] justify-between items-start w-full overflow-scroll">
           <div className="flex flex-col items-start smmd:h-full smmd:w-full pb-16 smmd:pb-0 mx-auto min-w-480 lg:flex-row">
             <div className=" text-center z-20 smmd:text-left smmd:mx-0 flex flex-col justify-around h-full w-full">
-              <h1 id="do-well" className="mb-6 leading-[60px] smmd:leading-[72px] font-normal min-h-[80px] max-w-[450px] lglaptop:max-w-[900px] smmd:max-w-[700px] text-left text-5xl smmd:text-6xl lglaptop:text-[96px] lglaptop:leading-[90px] smmd:w-1/2 mt-24 smmd:mt-0 ">
+              <h1 className="mb-6 leading-[60px] smmd:leading-[72px] font-normal min-h-[80px] max-w-[450px] lglaptop:max-w-[900px] smmd:max-w-[700px] text-left text-5xl smmd:text-6xl lglaptop:text-[96px] lglaptop:leading-[90px] smmd:w-1/2 mt-24 smmd:mt-0 ">
                 Do well and do good together with Popcorn’s innovative DeFi solutions
               </h1>
               <div className="w-fit flex mb-48 smmd:mb-0">
@@ -72,8 +73,8 @@ const IndexPage = () => {
         </div>
       </div>
 
-      <section style={{ padding: 32 }} className="w-screen">
-        <div className="mt-[200px] mb-18 flex flex-col relative">
+      <section className="w-screen mt-16 md:mt-[200px]">
+        <div className=" mb-18 flex flex-col hidden md:block relative p-[32px]">
           <p id="titlex" className="text-6xl max-w-[60%] mb-10">Earn high returns on your crypto while funding public goods</p>
           <div className="w-full h-12 flex flex-row justify-end">
 
@@ -85,16 +86,15 @@ const IndexPage = () => {
             </div>
 
           </div>
-          <div id="scrollContainer" style={{ transform: move === 1 ? 'translateX(-524px)' : 'translateX(0px)' }} className={`flex flex-row h-[650px] w-fit overflow-x-auto transition-transform`}>
+
+          <div id="scrollContainer" className={`flex flex-row h-[650px] w-fit overflow-x-auto transition-transform ${move === 1 ? 'translate-x-[-524px]' : 'translate-x-0'}`}>
             <div className="w-[467px] h-full mr-[24px] shrink-0">
               <video className="w-full h-full cover rounded-3xl" id='video' controls poster='/images/Videocard.svg'>
                 <source src="/videos/Popcorn_V4.1.mp4" type="video/mp4" />
               </video>
-
             </div>
 
             <div className="flex flex-col w-screen border-box">
-
 
               <div className="flex flex-col w-[338px] mb-[100px] ml-[24px]">
                 <p className="text-lg">It's now easy to deposit your crypto, optimise your yield, and create positive global impact at the same time.</p>
@@ -103,7 +103,6 @@ const IndexPage = () => {
                   <SecondaryActionButton label="" />
                 </div>
               </div>
-
 
               <div className="w-full h-full flex-row flex gap-x-6 w-screen px-[24px]">
                 <HeroCards title="Deposit" color="bg-[#EBE7D4]" imgUri="/images/blackCircles.svg" description="Connect your web3 wallet, deposit your stablecoins and blue chip crypto assets into Popcorn’s DeFi products." />
@@ -114,7 +113,28 @@ const IndexPage = () => {
             </div>
           </div>
         </div>
-      </section >
+
+        {/* Mobile part */}
+        <div className="flex md:hidden flex-col px-6">
+          <div className="w-full h-full">
+            <video className="w-full h-full cover max-h-[80vh] rounded-3xl" id='video' controls poster='/images/Videocard.svg'>
+              <source src="/videos/Popcorn_V4.1.mp4" type="video/mp4" />
+            </video>
+          </div>
+          <p className="text-4xl mt-16 mb-8">Earn high returns on your crypto while funding public goods</p>
+          <p className="w-[80%]">It's now easy to deposit your crypto, optimise your yield, and create positive global impact at the same time.</p>
+          <div className="flex flex-row border-x-0 border-y-customLightGray border-b-2 font-bold w-[80%] mb-16">
+            <p className="px-1 py-2 w-full mt-4 leading-7">Create Account</p>
+            <SecondaryActionButton label="" />
+          </div>
+          <div className="h-[1300px] flex flex-col gap-y-4">
+            <HeroCards title="Deposit" color="bg-[#EBE7D4]" imgUri="/images/blackCircles.svg" description="Connect your web3 wallet, deposit your stablecoins and blue chip crypto assets into Popcorn’s DeFi products." />
+            <HeroCards title="Do Well" color="bg-[#121A27]" textColor="text-white" imgUri="/images/whiteSmile.svg" description="Optimize your returns with non-custodial vault strategies and staking products." />
+            <HeroCards title="Do Good" color="bg-[#FFE650]" imgUri="/images/blackSmiles.svg" description="Fund community-selected nonprofit and social impact organisations at no additional cost." />
+          </div>
+        </div>
+      </section>
+
 
       <section id="xoxop" className="w-full pt-14">
         <div className="flex flex-col md:flex-row justify-between w-11/12 pb-12 mx-auto border-b border-gray-500">
