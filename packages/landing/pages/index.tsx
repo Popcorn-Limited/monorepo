@@ -23,6 +23,52 @@ const IndexPage = () => {
   }, [router.pathname]);
 
   const [move, setMove] = useState(0);
+  const [touchStart, setTouchStart] = React.useState(0);
+  const [touchEnd, setTouchEnd] = React.useState(0);
+
+  function handleTouchStart(e) {
+    setTouchStart(e.targetTouches[0].clientX);
+  }
+
+  function handleTouchMove(e) {
+    setTouchEnd(e.targetTouches[0].clientX);
+  }
+
+  function handleTouchEnd() {
+    if (touchStart - touchEnd > 150) {
+      setMove(1);
+    }
+
+    if (touchStart - touchEnd < -150) {
+      setMove(0);
+    }
+  }
+
+  const [startX, setStartX] = useState(null);
+  const [endX, setEndX] = useState(null);
+
+  function handleMouseDown(event) {
+    setStartX(event.clientX);
+  }
+
+  function handleMouseMove(event) {
+    if (startX !== null) {
+      setEndX(event.clientX);
+    }
+  }
+
+  function handleMouseUp() {
+    if (startX !== null && endX !== null) {
+      const distance = endX - startX;
+      if (distance > 50) {
+        setMove(0);
+      } else if (distance < -50) {
+        setMove(1);
+      }
+    }
+    setStartX(null);
+    setEndX(null);
+  }
 
   return (
     <div className="absolute left-0 flex flex-col">
@@ -87,7 +133,14 @@ const IndexPage = () => {
 
           </div>
 
-          <div id="scrollContainer" className={`flex flex-row h-[650px] w-fit overflow-x-auto transition-transform ${move === 1 ? 'translate-x-[-524px]' : 'translate-x-0'}`}>
+          <div
+            onTouchMove={handleTouchMove}
+            onTouchStart={handleTouchStart}
+            onTouchEnd={handleTouchEnd}
+            onMouseDown={mouseDownEvent => handleMouseDown(mouseDownEvent)}
+            onMouseMove={mouseMoveEvent => handleMouseMove(mouseMoveEvent)}
+            onMouseUp={() => handleMouseUp()}
+            className={`flex flex-row h-[650px] w-fit overflow-x-auto transition-transform ${move === 1 ? 'translate-x-[-524px]' : 'translate-x-0'}`}>
             <div className="w-[467px] h-full mr-[24px] shrink-0">
               <video className="w-full h-full cover rounded-3xl" id='video' controls poster='/images/Videocard.svg'>
                 <source src="/videos/Popcorn_V4.1.mp4" type="video/mp4" />
