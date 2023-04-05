@@ -72,19 +72,19 @@ const IndexPage = () => {
 
   return (
     <div className="absolute left-0 flex flex-col">
-      <div className="flex-col w-full h-full smmd:h-screen min-h-[600px] w-screen relative flex">
+      <div className="flex-col w-full h-full min-h-[600px] w-screen relative flex">
         <DesktopMenu />
         <div className="flex flex-row justify-end absolute right-0 top-96 smmd:top-24">
           <img alt="" className="smmd:w-[50vw] w-[60vw] smmd:max-w-[700px] smmd:max-h-[80vh]" src="/images/icons/greenPopLogo.svg" />
         </div>
 
-        <section className="relative px-6 smmd:px-8 smmd:mb-0 smmd:h-[90vh] justify-between items-start w-full overflow-scroll">
+        <section className="relative px-6 smmd:px-8 smmd:mb-0 items-start w-full overflow-scroll">
           <div className="flex flex-col items-start smmd:h-full smmd:w-full pb-16 smmd:pb-0 mx-auto min-w-480 lg:flex-row">
             <div className=" text-center z-20 smmd:text-left smmd:mx-0 flex flex-col justify-around h-full w-full">
-              <h1 className="mb-6 leading-[60px] smmd:leading-[72px] font-normal min-h-[80px] max-w-[450px] lglaptop:max-w-[900px] smmd:max-w-[700px] text-left text-5xl smmd:text-6xl lglaptop:text-[96px] lglaptop:leading-[90px] smmd:w-1/2 mt-24 smmd:mt-0 ">
+              <h1 className="mb-6 leading-[60px] smmd:leading-[72px] font-normal min-h-[80px] max-w-[450px] lglaptop:max-w-[900px] smmd:max-w-[700px] text-left text-5xl smmd:text-8xl lglaptop:text-[96px] lglaptop:leading-[90px] smmd:w-1/2 mt-24 smmd:mt-0 ">
                 Do well and do good together with Popcorn’s innovative DeFi solutions
               </h1>
-              <div className="w-fit flex mb-48 smmd:mb-0">
+              <div className="w-fit flex mb-48 smmd:mb-36">
                 <MainActionButton label="Get Started" handleClick={() => router.push("https://app.pop.network/")}>
                   <div className="w-full flex flex-row items-center gap-x-4">
                     <span>Get Started</span>
@@ -97,7 +97,7 @@ const IndexPage = () => {
                   </div>
                 </MainActionButton>
               </div>
-              <div className="flex smmd:flex-row items-start smmd:w-full smmd:justify-between flex-col gap-y-20 mb-16 smmd:mb-8">
+              <div className="flex smmd:flex-row items-start smmd:w-full smmd:justify-between flex-col gap-y-20 mb-16 smmd:mb-24 smmd:items-end">
                 <StatusWithLabel label="TVL" content={<p className="text-gray-900 text-8xl mt-4">$20M</p>} infoIconProps={{ id: 'idx', title: 'TVL', content: <p className="text-gray-900 text-md">This is the total amount locked on Popcorns smart contracts</p> }} />
                 <div className="smmd:align-end max-w-[500px] smmd:flex smmd:flex-col smmd:h-full smmd:justify-end">
                   <p className="smmd:text-right text-left text-lg">Popcorn is a ReFi yield-optimizing protocol with automated asset strategies that simultaneously fund public goods</p>
@@ -152,7 +152,7 @@ const IndexPage = () => {
               <div className="flex flex-col w-[338px] mb-[100px] ml-[24px]">
                 <p className="text-lg">It's now easy to deposit your crypto, optimise your yield, and create positive global impact at the same time.</p>
                 <div className="flex flex-row border-x-0 border-y-customLightGray border-b-2">
-                  <p className="px-1 py-2 w-full mt-2 leading-7">Create Account</p>
+                  <p className="px-1 py-2 w-full mt-2 leading-7 font-bold">Create Account</p>
                   <SecondaryActionButton label="" />
                 </div>
               </div>
