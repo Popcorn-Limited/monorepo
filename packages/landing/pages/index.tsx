@@ -1,15 +1,15 @@
 import { useRouter } from "next/router";
-import React, { useCallback, useEffect, useRef, useState } from "react";
+import React, { useEffect, useState } from "react";
 import Link from 'next/link';
 import DesktopMenu from '../components/DesktopMenu';
 import MainActionButton from "../components/Common/MainActionButton";
 import StatusWithLabel from "components/Common/StatusWithLabel";
 import SliderContainer from "components/SliderContainer";
-import GithubIcon from "@popcorn/components/components/SVGIcons/GithubIcon";
-import DiscordIcon from "@popcorn/components/components/SVGIcons/DiscordIcon";
-import TwitterIcon from "@popcorn/components/components/SVGIcons/TwitterIcon";
-import MediumIcon from "@popcorn/components/components/SVGIcons/MediumIcon";
-import SecondaryActionButton from "@popcorn/app/components/SecondaryActionButton";
+import GithubIcon from "components/SVGIcons/GithubIcon";
+import DiscordIcon from "components/SVGIcons/DiscordIcon";
+import TwitterIcon from "components/SVGIcons/TwitterIcon";
+import MediumIcon from "components/SVGIcons/MediumIcon";
+import SecondaryActionButton from "components/Common/SecondaryActionButton";
 import { ChevronRightIcon, ChevronLeftIcon } from "@heroicons/react/24/solid";
 import HeroCards from "components/HeroCards";
 
@@ -82,7 +82,7 @@ const IndexPage = () => {
           <div className="flex flex-col items-start smmd:h-full smmd:w-full pb-16 smmd:pb-0 mx-auto min-w-480 lg:flex-row">
             <div className=" text-center z-20 smmd:text-left smmd:mx-0 flex flex-col justify-around h-full w-full">
               <h1 className="mb-6 leading-[60px] smmd:leading-[72px] font-normal min-h-[80px] max-w-[450px] lglaptop:max-w-[900px] smmd:max-w-[700px] text-left text-5xl smmd:text-8xl lglaptop:text-[96px] lglaptop:leading-[90px] smmd:w-1/2 mt-24 smmd:mt-0 ">
-                Do well and do good together with Popcorn’s innovative DeFi solutions
+                Do well and do good together with Popcorn&#39;s innovative DeFi solutions
               </h1>
               <div className="w-fit flex mb-48 smmd:mb-36">
                 <MainActionButton label="Get Started" handleClick={() => router.push("https://app.pop.network/")}>
@@ -150,7 +150,7 @@ const IndexPage = () => {
             <div className="flex flex-col w-screen border-box">
 
               <div className="flex flex-col w-[338px] mb-[100px] ml-[24px]">
-                <p className="text-lg">It's now easy to deposit your crypto, optimise your yield, and create positive global impact at the same time.</p>
+                <p className="text-lg">It&#39;s now easy to deposit your crypto, optimise your yield, and create positive global impact at the same time.</p>
                 <div className="flex flex-row border-x-0 border-y-customLightGray border-b-2">
                   <p className="px-1 py-2 w-full mt-2 leading-7 font-bold">Create Account</p>
                   <SecondaryActionButton label="" />
@@ -175,7 +175,7 @@ const IndexPage = () => {
             </video>
           </div>
           <p className="text-4xl mt-16 mb-8">Earn high returns on your crypto while funding public goods</p>
-          <p className="w-[80%]">It's now easy to deposit your crypto, optimise your yield, and create positive global impact at the same time.</p>
+          <p className="w-[80%]">It&#39;s now easy to deposit your crypto, optimise your yield, and create positive global impact at the same time.</p>
           <div className="flex flex-row border-x-0 border-y-customLightGray border-b-2 font-bold w-[80%] mb-16">
             <p className="px-1 py-2 w-full mt-4 leading-7">Create Account</p>
             <SecondaryActionButton label="" />
