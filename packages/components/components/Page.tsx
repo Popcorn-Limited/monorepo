@@ -23,7 +23,7 @@ export default function Page({ children }: PageProps) {
   const compactRoutes = ["/portfolio", "/sweet-vaults"];
 
   return (
-    <div className="w-full md:w-11/12 xl:w-full 2xl:w-9/12 mx-auto min-h-screen h-full font-khTeka flex flex-col justify-between">
+    <div className="w-full md:w-10/12 laptop:w-11/12 xl:w-full 2xl:w-9/12 mx-auto min-h-screen h-full font-khTeka flex flex-col justify-between">
       <div>
         <NoSSR>
           <Navbar />
