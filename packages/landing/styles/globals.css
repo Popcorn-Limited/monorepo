@@ -370,12 +370,6 @@ img {
     font-size: 12px;
   }
 }
-@media screen and (min-width: 1600px) {
-  body > div {
-    width: 90%;
-    margin: 0 auto;
-  }
-}
 
 .rc-tooltip.rc-tooltip-zoom-appear,
 .rc-tooltip.rc-tooltip-zoom-enter {
