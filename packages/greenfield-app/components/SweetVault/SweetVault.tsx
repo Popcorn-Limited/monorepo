@@ -67,13 +67,16 @@ function SweetVault({ vaultAddress, chainId, searchString, addToTVL, addToDeposi
   const { data: price } = usePrice({ address: token?.address as Address, chainId });
   const { data: totalAssets } = useTotalAssets({ address: vaultAddress as Address, chainId, account });
   const { data: totalSupply } = useTotalSupply({ address: vaultAddress as Address, chainId, account });
+  const [pps, setPps] = useState<number>(0);
 
 
   useEffect(() => {
     if (totalAssets && totalSupply && balance && price
       && Number(totalAssets?.value?.toString()) > 0 && Number(totalSupply?.value?.toString()) > 0) {
-      const pps = Number(totalAssets?.value?.toString()) / Number(totalSupply?.value?.toString());
-      const assetBal = pps * Number(balance?.value?.toString());
+      const _pps = Number(totalAssets?.value?.toString()) / Number(totalSupply?.value?.toString());
+      const assetBal = _pps * Number(balance?.value?.toString());
+
+      setPps(_pps);
 
       addToDeposit(
         vaultAddress,
@@ -96,9 +99,6 @@ function SweetVault({ vaultAddress, chainId, searchString, addToTVL, addToDeposi
       );
     }
   }, [totalAssets, price])
-
-  // hide the vault for testing
-  if (vaultAddress === "0xcf0D91fB9Bc81ac605D2F1962a72Fac8901F57bE") return <></>
 
   if (!vaultMetadata) return <></>
   if (searchString === "" ||
@@ -131,9 +131,11 @@ function SweetVault({ vaultAddress, chainId, searchString, addToTVL, addToDeposi
                 <p className="text-primaryLight font-normal">Your Deposit</p>
                 <div className="text-primary text-2xl md:text-3xl leading-6 md:leading-8">
                   <Title level={2} fontWeight="font-normal" as="span" className="mr-1 text-primary">
-                    {account ? formatAndRoundBigNumber(balance?.value, vault?.decimals) : "-"}
+                    {account ?
+                      formatNumber((pps * Number(balance?.value?.toString())) / (10 ** (token?.decimals)))
+                      : "-"}
                   </Title>
-                  <span className="text-secondaryLight text-lg md:text-2xl flex md:inline">{vault?.symbol}</span>
+                  <span className="text-secondaryLight text-lg md:text-2xl flex md:inline">{token?.symbol || "ETH"}</span>
                 </div>
               </div>
               <div className="w-1/2 md:w-1/4 mt-6 md:mt-0">
