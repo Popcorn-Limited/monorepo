@@ -195,9 +195,9 @@ const IndexPage = () => {
 
 
       <section className="mt-44 p-8">
-        <div className="flex md:flex-row flex-col items-start">
+        <div className="flex smmd:flex-row flex-col items-start">
 
-          <div className="flex flex-row items-center gap-x-4 mr-48 mb-12 md:mb-0">
+          <div className="flex flex-row items-center gap-x-4 mr-48 mb-12 smmd:mb-0">
             <p className="w-max">Our Products</p>
             <RightArrowIcon color="645F4B" />
           </div>
