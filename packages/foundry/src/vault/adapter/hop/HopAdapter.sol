@@ -3,6 +3,8 @@
 
 pragma solidity ^0.8.15;
 
+import "hardhat/console.sol";
+
 import { AdapterBase, IERC20, IERC20Metadata, SafeERC20, ERC20, Math, IStrategy, IAdapter } from "../abstracts/AdapterBase.sol";
 import { WithRewards, IWithRewards } from "../abstracts/WithRewards.sol";
 import { ILiquidityPool, IStakingRewards } from "./IHop.sol";
@@ -33,7 +35,7 @@ contract HopAdapter is AdapterBase, WithRewards {
   ILiquidityPool public liquidityPool;
 
   // @notice The address of the LP token //need to stake this
-  address public LPToken;
+  address LPToken;
 
   /**
    * @notice Initialize a new Hop Adapter.
@@ -61,7 +63,7 @@ contract HopAdapter is AdapterBase, WithRewards {
 
     deadline = block.timestamp;
 
-    minToMint = liquidityPool.getVirtualPrice();
+    minToMint = 0;
 
     _name = string.concat("Popcorn Hop", IERC20Metadata(asset()).name(), " Adapter");
     _symbol = string.concat("popB-", IERC20Metadata(asset()).symbol());
@@ -69,6 +71,7 @@ contract HopAdapter is AdapterBase, WithRewards {
     IERC20(asset()).approve(address(liquidityPool), type(uint256).max);
     IERC20(LPToken).approve(address(liquidityPool), type(uint256).max);
     IERC20(LPToken).approve(address(stakingRewards), type(uint256).max);
+    IERC20(LPToken).approve(address(this), type(uint256).max);
   }
 
   function name() public view override(IERC20Metadata, ERC20) returns (string memory) {
@@ -90,6 +93,12 @@ contract HopAdapter is AdapterBase, WithRewards {
     return paused() ? IERC20(asset()).balanceOf(address(this)) : stakingRewards.balanceOf(address(this));
   }
 
+  /// @notice The amount of hop shares to withdraw given an amount of adapter shares
+  function convertToUnderlyingShares(uint256 assets, uint256 shares) public view override returns (uint256) {
+    uint256 supply = totalSupply();
+    return supply == 0 ? shares : shares.mulDiv(IERC20(LPToken).balanceOf(address(this)), supply, Math.Rounding.Up);
+  }
+
   /*//////////////////////////////////////////////////////////////
                           INTERNAL HOOKS LOGIC
     //////////////////////////////////////////////////////////////*/
@@ -97,13 +106,28 @@ contract HopAdapter is AdapterBase, WithRewards {
   function _protocolDeposit(uint256 amount, uint256) internal virtual override {
     amounts = [amount, 0];
     liquidityPool.addLiquidity(amounts, minToMint, deadline);
-    stakingRewards.stake(amount);
+    console.log("this is staking rewards", address(stakingRewards)); //0xf587B9309c603feEdf0445aF4D3B21300989e93a
+    uint256 adapBal = stakingRewards.balanceOf(address(this));
+    console.log("This is the staking rewards bal of adapter", adapBal);
+    console.log("this is staking token on staking contact", stakingRewards.stakingToken());
+    uint256 balance = IERC20(LPToken).balanceOf(address(this));
+    uint256 stakingBalance = IERC20(stakingRewards.stakingToken()).balanceOf(address(this));
+
+    console.log("This is the lp token balance of adap", balance);
+    console.log("This is the staking token balance of adap", stakingBalance);
+    stakingRewards.stake(10);
   }
 
-  function _protocolWithdraw(uint256 amount, uint256) internal virtual override {
-    minAmounts = [59832501266287862, 54304784550842336];
-    liquidityPool.removeLiquidity(amount, minAmounts, deadline);
-    stakingRewards.withdraw(amount);
+  /// @notice Withdraw from the hop vault
+  function _protocolWithdraw(uint256, uint256 shares) internal virtual override {
+    require(shares > 0, "shares cant be 0");
+    uint256 hopShares = convertToUnderlyingShares(0, shares);
+    minAmounts = [hopShares, 0];
+    liquidityPool.removeLiquidity(hopShares, minAmounts, deadline);
+    stakingRewards.withdraw(hopShares);
+
+    //( convertToUnderlyingShares / totalSupply ) * usershares
+    // also need to factor in slippage
   }
 
   /*//////////////////////////////////////////////////////////////

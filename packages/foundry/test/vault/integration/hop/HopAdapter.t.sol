@@ -13,7 +13,8 @@ contract HopAdapterTest is AbstractAdapterTest {
   // Note: using the hop liquidity pool contract
   // https://optimistic.etherscan.io/address/0xaa30d6bba6285d0585722e2440ff89e23ef68864#writeContract
   ILiquidityPool public liquidityPool = ILiquidityPool(0xaa30D6bba6285d0585722e2440Ff89E23EF68864);
-  IStakingRewards public stakingRewards = IStakingRewards(0xfD49C7EE330fE060ca66feE33d49206eB96F146D);
+  //IStakingRewards public stakingRewards = IStakingRewards(0xfD49C7EE330fE060ca66feE33d49206eB96F146D);
+  IStakingRewards public stakingRewards = IStakingRewards(0xf587B9309c603feEdf0445aF4D3B21300989e93a);
   address public LPToken;
 
   function setUp() public {

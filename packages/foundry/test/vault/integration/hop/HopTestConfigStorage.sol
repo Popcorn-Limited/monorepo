@@ -12,7 +12,8 @@ contract HopTestConfigStorage is ITestConfigStorage {
 
   constructor() {
     testConfigs.push(
-      HopTestConfig(0xaa30D6bba6285d0585722e2440Ff89E23EF68864, 0xfD49C7EE330fE060ca66feE33d49206eB96F146D)
+      //HopTestConfig(0xaa30D6bba6285d0585722e2440Ff89E23EF68864, 0xfD49C7EE330fE060ca66feE33d49206eB96F146D)
+      HopTestConfig(0xaa30D6bba6285d0585722e2440Ff89E23EF68864, 0xf587B9309c603feEdf0445aF4D3B21300989e93a)
     );
   }
 
