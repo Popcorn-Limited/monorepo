@@ -12,6 +12,11 @@ import MediumIcon from "components/SVGIcons/MediumIcon";
 import SecondaryActionButton from "components/Common/SecondaryActionButton";
 import { ChevronRightIcon, ChevronLeftIcon } from "@heroicons/react/24/solid";
 import HeroCards from "components/HeroCards";
+import RightArrowIcon from "components/SVGIcons/RightArrowIcon";
+import ProductDisplay from "components/ProductDisplay";
+import CircleBunny from "components/CircleBunny";
+import PointyBunny from "components/pointyBunny";
+import HandsIcon from "components/HandsIcon";
 
 const IndexPage = () => {
   const router = useRouter();
@@ -185,6 +190,24 @@ const IndexPage = () => {
             <HeroCards title="Do Well" color="bg-[#121A27]" textColor="text-white" imgUri="/images/whiteSmile.svg" description="Optimize your returns with non-custodial vault strategies and staking products." />
             <HeroCards title="Do Good" color="bg-[#FFE650]" imgUri="/images/blackSmiles.svg" description="Fund community-selected nonprofit and social impact organisations at no additional cost." />
           </div>
+        </div>
+      </section>
+
+
+      <section className="mt-44 p-8">
+        <div className="flex md:flex-row flex-col items-start">
+
+          <div className="flex flex-row items-center gap-x-4 mr-48 mb-12 md:mb-0">
+            <p className="w-max">Our Products</p>
+            <RightArrowIcon color="645F4B" />
+          </div>
+
+          <div className="flex flex-col grow w-[100%]">
+            <ProductDisplay number="01" title="Sweet Vaults" description="Automated asset startegies that earn yield on your single asset deposits." image={(color) => <CircleBunny color={color} />} animateColor="#C391FF" textColorClassname="text-[#C391FF]" />
+            <ProductDisplay number="02" title="Vaults For Good" description="Vaults that fund public goods with the yield generated from its asset strategies." image={(color) => <PointyBunny color={color} />} animateColor="#FA5A6E" textColorClassname="text-[#FA5A6E]" />
+            <ProductDisplay number="03" title="POP Staking" description="Stake your POP for vlPOP to vote in PopcornDAO." image={(color) => <HandsIcon color={color} />} animateColor="#FFE650" textColorClassname="text-[#FFE650]" />
+          </div>
+
         </div>
       </section>
 
