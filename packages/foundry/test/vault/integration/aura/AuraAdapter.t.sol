@@ -94,4 +94,32 @@ contract AuraAdapterTest is AbstractAdapterTest {
 
     assertEq(asset.allowance(address(adapter), address(auraBooster)), type(uint256).max, "allowance");
   }
+
+  function test__claim() public override {
+    strategy = IStrategy(address(new MockStrategyClaimer()));
+    createAdapter();
+    adapter.initialize(
+      abi.encode(asset, address(this), strategy, 0, sigs, ""),
+      externalRegistry,
+      testConfigStorage.getTestConfig(0)
+    );
+
+    _mintFor(1000e18, bob);
+
+    vm.prank(bob);
+    adapter.deposit(1000e18, bob);
+
+    vm.warp(block.timestamp + 30 days);
+
+    vm.prank(bob);
+
+    adapter.withdraw(1, bob, bob);
+
+    address[] memory rewardTokens = IWithRewards(address(adapter)).rewardTokens();
+    assertEq(rewardTokens[0], 0xba100000625a3754423978a60c9317c58a424e3D); // BAL
+    assertEq(rewardTokens[1], 0xC0c293ce456fF0ED870ADd98a0828Dd4d2903DBF); // AURA
+
+    assertGt(IERC20(rewardTokens[0]).balanceOf(address(adapter)), 0);
+    assertGt(IERC20(rewardTokens[1]).balanceOf(address(adapter)), 0);
+  }
 }
