@@ -17,6 +17,7 @@ import { useChainModal, useConnectModal } from "@rainbow-me/rainbowkit";
 import { networkLogos } from "@popcorn/utils";
 import { useMemo, useRef, useState, Fragment, useCallback } from "react";
 import { useProductLinks } from "@popcorn/app/hooks/useProductLinks";
+import { link } from "fs";
 
 export default function DesktopMenu(): JSX.Element {
   const { openConnectModal } = useConnectModal();
@@ -26,9 +27,12 @@ export default function DesktopMenu(): JSX.Element {
   const { chain, chains } = useNetwork();
   const logo = useMemo(() => (address && chain?.id ? networkLogos[chain.id] : networkLogos["1"]), [chain?.id, address]);
   const chainName = useMemo(() => (address && chain?.name ? chain.name : "Ethereum"), [chain?.id, address]);
-  const productLinks = useProductLinks();
+
   const menuButtonRef = useRef<HTMLButtonElement>(null);
   const [menuVisible, toggleMenu] = useState<boolean>(false);
+
+  const products = useProductLinks();
+  const productLinks = products.map(link => { return { ...link, onclick: () => toggleMenu(false) } })
 
   return (
     <>
@@ -61,9 +65,8 @@ export default function DesktopMenu(): JSX.Element {
           >
             <span
               aria-hidden="true"
-              className={`block h-1 w-8 bg-black ease-in-out rounded-3xl ${
-                menuVisible ? "rotate-45 translate-y-1" : "-translate-y-2"
-              }`}
+              className={`block h-1 w-8 bg-black ease-in-out rounded-3xl ${menuVisible ? "rotate-45 translate-y-1" : "-translate-y-2"
+                }`}
             ></span>
             <span
               aria-hidden="true"
@@ -71,9 +74,8 @@ export default function DesktopMenu(): JSX.Element {
             ></span>
             <span
               aria-hidden="true"
-              className={`block h-1 w-8 bg-black ease-in-out rounded-3xl ${
-                menuVisible ? "-rotate-45 -translate-y-1" : "translate-y-2"
-              }`}
+              className={`block h-1 w-8 bg-black ease-in-out rounded-3xl ${menuVisible ? "-rotate-45 -translate-y-1" : "translate-y-2"
+                }`}
             ></span>
           </button>
         </div>
@@ -87,21 +89,18 @@ export default function DesktopMenu(): JSX.Element {
             <div className="block w-10 bg-transparent">
               <span
                 aria-hidden="true"
-                className={`block h-1 w-8 bg-white transform transition duration-500 ease-in-out rounded-3xl ${
-                  menuVisible ? "rotate-45 translate-y-1" : "-translate-y-2"
-                }`}
+                className={`block h-1 w-8 bg-white transform transition duration-500 ease-in-out rounded-3xl ${menuVisible ? "rotate-45 translate-y-1" : "-translate-y-2"
+                  }`}
               ></span>
               <span
                 aria-hidden="true"
-                className={`block h-1 w-8 bg-white transform transition duration-500 ease-in-out rounded-3xl ${
-                  menuVisible ? "opacity-0" : "opacity-100"
-                }`}
+                className={`block h-1 w-8 bg-white transform transition duration-500 ease-in-out rounded-3xl ${menuVisible ? "opacity-0" : "opacity-100"
+                  }`}
               ></span>
               <span
                 aria-hidden="true"
-                className={`block h-1 w-8 bg-white transform transition duration-500 ease-in-out rounded-3xl ${
-                  menuVisible ? "-rotate-45 -translate-y-1" : "translate-y-2"
-                }`}
+                className={`block h-1 w-8 bg-white transform transition duration-500 ease-in-out rounded-3xl ${menuVisible ? "-rotate-45 -translate-y-1" : "translate-y-2"
+                  }`}
               ></span>
             </div>
           </button>
@@ -125,31 +124,55 @@ export default function DesktopMenu(): JSX.Element {
                     </Link>
                   </div>
                   <div className={`mb-4`}>
-                    <NavbarLink label="My Portfolio" url="/portfolio" isActive={router.pathname === "/portfolio"} />
+                    <NavbarLink label="My Portfolio" url="/portfolio" isActive={router.pathname === "/portfolio"} onClick={() => toggleMenu(false)} />
                   </div>
                   <li className="relative flex flex-container flex-row z-10 mb-4">
                     <Menu>
                       <Menu.Button ref={menuButtonRef}>
                         <div className="group flex flex-row items-center -mr-2 leading-none">
                           <NavbarLink label="Products" isActive={router.pathname === "/x"} />
-                          {/* <p
-                            className={` text-primary font-medium leading-5 text-lg 
-										hover:text-black cursor-pointer`}
-                          >
-                            Products
-                          </p> */}
                           <ChevronDownIcon
                             strokeWidth={"10"}
                             className="fill-current font-medium text-black mt-0.5 group-hover:text-black w-5 h-5 ml-1"
                             aria-hidden="true"
                           />
                         </div>
-                        <DropDownComponent options={productLinks} menuRef={menuButtonRef} />
+                        <Transition
+                          as={Fragment}
+                          enter="transition ease-out duration-100"
+                          enterFrom="transform opacity-0 scale-95"
+                          enterTo="transform opacity-100 scale-100"
+                          leave="transition ease-in duration-75"
+                          leaveFrom="transform opacity-100 scale-100"
+                          leaveTo="transform opacity-0 scale-95"
+                        >
+                          <Menu.Items className={`md:w-40 focus:outline-none gap-y-4 mt-4 flex flex-col `}>
+                            {productLinks.map((option, index, { length }) => {
+                              return (
+                                <Menu.Item key={option.title}>
+                                  {({ active }) => (
+                                    <span className={`${option.hidden ? "hidden" : ""}`}>
+                                      <Link
+                                        href={option.url ? option.url : "#"}
+                                        passHref
+                                        target={"_self"}
+                                        onClick={() => toggleMenu(false)}
+                                        className={`group text-left md:flex md:flex-col md:justify-center cursor-pointer last:border-0 ${active ? "text-black" : "text-primary"}`}
+                                      >
+                                        {option.title}
+                                      </Link>
+                                    </span>
+                                  )}
+                                </Menu.Item>
+                              );
+                            })}
+                          </Menu.Items>
+                        </Transition>
                       </Menu.Button>
                     </Menu>
                   </li>
                   <div className="">
-                    <NavbarLink label="Rewards" url={`/rewards`} isActive={router?.pathname.includes("/rewards")} />
+                    <NavbarLink label="Rewards" url={`/rewards`} isActive={router?.pathname.includes("/rewards")} onClick={() => toggleMenu(false)} />
                   </div>
                 </div>
                 <div>
