@@ -8,7 +8,7 @@ interface HeroCardProps {
 }
 export default function HeroCards({ title, description, imgUri, color, textColor }: HeroCardProps) {
   return (
-    <div className={`w-full h-full flex flex-col cursor-pointer rounded-xl ${color + ' ' + textColor} p-8`}>
+    <div className={`w-full h-full flex flex-col cursor-pointer select-none	 rounded-xl ${color + ' ' + textColor} p-8`}>
       <p className="text-4xl mb-4">{title}</p>
       <p className="w-[65%] text-lg">{description}</p>
       <div className="h-full w-full flex flex-col justify-end items-end">
