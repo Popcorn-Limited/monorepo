@@ -17,6 +17,7 @@ import ProductDisplay from "components/ProductDisplay";
 import CircleBunny from "components/CircleBunny";
 import PointyBunny from "components/pointyBunny";
 import HandsIcon from "components/HandsIcon";
+import Carousel from "components/Carousel";
 
 const IndexPage = () => {
   const router = useRouter();
@@ -194,7 +195,7 @@ const IndexPage = () => {
       </section>
 
 
-      <section className="mt-44 p-8">
+      <section className="mt-44 p-8 w-screen">
         <div className="flex smmd:flex-row flex-col items-start">
 
           <div className="flex flex-row items-center gap-x-4 mr-48 mb-12 smmd:mb-0">
@@ -210,6 +211,53 @@ const IndexPage = () => {
 
         </div>
       </section>
+
+
+      <section className="p-8 mt-44 flex flex-col items-start w-screen">
+        <div className="flex-row w-full h-full gap-x-9 md:flex hidden">
+          <div className="w-full flex-col flex">
+            <p className="text-7xl mb-4">Audited</p>
+            <p className="text-lg">Our smart contract has been audited by the best in the business.</p>
+          </div>
+          <div className="w-full flex-col flex">
+            <div className="w-[100%] pb-[100%] flex flex-col justify-center items-center rounded-lg bg-[#FA5A6E] mb-6">
+
+            </div>
+            <p className="text-4xl mb-4">BlockSec</p>
+            <p className="text-xl">Zokyo is an end-to-end security resource that provides distinguishable security auditing and penetration testing services alongside prominent vulnerability assessments.</p>
+          </div>
+          <div className="w-full flex-col flex">
+
+            <div className="w-[100%] pb-[100%] flex flex-col justify-center items-center rounded-lg bg-[#9B55FF] mb-6">
+
+            </div>
+            <p className="text-4xl mb-4">Code4rena</p>
+            <p>Neque porro quisquam est qui dolorem ipsum quia dolor sit amet, consectetur, adipisci velit Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt.</p>
+          </div>
+          <div className="w-full flex-col flex">
+
+            <div className="w-[100%] pb-[100%] flex flex-col justify-center items-center rounded-lg bg-[#05BE64] mb-6">
+
+            </div>
+            <p className="text-4xl mb-4">Immunefi</p>
+            <p>Immunefi is the leading bug bounty platform for Web3.</p>
+
+          </div>
+        </div>
+
+        <div className="md:hidden flex flex-col items-center relative w-full">
+          <div className="w-full flex-col flex">
+            <p className="text-7xl mb-4">Audited</p>
+            <p className="text-lg mb-6">Our smart contract has been audited by the best in the business.</p>
+          </div>
+          <div className="w-full self-center h-full block-inline flex-col">
+            <Carousel />
+          </div>
+        </div>
+      </section>
+      <div className="flex w-full h-fit">
+        <div className="bg-black w-1/2 h-auto flex"></div>
+      </div>
 
 
       <section id="xoxop" className="w-full pt-14">
