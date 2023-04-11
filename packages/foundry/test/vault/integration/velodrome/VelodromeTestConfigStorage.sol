@@ -9,7 +9,7 @@ struct VelodromeTestConfig {
   address gauge;
 }
 
-contract SolidlyTestConfigStorage is ITestConfigStorage {
+contract VelodromeTestConfigStorage is ITestConfigStorage {
   VelodromeTestConfig[] internal testConfigs;
 
   constructor() {
