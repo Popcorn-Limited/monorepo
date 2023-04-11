@@ -6,16 +6,17 @@ interface ButtonProps {
   handleClick?: (event: React.MouseEvent<HTMLElement>) => void;
   disabled?: boolean;
   hidden?: boolean;
+  customArrowColor?: string;
 }
-const SecondaryActionButton: React.FC<ButtonProps> = ({ label, handleClick, hidden, disabled = false }) => {
-  const [arrowColor, setArrowColor] = useState("645F4B");
+const SecondaryActionButton: React.FC<ButtonProps> = ({ label, handleClick, hidden, disabled = false, customArrowColor }) => {
+  const [arrowColor, setArrowColor] = useState(customArrowColor || "645F4B");
   const [arrowClass, setArrowClass] = useState("transform translate-x-0");
 
   const animateArrow = () => {
     setArrowColor("000000");
     setArrowClass("transform -translate-x-1/2");
     setTimeout(() => {
-      setArrowColor("645F4B");
+      setArrowColor(customArrowColor || "645F4B");
       setArrowClass("transform translate-x-0");
     }, 500);
   };
