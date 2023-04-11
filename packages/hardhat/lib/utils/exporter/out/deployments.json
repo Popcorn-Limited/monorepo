@@ -1361,6 +1361,46 @@
   "10": {
     "chainId": "10",
     "contracts": {
+      "0xbCbD8ef4E2B3471C74fe2a760843e427e3ee165A": {
+        "abi": null,
+        "address": "0xbCbD8ef4E2B3471C74fe2a760843e427e3ee165A",
+        "metadata": {
+          "icons": ["/images/tokens/dai.webp"],
+          "name": "Dai Vault",
+          "priceResolver": "vault",
+          "symbol": "pDAI"
+        }
+      },
+      "daiVault": {
+        "abi": null,
+        "address": "0xbCbD8ef4E2B3471C74fe2a760843e427e3ee165A",
+        "metadata": {
+          "icons": ["/images/tokens/dai.webp"],
+          "name": "Dai Vault",
+          "priceResolver": "vault",
+          "symbol": "pDAI"
+        }
+      },
+      "0xBf5273b3C4a6C38d94862806c210fA933b228B20": {
+        "abi": null,
+        "address": "0xBf5273b3C4a6C38d94862806c210fA933b228B20",
+        "metadata": {
+          "icons": ["/images/tokens/dai.webp"],
+          "name": "Dai Vault",
+          "priceResolver": "staking",
+          "symbol": "pDAI"
+        }
+      },
+      "daiVaultStaking": {
+        "abi": null,
+        "address": "0xBf5273b3C4a6C38d94862806c210fA933b228B20",
+        "metadata": {
+          "icons": ["/images/tokens/dai.webp"],
+          "name": "Staked Dai Vault",
+          "priceResolver": "staking",
+          "symbol": "spDAI"
+        }
+      },
       "0xB4CB045C30211377656Ea691F66e44Db2bEf410F": {
         "abi": null,
         "address": "0xB4CB045C30211377656Ea691F66e44Db2bEf410F",

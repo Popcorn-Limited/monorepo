@@ -64,7 +64,7 @@ export const PortfolioPage: NextPage = () => {
   ]);
   const contractsBnb = useNamedAccounts("56", ["pop", "xPop", "rewardsEscrow"]);
   const contractsArbitrum = useNamedAccounts("42161", ["pop", "xPop"]);
-  const contractsOp = useNamedAccounts("10", ["pop", "popUsdcArrakisVault"]);
+  const contractsOp = useNamedAccounts("10", ["pop", "popUsdcArrakisVault", "daiVault", "daiVaultStaking"]);
 
   const [rewardContracts, escrowContracts] = useMemo(() => {
     const allContracts = [
@@ -109,6 +109,9 @@ export const PortfolioPage: NextPage = () => {
   };
   const rewardsBalance = totalBalance.claimable.add(totalBalance.vesting);
   const networth = totalBalance.pop.add(rewardsBalance);
+
+
+  console.log(rewardContracts)
 
   return (
     <NoSSR>
