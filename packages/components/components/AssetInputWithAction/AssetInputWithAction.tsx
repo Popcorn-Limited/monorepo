@@ -11,7 +11,10 @@ import InputTokenWithError from "@popcorn/components/components/InputTokenWithEr
 import { useContractMetadata } from "@popcorn/components/lib/Contract";
 import useMainAction from "./internals/useMainAction";
 import MainActionButton from "@popcorn/components/components/MainActionButton";
-import { useConsistentRepolling } from "@popcorn/utils";
+import { formatAndRoundBigNumber, useConsistentRepolling } from "@popcorn/utils";
+import { formatUnits, parseUnits } from "ethers/lib/utils.js";
+
+const BALANCE_ROUNDING = parseUnits("1", 8);
 
 function AssetInputWithAction({
   assetAddress,
@@ -120,7 +123,7 @@ function AssetInputWithAction({
     setInputBalance(validateInput(value).isValid ? (value as any) : 0);
   };
 
-  const handleMaxClick = () => setInputBalance((userBalance?.formatted as any) || 0);
+  const handleMaxClick = () => setInputBalance(Number(formatUnits(userBalance?.value.div(BALANCE_ROUNDING).mul(BALANCE_ROUNDING), userBalance.decimals)) || 0);
 
   const errorMessage = useMemo(() => {
     return (inputBalance || 0) > Number(userBalance?.formatted) ? "* Balance not available" : "";
@@ -144,7 +147,7 @@ function AssetInputWithAction({
     <>
       <InputTokenWithError
         captionText={`${ACTION.label} Amount`}
-        onSelectToken={() => {}}
+        onSelectToken={() => { }}
         onMaxClick={handleMaxClick}
         chainId={chainId}
         value={inputBalance}
@@ -186,6 +189,6 @@ type AssetAction = {
 
 type ActionOrCallback = AssetAction | ((balance: BigNumber) => AssetAction);
 
-function noOp() {}
+function noOp() { }
 
 export default AssetInputWithAction;
