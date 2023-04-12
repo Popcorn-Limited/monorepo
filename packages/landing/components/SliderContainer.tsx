@@ -4,9 +4,10 @@ import Slider from "react-slick";
 interface Props {
   children: JSX.Element[];
   slidesToShow?: number;
+  settingsOverride?: Object;
 }
 
-const SliderContainer: React.FC<Props> = ({ children, slidesToShow = 5 }) => {
+const SliderContainer: React.FC<Props> = ({ children, slidesToShow = 5, settingsOverride = {} }) => {
   const settings = {
     dots: false,
     infinite: true,
@@ -17,6 +18,7 @@ const SliderContainer: React.FC<Props> = ({ children, slidesToShow = 5 }) => {
     autoplay: true,
     easing: "easeInOut",
     pauseOnHover: false,
+
     responsive: [
       {
         breakpoint: 600,
@@ -25,6 +27,7 @@ const SliderContainer: React.FC<Props> = ({ children, slidesToShow = 5 }) => {
         },
       },
     ],
+    ...settingsOverride
   };
 
   return <Slider {...settings}>{children}</Slider>;
