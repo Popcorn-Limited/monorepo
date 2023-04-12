@@ -30,11 +30,13 @@ contract CompoundV2Adapter is AdapterBase, WithRewards {
     /// @notice The Compound Comptroller contract
     IComptroller public comptroller;
 
-    /// @notice Check to see if Compound liquidity mining is active on this market
-    bool public isActiveCompRewards;
-
     /// @notice Check to see if cToken is cETH to wrap/unwarp on deposit/withdrawal
     bool public isCETH;
+
+    // TODO allow user to deposit into cETH
+    // - Dont allow native. Use wEth
+    // - unwrap it?
+    // - deposit?
 
     /*//////////////////////////////////////////////////////////////
                             INITIALIZATION

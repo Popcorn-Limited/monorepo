@@ -32,9 +32,6 @@ contract CompoundV3Adapter is AdapterBase, WithRewards {
   /// @notice The Compound Comet configurator contract.
   ICometConfigurator public cometConfigurator;
 
-  /// @notice Check to see if Compound liquidity mining is active on this market
-  bool public isActiveCompRewards;
-
   /*//////////////////////////////////////////////////////////////
                             INITIALIZATION
     //////////////////////////////////////////////////////////////*/
@@ -44,32 +41,31 @@ contract CompoundV3Adapter is AdapterBase, WithRewards {
   /**
    * @notice Initialize a new CompoundV3 Adapter.
    * @param adapterInitData Encoded data for the base adapter initialization.
+   * @param registry The `CometConfigurator`
    * @param compoundV3InitData Encoded data for the beefy adapter initialization.
    * @dev `_cToken` - The underlying asset supplied to and wrapped by Compound.
+   * @dev `_cometRewarder` - The rewards contract
    * @dev This function is called by the factory contract when deploying a new vault.
    */
-  function initialize(bytes memory adapterInitData, address, bytes memory compoundV3InitData) external initializer {
+  function initialize(bytes memory adapterInitData, address registry, bytes memory compoundV3InitData) external initializer {
     __AdapterBase_init(adapterInitData);
 
     _name = string.concat("Popcorn CompoundV3", IERC20Metadata(asset()).name(), " Adapter");
     _symbol = string.concat("popB-", IERC20Metadata(asset()).symbol());
 
-    (address _cToken, address _cometRewarder, address _cometConfigurator) = abi.decode(
+    (address _cToken, address _cometRewarder) = abi.decode(
       compoundV3InitData,
-      (address, address, address)
+      (address, address)
     );
 
     cToken = ICToken(_cToken);
     cometRewarder = ICometRewarder(_cometRewarder);
-    cometConfigurator = ICometConfigurator(_cometConfigurator);
+    cometConfigurator = ICometConfigurator(registry);
 
     address configuratorBaseToken = cometConfigurator.getConfiguration(address(cToken)).baseToken;
     if (asset() != configuratorBaseToken) revert InvalidAsset(configuratorBaseToken);
 
     IERC20(asset()).approve(address(cToken), type(uint256).max);
-
-    uint256 compSupplySpeed = cToken.baseTrackingSupplySpeed();
-    isActiveCompRewards = compSupplySpeed > 0 ? true : false;
   }
 
   function name() public view override(IERC20Metadata, ERC20) returns (string memory) {
@@ -89,22 +85,19 @@ contract CompoundV3Adapter is AdapterBase, WithRewards {
   }
 
   /// @notice The token rewarded if compound liquidity mining is active
-  function rewardTokens() external view override returns (address[] memory) {
+  function rewardTokens() external view override returns (address[] memory _rewardTokens) {
     IGovernor governor = IGovernor(cToken.governor());
     IAdmin admin = IAdmin(governor.admin());
     address comp = admin.comp();
 
-    address[] memory _rewardTokens = new address[](1);
-
-    if (isActiveCompRewards == false) return _rewardTokens;
+    _rewardTokens = new address[](1);
     _rewardTokens[0] = comp;
-
-    return _rewardTokens;
   }
 
   /*//////////////////////////////////////////////////////////////
                           INTERNAL HOOKS LOGIC
     //////////////////////////////////////////////////////////////*/
+
   error SupplyPaused();
 
   /// @notice Deposit into compound cToken contract
@@ -125,12 +118,11 @@ contract CompoundV3Adapter is AdapterBase, WithRewards {
                             STRATEGY LOGIC
     //////////////////////////////////////////////////////////////*/
 
-  error IncentivesNotActive();
-
   /// @notice Claim additional rewards given that it's active.
-  function claim() public override onlyStrategy {
-    if (isActiveCompRewards == false) revert IncentivesNotActive();
-    cometRewarder.claim(address(cToken), address(this), true);
+  function claim() public override onlyStrategy returns (bool success) {
+    try cometRewarder.claim(address(cToken), address(this), true) {
+      success = true;
+    } catch {}
   }
 
   /*//////////////////////////////////////////////////////////////

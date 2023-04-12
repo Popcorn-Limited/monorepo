@@ -3,7 +3,7 @@
 
 pragma solidity ^0.8.15;
 
-import { ITestConfigStorage } from "../abstract/ITestConfigStorage.sol";
+import { ITestConfigStorage } from "../../abstract/ITestConfigStorage.sol";
 
 struct CompoundV2TestConfig {
   address asset;

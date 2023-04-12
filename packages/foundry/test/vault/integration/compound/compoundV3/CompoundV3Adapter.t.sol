@@ -5,23 +5,24 @@ pragma solidity ^0.8.15;
 
 import { Test } from "forge-std/Test.sol";
 
-import { CompoundV2Adapter, SafeERC20, IERC20, IERC20Metadata, Math, ICToken, IComptroller } from "../../../../src/vault/adapter/compound/compoundV2/CompoundV2Adapter.sol";
-import { FluxTestConfigStorage, FluxTestConfig } from "./FluxTestConfigStorage.sol";
-import { AbstractAdapterTest, ITestConfigStorage, IAdapter } from "../abstract/AbstractAdapterTest.sol";
+import { CompoundV3Adapter, SafeERC20, IERC20, IERC20Metadata, Math, ICToken, ICometRewarder, IGovernor, IAdmin, ICometConfigurator } from "../../../../../src/vault/adapter/compound/compoundV3/CompoundV3Adapter.sol";
+import { CompoundV3TestConfigStorage, CompoundV3TestConfig } from "./CompoundV3TestConfigStorage.sol";
+import { AbstractAdapterTest, ITestConfigStorage, IAdapter } from "../../abstract/AbstractAdapterTest.sol";
 
-contract FluxAdapterTest is AbstractAdapterTest {
+contract CompoundV3AdapterTest is AbstractAdapterTest {
   using Math for uint256;
 
-  ICToken fToken;
-  IComptroller comptroller;
+  ICToken cToken;
+  ICometRewarder cometRewarder;
+  ICometConfigurator cometConfigurator = ICometConfigurator(0x316f9708bB98af7dA9c68C1C3b5e79039cD336E3);
 
-  uint256 fluxDefaultAmount = 1e18;
+  uint256 compoundDefaultAmount = 1e18;
 
   function setUp() public {
     uint256 forkId = vm.createSelectFork(vm.rpcUrl("mainnet"));
     vm.selectFork(forkId);
 
-    testConfigStorage = ITestConfigStorage(address(new FluxTestConfigStorage()));
+    testConfigStorage = ITestConfigStorage(address(new CompoundV3TestConfigStorage()));
 
     _setUpTest(testConfigStorage.getTestConfig(0));
   }
@@ -31,19 +32,20 @@ contract FluxAdapterTest is AbstractAdapterTest {
   }
 
   function _setUpTest(bytes memory testConfig) internal {
-    address _fToken = abi.decode(testConfig, (address));
+    (address _cToken, address _cometRewarder) = abi.decode(testConfig, (address, address));
 
-    fToken = ICToken(_fToken);
-    asset = IERC20(fToken.underlying());
-    comptroller = IComptroller(fToken.comptroller());
+    cToken = ICToken(_cToken);
+    cometRewarder = ICometRewarder(_cometRewarder);
 
-    (bool isListed, , ) = comptroller.markets(address(fToken));
-    assertEq(isListed, true, "InvalidAsset");
+    asset = IERC20(cToken.baseToken());
 
-    setUpBaseTest(IERC20(asset), address(new CompoundV2Adapter()), address(comptroller), 10, "CompoundV2", true);
+    address configuratorBaseToken = cometConfigurator.getConfiguration(address(cToken)).baseToken;
+    assertEq(address(asset), configuratorBaseToken, "InvalidAsset");
 
-    vm.label(address(fToken), "fToken");
-    vm.label(address(comptroller), "comptroller");
+    setUpBaseTest(IERC20(asset), address(new CompoundV3Adapter()), address(cometConfigurator), 10, "CompoundV3", true);
+
+    vm.label(address(cToken), "cToken");
+    vm.label(address(cometRewarder), "cometRewarder");
     vm.label(address(asset), "asset");
     vm.label(address(this), "test");
 
@@ -55,11 +57,11 @@ contract FluxAdapterTest is AbstractAdapterTest {
     //////////////////////////////////////////////////////////////*/
 
   function increasePricePerShare(uint256 amount) public override {
-    deal(address(asset), address(fToken), asset.balanceOf(address(fToken)) + amount);
+    deal(address(asset), address(cToken), asset.balanceOf(address(cToken)) + amount);
   }
 
   function iouBalance() public view override returns (uint256) {
-    return fToken.balanceOf(address(adapter));
+    return cToken.balanceOf(address(adapter));
   }
 
   // Verify that totalAssets returns the expected amount
@@ -83,7 +85,7 @@ contract FluxAdapterTest is AbstractAdapterTest {
     //////////////////////////////////////////////////////////////*/
 
   function verify_adapterInit() public override {
-    assertEq(adapter.asset(), fToken.underlying(), "asset");
+    assertEq(adapter.asset(), cToken.baseToken(), "asset");
     assertEq(
       IERC20Metadata(address(adapter)).symbol(),
       string.concat("popB-", IERC20Metadata(address(asset)).symbol()),
@@ -95,7 +97,7 @@ contract FluxAdapterTest is AbstractAdapterTest {
       "symbol"
     );
 
-    assertEq(asset.allowance(address(adapter), address(fToken)), type(uint256).max, "allowance");
+    assertEq(asset.allowance(address(adapter), address(cToken)), type(uint256).max, "allowance");
   }
 
   /*//////////////////////////////////////////////////////////////
@@ -103,26 +105,26 @@ contract FluxAdapterTest is AbstractAdapterTest {
     //////////////////////////////////////////////////////////////*/
 
   function test__RT_deposit_withdraw() public override {
-    _mintFor(fluxDefaultAmount, bob);
+    _mintFor(compoundDefaultAmount, bob);
 
     vm.startPrank(bob);
-    uint256 shares1 = adapter.deposit(fluxDefaultAmount, bob);
+    uint256 shares1 = adapter.deposit(compoundDefaultAmount, bob);
     uint256 shares2 = adapter.withdraw(adapter.maxWithdraw(bob), bob, bob);
     vm.stopPrank();
 
-    // We compare assets here with maxWithdraw since the shares of withdraw will always be lower than `fluxDefaultAmount`
+    // We compare assets here with maxWithdraw since the shares of withdraw will always be lower than `compoundDefaultAmount`
     // This tests the same assumption though. As long as you can withdraw less or equal assets to the input amount you cant round trip
-    assertGe(fluxDefaultAmount, adapter.maxWithdraw(bob), testId);
+    assertGe(compoundDefaultAmount, adapter.maxWithdraw(bob), testId);
   }
 
   function test__RT_mint_withdraw() public override {
-    _mintFor(adapter.previewMint(fluxDefaultAmount), bob);
+    _mintFor(adapter.previewMint(compoundDefaultAmount), bob);
 
     vm.startPrank(bob);
-    uint256 assets = adapter.mint(fluxDefaultAmount, bob);
+    uint256 assets = adapter.mint(compoundDefaultAmount, bob);
     uint256 shares = adapter.withdraw(adapter.maxWithdraw(bob), bob, bob);
     vm.stopPrank();
-    // We compare assets here with maxWithdraw since the shares of withdraw will always be lower than `fluxDefaultAmount`
+    // We compare assets here with maxWithdraw since the shares of withdraw will always be lower than `compoundDefaultAmount`
     // This tests the same assumption though. As long as you can withdraw less or equal assets to the input amount you cant round trip
     assertGe(assets, adapter.maxWithdraw(bob), testId);
   }
@@ -156,5 +158,36 @@ contract FluxAdapterTest is AbstractAdapterTest {
     vm.startPrank(bob);
     adapter.deposit(1e18, bob);
     adapter.mint(1e18, bob);
+  }
+
+  function test__harvest() public override {
+    uint256 performanceFee = 1e16;
+    uint256 hwm = 1e9;
+    _mintFor(defaultAmount, bob);
+
+    vm.prank(bob);
+    adapter.deposit(defaultAmount, bob);
+
+    uint256 oldTotalAssets = adapter.totalAssets();
+    adapter.setPerformanceFee(performanceFee);
+    emit log_named_uint("aBal1", asset.balanceOf(address(cToken)));
+
+    increasePricePerShare(raise);
+
+    // We need to advance time so compound can accrue the interest
+    vm.warp(block.timestamp + 100);
+
+    uint256 gain = ((adapter.convertToAssets(1e18) - adapter.highWaterMark()) * adapter.totalSupply()) / 1e18;
+    uint256 fee = (gain * performanceFee) / 1e18;
+    uint256 expectedFee = adapter.convertToShares(fee);
+
+    vm.expectEmit(false, false, false, true, address(adapter));
+    emit Harvested();
+
+    adapter.harvest();
+
+    // Multiply with the decimal offset
+    assertApproxEqAbs(adapter.totalSupply(), defaultAmount * 1e9 + expectedFee, _delta_, "totalSupply");
+    assertApproxEqAbs(adapter.balanceOf(feeRecipient), expectedFee, _delta_, "expectedFee");
   }
 }
