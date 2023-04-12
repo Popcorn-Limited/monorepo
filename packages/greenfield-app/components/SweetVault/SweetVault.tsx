@@ -203,7 +203,14 @@ function SweetVault({ vaultAddress, chainId, searchString, addToTVL, addToDeposi
         <div className="flex flex-col md:flex-row mt-8 gap-8">
           <div className="flex flex-col w-full md:w-4/12 gap-8">
             <section className="bg-white flex-grow rounded-lg border border-customLightGray w-full p-6">
-              <DepositWithdraw chainId={chainId} vault={vaultAddress} asset={token?.address} staking={vaultMetadata?.staking} getTokenUrl={vaultMetadata?.metadata?.getTokenUrl} />
+              <DepositWithdraw
+                chainId={chainId}
+                vault={vaultAddress}
+                asset={token?.address}
+                staking={vaultMetadata?.staking}
+                getTokenUrl={vaultMetadata?.metadata?.getTokenUrl}
+                pps={pps}
+              />
             </section>
           </div>
           <div className="md:hidden flex w-full">
