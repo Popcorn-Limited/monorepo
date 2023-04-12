@@ -57,7 +57,7 @@ contract DeploymentController is Owned {
   }
 
   /**
-   * @notice Adds a new category for templates. Caller must be owner. (`VaultController` via `AdminProxy`)
+   * @notice Adds a new category for templates.
    * @param templateCategory Category of the new template.
    * @param templateId Unique Id of the new template.
    * @param template New template (See ITemplateRegistry for more details)

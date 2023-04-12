@@ -67,7 +67,13 @@ export const MobileMenu: React.FC = () => {
 
   useEffect(() => {
     toggleMenu(false);
-  }, [router?.pathname]);
+    toggleProductsMenu(false);
+  }, [router?.route]);
+
+  const handleCloseAll = () => {
+    toggleMenu(false);
+    toggleProductsMenu(false);
+  };
 
   useEffect(() => {
     if (showLocalNetwork && availableNetworks.length <= networkData.length) {
@@ -93,7 +99,7 @@ export const MobileMenu: React.FC = () => {
     <>
       <div className="flex flex-row justify-between items-center px-6 py-6 font-khTeka">
         <div>
-          <Link href={`/`} passHref>
+          <Link href="/" passHref>
             <img src="/images/icons/popLogo.svg" alt="Logo" className="w1010 h-10" />
           </Link>
         </div>
@@ -108,7 +114,7 @@ export const MobileMenu: React.FC = () => {
                 className={`${
                   isConnected ? "border-green-400 bg-green-400" : "bg-white border-gray-300"
                 } block h-2 w-2 rounded-full border`}
-              ></span>
+              />
             </div>
           </div>
           <button
@@ -121,19 +127,19 @@ export const MobileMenu: React.FC = () => {
                 className={`block h-1 w-10 bg-black transform transition duration-500 ease-in-out rounded-3xl ${
                   menuVisible ? "rotate-45 translate-y-1" : "-translate-y-2.5"
                 }`}
-              ></span>
+              />
               <span
                 aria-hidden="true"
                 className={`block h-1 w-10 bg-black transform transition duration-500 ease-in-out rounded-3xl ${
                   menuVisible ? "opacity-0" : "opacity-100"
                 }`}
-              ></span>
+              />
               <span
                 aria-hidden="true"
                 className={`block h-1 w-10 bg-black transform transition duration-500 ease-in-out rounded-3xl ${
                   menuVisible ? "-rotate-45 -translate-y-1" : "translate-y-2.5"
                 }`}
-              ></span>
+              />
             </div>
           </button>
         </div>
@@ -152,7 +158,7 @@ export const MobileMenu: React.FC = () => {
                 leaveFrom="translate-x-0"
                 leaveTo="translate-x-full"
               >
-                <div className="w-screen">
+                <Dialog.Panel as="div" className="w-screen">
                   <div className="h-full w-full flex flex-col justify-between pt-18 px-6 shadow-xl bg-white overflow-y-scroll">
                     <div className="flex flex-col w-full">
                       <div className="py-6">
@@ -224,7 +230,7 @@ export const MobileMenu: React.FC = () => {
                       </div>
                     </div>
                   </div>
-                </div>
+                </Dialog.Panel>
               </Transition.Child>
             </div>
           </div>
@@ -248,7 +254,7 @@ export const MobileMenu: React.FC = () => {
         </div>
       </PopUpModal>
       <Transition.Root show={productsMenuVisible} as={Fragment}>
-        <Dialog as="div" className="fixed inset-0 overflow-hidden z-50" onClose={() => toggleMenu(false)}>
+        <Dialog onClose={() => toggleMenu(false)} as="div" className="fixed inset-0 overflow-hidden z-50">
           <div className="absolute inset-0 overflow-hidden">
             <Dialog.Overlay className="absolute inset-0" />
 
@@ -262,9 +268,9 @@ export const MobileMenu: React.FC = () => {
                 leaveFrom="translate-x-0"
                 leaveTo="translate-x-full"
               >
-                <div className="w-screen">
-                  <MobileProductsMenu onCloseMenu={() => toggleProductsMenu(false)} />
-                </div>
+                <Dialog.Panel as="div" className="w-screen">
+                  <MobileProductsMenu onSelect={handleCloseAll} onClose={() => toggleProductsMenu(false)} />
+                </Dialog.Panel>
               </Transition.Child>
             </div>
           </div>

@@ -52,7 +52,8 @@ contract OusdAdapterTest is AbstractAdapterTest {
   }
 
   function increasePricePerShare(uint256 amount) public override {
-    // _mintAsset();
+    vm.prank(0x17768cFd6030e2B65Eb5086e34A512fDe5DC1F1f);
+    IERC20(address(wousd)).transfer(address(adapter), amount);
   }
 
   // Verify that totalAssets returns the expected amount

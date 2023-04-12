@@ -5,23 +5,23 @@ pragma solidity ^0.8.15;
 
 import { Test } from "forge-std/Test.sol";
 
-import { CompoundV2Adapter, SafeERC20, IERC20, IERC20Metadata, Math, ICToken, IComptroller } from "../../../../src/vault/adapter/compound/compoundV2/CompoundV2Adapter.sol";
-import { CompoundV2TestConfigStorage, CompoundV2TestConfig } from "./CompoundV2TestConfigStorage.sol";
-import { AbstractAdapterTest, ITestConfigStorage, IAdapter } from "../abstract/AbstractAdapterTest.sol";
+import { CompoundV2Adapter, SafeERC20, IERC20, IERC20Metadata, Math, ICToken, IComptroller } from "../../../../../src/vault/adapter/compound/compoundV2/CompoundV2Adapter.sol";
+import { FluxTestConfigStorage, FluxTestConfig } from "./FluxTestConfigStorage.sol";
+import { AbstractAdapterTest, ITestConfigStorage, IAdapter } from "../../abstract/AbstractAdapterTest.sol";
 
-contract CompoundV2AdapterTest is AbstractAdapterTest {
+contract FluxAdapterTest is AbstractAdapterTest {
   using Math for uint256;
 
-  ICToken cToken;
+  ICToken fToken;
   IComptroller comptroller;
 
-  uint256 compoundDefaultAmount = 1e18;
+  uint256 fluxDefaultAmount = 1e18;
 
   function setUp() public {
     uint256 forkId = vm.createSelectFork(vm.rpcUrl("mainnet"));
     vm.selectFork(forkId);
 
-    testConfigStorage = ITestConfigStorage(address(new CompoundV2TestConfigStorage()));
+    testConfigStorage = ITestConfigStorage(address(new FluxTestConfigStorage()));
 
     _setUpTest(testConfigStorage.getTestConfig(0));
   }
@@ -31,18 +31,18 @@ contract CompoundV2AdapterTest is AbstractAdapterTest {
   }
 
   function _setUpTest(bytes memory testConfig) internal {
-    address _cToken = abi.decode(testConfig, (address));
+    address _fToken = abi.decode(testConfig, (address));
 
-    cToken = ICToken(_cToken);
-    asset = IERC20(cToken.underlying());
-    comptroller = IComptroller(cToken.comptroller());
+    fToken = ICToken(_fToken);
+    asset = IERC20(fToken.underlying());
+    comptroller = IComptroller(fToken.comptroller());
 
-    (bool isListed, , ) = comptroller.markets(address(cToken));
+    (bool isListed, , ) = comptroller.markets(address(fToken));
     assertEq(isListed, true, "InvalidAsset");
 
     setUpBaseTest(IERC20(asset), address(new CompoundV2Adapter()), address(comptroller), 10, "CompoundV2", true);
 
-    vm.label(address(cToken), "cToken");
+    vm.label(address(fToken), "fToken");
     vm.label(address(comptroller), "comptroller");
     vm.label(address(asset), "asset");
     vm.label(address(this), "test");
@@ -55,11 +55,11 @@ contract CompoundV2AdapterTest is AbstractAdapterTest {
     //////////////////////////////////////////////////////////////*/
 
   function increasePricePerShare(uint256 amount) public override {
-    deal(address(asset), address(cToken), asset.balanceOf(address(cToken)) + amount);
+    deal(address(asset), address(fToken), asset.balanceOf(address(fToken)) + amount);
   }
 
   function iouBalance() public view override returns (uint256) {
-    return cToken.balanceOf(address(adapter));
+    return fToken.balanceOf(address(adapter));
   }
 
   // Verify that totalAssets returns the expected amount
@@ -83,7 +83,7 @@ contract CompoundV2AdapterTest is AbstractAdapterTest {
     //////////////////////////////////////////////////////////////*/
 
   function verify_adapterInit() public override {
-    assertEq(adapter.asset(), cToken.underlying(), "asset");
+    assertEq(adapter.asset(), fToken.underlying(), "asset");
     assertEq(
       IERC20Metadata(address(adapter)).symbol(),
       string.concat("popB-", IERC20Metadata(address(asset)).symbol()),
@@ -95,7 +95,7 @@ contract CompoundV2AdapterTest is AbstractAdapterTest {
       "symbol"
     );
 
-    assertEq(asset.allowance(address(adapter), address(cToken)), type(uint256).max, "allowance");
+    assertEq(asset.allowance(address(adapter), address(fToken)), type(uint256).max, "allowance");
   }
 
   /*//////////////////////////////////////////////////////////////
@@ -103,26 +103,26 @@ contract CompoundV2AdapterTest is AbstractAdapterTest {
     //////////////////////////////////////////////////////////////*/
 
   function test__RT_deposit_withdraw() public override {
-    _mintAssetAndApproveForAdapter(compoundDefaultAmount, bob);
+    _mintAssetAndApproveForAdapter(fluxDefaultAmount, bob);
 
     vm.startPrank(bob);
-    uint256 shares1 = adapter.deposit(compoundDefaultAmount, bob);
+    uint256 shares1 = adapter.deposit(fluxDefaultAmount, bob);
     uint256 shares2 = adapter.withdraw(adapter.maxWithdraw(bob), bob, bob);
     vm.stopPrank();
 
-    // We compare assets here with maxWithdraw since the shares of withdraw will always be lower than `compoundDefaultAmount`
+    // We compare assets here with maxWithdraw since the shares of withdraw will always be lower than `fluxDefaultAmount`
     // This tests the same assumption though. As long as you can withdraw less or equal assets to the input amount you cant round trip
-    assertGe(compoundDefaultAmount, adapter.maxWithdraw(bob), testId);
+    assertGe(fluxDefaultAmount, adapter.maxWithdraw(bob), testId);
   }
 
   function test__RT_mint_withdraw() public override {
-    _mintAssetAndApproveForAdapter(adapter.previewMint(compoundDefaultAmount), bob);
+    _mintAssetAndApproveForAdapter(adapter.previewMint(fluxDefaultAmount), bob);
 
     vm.startPrank(bob);
-    uint256 assets = adapter.mint(compoundDefaultAmount, bob);
+    uint256 assets = adapter.mint(fluxDefaultAmount, bob);
     uint256 shares = adapter.withdraw(adapter.maxWithdraw(bob), bob, bob);
     vm.stopPrank();
-    // We compare assets here with maxWithdraw since the shares of withdraw will always be lower than `compoundDefaultAmount`
+    // We compare assets here with maxWithdraw since the shares of withdraw will always be lower than `fluxDefaultAmount`
     // This tests the same assumption though. As long as you can withdraw less or equal assets to the input amount you cant round trip
     assertGe(assets, adapter.maxWithdraw(bob), testId);
   }
