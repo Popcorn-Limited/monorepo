@@ -92,6 +92,7 @@ contract AbstractAdapterTest is PropertyTest {
   // Clone a new Adapter and set it to `adapter`
   function createAdapter() public {
     adapter = IAdapter(Clones.clone(implementation));
+    vm.label(address(adapter), "adapter");
   }
 
   // Increase the pricePerShare of the external protocol
@@ -415,7 +416,7 @@ contract AbstractAdapterTest is PropertyTest {
     uint256 assets1 = adapter.mint(defaultAmount, bob);
     uint256 assets2 = adapter.redeem(adapter.maxRedeem(bob), bob, bob);
     vm.stopPrank();
-    
+
     if (adapter.maxRedeem(bob) == defaultAmount) {
       assertLe(assets2, assets1, testId);
     }

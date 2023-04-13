@@ -5,13 +5,15 @@ pragma solidity ^0.8.15;
 
 import { Test } from "forge-std/Test.sol";
 
-import { GearboxPassivePoolAdapter, SafeERC20, IERC20, IERC20Metadata, Math, IContractRegistry, IContractRegistry, IPoolService } from "../../../../../src/vault/adapter/gearbox/passivePool/GearboxPassivePoolAdapter.sol";
+import { GearboxPassivePoolAdapter, SafeERC20, IERC20, IERC20Metadata, IAddressProvider, IContractRegistry, IPoolService } from "../../../../../src/vault/adapter/gearbox/passivePool/GearboxPassivePoolAdapter.sol";
 import { GearboxPassivePoolTestConfigStorage, GearboxPassivePoolTestConfig } from "./GearboxPassivePoolTestConfigStorage.sol";
 import { AbstractAdapterTest, ITestConfigStorage, IAdapter } from "../../abstract/AbstractAdapterTest.sol";
 
-contract GearboxPassivePoolAdapterTest is AbstractAdapterTest {
-  using Math for uint256;
+interface IBurnable {
+  function burn(address from, uint256 amount) external;
+}
 
+contract GearboxPassivePoolAdapterTest is AbstractAdapterTest {
   IAddressProvider addressProvider = IAddressProvider(0xcF64698AFF7E5f27A11dff868AF228653ba53be0);
   IPoolService poolService;
   IERC20 dieselToken;
@@ -48,50 +50,92 @@ contract GearboxPassivePoolAdapterTest is AbstractAdapterTest {
     vm.label(address(asset), "asset");
     vm.label(address(this), "test");
 
-    adapter.initialize(
-      abi.encode(asset, address(this), address(0), 0, sigs, ""),
-      externalRegistry,
-      testConfig
-    );
+    adapter.initialize(abi.encode(asset, address(this), address(0), 0, sigs, ""), externalRegistry, testConfig);
+
+    defaultAmount = 10 ** IERC20Metadata(address(asset)).decimals();
+
+    raise = defaultAmount;
+    maxAssets = defaultAmount * 1000;
+    maxShares = maxAssets / 2;
   }
 
   /*//////////////////////////////////////////////////////////////
                           HELPER
     //////////////////////////////////////////////////////////////*/
 
-  function increasePricePerShare(uint256 amount) public override {
-    // deal(address(asset), address(yearnVault), asset.balanceOf(address(yearnVault)) + amount);
+  function increasePricePerShare(uint256) public override {
+    // DieselToken value can only be increased by reducing the supply of dieselToken or increasing time to accrue interest
+    vm.prank(address(poolService));
+    IBurnable(address(dieselToken)).burn(0x5EC6abfF9BB4c673f63D077a962A29945f744857, 1000e18);
   }
 
   function iouBalance() public view override returns (uint256) {
     return dieselToken.balanceOf(address(adapter));
   }
 
+  /*//////////////////////////////////////////////////////////////
+                          INITIALIZATION
+    //////////////////////////////////////////////////////////////*/
+
+  function verify_adapterInit() public override {
+    assertEq(adapter.asset(), poolService.underlyingToken(), "asset");
+    assertEq(
+      IERC20Metadata(address(adapter)).name(),
+      string.concat("Popcorn GearboxPassivePool", IERC20Metadata(address(asset)).name(), " Adapter"),
+      "name"
+    );
+    assertEq(
+      IERC20Metadata(address(adapter)).symbol(),
+      string.concat("popGPP-", IERC20Metadata(address(asset)).symbol()),
+      "symbol"
+    );
+
+    assertEq(asset.allowance(address(adapter), address(poolService)), type(uint256).max, "allowance");
+  }
+
+  /*//////////////////////////////////////////////////////////////
+                          TOTAL ASSETS
+    //////////////////////////////////////////////////////////////*/
+
   // Verify that totalAssets returns the expected amount
-  // function verify_totalAssets() public override {
-  //   // Make sure totalAssets isnt 0
-  //   deal(address(asset), bob, defaultAmount);
-  //   vm.startPrank(bob);
-  //   asset.approve(address(adapter), defaultAmount);
-  //   adapter.deposit(defaultAmount, bob);
-  //   vm.stopPrank();
+  function verify_totalAssets() public override {
+    // Make sure totalAssets isnt 0
+    _mintAsset(defaultAmount, bob);
 
-  //   assertApproxEqAbs(
-  //     adapter.totalAssets(),
-  //     adapter.convertToAssets(adapter.totalSupply()),
-  //     _delta_,
-  //     string.concat("totalSupply converted != totalAssets", baseTestId)
-  //   );
+    vm.startPrank(bob);
+    asset.approve(address(adapter), defaultAmount);
+    adapter.deposit(defaultAmount, bob);
+    vm.stopPrank();
 
-  //   assertApproxEqAbs(
-  //     adapter.totalAssets(),
-  //     iouBalance().mulDiv(
-  //       yearnVault.pricePerShare(),
-  //       10 ** IERC20Metadata(address(asset)).decimals(),
-  //       Math.Rounding.Up
-  //     ),
-  //     _delta_,
-  //     string.concat("totalAssets != yearn assets", baseTestId)
-  //   );
+    assertApproxEqAbs(
+      adapter.totalAssets(),
+      adapter.convertToAssets(adapter.totalSupply()),
+      _delta_,
+      string.concat("totalSupply converted != totalAssets", baseTestId)
+    );
+
+    assertApproxEqAbs(
+      adapter.totalAssets(),
+      poolService.fromDiesel(iouBalance()),
+      _delta_,
+      string.concat("totalAssets != pool assets", baseTestId)
+    );
+  }
+
+  // function test__deposit(uint8 fuzzAmount) public override {
+  //   uint256 amount = bound(uint256(fuzzAmount), minFuzz, maxAssets);
+  //   uint8 len = uint8(testConfigStorage.getTestConfigLength());
+  //   for (uint8 i; i < len; i++) {
+  //     if (i > 0) overrideSetup(testConfigStorage.getTestConfig(i));
+
+  //     _mintAssetAndApproveForAdapter(amount, bob);
+
+  //     prop_deposit(bob, bob, amount, testId);
+
+  //     // increasePricePerShare(raise);
+
+  //     // _mintAssetAndApproveForAdapter(amount, bob);
+  //     // prop_deposit(bob, alice, amount, testId);
+  //   }
   // }
 }
