@@ -29,7 +29,7 @@ export default function VaultCraftSection() {
       <div className="h-8 w-screen bg-[#C391FF] mt-44 flex-row items-center py-1">
         <SliderContainer slidesToShow={6}>
           {[1, 2, 3, 4, 5, 6, 7, 8].map(x => (
-            <div className="items-center flex flex-row relative px-2">
+            <div key={x} className="items-center flex flex-row relative px-2">
               <div className="bg-[#9B55FF] w-2 h-2 absolute top-0 left-0 self-center mt-1.5"></div>
               <p className="text-xs ml-2">coming soon</p>
             </div>

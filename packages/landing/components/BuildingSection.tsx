@@ -40,7 +40,7 @@ export default function BuildingSection() {
           <div className="w-full grow flex-col flex justify-start items-end px-8 smmd:px-0">
             <div className={`${isVisible ? 'smmd:-translate-x-8' : 'smmd:translate-x-full'} shrink transition-transform smmd:w-[40vw] w-full delay-[200ms] duration-[800ms] `} >
               <p className="text-white text-right smmd:text-left">
-                At Popcorn Network, we're not just about financial gains, we're also about making a difference. That's why we partner and donate a percentage of our profits to Gitcoin, a platform that supports social impact organizations across the globe. By investing in our DeFi suite, you're not just earning rewards, you're also investing in change
+                At Popcorn Network, we&#39;re not just about financial gains, we&#39;re also about making a difference. That&#39;s why we partner and donate a percentage of our profits to Gitcoin, a platform that supports social impact organizations across the globe. By investing in our DeFi suite, you&#39;re not just earning rewards, you&#39;re also investing in change
               </p>
 
               <div className="flex-col flex mt-20">
