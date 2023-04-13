@@ -40,6 +40,7 @@ export default function FinalSection() {
         <FaqCard title="What is Popcorn?" description="xxx" />
         <FaqCard title="How does Popcorn work?" description="xxx" />
         <FaqCard title="Can I create a savings account with Popcorn?" description="xxx" />
+        <FaqCard title="What kind of positive global impact can I make with Popcorn?" description="xxx" />
       </div>
     </section>
   )
