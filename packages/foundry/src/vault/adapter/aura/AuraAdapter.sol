@@ -8,9 +8,9 @@ import { WithRewards, IWithRewards } from "../abstracts/WithRewards.sol";
 import { IAuraBooster, IAuraRewards, IAuraStaking } from "./IAura.sol";
 
 /**
- * @title   Aura Adapter
+ * @title  Aura Adapter
  * @author amatureApe
- * @notice  ERC4626 wrapper for Aura Vaults.
+ * @notice ERC4626 wrapper for Aura Vaults.
  *
  * An ERC4626 compliant Wrapper for https://github.com/sushiswap/sushiswap/blob/archieve/canary/contracts/Aura.sol.
  * Allows wrapping Aura Vaults.
@@ -28,14 +28,12 @@ contract AuraAdapter is AdapterBase, WithRewards {
   /// @notice The reward contract for Aura gauge
   IAuraRewards public auraRewards;
 
-  /// @notice The staking contract for Aura
-  IAuraStaking public auraStaking;
-
-  /// @notice Aura lpToken
-  address public auraLpToken;
-
   /// @notice The pool ID
   uint256 public pid;
+
+  address public crv;
+  address public cvx;
+  address[] internal _rewardToken;
 
   /*//////////////////////////////////////////////////////////////
                             INITIALIZATION
@@ -46,26 +44,29 @@ contract AuraAdapter is AdapterBase, WithRewards {
   /**
    * @notice Initialize a new Aura Adapter.
    * @param adapterInitData Encoded data for the base adapter initialization.
+   * @param registry `_auraBooster` - The main Aura contract
+   * @param auraInitData aura specific init data
    * @dev `_pid` - The poolId for lpToken.
-   * @dev `_auraBooster` - The main Aura contract
    * @dev This function is called by the factory contract when deploying a new vault.
    */
 
   function initialize(bytes memory adapterInitData, address registry, bytes memory auraInitData) external initializer {
     __AdapterBase_init(adapterInitData);
 
-    (uint256 _pid, address _auraBooster) = abi.decode(auraInitData, (uint256, address));
+    uint256 _pid = abi.decode(auraInitData, (uint256));
 
-    auraBooster = IAuraBooster(_auraBooster);
+    auraBooster = IAuraBooster(registry);
     pid = _pid;
 
-    auraStaking = IAuraStaking(auraBooster.stakerRewards());
+    IAuraStaking auraStaking = IAuraStaking(auraBooster.stakerRewards());
+    crv = auraStaking.crv();
+    _rewardToken.push(crv);
+    cvx = auraStaking.cvx();
+    _rewardToken.push(cvx);
 
-    (address balancerLpToken, address _auraLpToken, address _auraGauge, address _auraRewards, , ) = auraBooster
-      .poolInfo(pid);
+    (address balancerLpToken, , , address _auraRewards, , ) = auraBooster.poolInfo(pid);
 
     auraRewards = IAuraRewards(_auraRewards);
-    auraLpToken = _auraLpToken;
 
     if (balancerLpToken != asset()) revert InvalidAsset();
 
@@ -109,18 +110,17 @@ contract AuraAdapter is AdapterBase, WithRewards {
   /*//////////////////////////////////////////////////////////////
                             STRATEGY LOGIC
     //////////////////////////////////////////////////////////////*/
+
   /// @notice Claim rewards from the aura
-  function claim() public override onlyStrategy {
-    auraRewards.getReward();
+  function claim() public override onlyStrategy returns (bool success) {
+    try auraRewards.getReward() {
+      success = true;
+    } catch {}
   }
 
   /// @notice The token rewarded
   function rewardTokens() external view override returns (address[] memory) {
-    address[] memory _rewardTokens = new address[](2);
-    _rewardTokens[0] = auraStaking.crv();
-    _rewardTokens[1] = auraStaking.cvx();
-
-    return _rewardTokens;
+    return _rewardToken;
   }
 
   /*//////////////////////////////////////////////////////////////

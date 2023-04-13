@@ -11,7 +11,7 @@ import { MockStrategyClaimer } from "../../../utils/mocks/MockStrategyClaimer.so
 contract AuraAdapterTest is AbstractAdapterTest {
   using Math for uint256;
 
-  IAuraBooster public auraBooster;
+  IAuraBooster public auraBooster = IAuraBooster(0xA57b8d98dAE62B26Ec3bcC4a365338157060B234);
   IAuraRewards public auraRewards;
   IAuraStaking public auraStaking;
 
@@ -32,9 +32,8 @@ contract AuraAdapterTest is AbstractAdapterTest {
   }
 
   function _setUpTest(bytes memory testConfig) internal {
-    (uint256 _pid, address _auraBooster) = abi.decode(testConfig, (uint256, address));
+    uint256 _pid = abi.decode(testConfig, (uint256));
 
-    auraBooster = IAuraBooster(_auraBooster);
     pid = _pid;
 
     auraStaking = IAuraStaking(auraBooster.stakerRewards());
@@ -62,7 +61,8 @@ contract AuraAdapterTest is AbstractAdapterTest {
 
   // Verify that totalAssets returns the expected amount
   function verify_totalAssets() public override {
-    deal(address(asset), bob, defaultAmount);
+    _mintAsset(defaultAmount, bob);
+    
     vm.startPrank(bob);
     asset.approve(address(adapter), defaultAmount);
     adapter.deposit(defaultAmount, bob);
@@ -104,7 +104,7 @@ contract AuraAdapterTest is AbstractAdapterTest {
       testConfigStorage.getTestConfig(0)
     );
 
-    _mintFor(1000e18, bob);
+    _mintAssetAndApproveForAdapter(1000e18, bob);
 
     vm.prank(bob);
     adapter.deposit(1000e18, bob);
