@@ -9,6 +9,7 @@ import VaultCraftSection from "components/VaultCraftSection";
 import BuildingSection from "components/BuildingSection";
 import FinalSection from "components/FinalSection";
 
+
 const IndexPage = () => {
   const router = useRouter();
 
@@ -29,7 +30,6 @@ const IndexPage = () => {
       <FinalSection />
       <Footer />
     </div >
-
   );
 };
 

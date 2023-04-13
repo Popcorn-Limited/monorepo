@@ -10,32 +10,18 @@ interface NavbarLinkProps {
 }
 
 const NavbarLink: React.FC<NavbarLinkProps> = ({ label, url, isActive, onClick, target }) => {
-  const className = `leading-5 text-5xl md:text-lg ${isActive ? "text-black font-medium" : "text-primary"} 
+  const className = `leading-5 text-5xl md:text-lg ${isActive ? "text-black font-medium" : "text-primary"}
     hover:text-black cursor-pointer
   `;
   return (
     <>
       <span className={`${!url ? "" : "hidden"}`}>
-        <a
-          className={className}
-          target={target || "_self"}
-          onClick={(e) => {
-            onClick && onClick();
-          }}
-        >
+        <a className={className} target={target || "_self"} onClick={(e) => onClick?.(e)}>
           {label}
         </a>
       </span>
       <span className={`${url ? "" : "hidden"}`}>
-        <Link
-          href={url ? url : "#"}
-          passHref
-          className={className}
-          target={target || "_self"}
-          onClick={(e) => {
-            onClick && onClick();
-          }}
-        >
+        <Link href={url ? url : "#"} className={className} target={target || "_self"} onClick={(e) => onClick?.(e)}>
           {label}
         </Link>
       </span>

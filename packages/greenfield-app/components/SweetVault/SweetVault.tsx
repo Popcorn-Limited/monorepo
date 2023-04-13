@@ -16,8 +16,7 @@ import TokenIcon from "@popcorn/app/components/TokenIcon";
 import { FetchTokenResult } from "wagmi/dist/actions";
 import { NetworkSticker } from "@popcorn/app/components/NetworkSticker";
 import { useBalanceOf, useTotalSupply } from "@popcorn/components/lib/Erc20/hooks";
-import { PriceOf, usePrice } from "@popcorn/components/lib/Price";
-import { TotalAssets } from "@popcorn/components/lib/Vault";
+import { usePrice } from "@popcorn/components/lib/Price";
 import { parseUnits } from "ethers/lib/utils.js";
 import { useTotalAssets } from "@popcorn/components/lib/Vault/hooks";
 import { formatNumber } from "@popcorn/utils/formatBigNumber";
@@ -67,14 +66,19 @@ function SweetVault({ vaultAddress, chainId, searchString, addToTVL, addToDeposi
   const { data: price } = usePrice({ address: token?.address as Address, chainId });
   const { data: totalAssets } = useTotalAssets({ address: vaultAddress as Address, chainId, account });
   const { data: totalSupply } = useTotalSupply({ address: vaultAddress as Address, chainId, account });
+  const [pps, setPps] = useState<number>(0);
 
 
   useEffect(() => {
-    if (totalAssets && totalSupply && balance && price
+    if (totalAssets && totalSupply && price
       && Number(totalAssets?.value?.toString()) > 0 && Number(totalSupply?.value?.toString()) > 0) {
-      const pps = Number(totalAssets?.value?.toString()) / Number(totalSupply?.value?.toString());
-      const assetBal = pps * Number(balance?.value?.toString());
+      setPps(Number(totalAssets?.value?.toString()) / Number(totalSupply?.value?.toString()));
+    }
+  }, [balance, totalAssets, totalSupply, price])
 
+  useEffect(() => {
+    if (price && balance && pps > 0) {
+      const assetBal = pps * Number(balance?.value?.toString());
       addToDeposit(
         vaultAddress,
         parseUnits(String((
@@ -83,7 +87,7 @@ function SweetVault({ vaultAddress, chainId, searchString, addToTVL, addToDeposi
         )
       );
     }
-  }, [balance, totalAssets, totalSupply, price])
+  }, [balance, price, pps])
 
   useEffect(() => {
     if (totalAssets && price) {
@@ -97,10 +101,8 @@ function SweetVault({ vaultAddress, chainId, searchString, addToTVL, addToDeposi
     }
   }, [totalAssets, price])
 
-  // hide the vault for testing
-  if (vaultAddress === "0xcf0D91fB9Bc81ac605D2F1962a72Fac8901F57bE") return <></>
-
-  if (!vaultMetadata) return <></>
+  // TEMP - filter duplicate vault
+  if (!vaultMetadata || vault?.address === "0xcf0D91fB9Bc81ac605D2F1962a72Fac8901F57bE") return <></>
   if (searchString === "" ||
     vault?.name.toLowerCase().includes(searchString) ||
     vault?.symbol.toLowerCase().includes(searchString))
@@ -131,9 +133,11 @@ function SweetVault({ vaultAddress, chainId, searchString, addToTVL, addToDeposi
                 <p className="text-primaryLight font-normal">Your Deposit</p>
                 <div className="text-primary text-2xl md:text-3xl leading-6 md:leading-8">
                   <Title level={2} fontWeight="font-normal" as="span" className="mr-1 text-primary">
-                    {account ? formatAndRoundBigNumber(balance?.value, vault?.decimals) : "-"}
+                    {account ?
+                      formatNumber((pps * Number(balance?.value?.toString())) / (10 ** (token?.decimals)))
+                      : "-"}
                   </Title>
-                  <span className="text-secondaryLight text-lg md:text-2xl flex md:inline">{vault?.symbol}</span>
+                  <span className="text-secondaryLight text-lg md:text-2xl flex md:inline">{token?.symbol || "ETH"}</span>
                 </div>
               </div>
               <div className="w-1/2 md:w-1/4 mt-6 md:mt-0">
@@ -201,7 +205,14 @@ function SweetVault({ vaultAddress, chainId, searchString, addToTVL, addToDeposi
         <div className="flex flex-col md:flex-row mt-8 gap-8">
           <div className="flex flex-col w-full md:w-4/12 gap-8">
             <section className="bg-white flex-grow rounded-lg border border-customLightGray w-full p-6">
-              <DepositWithdraw chainId={chainId} vault={vaultAddress} asset={token?.address} staking={vaultMetadata?.staking} getTokenUrl={vaultMetadata?.metadata?.getTokenUrl} />
+              <DepositWithdraw
+                chainId={chainId}
+                vault={vaultAddress}
+                asset={token?.address}
+                staking={vaultMetadata?.staking}
+                getTokenUrl={vaultMetadata?.metadata?.getTokenUrl}
+                pps={pps}
+              />
             </section>
           </div>
           <div className="md:hidden flex w-full">

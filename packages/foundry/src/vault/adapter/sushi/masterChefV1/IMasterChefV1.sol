@@ -3,7 +3,7 @@
 
 pragma solidity ^0.8.15;
 
-interface IMasterChef {
+interface IMasterChefV1 {
   struct PoolInfo {
     address lpToken;
     uint256 allocPoint;
@@ -16,9 +16,9 @@ interface IMasterChef {
     uint256 rewardDebt;
   }
 
-  function poolInfo(uint256 pid) external view returns (IMasterChef.PoolInfo memory);
+  function poolInfo(uint256 pid) external view returns (IMasterChefV1.PoolInfo memory);
 
-  function userInfo(uint256 pid, address adapterAddress) external view returns (IMasterChef.UserInfo memory);
+  function userInfo(uint256 pid, address adapterAddress) external view returns (IMasterChefV1.UserInfo memory);
 
   function totalAllocPoint() external view returns (uint256);
 

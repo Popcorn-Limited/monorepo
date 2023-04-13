@@ -5,30 +5,35 @@ pragma solidity ^0.8.15;
 
 import { AdapterBase, IERC20, IERC20Metadata, SafeERC20, ERC20, Math, IStrategy, IAdapter } from "../abstracts/AdapterBase.sol";
 import { WithRewards, IWithRewards } from "../abstracts/WithRewards.sol";
-import { IMasterChef } from "./IMasterChef.sol";
+import { IAuraBooster, IAuraRewards, IAuraStaking } from "./IAura.sol";
 
 /**
- * @title   MasterChef Adapter
- * @notice  ERC4626 wrapper for MasterChef Vaults.
+ * @title  Aura Adapter
+ * @author amatureApe
+ * @notice ERC4626 wrapper for Aura Vaults.
  *
- * An ERC4626 compliant Wrapper for https://github.com/sushiswap/sushiswap/blob/archieve/canary/contracts/MasterChefV2.sol.
- * Allows wrapping MasterChef Vaults.
+ * An ERC4626 compliant Wrapper for https://github.com/sushiswap/sushiswap/blob/archieve/canary/contracts/Aura.sol.
+ * Allows wrapping Aura Vaults.
  */
-contract MasterChefAdapter is AdapterBase, WithRewards {
+contract AuraAdapter is AdapterBase, WithRewards {
   using SafeERC20 for IERC20;
   using Math for uint256;
 
   string internal _name;
   string internal _symbol;
 
-  // @notice The MasterChef contract
-  IMasterChef public masterChef;
+  /// @notice The Aura booster contract
+  IAuraBooster public auraBooster;
 
-  // @notice The address of the reward token
-  address public rewardsToken;
+  /// @notice The reward contract for Aura gauge
+  IAuraRewards public auraRewards;
 
-  // @notice The pool ID
+  /// @notice The pool ID
   uint256 public pid;
+
+  address public crv;
+  address public cvx;
+  address[] internal _rewardToken;
 
   /*//////////////////////////////////////////////////////////////
                             INITIALIZATION
@@ -37,34 +42,38 @@ contract MasterChefAdapter is AdapterBase, WithRewards {
   error InvalidAsset();
 
   /**
-   * @notice Initialize a new MasterChef Adapter.
+   * @notice Initialize a new Aura Adapter.
    * @param adapterInitData Encoded data for the base adapter initialization.
+   * @param registry `_auraBooster` - The main Aura contract
+   * @param auraInitData aura specific init data
    * @dev `_pid` - The poolId for lpToken.
-   * @dev `_rewardsToken` - The token rewarded by the MasterChef contract (Sushi, Cake...)
    * @dev This function is called by the factory contract when deploying a new vault.
    */
 
-  function initialize(
-    bytes memory adapterInitData,
-    address registry,
-    bytes memory masterchefInitData
-  ) external initializer {
+  function initialize(bytes memory adapterInitData, address registry, bytes memory auraInitData) external initializer {
     __AdapterBase_init(adapterInitData);
 
-    (uint256 _pid, address _rewardsToken) = abi.decode(masterchefInitData, (uint256, address));
+    uint256 _pid = abi.decode(auraInitData, (uint256));
 
-    masterChef = IMasterChef(registry);
-    IMasterChef.PoolInfo memory pool = masterChef.poolInfo(_pid);
-
-    if (pool.lpToken != asset()) revert InvalidAsset();
-
+    auraBooster = IAuraBooster(registry);
     pid = _pid;
-    rewardsToken = _rewardsToken;
 
-    _name = string.concat("Popcorn MasterChef", IERC20Metadata(asset()).name(), " Adapter");
+    IAuraStaking auraStaking = IAuraStaking(auraBooster.stakerRewards());
+    crv = auraStaking.crv();
+    _rewardToken.push(crv);
+    cvx = auraStaking.cvx();
+    _rewardToken.push(cvx);
+
+    (address balancerLpToken, , , address _auraRewards, , ) = auraBooster.poolInfo(pid);
+
+    auraRewards = IAuraRewards(_auraRewards);
+
+    if (balancerLpToken != asset()) revert InvalidAsset();
+
+    _name = string.concat("Popcorn Aura", IERC20Metadata(asset()).name(), " Adapter");
     _symbol = string.concat("popB-", IERC20Metadata(asset()).symbol());
 
-    IERC20(pool.lpToken).approve(address(masterChef), type(uint256).max);
+    IERC20(balancerLpToken).approve(address(auraBooster), type(uint256).max);
   }
 
   function name() public view override(IERC20Metadata, ERC20) returns (string memory) {
@@ -83,8 +92,7 @@ contract MasterChefAdapter is AdapterBase, WithRewards {
   /// @return The total amount of underlying tokens the Vault holds.
 
   function _totalAssets() internal view override returns (uint256) {
-    IMasterChef.UserInfo memory user = masterChef.userInfo(pid, address(this));
-    return user.amount;
+    return auraRewards.balanceOf(address(this));
   }
 
   /*//////////////////////////////////////////////////////////////
@@ -92,26 +100,27 @@ contract MasterChefAdapter is AdapterBase, WithRewards {
     //////////////////////////////////////////////////////////////*/
 
   function _protocolDeposit(uint256 amount, uint256) internal override {
-    masterChef.deposit(pid, amount);
+    auraBooster.deposit(pid, amount, true);
   }
 
   function _protocolWithdraw(uint256 amount, uint256) internal override {
-    masterChef.withdraw(pid, amount);
+    auraRewards.withdrawAndUnwrap(amount, true);
   }
 
   /*//////////////////////////////////////////////////////////////
                             STRATEGY LOGIC
     //////////////////////////////////////////////////////////////*/
-  /// @notice Claim rewards from the masterChef
-  function claim() public override onlyStrategy {
-    masterChef.deposit(pid, 0);
+
+  /// @notice Claim rewards from the aura
+  function claim() public override onlyStrategy returns (bool success) {
+    try auraRewards.getReward() {
+      success = true;
+    } catch {}
   }
 
   /// @notice The token rewarded
   function rewardTokens() external view override returns (address[] memory) {
-    address[] memory _rewardTokens = new address[](1);
-    _rewardTokens[0] = rewardsToken;
-    return _rewardTokens;
+    return _rewardToken;
   }
 
   /*//////////////////////////////////////////////////////////////

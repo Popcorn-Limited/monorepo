@@ -5,9 +5,9 @@ pragma solidity ^0.8.15;
 
 import { Test } from "forge-std/Test.sol";
 
-import { AaveV3Adapter, SafeERC20, IERC20, IERC20Metadata, Math, ILendingPool, IAaveIncentives, IAToken, IProtocolDataProvider, DataTypes } from "../../../../src/vault/adapter/aave/aaveV3/AaveV3Adapter.sol";
+import { AaveV3Adapter, SafeERC20, IERC20, IERC20Metadata, Math, ILendingPool, IAaveIncentives, IAToken, IProtocolDataProvider, DataTypes } from "../../../../../src/vault/adapter/aave/aaveV3/AaveV3Adapter.sol";
 import { AaveV3TestConfigStorage, AaveV3TestConfig } from "./AaveV3TestConfigStorage.sol";
-import { AbstractAdapterTest, ITestConfigStorage, IAdapter } from "../abstract/AbstractAdapterTest.sol";
+import { AbstractAdapterTest, ITestConfigStorage, IAdapter } from "../../abstract/AbstractAdapterTest.sol";
 
 contract AaveV3AdapterTest is AbstractAdapterTest {
   using Math for uint256;

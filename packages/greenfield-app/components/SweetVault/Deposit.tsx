@@ -3,20 +3,25 @@ import FeeBreakdown from "./FeeBreakdown";
 import { useAllowance } from "@popcorn/components/lib/Erc20/hooks";
 import { Address, useAccount } from "wagmi";
 import { useNamedAccounts } from "@popcorn/components/lib/utils";
-import { constants } from "ethers";
+import { BigNumber, constants } from "ethers";
+import TokenIcon from "@popcorn/app/components/TokenIcon";
 
 function Deposit({
   vault,
   asset,
   chainId,
   staking,
-  getTokenUrl
+  pps,
+  getTokenUrl,
+  children
 }: {
   vault: string;
   asset: string;
   chainId: any;
-  staking: string
+  staking: string;
+  pps: number;
   getTokenUrl?: string;
+  children: React.ReactElement
 }) {
   const usesStaking = staking?.toLowerCase() !== constants.AddressZero.toLowerCase();
   const { address: account } = useAccount();
@@ -46,9 +51,19 @@ function Deposit({
         // Show the correct link for this vault for testing
         getTokenUrl={vault === "0xb4bA0B340a1Ab76d3d92a66123390599743E314d" ? "https://app.hop.exchange/#/pool/deposit?token=USDC&sourceNetwork=optimism" : getTokenUrl}
       >
-        {({ ActionableComponent }) => {
+        {({ ActionableComponent, data }) => {
           return (
             <>
+              {children}
+              <p className="text-primary">Estimated Shares</p>
+              <div className="mt-1 relative flex items-center w-full">
+                <div
+                  className={`w-full flex px-5 py-4 items-center justify-between rounded-lg border border-customLightGray`}
+                >
+                  <p className="text-primaryDark text-lg leading-snug p-0">{(data.balance.formatted / pps) / 1e9}</p>
+                  <TokenIcon token={vault} imageSize="w-5 h-5" chainId={chainId} />
+                </div>
+              </div>
               <FeeBreakdown vault={vault} />
               <ActionableComponent />
             </>);

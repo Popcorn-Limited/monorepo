@@ -6,7 +6,7 @@ pragma solidity ^0.8.15;
 import { IERC4626Upgradeable as IERC4626, IERC20Upgradeable as IERC20 } from "openzeppelin-contracts-upgradeable/interfaces/IERC4626Upgradeable.sol";
 import { SafeERC20Upgradeable as SafeERC20 } from "openzeppelin-contracts-upgradeable/token/ERC20/utils/SafeERC20Upgradeable.sol";
 import { IVaultRegistry, VaultMetadata } from "../interfaces/vault/IVaultRegistry.sol";
-import { IMultiRewardStaking } from "../interfaces/utils/IMultiRewardStaking.sol";
+
 /**
  * @title   VaultRouter
  * @author  RedVeil
@@ -40,11 +40,6 @@ contract VaultRouter {
   function redeemAndWithdraw(IERC4626 vault, uint256 burnAmount, address receiver, address owner) external {
     VaultMetadata memory metadata = vaultRegistry.getVault(address(vault));
     if (metadata.staking == address(0)) revert NoStaking();
-
-    IERC20[] rewardTokens = IMultiRewardStaking(metadata.staking).getAllRewardsTokens();
-
-    IMultiRewardStaking(metadata.staking).claimRewards(receiver, rewardTokens);
-    IMultiRewardStaking(metadata.staking).claimRewards(owner, rewardTokens);
 
     IERC4626(metadata.staking).redeem(burnAmount, address(this), owner);
 

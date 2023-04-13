@@ -79,6 +79,11 @@ export const MobileMenu: React.FC = () => {
     setShowPopUp(false);
   };
 
+  function handleCloseAll() {
+    toggleMenu(false);
+    toggleProductsMenu(false);
+  }
+
   return (
     <>
       <div className="flex flex-row justify-between items-center px-6 py-6 font-khTeka">
@@ -111,19 +116,19 @@ export const MobileMenu: React.FC = () => {
                 className={`block h-1 w-10 bg-black transform transition duration-500 ease-in-out rounded-3xl ${
                   menuVisible ? "rotate-45 translate-y-1" : "-translate-y-2.5"
                 }`}
-              ></span>
+              />
               <span
                 aria-hidden="true"
                 className={`block h-1 w-10 bg-black transform transition duration-500 ease-in-out rounded-3xl ${
                   menuVisible ? "opacity-0" : "opacity-100"
                 }`}
-              ></span>
+              />
               <span
                 aria-hidden="true"
                 className={`block h-1 w-10 bg-black transform transition duration-500 ease-in-out rounded-3xl ${
                   menuVisible ? "-rotate-45 -translate-y-1" : "translate-y-2.5"
                 }`}
-              ></span>
+              />
             </div>
           </button>
         </div>
@@ -146,20 +151,40 @@ export const MobileMenu: React.FC = () => {
                   <div className="h-full w-full flex flex-col justify-between pt-18 px-6 shadow-xl bg-white overflow-y-scroll">
                     <div className="flex flex-col w-full">
                       <div className="py-6">
-                        <NavbarLink label="Popcorn" url="/" isActive={router?.pathname === `/`} />
+                        <NavbarLink
+                          label="Popcorn"
+                          url="/"
+                          isActive={router?.pathname === `/`}
+                          onClick={() => toggleMenu(false)}
+                        />
                       </div>
                       <div className={`py-6`}>
-                        <NavbarLink label="Portfolio" url="/portfolio" isActive={router.pathname === "/portfolio"} />
+                        <NavbarLink
+                          label="Portfolio"
+                          url="/portfolio"
+                          isActive={router.pathname === "/portfolio"}
+                          onClick={() => toggleMenu(false)}
+                        />
                       </div>
                       <div className="py-6">
                         {products.length < 2 ? (
-                          <NavbarLink label={products[0].title} isActive={false} url={products[0].url} />
+                          <NavbarLink
+                            label={products[0].title}
+                            isActive={false}
+                            url={products[0].url}
+                            onClick={() => closePopUp()}
+                          />
                         ) : (
                           <NavbarLink label="Products" isActive={false} onClick={() => toggleProductsMenu(true)} />
                         )}
                       </div>
                       <div className="py-6">
-                        <NavbarLink label="Rewards" url={`/rewards`} isActive={router?.pathname.includes("/rewards")} />
+                        <NavbarLink
+                          label="Rewards"
+                          url={`/rewards`}
+                          isActive={router?.pathname.includes("/rewards")}
+                          onClick={() => toggleMenu(false)}
+                        />
                       </div>
                     </div>
                     <div>
@@ -253,7 +278,7 @@ export const MobileMenu: React.FC = () => {
                 leaveTo="translate-x-full"
               >
                 <div className="w-screen">
-                  <MobileProductsMenu onCloseMenu={() => toggleProductsMenu(false)} />
+                  <MobileProductsMenu onSelect={handleCloseAll} onClose={() => toggleProductsMenu(false)} />
                 </div>
               </Transition.Child>
             </div>

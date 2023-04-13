@@ -52,7 +52,7 @@ contract PermissionRegistryTest is Test {
     assertTrue(registry.rejected(target2));
   }
 
-  function testFail__setPermissions_array_missmatch() public {
+  function testFail__setPermissions_array_mismatch() public {
     targets.push(target1);
     registry.setPermissions(targets, newPermissions);
   }
