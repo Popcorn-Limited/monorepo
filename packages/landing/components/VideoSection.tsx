@@ -55,7 +55,7 @@ export default function VideoSection() {
   return (
     <section className="w-screen mt-16 md:mt-[200px]">
       <div className=" mb-18 flex flex-col hidden md:block relative p-[32px]">
-        <p id="titlex" className="text-6xl max-w-[60%] mb-10">Earn high returns on your crypto while funding public goods</p>
+        <p id="titlex" className="text-[72px] max-w-[60%] mb-10">Earn high returns on your crypto while funding public goods</p>
         <div className="w-full h-12 flex flex-row justify-end">
 
           <div onClick={() => setMove(0)} className="w-12 h-12 rounded-full border-[#645F4B] border-[1px] flex flex-col justify-center items-center mr-2 cursor-pointer">

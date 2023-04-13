@@ -7,6 +7,7 @@ import InitialScreen from "components/InitialScreen";
 import Footer from "components/Footer";
 import VaultCraftSection from "components/VaultCraftSection";
 import BuildingSection from "components/BuildingSection";
+import FinalSection from "components/FinalSection";
 
 const IndexPage = () => {
   const router = useRouter();
@@ -25,6 +26,7 @@ const IndexPage = () => {
       <AuditSection />
       <VaultCraftSection />
       <BuildingSection />
+      <FinalSection />
       <Footer />
     </div >
 

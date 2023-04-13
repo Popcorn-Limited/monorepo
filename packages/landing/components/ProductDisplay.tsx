@@ -1,5 +1,4 @@
 import { useEffect, useState } from "react";
-import CircleBunny from "./CircleBunny";
 
 interface ProductDisplayProps {
   number: string;
