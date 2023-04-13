@@ -105,7 +105,7 @@ contract CompoundV3AdapterTest is AbstractAdapterTest {
     //////////////////////////////////////////////////////////////*/
 
   function test__RT_deposit_withdraw() public override {
-    _mintFor(compoundDefaultAmount, bob);
+    _mintAssetAndApproveForAdapter(compoundDefaultAmount, bob);
 
     vm.startPrank(bob);
     uint256 shares1 = adapter.deposit(compoundDefaultAmount, bob);
@@ -118,7 +118,7 @@ contract CompoundV3AdapterTest is AbstractAdapterTest {
   }
 
   function test__RT_mint_withdraw() public override {
-    _mintFor(adapter.previewMint(compoundDefaultAmount), bob);
+    _mintAssetAndApproveForAdapter(adapter.previewMint(compoundDefaultAmount), bob);
 
     vm.startPrank(bob);
     uint256 assets = adapter.mint(compoundDefaultAmount, bob);
@@ -134,7 +134,7 @@ contract CompoundV3AdapterTest is AbstractAdapterTest {
     //////////////////////////////////////////////////////////////*/
 
   function test__unpause() public override {
-    _mintFor(3e18, bob);
+    _mintAssetAndApproveForAdapter(3e18, bob);
 
     vm.prank(bob);
     adapter.deposit(1e18, bob);
@@ -163,7 +163,7 @@ contract CompoundV3AdapterTest is AbstractAdapterTest {
   function test__harvest() public override {
     uint256 performanceFee = 1e16;
     uint256 hwm = 1e9;
-    _mintFor(defaultAmount, bob);
+    _mintAssetAndApproveForAdapter(defaultAmount, bob);
 
     vm.prank(bob);
     adapter.deposit(defaultAmount, bob);

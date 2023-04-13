@@ -103,7 +103,7 @@ contract FluxAdapterTest is AbstractAdapterTest {
     //////////////////////////////////////////////////////////////*/
 
   function test__RT_deposit_withdraw() public override {
-    _mintFor(fluxDefaultAmount, bob);
+    _mintAssetAndApproveForAdapter(fluxDefaultAmount, bob);
 
     vm.startPrank(bob);
     uint256 shares1 = adapter.deposit(fluxDefaultAmount, bob);
@@ -116,7 +116,7 @@ contract FluxAdapterTest is AbstractAdapterTest {
   }
 
   function test__RT_mint_withdraw() public override {
-    _mintFor(adapter.previewMint(fluxDefaultAmount), bob);
+    _mintAssetAndApproveForAdapter(adapter.previewMint(fluxDefaultAmount), bob);
 
     vm.startPrank(bob);
     uint256 assets = adapter.mint(fluxDefaultAmount, bob);
@@ -132,7 +132,7 @@ contract FluxAdapterTest is AbstractAdapterTest {
     //////////////////////////////////////////////////////////////*/
 
   function test__unpause() public override {
-    _mintFor(3e18, bob);
+    _mintAssetAndApproveForAdapter(3e18, bob);
 
     vm.prank(bob);
     adapter.deposit(1e18, bob);

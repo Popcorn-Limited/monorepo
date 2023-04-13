@@ -118,7 +118,7 @@ contract MasterChefV1AdapterTest is AbstractAdapterTest {
             testConfigStorage.getTestConfig(0)
         );
 
-        _mintFor(1000e18, bob);
+        _mintAssetAndApproveForAdapter(1000e18, bob);
 
         vm.prank(bob);
         adapter.deposit(1000e18, bob);
