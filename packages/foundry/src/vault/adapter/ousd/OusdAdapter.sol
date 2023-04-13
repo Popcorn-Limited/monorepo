@@ -3,9 +3,8 @@
 
 pragma solidity ^0.8.15;
 
-import { AdapterBase, IERC20, IERC20Metadata, SafeERC20, ERC20, Math, IStrategy, IAdapter } from "../abstracts/AdapterBase.sol";
+import { AdapterBase, IERC20, IERC20Metadata, SafeERC20, ERC20, Math, IStrategy, IAdapter, IERC4626 } from "../abstracts/AdapterBase.sol";
 import { WithRewards, IWithRewards } from "../abstracts/WithRewards.sol";
-import { IWousd } from "./IOusd.sol";
 
 /**
  * @title   Ousd Adapter
@@ -23,7 +22,7 @@ contract OusdAdapter is AdapterBase, WithRewards {
   string internal _symbol;
 
   /// @notice The wOUSD token contract.
-  IWousd public wousd;
+  IERC4626 public wOusd;
 
   /*//////////////////////////////////////////////////////////////
                             INITIALIZATION
@@ -43,12 +42,12 @@ contract OusdAdapter is AdapterBase, WithRewards {
 
     address _wousd = abi.decode(ousdInitData, (address));
 
-    wousd = IWousd(_wousd);
+    wOusd = IERC4626(_wousd);
 
     _name = string.concat("Popcorn Ousd", IERC20Metadata(asset()).name(), " Adapter");
     _symbol = string.concat("popB-", IERC20Metadata(asset()).symbol());
 
-    IERC20(asset()).approve(address(wousd), type(uint256).max);
+    IERC20(asset()).approve(address(wOusd), type(uint256).max);
   }
 
   function name() public view override(IERC20Metadata, ERC20) returns (string memory) {
@@ -67,8 +66,7 @@ contract OusdAdapter is AdapterBase, WithRewards {
   /// @return The total amount of underlying tokens the Vault holds.
 
   function _totalAssets() internal view override returns (uint256) {
-    uint256 shares = wousd.balanceOf(address(this));
-    return wousd.convertToAssets(shares);
+    return wOusd.convertToAssets(wOusd.balanceOf(address(this)));
   }
 
   /*//////////////////////////////////////////////////////////////
@@ -76,12 +74,11 @@ contract OusdAdapter is AdapterBase, WithRewards {
     //////////////////////////////////////////////////////////////*/
 
   function _protocolDeposit(uint256 amount, uint256) internal override {
-    wousd.deposit(amount, address(this));
+    wOusd.deposit(amount, address(this));
   }
 
   function _protocolWithdraw(uint256 amount, uint256) internal override {
-    uint256 shares = wousd.convertToAssets(amount);
-    wousd.redeem(shares, address(this), address(this));
+    wOusd.withdraw(amount, address(this), address(this));
   }
 
   /*//////////////////////////////////////////////////////////////
