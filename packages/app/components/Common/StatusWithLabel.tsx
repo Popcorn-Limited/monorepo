@@ -50,7 +50,7 @@ export default function StatusWithLabel({
             !isSmall && "md:leading-8"
           } `}
         >
-          {content.split(" ")[0]} <span className=" text-tokenTextGray text-xl"> {content.split(" ")[1]}</span>
+          {content.split(" ")[0]} <span className=" text-[#111827] text-xl"> {content.split(" ")[1]}</span>
         </p>
       )}
     </div>
