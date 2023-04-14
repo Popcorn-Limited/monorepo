@@ -54,7 +54,7 @@ contract AaveV3Adapter is AdapterBase, WithRewards {
         bytes memory adapterInitData,
         address aaveDataProvider,
         bytes memory
-    ) public initializer {
+    ) external initializer {
         __AdapterBase_init(adapterInitData);
 
         _name = string.concat(

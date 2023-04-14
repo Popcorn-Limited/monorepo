@@ -92,6 +92,7 @@ contract AbstractAdapterTest is PropertyTest {
   // Clone a new Adapter and set it to `adapter`
   function createAdapter() public {
     adapter = IAdapter(Clones.clone(implementation));
+    vm.label(address(adapter), "adapter");
   }
 
   // Increase the pricePerShare of the external protocol
@@ -311,6 +312,7 @@ contract AbstractAdapterTest is PropertyTest {
 
   function test__withdraw(uint8 fuzzAmount) public virtual {
     uint256 amount = bound(uint256(fuzzAmount), minFuzz, maxAssets);
+    
     uint8 len = uint8(testConfigStorage.getTestConfigLength());
     for (uint8 i; i < len; i++) {
       if (i > 0) overrideSetup(testConfigStorage.getTestConfig(i));
@@ -319,8 +321,6 @@ contract AbstractAdapterTest is PropertyTest {
       _mintAssetAndApproveForAdapter(reqAssets, bob);
       vm.prank(bob);
       adapter.deposit(reqAssets, bob);
-
-      emit log("PING0");
 
       prop_withdraw(bob, bob, amount / 10, testId);
 
@@ -332,8 +332,6 @@ contract AbstractAdapterTest is PropertyTest {
 
       vm.prank(bob);
       adapter.approve(alice, type(uint256).max);
-
-      emit log("PING");
 
       prop_withdraw(alice, bob, amount, testId);
     }
@@ -415,7 +413,7 @@ contract AbstractAdapterTest is PropertyTest {
     uint256 assets1 = adapter.mint(defaultAmount, bob);
     uint256 assets2 = adapter.redeem(adapter.maxRedeem(bob), bob, bob);
     vm.stopPrank();
-    
+
     if (adapter.maxRedeem(bob) == defaultAmount) {
       assertLe(assets2, assets1, testId);
     }

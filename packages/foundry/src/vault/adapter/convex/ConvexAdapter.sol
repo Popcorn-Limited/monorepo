@@ -50,7 +50,7 @@ contract ConvexAdapter is AdapterBase, WithRewards {
         bytes memory adapterInitData,
         address registry,
         bytes memory convexInitData
-    ) public initializer {
+    ) external initializer {
         __AdapterBase_init(adapterInitData);
 
         uint256 _pid = abi.decode(convexInitData, (uint256));
