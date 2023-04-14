@@ -16,7 +16,7 @@ contract StargatePoolTestConfigStorage is ITestConfigStorage {
     // Ethereum - sUSDC
     // testConfigs.push(StargatePoolTestConfig(0));
     // Ethereum - sUSDT
-    testConfigs.push(StargatePoolTestConfig(1));
+    testConfigs.push(StargatePoolTestConfig(0));
     // Ethereum - sDAI
     // testConfigs.push(StargatePoolTestConfig(3));
   }
