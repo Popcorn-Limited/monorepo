@@ -158,7 +158,7 @@ contract BeefyAdapterTest is AbstractAdapterTest {
     assertEq(adapter.asset(), beefyVault.want(), "asset");
     assertEq(
       IERC20Metadata(address(adapter)).name(),
-      string.concat("Popcorn Beefy", IERC20Metadata(address(asset)).name(), " Adapter"),
+      string.concat("Popcorn Beefy ", IERC20Metadata(address(asset)).name(), " Adapter"),
       "name"
     );
     assertEq(

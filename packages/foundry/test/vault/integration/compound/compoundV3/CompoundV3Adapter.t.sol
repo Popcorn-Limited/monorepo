@@ -87,13 +87,13 @@ contract CompoundV3AdapterTest is AbstractAdapterTest {
   function verify_adapterInit() public override {
     assertEq(adapter.asset(), cToken.baseToken(), "asset");
     assertEq(
-      IERC20Metadata(address(adapter)).symbol(),
-      string.concat("popB-", IERC20Metadata(address(asset)).symbol()),
-      "symbol"
+      IERC20Metadata(address(adapter)).name(),
+      string.concat("Popcorn CompoundV3 ", IERC20Metadata(address(asset)).name(), " Adapter"),
+      "name"
     );
     assertEq(
       IERC20Metadata(address(adapter)).symbol(),
-      string.concat("popB-", IERC20Metadata(address(asset)).symbol()),
+      string.concat("popCv3-", IERC20Metadata(address(asset)).symbol()),
       "symbol"
     );
 

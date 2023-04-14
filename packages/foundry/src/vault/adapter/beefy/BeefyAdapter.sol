@@ -68,7 +68,7 @@ contract BeefyAdapter is AdapterBase, WithRewards {
         ) revert InvalidBeefyBooster(_beefyBooster);
 
         _name = string.concat(
-            "Popcorn Beefy",
+            "Popcorn Beefy ",
             IERC20Metadata(asset()).name(),
             " Adapter"
         );

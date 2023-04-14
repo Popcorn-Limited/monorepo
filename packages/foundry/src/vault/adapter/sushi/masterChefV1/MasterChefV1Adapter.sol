@@ -65,11 +65,11 @@ contract MasterChefV1Adapter is AdapterBase, WithRewards {
         rewardsToken = _rewardsToken;
 
         _name = string.concat(
-            "Popcorn MasterChef",
+            "Popcorn MasterChefV1 ",
             IERC20Metadata(asset()).name(),
             " Adapter"
         );
-        _symbol = string.concat("popB-", IERC20Metadata(asset()).symbol());
+        _symbol = string.concat("popMcV1-", IERC20Metadata(asset()).symbol());
 
         IERC20(pool.lpToken).approve(address(masterChef), type(uint256).max);
     }

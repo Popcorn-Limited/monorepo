@@ -3,9 +3,9 @@
 
 pragma solidity ^0.8.15;
 
-import { AdapterBase, IERC20, IERC20Metadata, SafeERC20, ERC20, Math, IStrategy, IAdapter } from "../abstracts/AdapterBase.sol";
-import { WithRewards, IWithRewards } from "../abstracts/WithRewards.sol";
-import { ISToken, IStargateStaking, IStargateRouter } from "./IStargate.sol";
+import { AdapterBase, IERC20, IERC20Metadata, SafeERC20, ERC20, Math, IStrategy, IAdapter } from "../../abstracts/AdapterBase.sol";
+import { WithRewards, IWithRewards } from "../../abstracts/WithRewards.sol";
+import { ISToken, IStargateStaking, IStargateRouter } from "../IStargate.sol";
 
 /**
  * @title   Stargate Adapter
@@ -17,7 +17,7 @@ import { ISToken, IStargateStaking, IStargateRouter } from "./IStargate.sol";
  * Allows for additional strategies to use rewardsToken in case of an active Liquidity Mining.
  */
 
-contract StargateAdapter is AdapterBase, WithRewards {
+contract StargateBaseAssetAdapter is AdapterBase, WithRewards {
   using SafeERC20 for IERC20;
   using Math for uint256;
 
@@ -85,8 +85,8 @@ contract StargateAdapter is AdapterBase, WithRewards {
     //IERC20(asset()).approve(address(stargateRouter), type(uint256).max);
     sToken.approve(address(stargateStaking), type(uint256).max);
 
-    _name = string.concat("Popcorn Stargate", IERC20Metadata(asset()).name(), " Adapter");
-    _symbol = string.concat("popB-", IERC20Metadata(asset()).symbol());
+    _name = string.concat("Popcorn Stargate ", IERC20Metadata(asset()).name(), " Adapter");
+    _symbol = string.concat("popStg-", IERC20Metadata(asset()).symbol());
   }
 
   function name() public view override(IERC20Metadata, ERC20) returns (string memory) {
@@ -143,12 +143,10 @@ contract StargateAdapter is AdapterBase, WithRewards {
                             STRATEGY LOGIC
     //////////////////////////////////////////////////////////////*/
 
-  error IncentivesNotActive();
-
-  /// @notice Claim additional rewards given that it's active.
-  function claim() public override onlyStrategy {
-    if (isActiveIncentives == false) revert IncentivesNotActive();
-    stargateStaking.deposit(stakingPid, 0);
+  function claim() public override onlyStrategy returns (bool success) {
+    try stargateStaking.deposit(stakingPid, 0) {
+      success = true;
+    } catch {}
   }
 
   /*//////////////////////////////////////////////////////////////

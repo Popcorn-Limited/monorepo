@@ -50,7 +50,7 @@ contract YearnAdapter is AdapterBase {
         yVault = VaultAPI(IYearnRegistry(externalRegistry).latestVault(_asset));
 
         _name = string.concat(
-            "Popcorn Yearn",
+            "Popcorn Yearn ",
             IERC20Metadata(asset()).name(),
             " Adapter"
         );

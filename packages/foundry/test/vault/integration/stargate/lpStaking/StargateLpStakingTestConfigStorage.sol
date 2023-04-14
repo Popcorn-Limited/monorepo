@@ -3,22 +3,22 @@
 
 pragma solidity ^0.8.15;
 
-import { ITestConfigStorage } from "../abstract/ITestConfigStorage.sol";
+import { ITestConfigStorage } from "../../abstract/ITestConfigStorage.sol";
 
-struct StargateTestConfig {
+struct StargateLpStakingTestConfig {
   uint256 stakingPid;
 }
 
-contract StargateTestConfigStorage is ITestConfigStorage {
-  StargateTestConfig[] internal testConfigs;
+contract StargateLpStakingTestConfigStorage is ITestConfigStorage {
+  StargateLpStakingTestConfig[] internal testConfigs;
 
   constructor() {
     // Ethereum - sUSDC
-    // testConfigs.push(StargateTestConfig(0));
+    // testConfigs.push(StargateLpStakingTestConfig(0));
     // Ethereum - sUSDT
-    testConfigs.push(StargateTestConfig(1));
+    testConfigs.push(StargateLpStakingTestConfig(1));
     // Ethereum - sDAI
-    // testConfigs.push(StargateTestConfig(3));
+    // testConfigs.push(StargateLpStakingTestConfig(3));
   }
 
   function getTestConfig(uint256 i) public view returns (bytes memory) {
