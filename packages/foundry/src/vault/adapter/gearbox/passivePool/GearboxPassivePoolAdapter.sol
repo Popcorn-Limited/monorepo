@@ -77,7 +77,7 @@ contract GearboxPassivePoolAdapter is AdapterBase {
     uint256 _totalDieselTokens = dieselToken.balanceOf(address(this));
 
     // roundUp to account for fromDiesel() ReoundDown
-    return _totalDieselTokens == 0 ? 0 : poolService.fromDiesel(_totalDieselTokens) + 1;
+    return _totalDieselTokens == 0 ? 0 : poolService.fromDiesel(_totalDieselTokens);
   }
 
   /*//////////////////////////////////////////////////////////////
@@ -98,14 +98,14 @@ contract GearboxPassivePoolAdapter is AdapterBase {
 
   /// @dev When poolService is paused and we didnt withdraw before (paused()) return 0
   function maxWithdraw(address owner) public view override returns (uint256) {
-    if (poolService.paused() != paused()) return 0;
+    if (poolService.paused() && !paused()) return 0;
 
     return convertToAssets(balanceOf(owner));
   }
 
   /// @dev When poolService is paused and we didnt withdraw before (paused()) return 0
   function maxRedeem(address owner) public view override returns (uint256) {
-    if (poolService.paused() != paused()) return 0;
+    if (poolService.paused() && !paused()) return 0;
 
     return balanceOf(owner);
   }

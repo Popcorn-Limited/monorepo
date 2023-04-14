@@ -312,6 +312,7 @@ contract AbstractAdapterTest is PropertyTest {
 
   function test__withdraw(uint8 fuzzAmount) public virtual {
     uint256 amount = bound(uint256(fuzzAmount), minFuzz, maxAssets);
+    
     uint8 len = uint8(testConfigStorage.getTestConfigLength());
     for (uint8 i; i < len; i++) {
       if (i > 0) overrideSetup(testConfigStorage.getTestConfig(i));
@@ -320,8 +321,6 @@ contract AbstractAdapterTest is PropertyTest {
       _mintAssetAndApproveForAdapter(reqAssets, bob);
       vm.prank(bob);
       adapter.deposit(reqAssets, bob);
-
-      emit log("PING0");
 
       prop_withdraw(bob, bob, amount / 10, testId);
 
@@ -333,8 +332,6 @@ contract AbstractAdapterTest is PropertyTest {
 
       vm.prank(bob);
       adapter.approve(alice, type(uint256).max);
-
-      emit log("PING");
 
       prop_withdraw(alice, bob, amount, testId);
     }

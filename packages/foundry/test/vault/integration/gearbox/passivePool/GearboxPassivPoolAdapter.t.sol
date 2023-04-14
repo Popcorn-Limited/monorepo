@@ -121,21 +121,4 @@ contract GearboxPassivePoolAdapterTest is AbstractAdapterTest {
       string.concat("totalAssets != pool assets", baseTestId)
     );
   }
-
-  // function test__deposit(uint8 fuzzAmount) public override {
-  //   uint256 amount = bound(uint256(fuzzAmount), minFuzz, maxAssets);
-  //   uint8 len = uint8(testConfigStorage.getTestConfigLength());
-  //   for (uint8 i; i < len; i++) {
-  //     if (i > 0) overrideSetup(testConfigStorage.getTestConfig(i));
-
-  //     _mintAssetAndApproveForAdapter(amount, bob);
-
-  //     prop_deposit(bob, bob, amount, testId);
-
-  //     // increasePricePerShare(raise);
-
-  //     // _mintAssetAndApproveForAdapter(amount, bob);
-  //     // prop_deposit(bob, alice, amount, testId);
-  //   }
-  // }
 }
