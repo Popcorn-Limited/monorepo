@@ -17,7 +17,7 @@ import { ISToken, IStargateStaking, IStargateRouter } from "../IStargate.sol";
  * Allows for additional strategies to use rewardsToken in case of an active Liquidity Mining.
  */
 
-contract StargateBaseAssetAdapter is AdapterBase, WithRewards {
+contract StargatePoolAdapter is AdapterBase, WithRewards {
   using SafeERC20 for IERC20;
   using Math for uint256;
 
@@ -54,6 +54,7 @@ contract StargateBaseAssetAdapter is AdapterBase, WithRewards {
   /**
    * @notice Initialize a new Stargate Adapter.
    * @param adapterInitData Encoded data for the base adapter initialization.
+   * @param registry The Stargate staking contract
    * @param stargateInitData Encoded data for the base adapter initialization.
    * @dev This function is called by the factory contract when deploying a new vault.
    */
@@ -81,8 +82,7 @@ contract StargateBaseAssetAdapter is AdapterBase, WithRewards {
 
     stargateRouter = IStargateRouter(sToken.router());
 
-    IERC20(asset()).approve(address(stargateRouter), 0);
-    //IERC20(asset()).approve(address(stargateRouter), type(uint256).max);
+    IERC20(asset()).approve(address(stargateRouter), type(uint256).max);
     sToken.approve(address(stargateStaking), type(uint256).max);
 
     _name = string.concat("Popcorn Stargate ", IERC20Metadata(asset()).name(), " Adapter");

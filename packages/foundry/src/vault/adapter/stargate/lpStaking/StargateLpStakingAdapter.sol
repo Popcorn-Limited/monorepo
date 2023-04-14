@@ -69,7 +69,7 @@ contract StargateLpStakingAdapter is AdapterBase, WithRewards {
     IERC20(asset()).approve(address(stargateStaking), type(uint256).max);
 
     _name = string.concat("Popcorn Stargate LpStaking ", IERC20Metadata(asset()).name(), " Adapter");
-    _symbol = string.concat("popSLpS-", IERC20Metadata(asset()).symbol());
+    _symbol = string.concat("popStgLpS-", IERC20Metadata(asset()).symbol());
   }
 
   function name() public view override(IERC20Metadata, ERC20) returns (string memory) {
