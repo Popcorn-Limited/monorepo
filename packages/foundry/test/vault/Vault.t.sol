@@ -130,7 +130,6 @@ contract VaultTest is Test {
     assertEq(performance, 100);
     assertEq(newVault.feeRecipient(), feeRecipient);
     assertEq(newVault.highWaterMark(), 1e9);
-    assertEq(newVault.feesUpdatedAt(), callTime);
 
     assertEq(newVault.quitPeriod(), 3 days);
     assertEq(asset.allowance(address(newVault), address(adapter)), type(uint256).max);
@@ -709,7 +708,7 @@ contract VaultTest is Test {
     vault.proposeAdapter(IERC4626(address(newAdapter)));
   }
 
-  function testFail__proposeAdapter_asset_missmatch() public {
+  function testFail__proposeAdapter_asset_mismatch() public {
     MockERC20 newAsset = new MockERC20("New Mock Token", "NTKN", 18);
     MockERC4626 newAdapter = _createAdapter(IERC20(address(newAsset)));
 

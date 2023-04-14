@@ -35,8 +35,7 @@ function InputTokenWithError({
       {captionText && <p className="text-primary">{captionText}</p>}
       <div className="mt-1 relative flex items-center w-full">
         <div
-          className={`w-full flex px-5 py-4 items-center rounded-lg border ${errorMessage ? "border-customRed" : "border-customLightGray"
-            }`}
+          className={`w-full flex px-5 py-4 items-center rounded-lg border ${errorMessage ? "border-customRed" : "border-customLightGray" }`}
         >
           <InputNumber {...props} />
           <SelectToken

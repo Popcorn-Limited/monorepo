@@ -16,7 +16,7 @@ Timestamp: ${timestamp}`;
 };
 
 export default function useTermsCheck() {
-  const { address: account } = useAccount();
+  const { address: account, isConnected, isDisconnected } = useAccount();
   const { dispatch } = useContext(store);
 
   const { signMessage } = useSignMessage({
@@ -46,7 +46,9 @@ export default function useTermsCheck() {
       }),
     );
   };
+
   useEffect(() => {
-    if (account && !localStorage.getItem("termsAndConditionsSigned")) showSignMessageModal();
+    if (!!account && isConnected && !localStorage.getItem("termsAndConditionsSigned")) showSignMessageModal();
+    if (!account && isDisconnected) dispatch(setSingleActionModal(false));
   }, [account]);
 }

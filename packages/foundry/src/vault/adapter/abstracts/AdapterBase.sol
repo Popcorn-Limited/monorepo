@@ -9,7 +9,7 @@ import { ReentrancyGuardUpgradeable } from "openzeppelin-contracts-upgradeable/s
 import { MathUpgradeable as Math } from "openzeppelin-contracts-upgradeable/utils/math/MathUpgradeable.sol";
 import { PausableUpgradeable } from "openzeppelin-contracts-upgradeable/security/PausableUpgradeable.sol";
 import { IStrategy } from "../../../interfaces/vault/IStrategy.sol";
-import { IAdapter } from "../../../interfaces/vault/IAdapter.sol";
+import { IAdapter, IERC4626 } from "../../../interfaces/vault/IAdapter.sol";
 import { EIP165 } from "../../../utils/EIP165.sol";
 import { OnlyStrategy } from "./OnlyStrategy.sol";
 import { OwnedUpgradeable } from "../../../utils/OwnedUpgradeable.sol";
@@ -186,18 +186,15 @@ abstract contract AdapterBase is
     return paused() ? 0 : _convertToAssets(shares, Math.Rounding.Up);
   }
 
-  function _convertToShares(uint256 assets, Math.Rounding rounding)
-    internal
-    view
-    virtual
-    override
-    returns (uint256 shares)
-  {
-    return assets.mulDiv(totalSupply() + 10**decimalOffset, totalAssets() + 1, rounding);
+  function _convertToShares(
+    uint256 assets,
+    Math.Rounding rounding
+  ) internal view virtual override returns (uint256 shares) {
+    return assets.mulDiv(totalSupply() + 10 ** decimalOffset, totalAssets() + 1, rounding);
   }
 
   function _convertToAssets(uint256 shares, Math.Rounding rounding) internal view virtual override returns (uint256) {
-    return shares.mulDiv(totalAssets() + 1, totalSupply() + 10**decimalOffset, rounding);
+    return shares.mulDiv(totalAssets() + 1, totalSupply() + 10 ** decimalOffset, rounding);
   }
 
   /*//////////////////////////////////////////////////////////////
@@ -347,12 +344,12 @@ abstract contract AdapterBase is
   /// @notice Collect performance fees and update asset checkpoint.
   modifier takeFees() {
     _;
-
     uint256 fee = accruedPerformanceFee();
-    if (fee > 0) _mint(FEE_RECIPIENT, convertToShares(fee));
-
     uint256 shareValue = convertToAssets(1e18);
+
     if (shareValue > highWaterMark) highWaterMark = shareValue;
+
+    if (fee > 0) _mint(FEE_RECIPIENT, convertToShares(fee));
   }
 
   /*//////////////////////////////////////////////////////////////

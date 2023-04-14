@@ -225,12 +225,12 @@ contract BeefyAdapterTest is AbstractAdapterTest {
     for (uint8 i; i < len; i++) {
       if (i > 0) overrideSetup(testConfigStorage.getTestConfig(i));
 
-      _mintFor(amount, bob);
+      _mintAssetAndApproveForAdapter(amount, bob);
       prop_deposit(bob, bob, amount, testId);
 
       increasePricePerShare(raise);
 
-      _mintFor(amount, bob);
+      _mintAssetAndApproveForAdapter(amount, bob);
       prop_deposit(bob, alice, amount, testId);
     }
   }
@@ -243,12 +243,12 @@ contract BeefyAdapterTest is AbstractAdapterTest {
     for (uint8 i; i < len; i++) {
       if (i > 0) overrideSetup(testConfigStorage.getTestConfig(i));
 
-      _mintFor(adapter.previewMint(amount), bob);
+      _mintAssetAndApproveForAdapter(adapter.previewMint(amount), bob);
       prop_mint(bob, bob, amount, testId);
 
       increasePricePerShare(raise);
 
-      _mintFor(adapter.previewMint(amount), bob);
+      _mintAssetAndApproveForAdapter(adapter.previewMint(amount), bob);
       prop_mint(bob, alice, amount, testId);
     }
   }
@@ -262,12 +262,12 @@ contract BeefyAdapterTest is AbstractAdapterTest {
       if (i > 0) overrideSetup(testConfigStorage.getTestConfig(i));
 
       uint256 reqAssets = (adapter.previewMint(adapter.previewWithdraw(amount)) * 10) / 8;
-      _mintFor(reqAssets, bob);
+      _mintAssetAndApproveForAdapter(reqAssets, bob);
       vm.prank(bob);
       adapter.deposit(reqAssets, bob);
       prop_withdraw(bob, bob, amount, testId);
 
-      _mintFor(reqAssets, bob);
+      _mintAssetAndApproveForAdapter(reqAssets, bob);
       vm.prank(bob);
       adapter.deposit(reqAssets, bob);
 
@@ -288,12 +288,12 @@ contract BeefyAdapterTest is AbstractAdapterTest {
       if (i > 0) overrideSetup(testConfigStorage.getTestConfig(i));
 
       uint256 reqAssets = (adapter.previewMint(amount) * 10) / 9;
-      _mintFor(reqAssets, bob);
+      _mintAssetAndApproveForAdapter(reqAssets, bob);
       vm.prank(bob);
       adapter.deposit(reqAssets, bob);
       prop_redeem(bob, bob, amount, testId);
 
-      _mintFor(reqAssets, bob);
+      _mintAssetAndApproveForAdapter(reqAssets, bob);
       vm.prank(bob);
       adapter.deposit(reqAssets, bob);
 
@@ -311,7 +311,7 @@ contract BeefyAdapterTest is AbstractAdapterTest {
 
   // NOTE - The beefy adapter suffers often from an off-by-one error which "steals" 1 wei from the user
   function test__RT_deposit_withdraw() public override {
-    _mintFor(defaultAmount, bob);
+    _mintAssetAndApproveForAdapter(defaultAmount, bob);
 
     vm.startPrank(bob);
     uint256 shares1 = adapter.deposit(defaultAmount, bob);
@@ -323,7 +323,7 @@ contract BeefyAdapterTest is AbstractAdapterTest {
 
   // NOTE - The beefy adapter suffers often from an off-by-one error which "steals" 1 wei from the user
   function test__RT_mint_withdraw() public override {
-    _mintFor(adapter.previewMint(defaultAmount), bob);
+    _mintAssetAndApproveForAdapter(adapter.previewMint(defaultAmount), bob);
 
     vm.startPrank(bob);
     uint256 assets = adapter.mint(defaultAmount, bob);
@@ -338,7 +338,7 @@ contract BeefyAdapterTest is AbstractAdapterTest {
     //////////////////////////////////////////////////////////////*/
 
   function test__unpause() public override {
-    _mintFor(defaultAmount * 3, bob);
+    _mintAssetAndApproveForAdapter(defaultAmount * 3, bob);
 
     vm.prank(bob);
     adapter.deposit(defaultAmount, bob);
@@ -378,7 +378,7 @@ contract BeefyAdapterTest is AbstractAdapterTest {
       testConfigStorage.getTestConfig(0)
     );
 
-    _mintFor(1000e18, bob);
+    _mintAssetAndApproveForAdapter(1000e18, bob);
 
     vm.prank(bob);
     adapter.deposit(1000e18, bob);

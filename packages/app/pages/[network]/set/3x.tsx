@@ -87,28 +87,28 @@ export default function ThreeXPage(): JSX.Element {
     setThreeXPageState((state) =>
       state.initalLoad
         ? {
-            ...state,
-            selectedToken: {
-              input: usdc,
-              output: threeX,
-            },
-            tokens: threeXData?.tokens,
-            redeeming: false,
-            initalLoad: false,
-            isThreeX: true,
-          }
-        : {
-            ...state,
-            selectedToken: {
-              input: (state.instant ? threeXWhaleData?.tokens : threeXData?.tokens).find(
-                (token) => token.address === state.selectedToken.input.address,
-              ),
-              output: (state.instant ? threeXWhaleData?.tokens : threeXData?.tokens).find(
-                (token) => token.address === state.selectedToken.output.address,
-              ),
-            },
-            tokens: state.instant ? threeXWhaleData?.tokens : threeXData?.tokens,
+          ...state,
+          selectedToken: {
+            input: usdc,
+            output: threeX,
           },
+          tokens: threeXData?.tokens,
+          redeeming: false,
+          initalLoad: false,
+          isThreeX: true,
+        }
+        : {
+          ...state,
+          selectedToken: {
+            input: (state.instant ? threeXWhaleData?.tokens : threeXData?.tokens).find(
+              (token) => token.address === state.selectedToken.input.address,
+            ),
+            output: (state.instant ? threeXWhaleData?.tokens : threeXData?.tokens).find(
+              (token) => token.address === state.selectedToken.output.address,
+            ),
+          },
+          tokens: state.instant ? threeXWhaleData?.tokens : threeXData?.tokens,
+        },
     );
   }, [threeXData, threeXWhaleData]);
 
@@ -470,14 +470,14 @@ export default function ThreeXPage(): JSX.Element {
             Mint 3X and earn interest on multiple stablecoins at once. <br />
             Stake your 3X to earn boosted APY.
           </p>
-          <SetStats
-            address={contractAddresses.threeX}
-            chainId={ChainId.Ethereum}
-            stakingAddress={contractAddresses.threeXStaking}
-            symbol={"3X"}
-          />
         </div>
       </div>
+      <SetStats
+        address={contractAddresses.threeX}
+        chainId={ChainId.Ethereum}
+        stakingAddress={contractAddresses.threeXStaking}
+        symbol={"3X"}
+      />
 
       <div className="flex flex-col md:flex-row mt-10">
         <div className="md:w-1/3 mb-2 md:mb-10">
@@ -496,16 +496,15 @@ export default function ThreeXPage(): JSX.Element {
           </span>
           {/* Connected and on Ethereum all data loaded */}
           <div
-            className={`md:pr-8 order-2 md:order-1 ${
-              !!account &&
+            className={`md:pr-8 order-2 md:order-1 ${!!account &&
               butterIsSupportedOnNetwork &&
               !loadingThreeXData &&
               threeXData &&
               threeXPageState?.tokens &&
               threeXPageState.selectedToken
-                ? ""
-                : "hidden"
-            }`}
+              ? ""
+              : "hidden"
+              }`}
           >
             <MintRedeemInterface
               mainAction={handleMainAction}

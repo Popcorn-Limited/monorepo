@@ -74,7 +74,7 @@ export default function Index(): JSX.Element {
                 <div className="block mt-6 md:mt-8 pr-8 md:pr-6 md:pl-6 md:border-l md:border-customLightGray">
                   <StatusWithLabel content={<Tvl chainId={chainId} address={stakingAddress} />} label="TVL" />
                 </div>
-                <div className="block mt-6 md:mt-8 pr-8 md:pr-0 md:pl-6 md:border-l md:border-customLightGray">
+                <div className="block mt-6 laptop:mt-8 pr-8 laptop:pr-0 laptop:pl-6 laptop:border-l laptop:border-customLightGray">
                   <StatusWithLabel
                     content={
                       <span>

@@ -17,6 +17,7 @@ export { getBytes32FromIpfsHash, getIpfsHashFromBytes32 } from "./ipfsHashManipu
 export { default as localStringOptions } from "./localStringOptions";
 export { default as useFetch } from "./useFetch";
 export * as grants from "./grants";
+export * from "./wagmi";
 export { getNamedAccounts } from "./getNamedAccounts";
 export type { DeploymentChainIds, DeploymentContractsKeys } from "./getNamedAccounts";
 export type { BalanceByKey } from "./sortEntries";

@@ -11,8 +11,7 @@ interface NavbarLinkProps {
 
 const NavbarLink: React.FC<NavbarLinkProps> = ({ label, url, isActive, onClick, target }) => {
   const className = `leading-5 font-medium text-lg ${isActive ? "text-black" : "text-black"} 
-    hover:text-black cursor-pointer
-  `;
+    hover:text-black cursor-pointer`;
   return (
     <>
       <span className={`${!url ? "" : "hidden"}`}>

@@ -3,18 +3,18 @@
 
 pragma solidity ^0.8.15;
 
-import { ITestConfigStorage } from "../abstract/ITestConfigStorage.sol";
+import { ITestConfigStorage } from "../../abstract/ITestConfigStorage.sol";
 
-struct CompoundV2TestConfig {
+struct FluxTestConfig {
   address asset;
 }
 
-contract CompoundV2TestConfigStorage is ITestConfigStorage {
-  CompoundV2TestConfig[] internal testConfigs;
+contract FluxTestConfigStorage is ITestConfigStorage {
+  FluxTestConfig[] internal testConfigs;
 
   constructor() {
     // Mainnet - cDAI
-    testConfigs.push(CompoundV2TestConfig(0x5d3a536E4D6DbD6114cc1Ead35777bAB948E3643));
+    testConfigs.push(FluxTestConfig(0xe2bA8693cE7474900A045757fe0efCa900F6530b));
   }
 
   function getTestConfig(uint256 i) public view returns (bytes memory) {

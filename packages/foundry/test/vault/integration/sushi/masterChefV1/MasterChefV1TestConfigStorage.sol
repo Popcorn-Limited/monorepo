@@ -1,17 +1,17 @@
 pragma solidity ^0.8.15;
 
-import { ITestConfigStorage } from "../abstract/ITestConfigStorage.sol";
+import { ITestConfigStorage } from "../../abstract/ITestConfigStorage.sol";
 
-struct MasterChefTestConfig {
+struct MasterChefV1TestConfig {
   uint256 pid;
   address rewardsToken;
 }
 
-contract MasterChefTestConfigStorage is ITestConfigStorage {
-  MasterChefTestConfig[] internal testConfigs;
+contract MasterChefV1TestConfigStorage is ITestConfigStorage {
+  MasterChefV1TestConfig[] internal testConfigs;
 
   constructor() {
-    testConfigs.push(MasterChefTestConfig(2, 0x6B3595068778DD592e39A122f4f5a5cF09C90fE2));
+    testConfigs.push(MasterChefV1TestConfig(2, 0x6B3595068778DD592e39A122f4f5a5cF09C90fE2));
   }
 
   function getTestConfig(uint256 i) public view returns (bytes memory) {
