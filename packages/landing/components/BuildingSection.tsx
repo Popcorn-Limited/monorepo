@@ -26,7 +26,7 @@ export default function BuildingSection() {
   return (
     <>
       <section className="flex w-screen h-screen min-h-[800px] flex-col relative justify-start -z-10">
-        <div style={{ background: 'linear-gradient(270deg, rgba(0, 0, 0, 5e-05) 50%, rgba(0, 0, 0, 0.25) 100%), linear-gradient(180deg, rgba(0, 0, 0, 0.25) 0.09%, rgba(0, 0, 0, 5e-05) 100%), linear-gradient(360deg, rgba(0, 0, 0, 0.7) 0.04%, rgba(0, 0, 0, 0.0001) 42.85%), url(/images/background-rectangle.png)' }} className="relative top-0 left-0 flex flex-col justify-between w-screen grow pb-0">
+        <div style={{ background: 'linear-gradient(270deg, rgba(0, 0, 0, 5e-05) 50%, rgba(0, 0, 0, 0.25) 100%), linear-gradient(180deg, rgba(0, 0, 0, 0.25) 0.09%, rgba(0, 0, 0, 5e-05) 100%), linear-gradient(360deg, rgba(0, 0, 0, 0.7) 0.04%, rgba(0, 0, 0, 0.0001) 42.85%), url(/images/background-rectangle.png)', 'WebkitBackgroundSize': 'cover' }} className="relative top-0 left-0 flex flex-col justify-between w-screen grow pb-0 bg-cover">
 
           <div className="w-full grow flex-col flex justify-start items-start">
             <div id="second-slide-element" className={`transition-transform mt-[80px] smmd:w-[60vw] w-full duration-[900ms] ${isVisible ? 'smmd:translate-x-8' : 'smmd:-translate-x-full'}`}>

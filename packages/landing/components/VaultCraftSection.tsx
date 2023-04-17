@@ -37,7 +37,7 @@ export default function VaultCraftSection() {
         </SliderContainer>
       </div>
       <section className="flex w-screen h-full flex-col relative justify-start">
-        <div style={{ background: 'linear-gradient(270deg, rgba(0, 0, 0, 5e-05) 50%, rgba(0, 0, 0, 0.25) 100%), linear-gradient(180deg, rgba(0, 0, 0, 0.5) 0.09%, rgba(0, 0, 0, 0.0001) 100%), url(/images/Rectangle.svg)' }} className="relative top-0 left-0 w-screen grow smmd:pb-44 pb-0">
+        <div style={{ background: 'linear-gradient(270deg, rgba(0, 0, 0, 5e-05) 50%, rgba(0, 0, 0, 0.25) 100%), linear-gradient(180deg, rgba(0, 0, 0, 0.5) 0.09%, rgba(0, 0, 0, 0.0001) 100%), url(/images/Rectangle.svg)', 'WebkitBackgroundSize': 'cover' }} className="relative top-0 left-0 w-screen grow smmd:pb-44 pb-0">
 
           <div className="w-full h-fit flex-row flex justify-between items-end">
             <div id="slide-in-element" className={`transition-transform mt-[80px] smmd:w-[60vw] w-full duration-[900ms] ${isVisible ? 'smmd:translate-x-8' : 'smmd:-translate-x-full'}`}>

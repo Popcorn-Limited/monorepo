@@ -55,7 +55,7 @@ export default function VideoSection() {
   return (
     <section className="w-screen mt-16 md:mt-[200px]">
       <div className=" mb-18 flex flex-col hidden md:block relative p-[32px]">
-        <p id="titlex" className="text-[72px] max-w-[60%] mb-10">Earn high returns on your crypto while funding public goods</p>
+        <p id="titlex" className="text-[60px] leading-[65px] max-w-[70%] mb-2">Earn high returns on your crypto while funding public goods</p>
         <div className="w-full h-12 flex flex-row justify-end">
 
           <div onClick={() => setMove(0)} className="w-12 h-12 rounded-full border-[#645F4B] border-[1px] flex flex-col justify-center items-center mr-2 cursor-pointer">
@@ -74,8 +74,8 @@ export default function VideoSection() {
           onMouseDown={mouseDownEvent => handleMouseDown(mouseDownEvent)}
           onMouseMove={mouseMoveEvent => handleMouseMove(mouseMoveEvent)}
           onMouseUp={() => handleMouseUp()}
-          className={`flex flex-row h-[650px] w-fit overflow-x-auto transition-transform ${move === 1 ? 'translate-x-[-524px]' : 'translate-x-0'}`}>
-          <div className="w-[467px] h-full mr-[24px] shrink-0">
+          className={`flex flex-row h-[550px] w-fit overflow-x-auto transition-transform ${move === 1 ? 'translate-x-[-524px]' : 'translate-x-0'}`}>
+          <div className="w-[467px] h-full mr-[24px] shrink-0 cursor-pointer">
             <video className="w-full h-full cover rounded-3xl" id='video' controls poster='/images/Videocard.svg'>
               <source src="/videos/Popcorn_V4.1.mp4" type="video/mp4" />
             </video>
@@ -83,7 +83,7 @@ export default function VideoSection() {
 
           <div className="flex flex-col w-screen border-box">
 
-            <div className="flex flex-col w-[338px] mb-[100px] ml-[24px]">
+            <div className="flex flex-col w-[338px] mb-[100px] ml-[24px] smmd:mb-12">
               <p className="text-lg">It&#39;s now easy to deposit your crypto, optimise your yield, and create positive global impact at the same time.</p>
               <div className="flex flex-row border-x-0 border-y-customLightGray border-b-2">
                 <p className="px-1 py-2 w-full mt-2 leading-7 font-bold">Create Account</p>
