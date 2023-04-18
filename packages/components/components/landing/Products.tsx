@@ -3,36 +3,26 @@ import { formatUnits } from "ethers/lib/utils";
 
 import { ChainId } from "@popcorn/utils";
 import Product from "@popcorn/components/components/landing/Product";
-import useNetworkName from "@popcorn/app/hooks/useNetworkName";
 import { useNamedAccounts } from "@popcorn/components/lib/utils/hooks";
-import { Staking, Contract } from "@popcorn/components/lib";
 import { useFeatures } from "@popcorn/components/hooks/useFeatures";
 import Tvl from "@popcorn/components/lib/Contract/Tvl";
 
-import asset_product_head from "@popcorn/greenfield-app/assets/product-head.svg";
 import styles from "./Products.module.css";
+
+const NumberFormatter = Intl.NumberFormat("en", {
+  //@ts-ignore
+  notation: "compact",
+});
 
 const Products = () => {
   const { Ethereum, Polygon } = ChainId;
-  const networkName = useNetworkName();
 
-  const [threeX, butter, threeXStaking, butterStaking, popStaking] = useNamedAccounts("1", [
-    "threeX",
-    "butter",
-    "threeXStaking",
-    "butterStaking",
-    "popStaking",
-  ]);
+  const [popStaking] = useNamedAccounts("1", ["popStaking"]);
   const [popStakingPolygon] = useNamedAccounts("137", ["popStaking"]);
 
   const {
     features: { sweetVaults: displaySweetVaults },
   } = useFeatures();
-
-  const formatter = Intl.NumberFormat("en", {
-    //@ts-ignore
-    notation: "compact",
-  });
 
   const {
     props: {
@@ -46,8 +36,8 @@ const Products = () => {
   } = Tvl({ chainId: Polygon, address: popStakingPolygon?.address });
 
   return (
-    <section className="mt-10 flex flex-col sm:flex-row justify-between items-start mb-4 gap-12">
-      <div className="flex flex-col justify-between lg:h-[42rem] xl:h-[28rem]">
+    <section className="relative mt-10 flex flex-col sm:flex-row justify-between items-start mb-4 xl:gap-12">
+      <div className="flex w-0 lg:w-auto flex-col justify-between lg:h-[40rem] xl:h-[28rem]">
         <h6 className="font-medium leading-8 whitespace-nowrap">Our products</h6>
         <span className="relative hidden lg:inline-flex overflow-hidden">
           <span className="opacity-0 py-4">
@@ -62,7 +52,7 @@ const Products = () => {
           </ul>
         </span>
       </div>
-      <div className="flex flex-col w-full sm:flex-row justify-center gap-8 flex-wrap max-w-[100rem]">
+      <div className="mt-[3rem] flex-wrap md:flex-nowrap md:justify-end  lg:mt-0 lg:absolute xl:relative flex right-0 top-[3rem] flex-col w-full sm:flex-row gap-8">
         {displaySweetVaults && (
           <Product
             title="Sweet Vaults"
@@ -92,7 +82,7 @@ const Products = () => {
           />
         )}
         <Product
-          title="3X"
+          title="Vaults for Good"
           customContent={
             <svg width="60" height="60" viewBox="0 0 60 60" fill="none" xmlns="http://www.w3.org/2000/svg">
               <path
@@ -112,32 +102,17 @@ const Products = () => {
               />
             </svg>
           }
-          description="EUR & USD exposure with noble yield that funds social impact organizations"
+          description="Claim and donate a portion of your staked rewards to the good of the public."
           stats={[
             {
-              label: "TVL",
-              content: <Contract.Tvl chainId={Ethereum} address={threeX.address} />,
-              infoIconProps: {
-                title: "Total Value Locked",
-                content: "The total value of assets held by the underlying smart contracts.",
-                id: "btr-tvl",
-              },
-            },
-            {
-              label: "vAPR",
-              content: <Staking.Apy chainId={Ethereum} address={threeXStaking.address} />,
-              infoIconProps: {
-                title: "Variable Annual Percentage Rate",
-                content:
-                  "This shows your interest stated as a yearly percentage rate, which is subject to change over time based on demand and market conditions.",
-                id: "3x-vapr",
-              },
+              label: "",
+              content: <p>Coming soon</p>,
             },
           ]}
-          route={`${networkName}/set/3x`}
+          route="/sweet-vaults"
         />
         <Product
-          title="Butter"
+          title="Staking"
           customContent={
             <svg width="61" height="60" viewBox="0 0 61 60" fill="none" xmlns="http://www.w3.org/2000/svg">
               <path
@@ -157,68 +132,13 @@ const Products = () => {
               />
             </svg>
           }
-          description="Optimize your yield while creating positive global impact."
-          stats={[
-            {
-              label: "TVL",
-              content: <Contract.Tvl chainId={Ethereum} address={butter.address} />,
-              infoIconProps: {
-                title: "Total Value Locked",
-                content: "The total value of assets held by the underlying smart contracts.",
-                id: "btr-tvl",
-              },
-            },
-            {
-              label: "vAPR",
-              content: <Staking.Apy chainId={Ethereum} address={butterStaking.address} />,
-              infoIconProps: {
-                title: "Variable Annual Percentage Rate",
-                content:
-                  "This shows your interest stated as a yearly percentage rate, which is subject to change over time based on demand and market conditions.",
-                id: "btr-vapr",
-              },
-            },
-          ]}
-          route={`${networkName}/set/butter`}
-        />
-        <Product
-          title="Staking"
-          customContent={
-            <svg width="60" height="60" viewBox="0 0 120 120" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <path
-                className="group-hover:fill-yellow-400"
-                d="M59.9993 0C59.9993 16.5686 46.5681 29.9999 29.9999 29.9999C13.4313 29.9999 0 16.5686 0 0H59.9993Z"
-                fill="black"
-              />
-              <path
-                className="group-hover:fill-yellow-400"
-                d="M59.9993 30C59.9993 46.5687 46.5681 59.9999 29.9999 59.9999C13.4313 59.9999 0 46.5687 0 30H59.9993Z"
-                fill="black"
-              />
-              <path
-                className="group-hover:fill-yellow-400"
-                d="M119.999 29.9999C119.999 46.5675 106.567 59.9998 89.9994 59.9998C73.4323 59.9998 60 46.5675 60 29.9999C60 13.4323 73.4323 0.000488296 89.9994 0.000488296C106.567 -1.9618e-05 119.999 13.4323 119.999 29.9999Z"
-                fill="black"
-              />
-              <path
-                className="group-hover:fill-yellow-400"
-                d="M119.999 89.9989C119.999 106.567 106.567 119.998 89.9994 119.998C73.4323 119.998 60 106.567 60 89.9989C60 73.4318 73.4323 59.9995 89.9994 59.9995C106.567 59.999 119.999 73.4318 119.999 89.9989Z"
-                fill="black"
-              />
-              <path
-                className="group-hover:fill-yellow-400"
-                d="M59.9993 89.9994C59.9993 106.567 46.567 119.999 29.9999 119.999C13.4323 119.999 0 106.567 0 89.9994C0 73.4323 13.4323 60 29.9999 60C46.567 59.9995 59.9993 73.4323 59.9993 89.9994Z"
-                fill="black"
-              />
-            </svg>
-          }
           description="Single-asset vaults to earn yield on your digital assets"
           stats={[
             {
               label: "TVL",
               content:
                 mainnetStakingTVL && polygonStakingTVL
-                  ? `$${formatter.format(parseInt(formatUnits(mainnetStakingTVL.add(polygonStakingTVL))))}`
+                  ? `$${NumberFormatter.format(parseInt(formatUnits(mainnetStakingTVL.add(polygonStakingTVL))))}`
                   : "$0",
               infoIconProps: {
                 title: "Total Value Locked",
