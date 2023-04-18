@@ -60,11 +60,11 @@ contract AaveV2Adapter is AdapterBase, WithRewards {
         __AdapterBase_init(adapterInitData);
 
         _name = string.concat(
-            "Popcorn AaveV2",
+            "Popcorn AaveV2 ",
             IERC20Metadata(asset()).name(),
             " Adapter"
         );
-        _symbol = string.concat("popB-", IERC20Metadata(asset()).symbol());
+        _symbol = string.concat("popAv2-", IERC20Metadata(asset()).symbol());
 
         (address _aToken, , ) = IProtocolDataProvider(aaveDataProvider)
             .getReserveTokensAddresses(asset());

@@ -66,11 +66,11 @@ contract ConvexAdapter is AdapterBase, WithRewards {
         convexRewards = IConvexRewards(_convexRewards);
 
         _name = string.concat(
-            "Popcorn Convex",
+            "Popcorn Convex ",
             IERC20Metadata(_asset).name(),
             " Adapter"
         );
-        _symbol = string.concat("popB-", IERC20Metadata(_asset).symbol());
+        _symbol = string.concat("popCvx-", IERC20Metadata(_asset).symbol());
 
         IERC20(_asset).approve(address(convexBooster), type(uint256).max);
     }

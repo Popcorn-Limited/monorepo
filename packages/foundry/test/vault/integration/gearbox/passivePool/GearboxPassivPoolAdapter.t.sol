@@ -81,7 +81,7 @@ contract GearboxPassivePoolAdapterTest is AbstractAdapterTest {
     assertEq(adapter.asset(), poolService.underlyingToken(), "asset");
     assertEq(
       IERC20Metadata(address(adapter)).name(),
-      string.concat("Popcorn GearboxPassivePool", IERC20Metadata(address(asset)).name(), " Adapter"),
+      string.concat("Popcorn GearboxPassivePool ", IERC20Metadata(address(asset)).name(), " Adapter"),
       "name"
     );
     assertEq(
