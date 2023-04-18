@@ -98,13 +98,9 @@ export default function RewardsPage(): JSX.Element {
             <div className={`${isSelected(Tabs.Staking) ? "" : "hidden"}`}>
               <StakingRewardsContainer selectedNetworks={selectedNetworks} />
             </div>
-
-            <div
-              className={`mt-8 ${isSelected(Tabs.Airdrop) && shouldAirdropVisible(selectedNetworks) ? "" : "hidden"}`}
-            >
+            <div className={`mt-8 ${isSelected(Tabs.Airdrop) && shouldAirdropVisible(selectedNetworks) ? "" : "hidden"}`}>
               <AirDropClaim chainId={selectedNetworks[0]} />
             </div>
-
             <div className={`flex flex-col h-full mt-4 ${isSelected(Tabs.Vesting) ? "" : "hidden"}`}>
               <VestingContainer selectedNetworks={selectedNetworks} />
             </div>

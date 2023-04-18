@@ -9,8 +9,6 @@
     "build": "yarn lerna run build",
     "app:build": "cd packages/hardhat; yarn build; cd ../app; yarn build",
     "grants:build": "cd packages/hardhat; yarn build; cd ../grants; yarn build",
-    "app:start": "yarn lerna run --scope @popcorn/app start",
-    "start": "yarn lerna run --scope @popcorn/app start",
     "pretify": "prettier --write .",
     "test": "yarn lerna run test",
     "nuke": "rm -r node_modules; for d in packages/*/node_modules; do echo $d; rm -r $d; done; for d in packages/*/.next; do echo $d; rm -r $d; done",

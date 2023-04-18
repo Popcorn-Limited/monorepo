@@ -2,8 +2,8 @@ import type { BigNumberWithFormatted, Pop } from "@popcorn/components/lib/types"
 import { BigNumber, constants } from "ethers";
 import { useState } from "react";
 
-import { NetworkSticker } from "@popcorn/app/components/NetworkSticker";
-import TokenIcon from "@popcorn/app/components/TokenIcon";
+import { NetworkSticker } from "@popcorn/components/components/NetworkSticker";
+import TokenIcon from "@popcorn/components/components/TokenIcon";
 import { formatAndRoundBigNumber } from "@popcorn/utils";
 
 import { getPercentage } from "@popcorn/components/lib/utils/numbers";
@@ -44,7 +44,7 @@ export default function AssetRow({
       <td className="md:bg-customLightGray md:bg-opacity-[10%] rounded-l-2xl py-2 md:py-4 pl-2 md:pl-10">
         <div className="flex items-center gap-4">
           <div className="relative">
-            <NetworkSticker selectedChainId={chainId} />
+            <NetworkSticker chainId={chainId} />
             <TokenIcon token={token?.address || ""} chainId={chainId} />
           </div>
           <div className="flex space-x-[6px] md:space-x-[52px]">

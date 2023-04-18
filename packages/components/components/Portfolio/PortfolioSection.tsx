@@ -1,8 +1,8 @@
 import { BigNumber, constants } from "ethers";
-import { InfoIconWithTooltip } from "@popcorn/app/components/InfoIconWithTooltip";
+import { InfoIconWithTooltip } from "@popcorn/components/components/InfoIconWithTooltip";
 import { formatAndRoundBigNumber } from "@popcorn/utils";
 
-import { NotAvailable } from "@popcorn/app/components/Rewards/NotAvailable";
+import { NotAvailable } from "@popcorn/components/components/NotAvailable";
 import NetworkIconList from "@popcorn/components/components/NetworkIconList";
 import { getPercentage } from "@popcorn/components/lib/utils/numbers";
 

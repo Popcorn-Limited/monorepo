@@ -1,4 +1,4 @@
-import RewardSummaryCard from "@popcorn/app/components/Rewards/RewardSummaryCard";
+import RewardSummaryCard from "./RewardSummaryCard";
 import { ChainId, formatAndRoundBigNumber, networkLogos } from "@popcorn/utils";
 import { BigNumber, constants } from "ethers";
 import { useEffect, useState } from "react";

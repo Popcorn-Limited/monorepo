@@ -1,22 +1,22 @@
 import { Dialog, Transition } from "@headlessui/react";
 import { ChainId, networkLogos, networkMap } from "@popcorn/utils";
-import MainActionButton from "@popcorn/app/components/MainActionButton";
+import MainActionButton from "@popcorn/components/components/MainActionButton";
 import PopUpModal from "@popcorn/components/components/Modal/PopUpModal";
-import DiscordIcon from "@popcorn/app/components/SVGIcons/DiscordIcon";
-import MediumIcon from "@popcorn/app/components/SVGIcons/MediumIcon";
-import RedditIcon from "@popcorn/app/components/SVGIcons/RedditIcon";
-import TelegramIcon from "@popcorn/app/components/SVGIcons/TelegramIcon";
-import TwitterIcon from "@popcorn/app/components/SVGIcons/TwitterIcon";
-import YoutubeIcon from "@popcorn/app/components/SVGIcons/YoutubeIcon";
-import TertiaryActionButton from "@popcorn/app/components/TertiaryActionButton";
+import DiscordIcon from "@popcorn/components/components/SVGIcons/DiscordIcon";
+import MediumIcon from "@popcorn/components/components/SVGIcons/MediumIcon";
+import RedditIcon from "@popcorn/components/components/SVGIcons/RedditIcon";
+import TelegramIcon from "@popcorn/components/components/SVGIcons/TelegramIcon";
+import TwitterIcon from "@popcorn/components/components/SVGIcons/TwitterIcon";
+import YoutubeIcon from "@popcorn/components/components/SVGIcons/YoutubeIcon";
+import TertiaryActionButton from "@popcorn/components/components/TertiaryActionButton";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import { Fragment, useEffect, useMemo, useState } from "react";
-import MobileProductsMenu from "@popcorn/app/components/NavBar/MobileProductsMenu";
-import NavbarLink from "@popcorn/app/components/NavBar/NavbarLinks";
+import MobileProductsMenu from "@popcorn/components/components/NavBar/MobileProductsMenu";
+import NavbarLink from "@popcorn/components/components/NavBar/NavbarLinks";
 import { useChainModal, useConnectModal } from "@rainbow-me/rainbowkit";
 import { useAccount, useDisconnect, useNetwork } from "wagmi";
-import { useProductLinks } from "@popcorn/app/hooks/useProductLinks";
+import { useProductLinks } from "@popcorn/components/hooks/useProductLinks";
 import { useFeatures } from "@popcorn/components/hooks/useFeatures";
 
 const networkData = [

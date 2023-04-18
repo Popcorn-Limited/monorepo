@@ -4,7 +4,7 @@ import { useAllowance } from "@popcorn/components/lib/Erc20/hooks";
 import { Address, useAccount } from "wagmi";
 import { useNamedAccounts } from "@popcorn/components/lib/utils";
 import { BigNumber, constants } from "ethers";
-import TokenIcon from "@popcorn/app/components/TokenIcon";
+import TokenIcon from "@popcorn/components/components/TokenIcon";
 
 function Deposit({
   vault,

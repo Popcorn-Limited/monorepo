@@ -1,8 +1,8 @@
 /* This example requires Tailwind CSS v2.0+ */
 import { Dialog, Transition } from "@headlessui/react";
 import { XMarkIcon } from "@heroicons/react/24/outline";
-import MainActionButton from "@popcorn/app/components/MainActionButton";
-import TertiaryActionButton from "@popcorn/app/components/TertiaryActionButton";
+import MainActionButton from "@popcorn/components/components/MainActionButton";
+import TertiaryActionButton from "@popcorn/components/components/TertiaryActionButton";
 import React, { Fragment, useEffect, useRef, useState } from "react";
 
 export interface NetworkChangePromptModalProps {

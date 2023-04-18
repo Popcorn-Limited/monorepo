@@ -12,16 +12,16 @@ import MarkdownRenderer from "./MarkdownRenderer";
 import AnimatedChevron from "./AnimatedChevron";
 import DepositWithdraw from "./DepositWithdraw";
 import Accordion from "../Accordion";
-import TokenIcon from "@popcorn/app/components/TokenIcon";
+import TokenIcon from "@popcorn/components/components/TokenIcon";
 import { FetchTokenResult } from "wagmi/dist/actions";
-import { NetworkSticker } from "@popcorn/app/components/NetworkSticker";
+import { NetworkSticker } from "@popcorn/components/components/NetworkSticker";
 import { useBalanceOf, useTotalSupply } from "@popcorn/components/lib/Erc20/hooks";
 import { usePrice } from "@popcorn/components/lib/Price";
 import { parseUnits } from "ethers/lib/utils.js";
 import { useTotalAssets } from "@popcorn/components/lib/Vault/hooks";
 import { formatNumber } from "@popcorn/utils/formatBigNumber";
 import RightArrowIcon from "@popcorn/components/components/SVGIcons/RightArrowIcon";
-import { InfoIconWithTooltip } from "@popcorn/app/components/InfoIconWithTooltip";
+import { InfoIconWithTooltip } from "@popcorn/components/components/InfoIconWithTooltip";
 import useVaultMetadata from "@popcorn/components/lib/Vault/hooks/useVaultMetadata";
 
 const HUNDRED = constants.Zero.add(100);
@@ -34,7 +34,7 @@ const VAULT_APY_RESOLVER = {
 function AssetWithName({ vault, token, chainId, protocol }: { vault: FetchTokenResult; token: string, chainId: ChainId, protocol: string }) {
   return <div className="flex items-center gap-4">
     <div className="relative">
-      <NetworkSticker selectedChainId={chainId} />
+      <NetworkSticker chainId={chainId} />
       <TokenIcon token={token} chainId={chainId} imageSize="w-8 h-8" />
     </div>
     <Title level={2} as="span" className="text-gray-900 mt-1">

@@ -1,4 +1,4 @@
-import useRestakeAlert from "@popcorn/app/hooks/useRestakeAlert";
+import useRestakeAlert from "@popcorn/components/hooks/useRestakeAlert";
 import Footer from "@popcorn/components/components/Footer";
 import Navbar from "@popcorn/components/components/NavBar/NavBar";
 import useSubscribeToNewsletter from "@popcorn/components/hooks/useSubscribeToNewsletter";

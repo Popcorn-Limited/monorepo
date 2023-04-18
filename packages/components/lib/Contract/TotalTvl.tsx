@@ -1,9 +1,9 @@
 import type { BigNumber } from "ethers/lib/ethers";
 import { ChainId } from "@popcorn/utils";
 import { formatUnits } from "ethers/lib/utils";
-import useStakingTVL from "@popcorn/app/hooks/staking/useStakingTVL";
-import usePoolTVL from "@popcorn/app/hooks/usePoolTVL";
 import useVariadicSum from "@popcorn/components/hooks/useVariadicSum";
+import usePoolTVL from "@popcorn/components/hooks/usePoolTvl";
+import useStakingTVL from "@popcorn/components/hooks/useStakingTVL";
 
 const { Ethereum, Polygon, Optimism } = ChainId;
 

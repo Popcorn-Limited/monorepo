@@ -1,4 +1,4 @@
-import { NotAvailable } from "@popcorn/app/components/Rewards/NotAvailable";
+import { NotAvailable } from "@popcorn/components/components/NotAvailable";
 import { ChainId } from "@popcorn/utils";
 import { constants } from "ethers";
 import useAllStakingAddresses from "hooks/staking/useAllStakingAddresses";

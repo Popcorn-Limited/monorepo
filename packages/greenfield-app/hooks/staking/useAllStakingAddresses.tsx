@@ -1,5 +1,4 @@
-import { useDeployment } from "@popcorn/app/hooks/useDeployment";
-import { useStakingContracts } from "@popcorn/app/hooks/useStakingContracts";
+import { useNamedAccounts } from "@popcorn/components/lib/utils";
 import { ChainId } from "@popcorn/utils";
 
 export enum StakingType {
@@ -15,33 +14,25 @@ interface StakingAddressWithMetadata {
 
 export default function useAllStakingAddresses(): StakingAddressWithMetadata[] {
   // Ethereum
-  const { popStaking: ethereumPopStaking } = useDeployment(ChainId.Ethereum);
-  const ethereumStakingAddresses = useStakingContracts(ChainId.Ethereum);
+  const [ethereumPopStaking] = useNamedAccounts("1", ["popStaking"]);
+  const ethereumStakingAddresses = useNamedAccounts("1", ["butterStaking", "threeXStaking", "xenStaking", "popUsdcArrakisVaultStaking"]);
 
   // Polygon
-  const { popStaking: polygonPopStaking } = useDeployment(ChainId.Polygon);
-  const polygonStakingAddresses = useStakingContracts(ChainId.Polygon);
-
-  // Localhost
-  const { popStaking: localhostPopStaking } = useDeployment(ChainId.Localhost);
-  const localhostStakingAddresses = useStakingContracts(ChainId.Localhost);
+  const [polygonPopStaking] = useNamedAccounts("137", ["popStaking"]);
+  const polygonStakingAddresses = useNamedAccounts("137", ["popUsdcArrakisVaultStaking"]);
 
   //Optimism
-  const { popStaking: optimismPopStaking } = useDeployment(ChainId.Optimism);
+  const [optimismPopStaking] = useNamedAccounts("10", ["popStaking"]);
 
   return [
-    { chainId: ChainId.Ethereum, stakingType: StakingType.PopLocker, address: ethereumPopStaking },
-    { chainId: ChainId.Polygon, stakingType: StakingType.PopLocker, address: polygonPopStaking },
-    { chainId: ChainId.Optimism, stakingType: StakingType.PopLocker, address: optimismPopStaking },
-    { chainId: ChainId.Localhost, stakingType: StakingType.PopLocker, address: localhostPopStaking },
+    { chainId: ChainId.Ethereum, stakingType: StakingType.PopLocker, address: ethereumPopStaking?.address },
+    { chainId: ChainId.Polygon, stakingType: StakingType.PopLocker, address: polygonPopStaking?.address },
+    { chainId: ChainId.Optimism, stakingType: StakingType.PopLocker, address: optimismPopStaking?.address },
     ...(ethereumStakingAddresses?.length ? ethereumStakingAddresses : []).map(
-      (address) => ({ chainId: ChainId.Ethereum, stakingType: StakingType.StakingPool, address } || {}),
+      (staking) => ({ chainId: ChainId.Ethereum, stakingType: StakingType.StakingPool, address: staking?.address } || {}),
     ),
     ...(polygonStakingAddresses?.length ? polygonStakingAddresses : []).map(
-      (address) => ({ chainId: ChainId.Polygon, stakingType: StakingType.StakingPool, address } || {}),
-    ),
-    ...(localhostStakingAddresses?.length ? localhostStakingAddresses : []).map(
-      (address) => ({ chainId: ChainId.Localhost, stakingType: StakingType.StakingPool, address } || {}),
-    ),
+      (staking) => ({ chainId: ChainId.Polygon, stakingType: StakingType.StakingPool, address: staking?.address } || {}),
+    )
   ];
 }

@@ -4,7 +4,7 @@ import Image from "next/image";
 import { constants } from "ethers";
 
 import { formatAndRoundBigNumber } from "@popcorn/utils";
-import SelectToken from "@popcorn/app/components/BatchButter/SelectToken";
+import SelectToken from "@popcorn/components/components/SelectToken";
 import InputNumber from "./InputNumber";
 
 const ZERO = constants.Zero;

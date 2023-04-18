@@ -1,23 +1,21 @@
 import { Menu } from "@headlessui/react";
 import { Dialog, Transition } from "@headlessui/react";
 import { ChevronDownIcon } from "@heroicons/react/24/solid";
-import MainActionButton from "@popcorn/app/components/MainActionButton";
+import MainActionButton from "@popcorn/components/components/MainActionButton";
 import Link from "next/link";
 import { useRouter } from "next/router";
-import DropDownComponent from "@popcorn/app/components/NavBar/DropDownComponent";
-import DiscordIcon from "@popcorn/app/components/SVGIcons/DiscordIcon";
-import MediumIcon from "@popcorn/app/components/SVGIcons/MediumIcon";
-import RedditIcon from "@popcorn/app/components/SVGIcons/RedditIcon";
-import TelegramIcon from "@popcorn/app/components/SVGIcons/TelegramIcon";
-import TwitterIcon from "@popcorn/app/components/SVGIcons/TwitterIcon";
-import YoutubeIcon from "@popcorn/app/components/SVGIcons/YoutubeIcon";
+import DiscordIcon from "@popcorn/components/components/SVGIcons/DiscordIcon";
+import MediumIcon from "@popcorn/components/components/SVGIcons/MediumIcon";
+import RedditIcon from "@popcorn/components/components/SVGIcons/RedditIcon";
+import TelegramIcon from "@popcorn/components/components/SVGIcons/TelegramIcon";
+import TwitterIcon from "@popcorn/components/components/SVGIcons/TwitterIcon";
+import YoutubeIcon from "@popcorn/components/components/SVGIcons/YoutubeIcon";
 import NavbarLink from "@popcorn/components/components/NavBar/NavbarLinks";
 import { useNetwork, useAccount } from "wagmi";
 import { useChainModal, useConnectModal } from "@rainbow-me/rainbowkit";
 import { networkLogos } from "@popcorn/utils";
 import { useMemo, useRef, useState, Fragment, useCallback } from "react";
-import { useProductLinks } from "@popcorn/app/hooks/useProductLinks";
-import { link } from "fs";
+import { useProductLinks } from "@popcorn/components/hooks/useProductLinks";
 
 export default function DesktopMenu(): JSX.Element {
   const { openConnectModal } = useConnectModal();

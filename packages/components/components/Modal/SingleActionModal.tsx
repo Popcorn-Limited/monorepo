@@ -1,7 +1,6 @@
 import { Dialog, Transition } from "@headlessui/react";
-import useClickOutside from "@popcorn/app/hooks/useClickOutside";
-import MainActionButton from "@popcorn/app/components/MainActionButton";
-import TertiaryActionButton from "@popcorn/app/components/TertiaryActionButton";
+import MainActionButton from "@popcorn/components/components/MainActionButton";
+import TertiaryActionButton from "@popcorn/components/components/TertiaryActionButton";
 import Image from "next/image";
 import React, { Fragment, useEffect, useRef, useState } from "react";
 
@@ -66,8 +65,6 @@ export const SingleActionModal: React.FC<SingleActionModalProps> = ({
     setOpen(!!keepOpen);
     setTimeout(() => onDismiss?.onClick && onDismiss.onClick(), 1000);
   };
-
-  useClickOutside<MouseEvent>(modalRef, () => dismiss());
 
   const confirm = () => {
     setOpen(!!keepOpen);

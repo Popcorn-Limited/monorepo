@@ -1,5 +1,4 @@
-
-import MainActionButton from "@popcorn/app/components/MainActionButton";
+import MainActionButton from "@popcorn/components/components/MainActionButton";
 import Link from "next/link";
 import { useRouter } from "next/router";
 

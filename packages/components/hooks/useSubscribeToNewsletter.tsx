@@ -1,10 +1,16 @@
 import MainActionButton from "@popcorn/components/components/MainActionButton";
 import { setSingleActionModal } from "@popcorn/components/context/actions";
 import { store } from "@popcorn/components/context/store";
-import { isValidEmailAddress } from "@popcorn/app/helper/verifyEmail";
 import Image from "next/image";
 import React, { useContext, useEffect, useRef, useState } from "react";
 import { toast } from "react-hot-toast";
+
+export const isValidEmailAddress = (email: string) => {
+  const regex =
+    /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+  return email.match(regex) === null;
+};
+
 
 const useSubscribeToNewsletter = (): {
   showNewsletterModal: () => void;

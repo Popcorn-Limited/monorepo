@@ -1,5 +1,5 @@
 import { ChevronDownIcon } from "@heroicons/react/24/solid";
-import PseudoRadioButton from "@popcorn/app/components/BatchButter/PseudoRadioButton";
+import PseudoRadioButton from "@popcorn/components/components/PseudoRadioButton";
 import { ChainId, networkLogos, networkMap } from "@popcorn/utils";
 import Image from "next/image";
 import { useState } from "react";

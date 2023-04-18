@@ -1,7 +1,7 @@
 import { Transition } from "@headlessui/react";
-import MainActionButton from "@popcorn/app/components/MainActionButton";
+import MainActionButton from "@popcorn/components/components/MainActionButton";
 import React, { useEffect, useState } from "react";
-import TertiaryActionButton from "@popcorn/app/components/TertiaryActionButton";
+import TertiaryActionButton from "@popcorn/components/components/TertiaryActionButton";
 import { useFeatures } from "@popcorn/components/hooks/useFeatures";
 import useInitializeGTM from "@popcorn/components/hooks/useInitializeGTM";
 

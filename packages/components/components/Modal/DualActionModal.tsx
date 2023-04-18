@@ -1,5 +1,5 @@
-import MainActionButton from "@popcorn/app/components/MainActionButton";
-import SecondaryActionButton from "@popcorn/app/components/SecondaryActionButton";
+import MainActionButton from "@popcorn/components/components/MainActionButton";
+import SecondaryActionButton from "@popcorn/components/components/SecondaryActionButton";
 import React, { useEffect, useRef, useState } from "react";
 
 export interface DualActionModalProps {
@@ -20,7 +20,6 @@ export const DefaultDualActionModalProps = {
 
 export const DualActionModal: React.FC<DualActionModalProps> = ({ title, content, visible, onDismiss, onConfirm }) => {
   const [open, setOpen] = useState(visible);
-  const cancelButtonRef = useRef();
 
   useEffect(() => {
     if (visible !== open) setOpen(visible);

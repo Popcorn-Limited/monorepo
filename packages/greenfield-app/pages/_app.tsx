@@ -3,7 +3,6 @@ import { FeatureTogglePanel } from "@popcorn/components/components/FeatureToggle
 import { DualActionModalContainer } from "@popcorn/components/components/Modal/DualActionModalContainer";
 import { MultiChoiceActionModalContainer } from "@popcorn/components/components/Modal/MultiChoiceActionModalContainer";
 import { SingleActionModalContainer } from "@popcorn/components/components/Modal/SingleActionModalContainer";
-import OfacCheck from "@popcorn/app/components/OfacCheck";
 import { FeatureToggleProvider } from "@popcorn/components/context/FeatureToggleContext";
 import Head from "next/head";
 import Router from "next/router";
@@ -18,6 +17,7 @@ import { jsonRpcProvider } from "wagmi/providers/jsonRpc";
 import "@rainbow-me/rainbowkit/styles.css";
 import "../styles/globals.css";
 import { NetworthContextProvider } from "@popcorn/components/context/Networth";
+import OfacCheck from "components/OfacCheck";
 
 const { chains, provider, webSocketProvider } = configureChains(
   [

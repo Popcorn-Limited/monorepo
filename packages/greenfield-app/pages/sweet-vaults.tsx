@@ -1,10 +1,6 @@
 import type { NextPage } from "next";
-
-import Image from "next/image";
-
 import { useAllVaults } from "@popcorn/components/hooks/vaults";
 import SweetVault from "../components/SweetVault";
-import asset_bg from "../assets/sv-bg.png";
 import { ChainId, formatAndRoundBigNumber } from "@popcorn/utils";
 import NoSSR from "react-no-ssr";
 import HeroSection from "@popcorn/components/components/HeroSection";

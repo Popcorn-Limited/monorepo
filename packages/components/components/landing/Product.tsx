@@ -1,6 +1,6 @@
-import MainActionButton from "@popcorn/app/components/MainActionButton";
-import StatusWithLabel, { StatusWithLabelProps } from "@popcorn/app/components/Common/StatusWithLabel";
-import useNetworkName from "@popcorn/app/hooks/useNetworkName";
+import MainActionButton from "@popcorn/components/components/MainActionButton";
+import StatusWithLabel, { StatusWithLabelProps } from "@popcorn/components/components/StatusWithLabel";
+import useNetworkName from "@popcorn/components/hooks/useNetworkName";
 import Link from "next/link";
 import React from "react";
 

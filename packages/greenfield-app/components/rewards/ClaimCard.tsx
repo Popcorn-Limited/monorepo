@@ -1,5 +1,5 @@
 import { Address, useAccount, useNetwork, useSwitchNetwork } from "wagmi";
-import { BigNumber, constants } from "ethers";
+import { BigNumber, constants, ethers, Contract as EthersContract } from "ethers";
 import toast from "react-hot-toast";
 import Image from "next/image";
 import ContentLoader from "react-content-loader";
@@ -7,8 +7,8 @@ import ContentLoader from "react-content-loader";
 import { ChainId, networkLogos } from "@popcorn/utils";
 import { Contract, Staking } from "@popcorn/components/lib";
 import { useClaim } from "@popcorn/components/lib/Staking/hooks";
-import MainActionButton from "@popcorn/app/components/MainActionButton";
-import TokenIcon from "@popcorn/app/components/TokenIcon";
+import MainActionButton from "@popcorn/components/components/MainActionButton";
+import TokenIcon from "@popcorn/components/components/TokenIcon";
 import useClaimModal from "./useClaimModal";
 
 interface ClaimCardProps {

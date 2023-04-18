@@ -1,9 +1,9 @@
 import { ChainId } from "@popcorn/utils";
-import { InfoIconWithTooltip } from "@popcorn/app/components/InfoIconWithTooltip";
+import { InfoIconWithTooltip } from "@popcorn/components/components/InfoIconWithTooltip";
 import { formatUnits } from "ethers/lib/utils";
 import React from "react";
 import Product from "@popcorn/components/components/landing/Product";
-import useNetworkName from "@popcorn/app/hooks/useNetworkName";
+import useNetworkName from "@popcorn/components/hooks/useNetworkName";
 import { useNamedAccounts } from "@popcorn/components/lib/utils/hooks";
 import { Staking, Contract } from "@popcorn/components/lib";
 import { useFeatures } from "@popcorn/components/hooks/useFeatures";
@@ -11,13 +11,8 @@ import Tvl from "@popcorn/components/lib/Contract/Tvl";
 
 const Products = () => {
   const { Ethereum, Polygon } = ChainId;
-  const networkName = useNetworkName();
 
-  const [threeX, butter, threeXStaking, butterStaking, popStaking] = useNamedAccounts("1", [
-    "threeX",
-    "butter",
-    "threeXStaking",
-    "butterStaking",
+  const [popStaking] = useNamedAccounts("1", [
     "popStaking",
   ]);
   const [popStakingPolygon] = useNamedAccounts("137", ["popStaking"]);
@@ -65,60 +60,6 @@ const Products = () => {
             badge="/images/newProductBadge.svg"
           />
         )}
-        <Product
-          title="3X"
-          description="EUR & USD exposure with noble yield that funds social impact organizations"
-          stats={[
-            {
-              label: "TVL",
-              content: <Contract.Tvl chainId={Ethereum} address={threeX.address} />,
-              infoIconProps: {
-                title: "Total Value Locked",
-                content: "The total value of assets held by the underlying smart contracts.",
-                id: "btr-tvl",
-              },
-            },
-            {
-              label: "vAPR",
-              content: <Staking.Apy chainId={Ethereum} address={threeXStaking.address} />,
-              infoIconProps: {
-                title: "Variable Annual Percentage Rate",
-                content:
-                  "This shows your interest stated as a yearly percentage rate, which is subject to change over time based on demand and market conditions.",
-                id: "3x-vapr",
-              },
-            },
-          ]}
-          route={`${networkName}/set/3x`}
-          customContent={ThreeXExposure}
-        />
-        <Product
-          title="Butter"
-          description="Optimize your yield while creating positive global impact."
-          stats={[
-            {
-              label: "TVL",
-              content: <Contract.Tvl chainId={Ethereum} address={butter.address} />,
-              infoIconProps: {
-                title: "Total Value Locked",
-                content: "The total value of assets held by the underlying smart contracts.",
-                id: "btr-tvl",
-              },
-            },
-            {
-              label: "vAPR",
-              content: <Staking.Apy chainId={Ethereum} address={butterStaking.address} />,
-              infoIconProps: {
-                title: "Variable Annual Percentage Rate",
-                content:
-                  "This shows your interest stated as a yearly percentage rate, which is subject to change over time based on demand and market conditions.",
-                id: "btr-vapr",
-              },
-            },
-          ]}
-          route={`${networkName}/set/butter`}
-          customContent={ButterExposure}
-        />
         <Product
           title="Staking"
           description="Single-asset vaults to earn yield on your digital assets"
