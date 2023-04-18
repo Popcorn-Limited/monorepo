@@ -79,8 +79,8 @@ function SweetVault({ vaultAddress, chainId, searchString, addToTVL, addToDeposi
   useEffect(() => {
     if (price && balance && pps > 0) {
       const assetBal = pps * Number(balance?.value?.toString());
-      const depositValue = Number(price?.value?.toString()) * assetBal /
-        10 ** (token?.decimals * 2)
+      const depositValue = (Number(price?.value?.toString()) * assetBal) /
+        (10 ** (token?.decimals * 2))
 
       addToDeposit(
         vaultAddress,
@@ -91,13 +91,12 @@ function SweetVault({ vaultAddress, chainId, searchString, addToTVL, addToDeposi
 
   useEffect(() => {
     if (totalAssets && price) {
+      const tvlValue = (Number(price?.value?.toString()) * Number(totalAssets?.value?.toString())) /
+        (10 ** (token?.decimals * 2))
+
       addToTVL(
         vaultAddress,
-        parseUnits(String(
-          ((Number(price?.value?.toString()) * Number(totalAssets?.value?.toString())) /
-            (10 ** (token?.decimals * 2))))
-        )
-      );
+        parseUnits(tvlValue < 0.01 ? "0" : String(tvlValue)));
     }
   }, [totalAssets, price])
 
