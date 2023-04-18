@@ -3,7 +3,7 @@ import StatusWithLabel, { StatusWithLabelProps } from "@popcorn/app/components/C
 import Link from "next/link";
 
 export interface ProductProps {
-  title: string;
+  title: JSX.Element;
   description: string;
   stats: [StatusWithLabelProps] | [StatusWithLabelProps, StatusWithLabelProps];
   route: string;
@@ -16,7 +16,7 @@ export default function Product({ title, description, stats, badge, customConten
     <Link
       target="_blank"
       href={route}
-      className="group border rounded lg:w-screen max-w-[25rem] lg:max-w-[21.5rem] flex relative flex-col bg-[#FAF9F4] border-warmGray border-opacity-75 items-center gap-6 md:gap-8 p-7"
+      className="group border rounded md:w-1/3 xl:w-screen max-w-[25rem] lg:max-w-[21.5rem] flex relative flex-col bg-[#FAF9F4] border-warmGray border-opacity-75 items-center gap-6 md:gap-8 p-7"
     >
       {badge && (
         <img
@@ -27,7 +27,7 @@ export default function Product({ title, description, stats, badge, customConten
       )}
       <div className="col-span-12 md:col-span-4">
         <div className="relative flex flex-row">
-          <p className="text-black text-4xl leading-9 md:leading-10 mb-2">{title}</p>
+          <h2 className="text-black text-4xl leading-9 md:leading-10 mb-2">{title}</h2>
         </div>
         <p className=" text-primaryDark">{description}</p>
       </div>

@@ -1,4 +1,4 @@
-import React from "react";
+import React, { Fragment } from "react";
 import { formatUnits } from "ethers/lib/utils";
 
 import { ChainId } from "@popcorn/utils";
@@ -36,8 +36,8 @@ const Products = () => {
   } = Tvl({ chainId: Polygon, address: popStakingPolygon?.address });
 
   return (
-    <section className="relative mt-10 flex flex-col sm:flex-row justify-between items-start mb-4 xl:gap-12">
-      <div className="flex w-0 lg:w-auto flex-col justify-between lg:h-[40rem] xl:h-[28rem]">
+    <section className="relative mt-10 flex flex-col sm:flex-row justify-between items-start mb-4 gap-10 xl:gap-12">
+      <div className="flex flex-col justify-between lg:h-[28rem]">
         <h6 className="font-medium leading-8 whitespace-nowrap">Our products</h6>
         <span className="relative hidden lg:inline-flex overflow-hidden">
           <span className="opacity-0 py-4">
@@ -52,10 +52,15 @@ const Products = () => {
           </ul>
         </span>
       </div>
-      <div className="mt-[3rem] flex-wrap md:flex-nowrap md:justify-end  lg:mt-0 lg:absolute xl:relative flex right-0 top-[3rem] flex-col w-full sm:flex-row gap-8">
+      <div className="sm:mt-[5rem] md:mt-0 flex-wrap md:flex-nowrap md:justify-end flex flex-col w-full sm:flex-row gap-8">
         {displaySweetVaults && (
           <Product
-            title="Sweet Vaults"
+            title={
+              <Fragment>
+                Sweet <br className="hidden md:inline" />
+                Vaults
+              </Fragment>
+            }
             customContent={
               <svg width="60" height="60" viewBox="0 0 60 60" fill="none" xmlns="http://www.w3.org/2000/svg">
                 <path
@@ -82,7 +87,12 @@ const Products = () => {
           />
         )}
         <Product
-          title="Vaults for Good"
+          title={
+            <Fragment>
+              Vaults for <br className="hidden md:inline" />
+              Good
+            </Fragment>
+          }
           customContent={
             <svg width="60" height="60" viewBox="0 0 60 60" fill="none" xmlns="http://www.w3.org/2000/svg">
               <path
@@ -112,7 +122,12 @@ const Products = () => {
           route="/sweet-vaults"
         />
         <Product
-          title="Staking"
+          title={
+            <Fragment>
+              Pop <br className="hidden md:inline" />
+              Staking
+            </Fragment>
+          }
           customContent={
             <svg width="61" height="60" viewBox="0 0 61 60" fill="none" xmlns="http://www.w3.org/2000/svg">
               <path
@@ -158,7 +173,7 @@ function Rotable({ label, badge }: { label: string; badge: string }) {
   return (
     <li className="flex items-start -space-y-8 space-x-1 text-black/20">
       <sup className="text-xs h-0">{badge}</sup>
-      <p className="text-7xl whitespace-nowrap">{label}</p>
+      <p className="text-4xl xl:text-7xl whitespace-nowrap">{label}</p>
     </li>
   );
 }
