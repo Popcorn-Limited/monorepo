@@ -1,7 +1,6 @@
 import { ChainId, PRC_PROVIDERS } from "@popcorn/utils";
-import { BigNumber, constants } from "ethers";
+import { BigNumber, Contract, constants } from "ethers";
 import useSWR, { SWRResponse } from "swr";
-import { ERC20__factory } from "@popcorn/hardhat/typechain";
 import { usePrice } from "@popcorn/components/lib/Price";
 import { useNamedAccounts } from "@popcorn/components/lib/utils";
 
@@ -16,8 +15,8 @@ export async function getPoolTVL(
   popPrice: BigNumber,
   usdcPrice: BigNumber,
 ): Promise<BigNumber> {
-  const pop = ERC20__factory.connect(popAddress, rpcProvider);
-  const usdc = ERC20__factory.connect(usdcAddress, rpcProvider);
+  const pop = new Contract(popAddress, ["function balanceOf(address) external view returns (uint256)"], rpcProvider);
+  const usdc = new Contract(usdcAddress, ["function balanceOf(address) external view returns (uint256)"], rpcProvider);
 
   const popBal = await pop.balanceOf(poolAddress);
   const usdcBal = await usdc.balanceOf(poolAddress);

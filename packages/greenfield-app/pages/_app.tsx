@@ -9,7 +9,7 @@ import Router from "next/router";
 import React, { useEffect, useState } from "react";
 import { GlobalLinearProgressAndLoading } from "@popcorn/components/components/GlobalLinearProgressAndLoading";
 import { StateProvider } from "@popcorn/components/context/store";
-import { RainbowKitProvider, getDefaultWallets, Chain } from "@rainbow-me/rainbowkit";
+import { RainbowKitProvider, getDefaultWallets } from "@rainbow-me/rainbowkit";
 import { configureChains, createClient, WagmiConfig } from "wagmi";
 import { mainnet, polygon, optimism, arbitrum, goerli, localhost, bsc, fantom } from "wagmi/chains";
 import { alchemyProvider } from "wagmi/providers/alchemy";
@@ -125,9 +125,9 @@ export default function MyApp(props) {
         <link rel="preconnect" href="https://fonts.gstatic.com" />
       </Head>
       <StateProvider>
-        <GlobalLinearProgressAndLoading loading={loading} setLoading={setLoading} />
-        <FeatureToggleProvider>
-          <WagmiConfig client={wagmiClient}>
+        <WagmiConfig client={wagmiClient}>
+          <GlobalLinearProgressAndLoading loading={loading} setLoading={setLoading} />
+          <FeatureToggleProvider>
             <RainbowKitProvider chains={chains}>
               <NetworthContextProvider>
                 <OfacCheck />
@@ -138,8 +138,8 @@ export default function MyApp(props) {
                 <FeatureTogglePanel />
               </NetworthContextProvider>
             </RainbowKitProvider>
-          </WagmiConfig>
-        </FeatureToggleProvider>
+          </FeatureToggleProvider>
+        </WagmiConfig >
       </StateProvider>
     </React.Fragment>
   );
