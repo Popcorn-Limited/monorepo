@@ -6,7 +6,7 @@ import TwitterIcon from "./SVGIcons/TwitterIcon";
 export default function FinalSection() {
 
   return (
-    <section className="px-8 bg-[#F7F7F7] smmd:py-36 py-18 flex flex-col w-screen">
+    <section className="px-8 bg-[#F7F7F7] smmd:py-36 py-18 flex flex-col w-screen xl:max-w-[1800px] xl:mx-auto">
       <div className="flex smmd:flex-row flex-col-reverse w-full h-fit">
         <div className="flex-col smmd:w-1/2 w-full mt-18 smmd:mt-0">
           <p className="text-lg mb-2">Frequently Asked Questions</p>

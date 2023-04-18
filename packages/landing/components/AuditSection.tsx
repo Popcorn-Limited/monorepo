@@ -4,7 +4,7 @@ import Carousel from "./Carousel";
 export default function AuditSection() {
 
   return (
-    <section className="md:p-8 p-0 mt-44 flex flex-col items-start w-screen">
+    <section className="md:p-8 p-0 mt-44 flex flex-col items-start w-screen xl:max-w-[1800px] xl:mx-auto">
       <div className="flex-row w-full h-full gap-x-9 md:flex hidden">
         <div className="w-full flex-col flex">
           <p className="text-7xl mb-4">Audited</p>

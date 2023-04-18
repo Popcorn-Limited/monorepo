@@ -53,8 +53,8 @@ export default function VideoSection() {
     setEndX(null);
   }
   return (
-    <section className="w-screen mt-16 md:mt-[200px]">
-      <div className=" mb-18 flex flex-col hidden md:block relative p-[32px]">
+    <section className="w-screen mt-16 md:mt-[200px] xl:mx-auto xl:max-w-[1800px]">
+      <div className=" mb-18 flex flex-col hidden md:block relative p-[32px] overflow-x-hidden">
         <p id="titlex" className="text-[60px] leading-[65px] max-w-[70%] mb-2">Earn high returns on your crypto while funding public goods</p>
         <div className="w-full h-12 flex flex-row justify-end">
 
@@ -74,16 +74,16 @@ export default function VideoSection() {
           onMouseDown={mouseDownEvent => handleMouseDown(mouseDownEvent)}
           onMouseMove={mouseMoveEvent => handleMouseMove(mouseMoveEvent)}
           onMouseUp={() => handleMouseUp()}
-          className={`flex flex-row h-[550px] w-fit overflow-x-auto transition-transform ${move === 1 ? 'translate-x-[-524px]' : 'translate-x-0'}`}>
-          <div className="w-[467px] h-full mr-[24px] shrink-0 cursor-pointer">
+          className={`flex flex-row h-[550px] xl:h-fit max-h-[800px] w-fit overflow-y-hidden overflow-x-auto transition-transform ${move === 1 ? 'translate-x-[-524px] xl:translate-x-[-624px]' : 'translate-x-0'}`}>
+          <div className="w-[467px] xl:w-[567px] h-full mr-[24px] shrink-0 cursor-pointer">
             <video className="w-full h-full cover rounded-3xl" id='video' controls poster='/images/Videocard.svg'>
               <source src="/videos/Popcorn_V4.1.mp4" type="video/mp4" />
             </video>
           </div>
 
-          <div className="flex flex-col w-screen border-box">
+          <div className="flex flex-col w-screen xl:w-[1800px] border-box">
 
-            <div className="flex flex-col w-[338px] mb-[100px] ml-[24px] smmd:mb-12">
+            <div className="flex flex-col w-[338px] mb-[100px] ml-[24px] smmd:mb-12 xl:mb-36">
               <p className="text-lg">It&#39;s now easy to deposit your crypto, optimise your yield, and create positive global impact at the same time.</p>
               <div className="flex flex-row border-x-0 border-y-customLightGray border-b-2">
                 <p className="px-1 py-2 w-full mt-2 leading-7 font-bold">Create Account</p>
@@ -91,7 +91,7 @@ export default function VideoSection() {
               </div>
             </div>
 
-            <div className="w-full h-full flex-row flex gap-x-6 w-screen px-[24px]">
+            <div className="w-full h-full flex-row flex gap-x-6 w-screen xl:w-[1800px] px-[24px]">
               <HeroCards title="Deposit" color="bg-[#EBE7D4]" imgUri="/images/blackCircles.svg" description="Connect your web3 wallet, deposit your stablecoins and blue chip crypto assets into Popcorn’s DeFi products." />
               <HeroCards title="Do Well" color="bg-[#121A27]" textColor="text-white" imgUri="/images/whiteSmile.svg" description="Optimize your returns with non-custodial vault strategies and staking products." />
               <HeroCards title="Do Good" color="bg-[#FFE650]" imgUri="/images/blackSmiles.svg" description="Fund community-selected nonprofit and social impact organisations at no additional cost." />

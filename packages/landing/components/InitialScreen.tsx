@@ -10,7 +10,7 @@ export default function InitialScreen() {
   const [arrowColor, setArrowColor] = useState('black');
 
   return (
-    <div className="flex-col w-full h-full min-h-[600px] w-screen relative flex">
+    <div className="flex-col w-full h-full min-h-[600px] w-screen relative flex xl:mx-auto xl:max-w-[1800px]">
       <DesktopMenu />
       <div className="flex flex-row justify-end absolute right-0 top-96 smmd:top-24">
         <img alt="" className="smmd:w-[50vw] w-[60vw] smmd:max-w-[700px] smmd:max-h-[80vh]" src="/images/icons/greenPopLogo.svg" />

@@ -7,7 +7,7 @@ import TwitterIcon from "./SVGIcons/TwitterIcon";
 export default function Footer() {
 
   return (
-    <section id="xoxop" className="w-full pt-14">
+    <section id="xoxop" className="w-full pt-14 xl:max-w-[1800px] xl:mx-auto">
       <div className="flex flex-col md:flex-row justify-between w-11/12 pb-12 mx-auto border-b border-gray-500">
         <Link href="/" passHref>
           <img src="/images/icons/popLogo.svg" alt="Logo" className="h-10 hidden md:block"></img>

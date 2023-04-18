@@ -6,7 +6,7 @@ import PointyBunny from "./pointyBunny";
 
 export default function ProductsSection() {
   return (
-    <section className="mt-44 p-8 w-screen">
+    <section className="mt-44 p-8 w-screen xl:max-w-[1800px] xl:mx-auto">
       <div className="flex smmd:flex-row flex-col items-start">
 
         <div className="flex flex-row items-center gap-x-4 md:mr-48 smmd:mr-12 mb-12 smmd:mb-0">

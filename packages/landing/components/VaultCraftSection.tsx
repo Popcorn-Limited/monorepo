@@ -39,9 +39,9 @@ export default function VaultCraftSection() {
       <section className="flex w-screen h-full flex-col relative justify-start">
         <div style={{ background: 'linear-gradient(270deg, rgba(0, 0, 0, 5e-05) 50%, rgba(0, 0, 0, 0.25) 100%), linear-gradient(180deg, rgba(0, 0, 0, 0.5) 0.09%, rgba(0, 0, 0, 0.0001) 100%), url(/images/Rectangle.svg)', 'WebkitBackgroundSize': 'cover' }} className="relative top-0 left-0 w-screen grow smmd:pb-44 pb-0">
 
-          <div className="w-full h-fit flex-row flex justify-between items-end">
-            <div id="slide-in-element" className={`transition-transform mt-[80px] smmd:w-[60vw] w-full duration-[900ms] ${isVisible ? 'smmd:translate-x-8' : 'smmd:-translate-x-full'}`}>
-              <h1 className="mb-6 px-8 smmd:px-0 leading-[60px] text-white smmd:leading-[72px] font-normal min-h-[80px]text-left text-4xl smmd:text-8xl lglaptop:text-[96px] lglaptop:leading-[90px] smmd:mt-0 ">
+          <div className="w-full h-fit flex-row flex justify-between items-end xl:mx-auto xl:overflow-x-hidden xl:max-w-[1800px]">
+            <div id="slide-in-element" className={`transition-transform mt-[80px] smmd:w-[60vw] xl:max-w-[1400px] w-full duration-[900ms] ${isVisible ? 'smmd:translate-x-8' : 'smmd:-translate-x-full'}`}>
+              <h1 className="mb-6 px-8 smmd:px-0 leading-[60px] text-white smmd:leading-[72px] font-normal min-h-[80px] text-left text-4xl smmd:text-8xl lglaptop:text-[96px] lglaptop:leading-[90px] smmd:mt-0 ">
                 Easily create tailored asset strategies for your crypto with <b>Vaultcraft</b>
               </h1>
             </div>
@@ -57,15 +57,19 @@ export default function VaultCraftSection() {
           </div>
 
 
-          <div className="w-full flex smmd:flex-row flex-col-reverse justify-between items-start smmd:mt-24 mt-6">
-            <div className={`${isVisible ? 'smmd:translate-x-8' : 'smmd:-translate-x-full'} transition-transform delay-[200ms] duration-[700ms] flex flex-col smmd:w-[338px] w-[80%] self-end smmd:self-start mb-[100px] mr-8 smmd:mr-44 mt-10 smmd:mt-0`}>
+          <div className="w-full flex smmd:flex-row flex-col-reverse justify-between items-start smmd:mt-24 mt-6 xl:mx-auto xl:overflow-x-hidden xl:max-w-[1800px]">
+            <div className={`${isVisible ? 'smmd:translate-x-8' : 'smmd:-translate-x-full'} transition-transform delay-[200ms] duration-[700ms] flex flex-col smmd:w-[338px] xl:w-[460px] w-[80%] self-end smmd:self-start mb-[100px] mr-8 smmd:mr-44 mt-10 smmd:mt-0`}>
               <p className="text-lg text-white">We are working in a common permissionless infrastructure and tooling for creating automated asset strategies</p>
               <div className="flex flex-row border-x-0 border-y-customLightGray border-b-2">
                 <p className="px-1 py-2 w-full mt-2 leading-7 font-bold text-white">I want to know more</p>
                 <SecondaryActionButton label="" customArrowColor="FFFFFF" />
               </div>
             </div>
-            <div className={`${isVisible ? 'smmd:-translate-x-8' : 'smmd:translate-x-full'} bg-black transition-transform w-full smmd:w-fit delay-[200ms] duration-[800ms] grow h-[230px] smmd:h-[500px] ml-8 smmd:ml-0`} />
+            <div className={`${isVisible ? 'smmd:-translate-x-8' : 'smmd:translate-x-full'} bg-black transition-transform w-full smmd:w-fit delay-[200ms] duration-[800ms] grow h-[230px] rounded-xl xl:w-[1400px] xl:h-[700px] smmd:h-[450px] ml-8 smmd:ml-0`} >
+              <video className="w-full h-full object-cover cover rounded-3xl" id='video' controls poster='/images/vaultVideoPreview.jpg'>
+                <source src="/videos/Twitter_Video.mp4" type="video/mp4" />
+              </video>
+            </div>
           </div>
 
         </div>
