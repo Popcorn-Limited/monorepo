@@ -12,7 +12,7 @@ interface IGauge {
 
   function withdraw(uint256 _rawAmount) external;
 
-  function rewards_count() external view returns (uint256);
+  function reward_count() external view returns (uint256);
 
   function reward_tokens(uint256 _index) external view returns (address);
 }

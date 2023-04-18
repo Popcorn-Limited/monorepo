@@ -45,11 +45,7 @@ contract CurveAdapter is AdapterBase, WithRewards {
    * @dev This function is called by the factory contract when deploying a new vault.
    */
 
-  function initialize(
-    bytes memory adapterInitData,
-    address registry,
-    bytes memory curveInitData
-  ) external initializer {
+  function initialize(bytes memory adapterInitData, address registry, bytes memory curveInitData) external initializer {
     __AdapterBase_init(adapterInitData);
 
     (address _crv, address _gaugeFactory, uint256 _gaugeId) = abi.decode(curveInitData, (address, address, uint256));
@@ -107,10 +103,10 @@ contract CurveAdapter is AdapterBase, WithRewards {
 
   /// @notice The token rewarded
   function rewardTokens() external view override returns (address[] memory) {
-    uint256 rewardsCount = gauge.rewards_count();
-    address[] memory _rewardTokens = new address[](rewardsCount + 1);
+    uint256 rewardCount = gauge.reward_count();
+    address[] memory _rewardTokens = new address[](rewardCount + 1);
     _rewardTokens[0] = crv;
-    for (uint256 i; i < rewardsCount; ++i) {
+    for (uint256 i; i < rewardCount; ++i) {
       _rewardTokens[i + 1] = gauge.reward_tokens(i);
     }
     return _rewardTokens;

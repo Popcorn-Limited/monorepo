@@ -3,9 +3,10 @@ pragma solidity ^0.8.15;
 
 import { Test } from "forge-std/Test.sol";
 
-import { CurveAdapter, SafeERC20, IERC20, IERC20Metadata, Math, IGauge, IGaugeFactory } from "../../../../src/vault/adapter/curve/CurveAdapter.sol";
+import { CurveAdapter, SafeERC20, IERC20, IERC20Metadata, Math, IGauge, IGaugeFactory, IWithRewards, IStrategy } from "../../../../src/vault/adapter/curve/CurveAdapter.sol";
 import { CurveTestConfigStorage, CurveTestConfig } from "./CurveTestConfigStorage.sol";
 import { AbstractAdapterTest, ITestConfigStorage, IAdapter } from "../abstract/AbstractAdapterTest.sol";
+import { MockStrategyClaimer } from "../../../utils/mocks/MockStrategyClaimer.sol";
 
 contract CurveAdapterTest is AbstractAdapterTest {
   using Math for uint256;
@@ -88,5 +89,30 @@ contract CurveAdapterTest is AbstractAdapterTest {
     );
 
     assertEq(asset.allowance(address(adapter), address(gauge)), type(uint256).max, "allowance");
+  }
+
+  function test__claim() public override {
+    strategy = IStrategy(address(new MockStrategyClaimer()));
+    createAdapter();
+    adapter.initialize(
+      abi.encode(asset, address(this), strategy, 0, sigs, ""),
+      externalRegistry,
+      testConfigStorage.getTestConfig(0)
+    );
+
+    _mintFor(1000e18, bob);
+
+    vm.prank(bob);
+    adapter.deposit(1000e18, bob);
+
+    vm.warp(block.timestamp + 30 days);
+
+    vm.prank(bob);
+    adapter.withdraw(1, bob, bob);
+
+    address[] memory rewardTokens = IWithRewards(address(adapter)).rewardTokens();
+    assertEq(rewardTokens[0], 0x172370d5Cd63279eFa6d502DAB29171933a610AF); // CRV
+
+    assertGt(IERC20(rewardTokens[0]).balanceOf(address(adapter)), 0);
   }
 }
