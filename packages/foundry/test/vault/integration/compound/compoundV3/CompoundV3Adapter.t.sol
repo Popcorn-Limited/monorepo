@@ -88,12 +88,12 @@ contract CompoundV3AdapterTest is AbstractAdapterTest {
     assertEq(adapter.asset(), cToken.baseToken(), "asset");
     assertEq(
       IERC20Metadata(address(adapter)).name(),
-      string.concat("Popcorn CompoundV3 ", IERC20Metadata(address(asset)).name(), " Adapter"),
+      string.concat("VaultCraft CompoundV3 ", IERC20Metadata(address(asset)).name(), " Adapter"),
       "name"
     );
     assertEq(
       IERC20Metadata(address(adapter)).symbol(),
-      string.concat("popCv3-", IERC20Metadata(address(asset)).symbol()),
+      string.concat("vcCv3-", IERC20Metadata(address(asset)).symbol()),
       "symbol"
     );
 

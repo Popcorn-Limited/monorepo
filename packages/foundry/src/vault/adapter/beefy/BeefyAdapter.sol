@@ -68,11 +68,11 @@ contract BeefyAdapter is AdapterBase, WithRewards {
         ) revert InvalidBeefyBooster(_beefyBooster);
 
         _name = string.concat(
-            "Popcorn Beefy ",
+            "VaultCraft Beefy ",
             IERC20Metadata(asset()).name(),
             " Adapter"
         );
-        _symbol = string.concat("popB-", IERC20Metadata(asset()).symbol());
+        _symbol = string.concat("vcB-", IERC20Metadata(asset()).symbol());
 
         beefyVault = IBeefyVault(_beefyVault);
         beefyBooster = IBeefyBooster(_beefyBooster);

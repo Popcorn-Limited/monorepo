@@ -83,12 +83,12 @@ contract AuraAdapterTest is AbstractAdapterTest {
     assertEq(adapter.asset(), address(asset), "asset");
     assertEq(
       IERC20Metadata(address(adapter)).name(),
-      string.concat("Popcorn Aura ", IERC20Metadata(address(asset)).name(), " Adapter"),
+      string.concat("VaultCraft Aura ", IERC20Metadata(address(asset)).name(), " Adapter"),
       "name"
     );
     assertEq(
       IERC20Metadata(address(adapter)).symbol(),
-      string.concat("popAu-", IERC20Metadata(address(asset)).symbol()),
+      string.concat("vcAu-", IERC20Metadata(address(asset)).symbol()),
       "symbol"
     );
 

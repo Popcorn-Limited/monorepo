@@ -87,12 +87,12 @@ contract OusdAdapterTest is AbstractAdapterTest {
     assertEq(adapter.asset(), address(asset), "asset");
     assertEq(
       IERC20Metadata(address(adapter)).name(),
-      string.concat("Popcorn Ousd ", IERC20Metadata(address(asset)).name(), " Adapter"),
+      string.concat("VaultCraft Ousd ", IERC20Metadata(address(asset)).name(), " Adapter"),
       "name"
     );
     assertEq(
       IERC20Metadata(address(adapter)).symbol(),
-      string.concat("popO-", IERC20Metadata(address(asset)).symbol()),
+      string.concat("vcO-", IERC20Metadata(address(asset)).symbol()),
       "symbol"
     );
 

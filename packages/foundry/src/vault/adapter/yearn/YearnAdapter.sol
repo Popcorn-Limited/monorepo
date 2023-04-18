@@ -50,11 +50,11 @@ contract YearnAdapter is AdapterBase {
         yVault = VaultAPI(IYearnRegistry(externalRegistry).latestVault(_asset));
 
         _name = string.concat(
-            "Popcorn Yearn ",
+            "VaultCraft Yearn ",
             IERC20Metadata(asset()).name(),
             " Adapter"
         );
-        _symbol = string.concat("popY-", IERC20Metadata(asset()).symbol());
+        _symbol = string.concat("vcY-", IERC20Metadata(asset()).symbol());
 
         maxLoss = abi.decode(yearnData, (uint256));
         if (maxLoss > 10_000) revert MaxLossTooHigh();

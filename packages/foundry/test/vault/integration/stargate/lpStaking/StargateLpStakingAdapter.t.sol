@@ -89,12 +89,12 @@ contract StargateLpStakingAdapterTest is AbstractAdapterTest {
   function verify_adapterInit() public override {
     assertEq(
       IERC20Metadata(address(adapter)).name(),
-      string.concat("Popcorn Stargate LpStaking ", IERC20Metadata(address(asset)).name(), " Adapter"),
+      string.concat("VaultCraft Stargate LpStaking ", IERC20Metadata(address(asset)).name(), " Adapter"),
       "name"
     );
     assertEq(
       IERC20Metadata(address(adapter)).symbol(),
-      string.concat("popStgLpS-", IERC20Metadata(address(asset)).symbol()),
+      string.concat("vcStgLpS-", IERC20Metadata(address(asset)).symbol()),
       "symbol"
     );
 

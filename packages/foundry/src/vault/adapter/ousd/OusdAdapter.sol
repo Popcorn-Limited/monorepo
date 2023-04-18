@@ -44,8 +44,8 @@ contract OusdAdapter is AdapterBase, WithRewards {
 
     wOusd = IERC4626(_wousd);
 
-    _name = string.concat("Popcorn Ousd ", IERC20Metadata(asset()).name(), " Adapter");
-    _symbol = string.concat("popO-", IERC20Metadata(asset()).symbol());
+    _name = string.concat("VaultCraft Ousd ", IERC20Metadata(asset()).name(), " Adapter");
+    _symbol = string.concat("vcO-", IERC20Metadata(asset()).symbol());
 
     IERC20(asset()).approve(address(wOusd), type(uint256).max);
   }

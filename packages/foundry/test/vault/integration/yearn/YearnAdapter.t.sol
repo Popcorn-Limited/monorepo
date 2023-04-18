@@ -157,7 +157,7 @@ contract YearnAdapterTest is AbstractAdapterTest {
         assertEq(
             IERC20Metadata(address(adapter)).name(),
             string.concat(
-                "Popcorn Yearn ",
+                "VaultCraft Yearn ",
                 IERC20Metadata(address(asset)).name(),
                 " Adapter"
             ),
@@ -165,7 +165,7 @@ contract YearnAdapterTest is AbstractAdapterTest {
         );
         assertEq(
             IERC20Metadata(address(adapter)).symbol(),
-            string.concat("popY-", IERC20Metadata(address(asset)).symbol()),
+            string.concat("vcY-", IERC20Metadata(address(asset)).symbol()),
             "symbol"
         );
 

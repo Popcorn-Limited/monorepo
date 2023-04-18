@@ -86,12 +86,12 @@ contract FluxAdapterTest is AbstractAdapterTest {
     assertEq(adapter.asset(), fToken.underlying(), "asset");
     assertEq(
       IERC20Metadata(address(adapter)).name(),
-      string.concat("Popcorn CompoundV2 ", IERC20Metadata(address(asset)).name(), " Adapter"),
+      string.concat("VaultCraft CompoundV2 ", IERC20Metadata(address(asset)).name(), " Adapter"),
       "name"
     );
     assertEq(
       IERC20Metadata(address(adapter)).symbol(),
-      string.concat("popCv2-", IERC20Metadata(address(asset)).symbol()),
+      string.concat("vcCv2-", IERC20Metadata(address(asset)).symbol()),
       "symbol"
     );
 

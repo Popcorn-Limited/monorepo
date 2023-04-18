@@ -85,12 +85,12 @@ contract AaveV2AdapterTest is AbstractAdapterTest {
     assertEq(adapter.asset(), aToken.UNDERLYING_ASSET_ADDRESS(), "asset");
     assertEq(
       IERC20Metadata(address(adapter)).name(),
-      string.concat("Popcorn AaveV2 ", IERC20Metadata(address(asset)).name(), " Adapter"),
+      string.concat("VaultCraft AaveV2 ", IERC20Metadata(address(asset)).name(), " Adapter"),
       "name"
     );
     assertEq(
       IERC20Metadata(address(adapter)).symbol(),
-      string.concat("popAv2-", IERC20Metadata(address(asset)).symbol()),
+      string.concat("vcAv2-", IERC20Metadata(address(asset)).symbol()),
       "symbol"
     );
 

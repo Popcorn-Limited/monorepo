@@ -78,12 +78,12 @@ contract ConvexAdapterTest is AbstractAdapterTest {
     assertEq(adapter.asset(), address(asset), "asset");
     assertEq(
       IERC20Metadata(address(adapter)).name(),
-      string.concat("Popcorn Convex ", IERC20Metadata(address(asset)).name(), " Adapter"),
+      string.concat("VaultCraft Convex ", IERC20Metadata(address(asset)).name(), " Adapter"),
       "name"
     );
     assertEq(
       IERC20Metadata(address(adapter)).symbol(),
-      string.concat("popCvx-", IERC20Metadata(address(asset)).symbol()),
+      string.concat("vcCvx-", IERC20Metadata(address(asset)).symbol()),
       "symbol"
     );
 

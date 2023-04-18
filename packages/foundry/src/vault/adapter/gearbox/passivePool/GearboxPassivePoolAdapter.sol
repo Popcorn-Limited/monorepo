@@ -54,8 +54,8 @@ contract GearboxPassivePoolAdapter is AdapterBase {
 
     if (asset() != poolService.underlyingToken()) revert WrongPool();
 
-    _name = string.concat("Popcorn GearboxPassivePool ", IERC20Metadata(asset()).name(), " Adapter");
-    _symbol = string.concat("popGPP-", IERC20Metadata(asset()).symbol());
+    _name = string.concat("VaultCraft GearboxPassivePool ", IERC20Metadata(asset()).name(), " Adapter");
+    _symbol = string.concat("vcGPP-", IERC20Metadata(asset()).symbol());
 
     IERC20(asset()).safeApprove(address(poolService), type(uint256).max);
   }
