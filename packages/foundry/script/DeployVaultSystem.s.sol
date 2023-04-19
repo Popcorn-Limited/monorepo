@@ -85,63 +85,63 @@ contract DeployVaultSystem is Script {
 
     vm.startBroadcast(deployerPrivateKey);
 
-    stakingImpl = address(new MultiRewardStaking());
-    yearnImpl = address(new YearnAdapter());
-    beefyImpl = address(new BeefyAdapter());
-    strategyImpl = address(new MockStrategy());
-    vaultImpl = address(new Vault());
+    // stakingImpl = address(new MultiRewardStaking());
+    // yearnImpl = address(new YearnAdapter());
+    // beefyImpl = address(new BeefyAdapter());
+    // strategyImpl = address(new MockStrategy());
+    // vaultImpl = address(new Vault());
 
-    adminProxy = IAdminProxy(address(new AdminProxy(deployer)));
+    // adminProxy = IAdminProxy(address(new AdminProxy(deployer)));
 
-    permissionRegistry = IPermissionRegistry(address(new PermissionRegistry(address(adminProxy))));
-    vaultRegistry = IVaultRegistry(address(new VaultRegistry(address(adminProxy))));
-    escrow = IMultiRewardEscrow(address(new MultiRewardEscrow(address(adminProxy), feeRecipient)));
-    router = new VaultRouter(vaultRegistry);
+    // permissionRegistry = IPermissionRegistry(address(new PermissionRegistry(address(adminProxy))));
+    // vaultRegistry = IVaultRegistry(address(new VaultRegistry(address(adminProxy))));
+    // escrow = IMultiRewardEscrow(address(new MultiRewardEscrow(address(adminProxy), feeRecipient)));
+    // router = new VaultRouter(vaultRegistry);
 
-    deployDeploymentController();
-    deploymentController.nominateNewOwner(address(adminProxy));
-    adminProxy.execute(address(deploymentController), abi.encodeWithSelector(IOwned.acceptOwnership.selector, ""));
+    // deployDeploymentController();
+    // deploymentController.nominateNewOwner(address(adminProxy));
+    // adminProxy.execute(address(deploymentController), abi.encodeWithSelector(IOwned.acceptOwnership.selector, ""));
 
-    controller = new VaultController(
-      deployer,
-      adminProxy,
-      deploymentController,
-      vaultRegistry,
-      permissionRegistry,
-      escrow
-    );
+    // controller = new VaultController(
+    //   deployer,
+    //   adminProxy,
+    //   deploymentController,
+    //   vaultRegistry,
+    //   permissionRegistry,
+    //   escrow
+    // );
 
-    adminProxy.nominateNewOwner(address(controller));
-    controller.acceptAdminProxyOwnership();
+    // adminProxy.nominateNewOwner(address(controller));
+    // controller.acceptAdminProxyOwnership();
 
-    bytes32[] memory templateCategories = new bytes32[](4);
-    templateCategories[0] = "Vault";
-    templateCategories[1] = "Adapter";
-    templateCategories[2] = "Strategy";
-    templateCategories[3] = "Staking";
-    controller.addTemplateCategories(templateCategories);
+    // bytes32[] memory templateCategories = new bytes32[](4);
+    // templateCategories[0] = "Vault";
+    // templateCategories[1] = "Adapter";
+    // templateCategories[2] = "Strategy";
+    // templateCategories[3] = "Staking";
+    // controller.addTemplateCategories(templateCategories);
 
-    addTemplate("Staking", "MultiRewardStaking", stakingImpl, address(0), true, true);
-    addTemplate("Adapter", "YearnAdapter", yearnImpl, address(0x50c1a2eA0a861A967D9d0FFE2AE4012c2E053804), true, true);
-    addTemplate("Adapter", "BeefyAdapter", beefyImpl, address(permissionRegistry), true, true);
-    addTemplate("Vault", "V1", vaultImpl, address(0), true, true);
+    // addTemplate("Staking", "MultiRewardStaking", stakingImpl, address(0), true, true);
+    // addTemplate("Adapter", "YearnAdapter", yearnImpl, address(0x50c1a2eA0a861A967D9d0FFE2AE4012c2E053804), true, true);
+    // addTemplate("Adapter", "BeefyAdapter", beefyImpl, address(permissionRegistry), true, true);
+    // addTemplate("Vault", "V1", vaultImpl, address(0), true, true);
 
-    emit log("!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
-    emit log_named_address("VaultController: ", address(controller));
-    emit log_named_address("VaultRegistry: ", address(vaultRegistry));
-    emit log_named_address("VaultRouter: ", address(router));
-    emit log("!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+    // emit log("!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+    // emit log_named_address("VaultController: ", address(controller));
+    // emit log_named_address("VaultRegistry: ", address(vaultRegistry));
+    // emit log_named_address("VaultRouter: ", address(router));
+    // emit log("!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
 
-    // approve pop for staking rewards
-    pop.approve(address(controller), 2000 ether);
+    // // approve pop for staking rewards
+    // pop.approve(address(controller), 2000 ether);
 
-    // approve usdc for inital deposit
-    IERC20(0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48).approve(address(controller), 100e6);
+    // // approve usdc for inital deposit
+    // IERC20(0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48).approve(address(controller), 100e6);
 
     // deploy usdc yearn vault
     address yearn = controller.deployVault(
       VaultInitParams({
-        asset: IERC20(0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48),
+        asset: IERC20(0x6B175474E89094C44Da98b954EedeAC495271d0F),
         adapter: IERC4626(address(0)),
         fees: VaultFees({ deposit: 0, withdrawal: 0, management: 0, performance: 0 }),
         feeRecipient: feeRecipient,
@@ -150,8 +150,8 @@ contract DeployVaultSystem is Script {
       }),
       DeploymentArgs({ id: "YearnAdapter", data: "" }),
       DeploymentArgs({ id: "", data: "" }),
-      true,
-      abi.encode(address(pop), 0.0001 ether, 1000 ether, false, 0, 0, 0),
+      false,
+      "",
       VaultMetadata({
         vault: address(0),
         staking: address(0),
@@ -164,64 +164,64 @@ contract DeployVaultSystem is Script {
       100e6
     );
 
-    // approve and stake vault
-    VaultMetadata memory yearnMetadata = vaultRegistry.getVault(yearn);
-    IERC20(yearn).approve(yearnMetadata.staking, 100e15);
-    IMultiRewardStaking(yearnMetadata.staking).deposit(100e15, deployer);
-
-    // deposit usdc and stake through the router
-    IERC20(0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48).approve(address(router), 100e6);
-    router.depositAndStake(IERC4626(yearn), 100e6, deployer);
-
-    IERC20(yearnMetadata.staking).approve(address(router), 10e15);
-    router.redeemAndWithdraw(IERC4626(yearn), 10e15, deployer, deployer);
-
     emit log_named_address("YearnVault: ", yearn);
 
-    // beefyVault stEth/eth = 0xa7739fd3d12ac7F16D8329AF3Ee407e19De10D8D
-    setPermission(0xa7739fd3d12ac7F16D8329AF3Ee407e19De10D8D, true, false);
-    // beefyBooster = 0xAe3F0C61F3Dc48767ccCeF3aD50b29437BE4b1a4
-    setPermission(0xAe3F0C61F3Dc48767ccCeF3aD50b29437BE4b1a4, true, false);
+    // // approve and stake vault
+    // VaultMetadata memory yearnMetadata = vaultRegistry.getVault(yearn);
+    // IERC20(yearn).approve(yearnMetadata.staking, 100e15);
+    // IMultiRewardStaking(yearnMetadata.staking).deposit(100e15, deployer);
 
-    // approve stEth/eth for inital deposit
-    IERC20(0x06325440D014e39736583c165C2963BA99fAf14E).approve(address(controller), 10e18);
+    // // deposit usdc and stake through the router
+    // IERC20(0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48).approve(address(router), 100e6);
+    // router.depositAndStake(IERC4626(yearn), 100e6, deployer);
 
-    // crvSthEth/Eth = 0x06325440D014e39736583c165C2963BA99fAf14E
-    // deploy stEth/eth beefy vault
-    address beefy = controller.deployVault(
-      VaultInitParams({
-        asset: IERC20(0x06325440D014e39736583c165C2963BA99fAf14E),
-        adapter: IERC4626(address(0)),
-        fees: VaultFees({ deposit: 0, withdrawal: 0, management: 0, performance: 0 }),
-        feeRecipient: 0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266,
-        depositLimit: type(uint256).max,
-        owner: 0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266
-      }),
-      DeploymentArgs({
-        id: "BeefyAdapter",
-        data: abi.encode(0xa7739fd3d12ac7F16D8329AF3Ee407e19De10D8D, 0xAe3F0C61F3Dc48767ccCeF3aD50b29437BE4b1a4)
-      }),
-      DeploymentArgs({ id: "", data: "" }),
-      true,
-      abi.encode(address(pop), 0.0001 ether, 1000 ether, false, 0, 0, 0),
-      VaultMetadata({
-        vault: address(0),
-        staking: address(0),
-        creator: 0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266,
-        metadataCID: "QmbWqxBEKC3P8tqsKc98xmWNzrzDtRLMiMPL8wBuTGsMnR",
-        swapTokenAddresses: swapTokenAddresses,
-        swapAddress: address(0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48),
-        exchange: uint256(1)
-      }),
-      10e18
-    );
+    // IERC20(yearnMetadata.staking).approve(address(router), 10e15);
+    // router.redeemAndWithdraw(IERC4626(yearn), 10e15, deployer, deployer);
 
-    // approve and stake vault
-    VaultMetadata memory beefyMetadata = vaultRegistry.getVault(beefy);
-    IERC20(beefy).approve(beefyMetadata.staking, 10e27);
-    IMultiRewardStaking(beefyMetadata.staking).deposit(10e27, deployer);
+    // // beefyVault stEth/eth = 0xa7739fd3d12ac7F16D8329AF3Ee407e19De10D8D
+    // setPermission(0xa7739fd3d12ac7F16D8329AF3Ee407e19De10D8D, true, false);
+    // // beefyBooster = 0xAe3F0C61F3Dc48767ccCeF3aD50b29437BE4b1a4
+    // setPermission(0xAe3F0C61F3Dc48767ccCeF3aD50b29437BE4b1a4, true, false);
 
-    emit log_named_address("BeefyVault: ", beefy);
+    // // approve stEth/eth for inital deposit
+    // IERC20(0x06325440D014e39736583c165C2963BA99fAf14E).approve(address(controller), 10e18);
+
+    // // crvSthEth/Eth = 0x06325440D014e39736583c165C2963BA99fAf14E
+    // // deploy stEth/eth beefy vault
+    // address beefy = controller.deployVault(
+    //   VaultInitParams({
+    //     asset: IERC20(0x06325440D014e39736583c165C2963BA99fAf14E),
+    //     adapter: IERC4626(address(0)),
+    //     fees: VaultFees({ deposit: 0, withdrawal: 0, management: 0, performance: 0 }),
+    //     feeRecipient: 0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266,
+    //     depositLimit: type(uint256).max,
+    //     owner: 0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266
+    //   }),
+    //   DeploymentArgs({
+    //     id: "BeefyAdapter",
+    //     data: abi.encode(0xa7739fd3d12ac7F16D8329AF3Ee407e19De10D8D, 0xAe3F0C61F3Dc48767ccCeF3aD50b29437BE4b1a4)
+    //   }),
+    //   DeploymentArgs({ id: "", data: "" }),
+    //   true,
+    //   abi.encode(address(pop), 0.0001 ether, 1000 ether, false, 0, 0, 0),
+    //   VaultMetadata({
+    //     vault: address(0),
+    //     staking: address(0),
+    //     creator: 0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266,
+    //     metadataCID: "QmbWqxBEKC3P8tqsKc98xmWNzrzDtRLMiMPL8wBuTGsMnR",
+    //     swapTokenAddresses: swapTokenAddresses,
+    //     swapAddress: address(0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48),
+    //     exchange: uint256(1)
+    //   }),
+    //   10e18
+    // );
+
+    // // approve and stake vault
+    // VaultMetadata memory beefyMetadata = vaultRegistry.getVault(beefy);
+    // IERC20(beefy).approve(beefyMetadata.staking, 10e27);
+    // IMultiRewardStaking(beefyMetadata.staking).deposit(10e27, deployer);
+
+    // emit log_named_address("BeefyVault: ", beefy);
 
     vm.stopBroadcast();
   }
