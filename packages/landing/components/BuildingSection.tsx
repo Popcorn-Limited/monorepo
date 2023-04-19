@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import SliderContainer from "./SliderContainer";
+import Link from "next/link";
 
 export default function BuildingSection() {
 
@@ -62,7 +63,12 @@ export default function BuildingSection() {
                 <p className="text-black text-3xl"><b>Governed by</b></p>
                 <p className="text-black text-3xl -mt-2">PopcornDAO</p>
                 <p className="text-lg mt-6 mb-4 md:w-[70%] w-[90%]">Popcorn is governed by POP stakers who use their vlPOP to vote on  important issues to help evolve the protocol and the DAO.</p>
-                <p className="bg-white rounded-3xl text-black px-6 py-3 w-fit font-medium cursor-pointer">Governance Forum</p>
+                <Link
+                  href="https://forum.pop.network"
+                  className="bg-white rounded-3xl text-black px-6 py-3 w-fit font-medium cursor-pointer"
+                >
+                  Governance Forum
+                </Link>
               </div>
               <div className="w-fit hidden md:flex flex-row gap-x-3 justify-end xl:w-[60%]">
                 <img src="/images/face1.svg" className="h-auto w-[19vw]" />

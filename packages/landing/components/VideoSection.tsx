@@ -2,6 +2,7 @@ import { ChevronLeftIcon, ChevronRightIcon } from "@heroicons/react/24/solid";
 import SecondaryActionButton from "./Common/SecondaryActionButton";
 import HeroCards from "./HeroCards";
 import { useState } from "react";
+import Link from "next/link";
 
 export default function VideoSection() {
 
@@ -85,16 +86,36 @@ export default function VideoSection() {
 
             <div className="flex flex-col w-[338px] mb-[100px] ml-[24px] smmd:mb-12 xl:mb-36">
               <p className="text-lg">It&#39;s now easy to deposit your crypto, optimise your yield, and create positive global impact at the same time.</p>
-              <div className="flex flex-row border-x-0 border-y-customLightGray border-b-2">
-                <p className="px-1 py-2 w-full mt-2 leading-7 font-bold">Create Account</p>
+              <Link
+                href="https://app.pop.network/sweet-vaults"
+                passHref
+                className="flex flex-row border-x-0 border-y-customLightGray border-b-2"
+              >
+                <p className="px-1 py-2 w-full mt-2 leading-7 font-bold">Deposit Now</p>
                 <SecondaryActionButton label="" />
-              </div>
+              </Link>
             </div>
 
-            <div className="w-full h-full flex-row flex gap-x-6 w-screen xl:w-[1800px] px-[24px]">
-              <HeroCards title="Deposit" color="bg-[#EBE7D4]" imgUri="/images/blackCircles.svg" description="Connect your web3 wallet, deposit your stablecoins and blue chip crypto assets into Popcorn’s DeFi products." />
-              <HeroCards title="Do Well" color="bg-[#121A27]" textColor="text-white" imgUri="/images/whiteSmile.svg" description="Optimize your returns with non-custodial vault strategies and staking products." />
-              <HeroCards title="Do Good" color="bg-[#FFE650]" imgUri="/images/blackSmiles.svg" description="Fund community-selected nonprofit and social impact organisations at no additional cost." />
+            <div className="w-full h-full flex-row flex gap-x-6 xl:w-[1800px] px-[24px]">
+              <HeroCards
+                title="Deposit"
+                color="bg-[#EBE7D4]"
+                imgUri="/images/blackCircles.svg"
+                description="Connect your web3 wallet, deposit your stablecoins and blue chip crypto assets into Popcorn’s DeFi products."
+              />
+              <HeroCards
+                title="Do Well"
+                color="bg-[#121A27]"
+                textColor="text-white"
+                imgUri="/images/whiteSmile.svg"
+                description="Optimize your returns with non-custodial vault strategies and staking products."
+              />
+              <HeroCards
+                title="Do Good"
+                color="bg-[#FFE650]"
+                imgUri="/images/blackSmiles.svg"
+                description="Fund community-selected nonprofit and social impact organisations at no additional cost."
+              />
             </div>
 
           </div>

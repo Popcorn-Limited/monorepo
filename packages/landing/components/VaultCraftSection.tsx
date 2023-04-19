@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import SecondaryActionButton from "./Common/SecondaryActionButton";
 import SliderContainer from "./SliderContainer";
+import Link from "next/link";
 
 export default function VaultCraftSection() {
 
@@ -60,10 +61,14 @@ export default function VaultCraftSection() {
           <div className="w-full flex smmd:flex-row flex-col-reverse justify-between items-start smmd:mt-24 mt-6 xl:mx-auto xl:overflow-x-hidden xl:max-w-[1800px]">
             <div className={`${isVisible ? 'smmd:translate-x-8' : 'smmd:-translate-x-full'} transition-transform delay-[200ms] duration-[700ms] flex flex-col smmd:w-[338px] xl:w-[460px] w-[80%] self-end smmd:self-start mb-[100px] mr-8 smmd:mr-44 mt-10 smmd:mt-0`}>
               <p className="text-lg text-white">We are working in a common permissionless infrastructure and tooling for creating automated asset strategies</p>
-              <div className="flex flex-row border-x-0 border-y-customLightGray border-b-2">
+              <Link
+                href="https://medium.com/popcorndao/vaultcraft-by-popcorn-7490d2b1e419"
+                passHref
+                className="flex flex-row border-x-0 border-y-customLightGray border-b-2"
+              >
                 <p className="px-1 py-2 w-full mt-2 leading-7 font-bold text-white">I want to know more</p>
                 <SecondaryActionButton label="" customArrowColor="FFFFFF" />
-              </div>
+              </Link>
             </div>
             <div className={`${isVisible ? 'smmd:-translate-x-8' : 'smmd:translate-x-full'} bg-black transition-transform w-full smmd:w-fit delay-[200ms] duration-[800ms] grow h-[230px] rounded-xl xl:w-[1400px] xl:h-[700px] smmd:h-[450px] ml-8 smmd:ml-0`} >
               <video className="w-full h-full object-cover cover rounded-xl" id='video' controls poster='/images/vaultCraftThumbnail.png'>
