@@ -7,6 +7,7 @@ import { Owned } from "../utils/Owned.sol";
 import { IERC20Upgradeable as IERC20 } from "openzeppelin-contracts-upgradeable/token/ERC20/IERC20Upgradeable.sol";
 
 contract FeeRecipientProxy is Owned {
+  
   constructor(address owner) Owned(owner) {}
 
   uint256 public approvals;

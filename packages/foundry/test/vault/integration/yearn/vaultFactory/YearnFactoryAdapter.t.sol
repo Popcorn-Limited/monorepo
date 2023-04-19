@@ -116,7 +116,7 @@ contract YearnFactoryAdapterTest is AbstractAdapterTest {
 
   // NOTE - The yearn adapter suffers often from an off-by-one error which "steals" 1 wei from the user
   function test__RT_deposit_withdraw() public override {
-    _mintFor(minFuzz, bob);
+    _mintAssetAndApproveForAdapter(minFuzz, bob);
 
     vm.startPrank(bob);
     uint256 shares1 = adapter.deposit(minFuzz, bob);
@@ -130,7 +130,7 @@ contract YearnFactoryAdapterTest is AbstractAdapterTest {
 
   // NOTE - The yearn adapter suffers often from an off-by-one error which "steals" 1 wei from the user
   function test__RT_mint_withdraw() public override {
-    _mintFor(adapter.previewMint(minFuzz), bob);
+    _mintAssetAndApproveForAdapter(adapter.previewMint(minFuzz), bob);
 
     vm.startPrank(bob);
     uint256 assets = adapter.mint(minFuzz, bob);
@@ -142,7 +142,7 @@ contract YearnFactoryAdapterTest is AbstractAdapterTest {
   }
 
   function test__RT_mint_redeem() public override {
-    _mintFor(adapter.previewMint(minFuzz), bob);
+    _mintAssetAndApproveForAdapter(adapter.previewMint(minFuzz), bob);
 
     vm.startPrank(bob);
     uint256 assets1 = adapter.mint(minFuzz, bob);
@@ -157,7 +157,7 @@ contract YearnFactoryAdapterTest is AbstractAdapterTest {
     //////////////////////////////////////////////////////////////*/
 
   function test__unpause() public override {
-    _mintFor(minFuzz * 3, bob);
+    _mintAssetAndApproveForAdapter(minFuzz * 3, bob);
 
     vm.prank(bob);
     adapter.deposit(minFuzz, bob);
