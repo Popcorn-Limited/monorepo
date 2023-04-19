@@ -37,10 +37,10 @@ export default function VaultCraftSection() {
         </SliderContainer>
       </div>
       <section className="flex w-screen h-full flex-col relative justify-start">
-        <div style={{ background: 'linear-gradient(270deg, rgba(0, 0, 0, 5e-05) 50%, rgba(0, 0, 0, 0.25) 100%), linear-gradient(180deg, rgba(0, 0, 0, 0.5) 0.09%, rgba(0, 0, 0, 0.0001) 100%), url(/images/Rectangle.svg)', 'WebkitBackgroundSize': 'cover' }} className="relative top-0 left-0 w-screen grow smmd:pb-44 pb-0">
+        <div className="relative top-0 left-0 w-screen grow smmd:pb-44 pb-0 bg-[#121A27]">
 
           <div className="w-full h-fit flex-row flex justify-between items-end xl:mx-auto xl:overflow-x-hidden xl:max-w-[1800px]">
-            <div id="slide-in-element" className={`transition-transform mt-[80px] smmd:w-[60vw] xl:max-w-[1400px] w-full duration-[900ms] ${isVisible ? 'smmd:translate-x-8' : 'smmd:-translate-x-full'}`}>
+            <div id="slide-in-element" className={`transition-transform mt-[80px] smmd:w-[60vw] xl:max-w-[1400px] w-full duration-[1200ms] ${isVisible ? 'smmd:translate-x-8' : 'smmd:-translate-x-full'}`}>
               <h1 className="mb-6 px-8 smmd:px-0 leading-[60px] text-white smmd:leading-[72px] font-normal min-h-[80px] text-left text-4xl smmd:text-8xl lglaptop:text-[96px] lglaptop:leading-[90px] smmd:mt-0 ">
                 Easily create tailored asset strategies for your crypto with <b>Vaultcraft</b>
               </h1>
@@ -66,7 +66,7 @@ export default function VaultCraftSection() {
               </div>
             </div>
             <div className={`${isVisible ? 'smmd:-translate-x-8' : 'smmd:translate-x-full'} bg-black transition-transform w-full smmd:w-fit delay-[200ms] duration-[800ms] grow h-[230px] rounded-xl xl:w-[1400px] xl:h-[700px] smmd:h-[450px] ml-8 smmd:ml-0`} >
-              <video className="w-full h-full object-cover cover rounded-3xl" id='video' controls poster='/images/vaultVideoPreview.jpg'>
+              <video className="w-full h-full object-cover cover rounded-xl" id='video' controls poster='/images/vaultCraftThumbnail.png'>
                 <source src="/videos/Twitter_Video.mp4" type="video/mp4" />
               </video>
             </div>

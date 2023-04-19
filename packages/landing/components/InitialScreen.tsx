@@ -39,9 +39,17 @@ export default function InitialScreen() {
               </span>
             </div>
             <div className="flex smmd:flex-row items-start smmd:w-full smmd:justify-between flex-col gap-y-20 mb-16 smmd:mb-24 smmd:items-end">
-              <StatusWithLabel label="TVL" content={<p className="text-gray-900 text-8xl mt-4">$20M</p>} infoIconProps={{ id: 'idx', title: 'TVL', content: <p className="text-gray-900 text-md">This is the total amount locked on Popcorns smart contracts</p> }} />
+              <StatusWithLabel
+                label="TVL"
+                content={<p className="text-gray-900 text-8xl mt-4">$3.4M</p>}
+                infoIconProps={{
+                  id: 'idx',
+                  title: 'TVL',
+                  content: <p className="text-gray-900 text-md">This is the total amount locked on Popcorns smart contracts</p>
+                }}
+              />
               <div className="smmd:align-end max-w-[500px] smmd:flex smmd:flex-col smmd:h-full smmd:justify-end">
-                <p className="smmd:text-right text-left text-lg">Popcorn is a ReFi yield-optimizing protocol with automated asset strategies that simultaneously fund public goods</p>
+                <p className="smmd:text-right text-left text-xl">Popcorn is a ReFi yield-optimizing protocol with automated asset strategies that simultaneously fund public goods</p>
               </div>
             </div>
 

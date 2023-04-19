@@ -8,14 +8,14 @@ export default function AuditSection() {
       <div className="flex-row w-full h-full gap-x-9 md:flex hidden">
         <div className="w-full flex-col flex">
           <p className="text-7xl mb-4">Audited</p>
-          <p className="text-lg">Our smart contract has been audited by the best in the business.</p>
+          <p className="text-primaryDark">Our smart contract has been audited by the best in the business.</p>
         </div>
         <div className="w-full flex-col flex">
           <div className="w-[100%] pb-[100%] relative flex flex-col justify-center items-center rounded-lg bg-[#FA5A6E] mb-6">
             <img src="/images/icons/blocksec-logo.png" className='absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2' />
           </div>
           <p className="text-4xl mb-4">BlockSec</p>
-          <p className="text-xl">Zokyo is an end-to-end security resource that provides distinguishable security auditing and penetration testing services alongside prominent vulnerability assessments.</p>
+          <p className="text-primaryDark">Zokyo is an end-to-end security resource that provides distinguishable security auditing and penetration testing services alongside prominent vulnerability assessments.</p>
         </div>
         <div className="w-full flex-col flex">
 
@@ -23,7 +23,7 @@ export default function AuditSection() {
             <img src="/images/icons/c4-logo.png" className='absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2' />
           </div>
           <p className="text-4xl mb-4">Code4rena</p>
-          <p>Neque porro quisquam est qui dolorem ipsum quia dolor sit amet, consectetur, adipisci velit Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt.</p>
+          <p className="text-primaryDark">Neque porro quisquam est qui dolorem ipsum quia dolor sit amet, consectetur, adipisci velit Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt.</p>
         </div>
         <div className="w-full flex-col flex">
 
@@ -31,7 +31,7 @@ export default function AuditSection() {
             <img src="/images/icons/immunifi-logo.png" className='absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2' />
           </div>
           <p className="text-4xl mb-4">Immunefi</p>
-          <p>Immunefi is the leading bug bounty platform for Web3.</p>
+          <p className="text-primaryDark">Immunefi is the leading bug bounty platform for Web3.</p>
 
         </div>
       </div>

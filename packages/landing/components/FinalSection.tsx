@@ -37,7 +37,7 @@ export default function FinalSection() {
             </div>
           </div>
         </div>
-        <div className="flex flex-col grow w-full mt-20 smmd:mt-30">
+        <div className="flex flex-col grow w-full mt-20 smmd:mt-30 divide-y divide-primaryLight">
           <FaqCard title="What is Popcorn?" description="xxx" />
           <FaqCard title="How does Popcorn work?" description="xxx" />
           <FaqCard title="Can I create a savings account with Popcorn?" description="xxx" />
