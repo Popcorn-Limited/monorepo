@@ -5,7 +5,7 @@ import Link from "next/link";
 export interface ProductProps {
   title: JSX.Element;
   description: string;
-  stats: [StatusWithLabelProps] | [StatusWithLabelProps, StatusWithLabelProps];
+  stats: StatusWithLabelProps[];
   route: string;
   customContent?: JSX.Element;
   badge?: string;
@@ -14,9 +14,8 @@ export interface ProductProps {
 export default function Product({ title, description, stats, badge, customContent, route }: ProductProps): JSX.Element {
   return (
     <Link
-      target="_blank"
       href={route}
-      className="group border rounded md:w-1/3 xl:w-screen max-w-[25rem] lg:max-w-[21.5rem] flex relative flex-col bg-[#FAF9F4] border-warmGray border-opacity-75 items-center gap-6 md:gap-8 p-7"
+      className="group border rounded smmd:w-1/3 xl:w-screen lg:max-w-[21.5rem] relative flex flex-col bg-[#FAF9F4] border-warmGray border-opacity-75 .smmd:items-center gap-6 md:gap-8 p-7"
     >
       {badge && (
         <img
@@ -34,9 +33,8 @@ export default function Product({ title, description, stats, badge, customConten
 
       <div className="flex flex-grow items-center justify-end w-full my-8">{customContent}</div>
       <div className="flex justify-between w-full">
-        <StatusWithLabel content={stats[0].content} label={stats[0].label} infoIconProps={stats[0].infoIconProps} />
-        {stats.length === 2 && (
-          <StatusWithLabel content={stats[1].content} label={stats[1].label} infoIconProps={stats[1].infoIconProps} />
+        {stats.map(stat =>
+          <StatusWithLabel content={stat.content} label={stat.label} infoIconProps={stat.infoIconProps} />
         )}
       </div>
     </Link>

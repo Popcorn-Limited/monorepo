@@ -19,7 +19,6 @@ const IndexPage = () => {
       <NoSSR>
         <Hero />
         <Products />
-        <SecuritySection />
       </NoSSR>
     </main>
   );

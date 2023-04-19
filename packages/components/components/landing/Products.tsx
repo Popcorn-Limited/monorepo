@@ -37,7 +37,7 @@ const Products = () => {
 
   return (
     <section className="grid grid-cols-12 md:gap-8">
-      <div className="col-span-12 md:col-span-3">
+      <div className="col-span-12 md:col-span-3 flex flex-col justify-between">
         <h6 className="font-medium leading-8 whitespace-nowrap">Our products</h6>
         <span className="relative hidden lg:inline-flex overflow-hidden">
           <span className="opacity-0 py-4">
@@ -52,8 +52,8 @@ const Products = () => {
           </ul>
         </span>
       </div>
-      <div className="col-span-12 md:col-span-8 md:col-start-4 pt-6">
-        <div className="flex flex-row space-x-8">
+      <div className="col-span-12 lg:col-span-9 lg:col-start-4 pt-6">
+        <div className="flex flex-col space-y-8 smmd:space-y-0 smmd:flex-row smmd:space-x-8 xl:justify-between">
           {displaySweetVaults && (
             <Product
               title={
@@ -116,7 +116,7 @@ const Products = () => {
             description="Claim and donate a portion of your staked rewards to the good of the public."
             stats={[
               {
-                label: "",
+                label: "TVL",
                 content: <p>Coming soon</p>,
               },
             ]}
