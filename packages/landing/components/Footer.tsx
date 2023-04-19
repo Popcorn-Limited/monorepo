@@ -18,12 +18,6 @@ export default function Footer() {
             <Link href="https://app.pop.network/sweet-vaults" passHref>
               Sweet Vaults
             </Link>
-            <Link href="https://app.pop.network/ethereum/set/3x" passHref>
-              3X
-            </Link>
-            <Link href="https://app.pop.network/ethereum/set/butter" passHref>
-              Butter
-            </Link>
             <Link href="https://app.pop.network/staking" passHref>
               Staking
             </Link>
@@ -67,12 +61,6 @@ export default function Footer() {
           <p className="text-base font-medium uppercase">Products</p>
           <Link href="https://app.pop.network/sweet-vaults" passHref>
             Sweet Vaults
-          </Link>
-          <Link href="https://app.pop.network/ethereum/set/3x" passHref>
-            3X
-          </Link>
-          <Link href="https://app.pop.network/ethereum/set/butter" passHref>
-            Butter
           </Link>
           <Link href="https://app.pop.network/staking" passHref>
             Staking
