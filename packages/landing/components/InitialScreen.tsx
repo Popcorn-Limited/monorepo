@@ -3,11 +3,25 @@ import MainActionButton from "./Common/MainActionButton";
 import StatusWithLabel from "./Common/StatusWithLabel";
 import DesktopMenu from "./DesktopMenu";
 import SliderContainer from "./SliderContainer";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 export default function InitialScreen() {
   const router = useRouter();
   const [arrowColor, setArrowColor] = useState('black');
+  const [tvl, setTvl] = useState<string>("0");
+
+
+  const formatter: Intl.NumberFormat = Intl.NumberFormat("en", {
+    //@ts-ignore
+    notation: "compact",
+  });
+
+  useEffect(() => {
+    fetch("https://api.llama.fi/protocol/popcorn").then(
+      res => res.json().then(
+        res => setTvl(formatter.format(res.currentChainTvls.Ethereum + res.currentChainTvls.staking))
+      ))
+  }, [])
 
   return (
     <div className="flex-col h-full min-h-[600px] w-screen relative flex 2xl:mx-auto 2xl:max-w-[1800px]">
@@ -41,7 +55,7 @@ export default function InitialScreen() {
             <div className="flex smmd:flex-row items-start smmd:w-full smmd:justify-between flex-col gap-y-20 mb-16 smmd:mb-24 smmd:items-end">
               <StatusWithLabel
                 label="TVL"
-                content={<p className="text-gray-900 text-8xl mt-4">$3.4M</p>}
+                content={<p className="text-gray-900 text-8xl mt-4">$ {tvl}</p>}
                 infoIconProps={{
                   id: 'idx',
                   title: 'TVL',
