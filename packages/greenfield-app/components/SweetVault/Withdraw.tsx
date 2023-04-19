@@ -25,7 +25,7 @@ function Withdraw({
   const [router] = useNamedAccounts(chainId, usesStaking ? ["vaultRouter"] : []);
   const { address: account } = useAccount();
 
-  const { data: allowance } = useAllowance({ address: staking, account: router.address as Address, chainId });
+  const { data: allowance } = useAllowance({ address: staking, account: router?.address as Address, chainId, enabled: usesStaking });
 
   return (
     <div className="flex flex-col">

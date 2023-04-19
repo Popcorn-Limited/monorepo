@@ -2,6 +2,16 @@
   "1": {
     "chainId": "1",
     "contracts": {
+      "0x007318Dc89B314b47609C684260CfbfbcD412864": {
+        "abi": null,
+        "address": "0x007318Dc89B314b47609C684260CfbfbcD412864",
+        "metadata": null
+      },
+      "vaultRegistry": {
+        "abi": null,
+        "address": "0x007318Dc89B314b47609C684260CfbfbcD412864",
+        "metadata": null
+      },
       "0x0000000022D53366457F9d5E68Ec105046FC4383": {
         "abi": null,
         "address": "0x0000000022D53366457F9d5E68Ec105046FC4383",
@@ -2985,6 +2995,54 @@
   "137": {
     "chainId": "137",
     "contracts": {
+      "0x2246c4c469735bCE95C120939b0C078EC37A08D0": {
+        "abi": null,
+        "address": "0x2246c4c469735bCE95C120939b0C078EC37A08D0",
+        "metadata": null
+      },
+      "vaultRegistry": {
+        "abi": null,
+        "address": "0x2246c4c469735bCE95C120939b0C078EC37A08D0",
+        "metadata": null
+      },
+      "0x1205f31718499dbf1fca446663b532ef87481fe1": {
+        "abi": null,
+        "address": "0x1205f31718499dbf1fca446663b532ef87481fe1",
+        "metadata": {
+          "icons": ["/images/tokens/usdc.svg"],
+          "name": "USDC",
+          "priceResolver": "defi_llama",
+          "symbol": "USDC"
+        }
+      },
+      "stgUsdc": {
+        "abi": null,
+        "address": "0x1205f31718499dbf1fca446663b532ef87481fe1",
+        "metadata": {
+          "icons": ["/images/tokens/usdc.svg"],
+          "name": "USDC",
+          "priceResolver": "defi_llama",
+          "symbol": "USDC"
+        }
+      },
+      "0x29e38769f23701a2e4a8ef0492e19da4604be62c": {
+        "abi": null,
+        "address": "0x29e38769f23701a2e4a8ef0492e19da4604be62c",
+        "metadata": {
+          "icons": ["/images/tokens/usdt.webp"],
+          "name": "USDT",
+          "symbol": "USDT"
+        }
+      },
+      "stgUsdt": {
+        "abi": null,
+        "address": "0x29e38769f23701a2e4a8ef0492e19da4604be62c",
+        "metadata": {
+          "icons": ["/images/tokens/usdt.webp"],
+          "name": "USDT",
+          "symbol": "USDT"
+        }
+      },
       "0x078927eF642319963a976008A7B1161059b7E77a": {
         "abi": null,
         "address": "0x078927eF642319963a976008A7B1161059b7E77a",

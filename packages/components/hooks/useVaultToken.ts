@@ -1,10 +1,13 @@
 import { useToken } from "wagmi";
 import useVaultTokenAddress from "./useVaultTokenAddress";
+import { useNamedAccounts } from "@popcorn/components/lib/utils";
 
 function useVaultToken(vaultAddress: string, chainId?: any) {
-  const { data: vaultTokenAddrr } = useVaultTokenAddress(vaultAddress, chainId);
+  const { data: vaultTokenAddr } = useVaultTokenAddress(vaultAddress, chainId);
+  const [asset] = useNamedAccounts(chainId as any, vaultTokenAddr ? [vaultTokenAddr] : []);
+
   return useToken({
-    address: vaultTokenAddrr as any,
+    address: vaultTokenAddr as any,
     chainId,
   });
 }
