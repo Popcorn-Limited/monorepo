@@ -10,10 +10,11 @@ export default function InitialScreen() {
   const [arrowColor, setArrowColor] = useState('black');
 
   return (
-    <div className="flex-col w-full h-full min-h-[600px] w-screen relative flex xl:mx-auto xl:max-w-[1800px]">
+    <div className="flex-col h-full min-h-[600px] w-screen relative flex 2xl:mx-auto 2xl:max-w-[1800px]">
       <DesktopMenu />
       <div className="flex flex-row justify-end absolute right-0 top-96 smmd:top-24">
-        <img alt="" className="smmd:w-[50vw] w-[60vw] smmd:max-w-[700px] smmd:max-h-[80vh]" src="/images/icons/greenPopLogo.svg" />
+        {/* <img alt="" className="smmd:w-[50vw] w-[60vw] smmd:max-w-[700px] smmd:max-h-[80vh]" src="/images/icons/greenPopLogoCut.svg" /> */}
+        <img alt="" className="-mr-56 w-[50vw] max-w-[950px] max-h-[80vh] hidden 2xl:block" src="/images/icons/greenPopLogo.svg" />
       </div>
 
       <section className="relative px-6 smmd:px-8 smmd:mb-0 items-start w-full overflow-scroll">

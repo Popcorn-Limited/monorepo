@@ -21,7 +21,7 @@ export default function ProductDisplay({ number, title, description, image, anim
   }, [])
 
   return (
-    <div onMouseEnter={expandAndAnimate} onMouseLeave={() => setLogoColour('black')} className={`grow flex-col flex border-[#555555] ${number === '03' ? 'smmd:border-y-[1px]' : 'border-0 smmd:border-1 border-y-[1px] smmd:border-b-0 border-b-1 border-t-0 smmd:border-t-1 smmd:border-y-[1px]'}`}>
+    <div onMouseEnter={expandAndAnimate} onMouseLeave={() => setLogoColour('black')} className={`cursor-default grow flex-col flex border-[#555555] ${number === '03' ? 'smmd:border-y-[1px]' : 'border-0 smmd:border-1 border-y-[1px] smmd:border-b-0 border-b-1 border-t-0 smmd:border-t-1 smmd:border-y-[1px]'}`}>
       <div className="flex-row flex smmd:py-10 py-6 items-start">
         <p className={`smmd:mr-24 md:mr-48 mr-4 text-lg smmd:text-black ${textColorClassname}`}>{number}</p>
         <div className="flex flex-col justify-start gap-y-4 grow">

@@ -46,8 +46,7 @@ export default function BuildingSection() {
               <div className="flex-col flex mt-20">
                 <p className="text-white text-xl mb-4">Organizations Supported</p>
                 <div className="flex-row items-center w-fit px-2 gap-x-4 bg-white smmd:flex hidden">
-                  <img src="/images/icons/immunifi-logo.png" className='h-full' />
-                  <img src="/images/icons/blocksec-logo.png" className='h-full' />
+                  <img src="/images/icons/GITCOIN.svg" className='h-12' />
                 </div>
                 <div className="col-span-12 block smmd:col-span-8 smmd:col-start-4 px-6 smmd:px-8 pb-6 smmd:hidden">
                   <SliderContainer slidesToShow={2} settingsOverride={{ arrows: false }}>
