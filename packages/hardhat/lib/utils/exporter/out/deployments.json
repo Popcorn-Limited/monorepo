@@ -1414,9 +1414,9 @@
         "address": "0x2e17b8193566345a2Dd467183526dEdc42d2d5A8",
         "metadata": {
           "icons": ["/images/tokens/usdc.svg"],
-          "name": "USDC",
+          "name": "USDC LP",
           "priceResolver": "defi_llama",
-          "symbol": "USDC"
+          "symbol": "USDC LP"
         }
       },
       "0x2e17b8193566345a2Dd467183526dEdc42d2d5A8": {
@@ -1424,9 +1424,9 @@
         "address": "0x2e17b8193566345a2Dd467183526dEdc42d2d5A8",
         "metadata": {
           "icons": ["/images/tokens/usdc.svg"],
-          "name": "USDC",
+          "name": "USDC LP",
           "priceResolver": "defi_llama",
-          "symbol": "USDC"
+          "symbol": "USDC LP"
         }
       },
       "0x2AE1231E4CF821Af69982c4D04725CD502D8B53E": {
@@ -3010,9 +3010,9 @@
         "address": "0x1205f31718499dbf1fca446663b532ef87481fe1",
         "metadata": {
           "icons": ["/images/tokens/usdc.svg"],
-          "name": "USDC",
+          "name": "USDC LP",
           "priceResolver": "defi_llama",
-          "symbol": "USDC"
+          "symbol": "USDC LP"
         }
       },
       "stgUsdc": {
@@ -3020,9 +3020,9 @@
         "address": "0x1205f31718499dbf1fca446663b532ef87481fe1",
         "metadata": {
           "icons": ["/images/tokens/usdc.svg"],
-          "name": "USDC",
+          "name": "USDC LP",
           "priceResolver": "defi_llama",
-          "symbol": "USDC"
+          "symbol": "USDC LP"
         }
       },
       "0x29e38769f23701a2e4a8ef0492e19da4604be62c": {
@@ -3030,8 +3030,8 @@
         "address": "0x29e38769f23701a2e4a8ef0492e19da4604be62c",
         "metadata": {
           "icons": ["/images/tokens/usdt.webp"],
-          "name": "USDT",
-          "symbol": "USDT"
+          "name": "USDT LP",
+          "symbol": "USDT LP"
         }
       },
       "stgUsdt": {
@@ -3039,8 +3039,8 @@
         "address": "0x29e38769f23701a2e4a8ef0492e19da4604be62c",
         "metadata": {
           "icons": ["/images/tokens/usdt.webp"],
-          "name": "USDT",
-          "symbol": "USDT"
+          "name": "USDT LP",
+          "symbol": "USDT LP"
         }
       },
       "0x078927eF642319963a976008A7B1161059b7E77a": {

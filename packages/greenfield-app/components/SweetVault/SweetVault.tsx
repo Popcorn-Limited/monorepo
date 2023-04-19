@@ -31,14 +31,14 @@ const VAULT_APY_RESOLVER = {
   "Yearn": "yearnAsset"
 }
 
-function AssetWithName({ vault, token, chainId, protocol }: { vault: FetchTokenResult; token: string, chainId: ChainId, protocol: string }) {
+function AssetWithName({ vault, token, chainId, protocol }: { vault: FetchTokenResult; token: FetchTokenResult, chainId: ChainId, protocol: string }) {
   return <div className="flex items-center gap-4">
     <div className="relative">
       <NetworkSticker selectedChainId={chainId} />
-      <TokenIcon token={token} chainId={chainId} imageSize="w-8 h-8" />
+      <TokenIcon token={token?.address} chainId={chainId} imageSize="w-8 h-8" />
     </div>
     <Title level={2} as="span" className="text-gray-900 mt-1">
-      {vault?.name.slice(8, -6)}
+      {token?.name}
     </Title>
     <div className="bg-red-500 bg-opacity-[15%] py-1 px-3 text-gray-800 rounded-md">{protocol}</div>
   </div>
@@ -110,7 +110,7 @@ function SweetVault({ vaultAddress, chainId, searchString, addToTVL, addToDeposi
         header={
           <Fragment>
             <nav className="flex items-center justify-between mb-8 select-none">
-              <AssetWithName vault={vault} token={token?.address} chainId={chainId} protocol={vaultMetadata?.metadata?.protocol?.name} />
+              <AssetWithName vault={vault} token={token} chainId={chainId} protocol={vaultMetadata?.metadata?.protocol?.name} />
               <AnimatedChevron className="hidden md:flex" />
             </nav>
             <div className="flex flex-row flex-wrap items-center mt-0 md:mt-6 justify-between">

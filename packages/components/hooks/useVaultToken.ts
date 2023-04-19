@@ -6,10 +6,13 @@ function useVaultToken(vaultAddress: string, chainId?: any) {
   const { data: vaultTokenAddr } = useVaultTokenAddress(vaultAddress, chainId);
   const [asset] = useNamedAccounts(chainId as any, vaultTokenAddr ? [vaultTokenAddr] : []);
 
-  return useToken({
+  const result = useToken({
     address: vaultTokenAddr as any,
     chainId,
   });
+  return {
+    ...result, data: { ...result?.data, symbol: asset?.symbol || result?.data?.symbol, name: asset?.name || result?.data?.name }
+  }
 }
 
 export default useVaultToken;
