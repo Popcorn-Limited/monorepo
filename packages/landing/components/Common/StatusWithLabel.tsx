@@ -31,6 +31,7 @@ export default function StatusWithLabel({
             id={infoIconProps.id}
             title={infoIconProps.title}
             content={infoIconProps.content}
+            placement="right"
           />
         </span>
       ) : (
