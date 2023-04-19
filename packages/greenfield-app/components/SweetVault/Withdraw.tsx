@@ -22,7 +22,7 @@ function Withdraw({
   children: React.ReactElement
 }) {
   const usesStaking = staking?.toLowerCase() !== constants.AddressZero.toLowerCase();
-  const [router] = useNamedAccounts(chainId, ["vaultRouter"]);
+  const [router] = useNamedAccounts(chainId, usesStaking ? ["vaultRouter"] : []);
   const { address: account } = useAccount();
 
   const { data: allowance } = useAllowance({ address: staking, account: router.address as Address, chainId });
