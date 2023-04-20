@@ -65,11 +65,11 @@ contract MasterChefV2Adapter is AdapterBase, WithRewards {
         rewardsToken = _rewardsToken;
 
         _name = string.concat(
-            "Popcorn MasterChef",
+            "VaultCraft MasterChefV2 ",
             IERC20Metadata(asset()).name(),
             " Adapter"
         );
-        _symbol = string.concat("popB-", IERC20Metadata(asset()).symbol());
+        _symbol = string.concat("vcMcV2-", IERC20Metadata(asset()).symbol());
 
         IERC20(lpToken).approve(address(masterChef), type(uint256).max);
     }

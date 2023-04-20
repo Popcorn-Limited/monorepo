@@ -36,7 +36,7 @@ const { chains, provider, webSocketProvider } = configureChains(
     jsonRpcProvider({ rpc: (chain) => ({ http: chain.rpcUrls.default.http[0] }) }),
   ],
   {
-    pollingInterval: 10_000,
+    pollingInterval: 7_000,
     stallTimeout: 5_000, // time to change to another RPC if failed
   },
 );

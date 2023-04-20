@@ -61,11 +61,11 @@ contract CompoundV2Adapter is AdapterBase, WithRewards {
         __AdapterBase_init(adapterInitData);
 
         _name = string.concat(
-            "Popcorn Compound",
+            "VaultCraft CompoundV2 ",
             IERC20Metadata(asset()).name(),
             " Adapter"
         );
-        _symbol = string.concat("popB-", IERC20Metadata(asset()).symbol());
+        _symbol = string.concat("vcCv2-", IERC20Metadata(asset()).symbol());
 
         cToken = ICToken(abi.decode(compoundV2InitData, (address)));
         if (

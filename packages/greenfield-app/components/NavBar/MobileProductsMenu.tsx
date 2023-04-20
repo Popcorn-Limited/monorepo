@@ -2,13 +2,9 @@ import { ChevronLeftIcon } from "@heroicons/react/outline";
 import { useRouter } from "next/router";
 import React from "react";
 import NavbarLink from "@popcorn/greenfield-app/components/NavBar/NavbarLinks";
-import { useFeatures } from "@popcorn/greenfield-app/hooks";
 
 const MobileProductsMenu = ({ onClose, onSelect }: { onClose?: (e: any) => void; onSelect?: (e: any) => void }) => {
   const router = useRouter();
-  const {
-    features: { sweetVaults: displaySweetVaults },
-  } = useFeatures();
 
   return (
     <div className="h-screen px-6 py-10">
@@ -20,16 +16,14 @@ const MobileProductsMenu = ({ onClose, onSelect }: { onClose?: (e: any) => void;
         <p className="text-black text-center font-medium">Products</p>
       </div>
       <ul className="flex flex-col gap-10 justify-center mt-24">
-        {displaySweetVaults && (
-          <li className="mt-1">
-            <NavbarLink
-              onClick={onSelect}
-              label="Sweet Vaults"
-              url="/sweet-vaults"
-              isActive={router?.pathname.includes("/staking")}
-            />
-          </li>
-        )}
+        <li className="mt-1">
+          <NavbarLink
+            onClick={onSelect}
+            label="Sweet Vaults"
+            url="/sweet-vaults"
+            isActive={router?.pathname === `/sweet-vaults`}
+          />
+        </li>
         <li className="mt-1">
           <NavbarLink
             onClick={onSelect}

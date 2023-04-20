@@ -22,7 +22,7 @@ export default function DesktopMenu(): JSX.Element {
   const { openChainModal } = useChainModal();
   const { address } = useAccount();
   const router = useRouter();
-  const { chain, chains } = useNetwork();
+  const { chain } = useNetwork();
   const logo = useMemo(() => (address && chain?.id ? networkLogos[chain.id] : networkLogos["1"]), [chain?.id, address]);
   const chainName = useMemo(() => (address && chain?.name ? chain.name : "Ethereum"), [chain?.id, address]);
 
@@ -34,7 +34,7 @@ export default function DesktopMenu(): JSX.Element {
 
   return (
     <>
-      <div className="flex flex-row items-center justify-between w-full py-8 z-30 ">
+      <div className="flex flex-row items-center justify-between w-full py-8 px-8 z-30 ">
         <div className="flex flex-row items-center">
           <div>
             <Link href={`/`} passHref>

@@ -12,6 +12,8 @@ import { useAccount } from "wagmi";
 
 const SUPPORTED_NETWORKS = [
   ChainId.ALL,
+  ChainId.Ethereum,
+  ChainId.Polygon,
   ChainId.Optimism,
   // ChainId.Fantom,
   ...(process.env.NEXT_PUBLIC_ENABLE_TESTNETS === "true" ? [ChainId.Hardhat] : [])
@@ -28,11 +30,13 @@ const SweetVaults: NextPage = () => {
   const [tvl, setTvl] = useState<Bal>({});
   const [deposit, setDeposit] = useState<Bal>({});
 
-  const { data: hhVaults = [] } = useAllVaults(selectedNetworks.includes(ChainId.Hardhat) ? ChainId.Hardhat : undefined);
+  const { data: ethVaults = [] } = useAllVaults(selectedNetworks.includes(ChainId.Ethereum) ? ChainId.Ethereum : undefined);
+  const { data: polyVaults = [] } = useAllVaults(selectedNetworks.includes(ChainId.Polygon) ? ChainId.Polygon : undefined);
   const { data: ftmVaults = [] } = useAllVaults(selectedNetworks.includes(ChainId.Fantom) ? ChainId.Fantom : undefined);
   const { data: opVaults = [] } = useAllVaults(selectedNetworks.includes(ChainId.Optimism) ? ChainId.Optimism : undefined);
   const allVaults = [
-    ...hhVaults.map(vault => { return { address: vault, chainId: ChainId.Hardhat } }),
+    ...ethVaults.map(vault => { return { address: vault, chainId: ChainId.Ethereum } }),
+    ...polyVaults.map(vault => { return { address: vault, chainId: ChainId.Polygon } }),
     ...ftmVaults.map(vault => { return { address: vault, chainId: ChainId.Fantom } }),
     ...opVaults.map(vault => { return { address: vault, chainId: ChainId.Optimism } })
   ]

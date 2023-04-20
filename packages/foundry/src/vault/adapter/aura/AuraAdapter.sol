@@ -70,8 +70,8 @@ contract AuraAdapter is AdapterBase, WithRewards {
 
     if (balancerLpToken != asset()) revert InvalidAsset();
 
-    _name = string.concat("Popcorn Aura", IERC20Metadata(asset()).name(), " Adapter");
-    _symbol = string.concat("popB-", IERC20Metadata(asset()).symbol());
+    _name = string.concat("VaultCraft Aura ", IERC20Metadata(asset()).name(), " Adapter");
+    _symbol = string.concat("vcAu-", IERC20Metadata(asset()).symbol());
 
     IERC20(balancerLpToken).approve(address(auraBooster), type(uint256).max);
   }

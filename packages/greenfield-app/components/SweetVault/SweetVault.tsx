@@ -31,14 +31,14 @@ const VAULT_APY_RESOLVER = {
   "Yearn": "yearnAsset"
 }
 
-function AssetWithName({ vault, token, chainId, protocol }: { vault: FetchTokenResult; token: string, chainId: ChainId, protocol: string }) {
+function AssetWithName({ vault, token, chainId, protocol }: { vault: FetchTokenResult; token: FetchTokenResult, chainId: ChainId, protocol: string }) {
   return <div className="flex items-center gap-4">
     <div className="relative">
       <NetworkSticker chainId={chainId} />
-      <TokenIcon token={token} chainId={chainId} imageSize="w-8 h-8" />
+      <TokenIcon token={token?.address} chainId={chainId} imageSize="w-8 h-8" />
     </div>
     <Title level={2} as="span" className="text-gray-900 mt-1">
-      {vault?.name.slice(8, -6)}
+      {token?.name}
     </Title>
     <div className="bg-red-500 bg-opacity-[15%] py-1 px-3 text-gray-800 rounded-md">{protocol}</div>
   </div>
@@ -79,25 +79,24 @@ function SweetVault({ vaultAddress, chainId, searchString, addToTVL, addToDeposi
   useEffect(() => {
     if (price && balance && pps > 0) {
       const assetBal = pps * Number(balance?.value?.toString());
+      const depositValue = (Number(price?.value?.toString()) * assetBal) /
+        (10 ** (token?.decimals * 2))
+
       addToDeposit(
         vaultAddress,
-        parseUnits(String((
-          (Number(price?.value?.toString()) * assetBal) /
-          (10 ** (token?.decimals * 2))))
-        )
+        parseUnits(depositValue < 0.01 ? "0" : String(depositValue))
       );
     }
   }, [balance, price, pps])
 
   useEffect(() => {
     if (totalAssets && price) {
+      const tvlValue = (Number(price?.value?.toString()) * Number(totalAssets?.value?.toString())) /
+        (10 ** (token?.decimals * 2))
+
       addToTVL(
         vaultAddress,
-        parseUnits(String(
-          ((Number(price?.value?.toString()) * Number(totalAssets?.value?.toString())) /
-            (10 ** (token?.decimals * 2))))
-        )
-      );
+        parseUnits(tvlValue < 0.01 ? "0" : String(tvlValue)));
     }
   }, [totalAssets, price])
 
@@ -111,7 +110,7 @@ function SweetVault({ vaultAddress, chainId, searchString, addToTVL, addToDeposi
         header={
           <Fragment>
             <nav className="flex items-center justify-between mb-8 select-none">
-              <AssetWithName vault={vault} token={token?.address} chainId={chainId} protocol={vaultMetadata?.metadata?.protocol?.name} />
+              <AssetWithName vault={vault} token={token} chainId={chainId} protocol={vaultMetadata?.metadata?.protocol?.name} />
               <AnimatedChevron className="hidden md:flex" />
             </nav>
             <div className="flex flex-row flex-wrap items-center mt-0 md:mt-6 justify-between">
@@ -237,6 +236,9 @@ function SweetVault({ vaultAddress, chainId, searchString, addToTVL, addToDeposi
                   </Title>
                 </div>
                 <div className="mt-8">
+                  <MarkdownRenderer content={`# ${vaultMetadata?.metadata?.token?.name} \n${vaultMetadata?.metadata?.token?.description}`} />
+                </div>
+                <div className="mt-8">
                   <MarkdownRenderer content={`# ${vaultMetadata?.metadata?.protocol?.name} \n${vaultMetadata?.metadata?.protocol?.description}`} />
                 </div>
                 <div className="mt-8">
@@ -251,6 +253,9 @@ function SweetVault({ vaultAddress, chainId, searchString, addToTVL, addToDeposi
               <Title level={2} as="span" className="text-gray-900 mt-1.5 ml-3">
                 {vault?.name.slice(8, -6)}
               </Title>
+            </div>
+            <div className="mt-8">
+              <MarkdownRenderer content={`# ${vaultMetadata?.metadata?.token?.name} \n${vaultMetadata?.metadata?.token?.description}`} />
             </div>
             <div className="mt-8">
               <MarkdownRenderer content={`# ${vaultMetadata?.metadata?.protocol?.name} \n${vaultMetadata?.metadata?.protocol?.description}`} />

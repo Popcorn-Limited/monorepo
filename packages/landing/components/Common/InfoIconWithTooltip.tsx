@@ -6,13 +6,14 @@ export interface InfoIconWithTooltipProps {
   content: string | JSX.Element;
   id?: string;
   classExtras?: string;
+  placement?: string;
 }
 
-export const InfoIconWithTooltip: React.FC<InfoIconWithTooltipProps> = ({ title, content, id, classExtras }) => {
+export const InfoIconWithTooltip: React.FC<InfoIconWithTooltipProps> = ({ title, content, id, classExtras, placement }) => {
   return (
     <ReactTooltip
       id={id}
-      placement={"bottom"}
+      placement={placement || "bottom"}
       overlayClassName=" w-60"
       data-html="true"
       overlay={

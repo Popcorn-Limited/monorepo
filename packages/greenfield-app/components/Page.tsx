@@ -6,7 +6,6 @@ import React from "react";
 import { Toaster } from "react-hot-toast";
 import useTermsCheck from "@popcorn/greenfield-app/hooks/useTermsCheck";
 import { useRouter } from "next/router";
-import classnames from "classnames";
 import NoSSR from "react-no-ssr";
 
 interface PageProps {
@@ -23,19 +22,17 @@ export default function Page({ children }: PageProps) {
   const compactRoutes = ["/portfolio", "/sweet-vaults"];
 
   return (
-    <div className="w-full md:w-10/12 laptop:w-11/12 xl:w-full 2xl:w-9/12 mx-auto min-h-screen h-full font-khTeka flex flex-col justify-between">
-      <div>
-        <NoSSR>
-          <Navbar />
-        </NoSSR>
-        <Toaster position="top-right" />
-        <div
-          className={classnames("pt-5 md:pt-10 ", {"px-6 md:px-8" : !compactRoutes.includes(pathname)})}
-        >
-          {children}
-        </div>
+    <div className="w-full md:w-10/12 laptop:w-11/12 2xl:w-8/12 mx-auto min-h-screen h-full font-khTeka flex flex-col justify-between">
+      <NoSSR>
+        <Navbar />
+      </NoSSR>
+      <Toaster position="top-right" />
+      <div
+        className={`pt-5 md:pt-10 md:px-8 ${compactRoutes.includes(pathname) ? "" : "px-6"}`}
+      >
+        {children}
       </div>
       <Footer />
-    </div>
+    </div >
   );
 }

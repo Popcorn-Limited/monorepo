@@ -89,13 +89,13 @@ contract AaveV3AdapterTest is AbstractAdapterTest {
   function verify_adapterInit() public override {
     assertEq(adapter.asset(), aToken.UNDERLYING_ASSET_ADDRESS(), "asset");
     assertEq(
-      IERC20Metadata(address(adapter)).symbol(),
-      string.concat("popB-", IERC20Metadata(address(asset)).symbol()),
-      "symbol"
+      IERC20Metadata(address(adapter)).name(),
+      string.concat("VaultCraft AaveV3 ", IERC20Metadata(address(asset)).name(), " Adapter"),
+      "name"
     );
     assertEq(
       IERC20Metadata(address(adapter)).symbol(),
-      string.concat("popB-", IERC20Metadata(address(asset)).symbol()),
+      string.concat("vcAv3-", IERC20Metadata(address(asset)).symbol()),
       "symbol"
     );
 

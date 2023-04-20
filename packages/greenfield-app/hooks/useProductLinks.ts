@@ -1,18 +1,14 @@
 import { useRouter } from "next/router";
-import { useFeatures } from "@popcorn/greenfield-app/hooks";
 
 export const useProductLinks = () => {
   const router = useRouter();
 
-  const {
-    features: { sweetVaults: displaySweetVaults },
-  } = useFeatures();
   return [
     {
       title: "Sweet Vaults",
       url: "/sweet-vaults",
       currentlySelected: router?.pathname === "/sweet-vaults",
-      hidden: !displaySweetVaults,
+      hidden: false
     },
     {
       title: "Staking",

@@ -25,7 +25,7 @@ function Deposit({
 }) {
   const usesStaking = staking?.toLowerCase() !== constants.AddressZero.toLowerCase();
   const { address: account } = useAccount();
-  const [router] = useNamedAccounts(chainId, ["vaultRouter"]);
+  const [router] = useNamedAccounts(chainId, usesStaking ? ["vaultRouter"] : []);
 
   const { data: allowance } = useAllowance({ address: asset, account: (usesStaking ? router?.address : vault) as Address, chainId });
 

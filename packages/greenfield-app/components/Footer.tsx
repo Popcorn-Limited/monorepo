@@ -38,7 +38,7 @@ const Footer = () => {
     setFunction("#645F4B");
   };
   return (
-    <footer className="grid grid-cols-12 smmd:gap-14 px-6 smmd:px-8 pb-10 mt-20 font-landing">
+    <footer className="grid grid-cols-12 smmd:gap-14 pb-10 mt-20 font-landing px-6 md:px-8">
       <div className="col-span-12 lg:col-span-3 order-1 smmd:order-1">
         <div className="bg-customYellow rounded-lg py-3 text-center font-medium text-black">
           Subscribe to our newsletter

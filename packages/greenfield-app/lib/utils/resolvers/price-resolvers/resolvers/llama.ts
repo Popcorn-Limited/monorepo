@@ -1,6 +1,5 @@
 import { networkMap } from "@popcorn/utils";
 import { BigNumber, constants } from "ethers";
-import { parseUnits } from "ethers/lib/utils.js";
 import { PriceResolver } from "../types";
 
 export const defi_llama: PriceResolver = async (address: string, chainId: number) => {
@@ -11,9 +10,10 @@ export const defi_llama: PriceResolver = async (address: string, chainId: number
   const parsed = await result.json();
   const token = parsed.coins[`${chainString}:${address}`];
 
+
   return token?.price && token?.decimals
     ? {
-      value: parseUnits(String(Number(token.price)), token.decimals),
+      value: BigNumber.from(Number(token?.price * (10 ** token?.decimals)).toFixed(0)),
       decimals: token.decimals,
     }
     : { value: constants.Zero, decimals: 0 };

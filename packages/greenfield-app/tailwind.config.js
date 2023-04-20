@@ -5,7 +5,6 @@ module.exports = {
   content: [
     "./pages/*.{ts,tsx}",
     "./pages/**/*.{ts,tsx}",
-    "./stories/**/*.{ts,tsx}",
     "./components/**/*.{js,ts,jsx,tsx}",
     "./containers/**/*.{js,ts,jsx,tsx}",
   ],

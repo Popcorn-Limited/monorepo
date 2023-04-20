@@ -50,8 +50,8 @@ contract CompoundV3Adapter is AdapterBase, WithRewards {
   function initialize(bytes memory adapterInitData, address registry, bytes memory compoundV3InitData) external initializer {
     __AdapterBase_init(adapterInitData);
 
-    _name = string.concat("Popcorn CompoundV3", IERC20Metadata(asset()).name(), " Adapter");
-    _symbol = string.concat("popB-", IERC20Metadata(asset()).symbol());
+    _name = string.concat("VaultCraft CompoundV3 ", IERC20Metadata(asset()).name(), " Adapter");
+    _symbol = string.concat("vcCv3-", IERC20Metadata(asset()).symbol());
 
     (address _cToken, address _cometRewarder) = abi.decode(
       compoundV3InitData,

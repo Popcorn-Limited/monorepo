@@ -58,11 +58,11 @@ contract AaveV3Adapter is AdapterBase, WithRewards {
         __AdapterBase_init(adapterInitData);
 
         _name = string.concat(
-            "Popcorn AaveV2",
+            "VaultCraft AaveV3 ",
             IERC20Metadata(asset()).name(),
             " Adapter"
         );
-        _symbol = string.concat("popB-", IERC20Metadata(asset()).symbol());
+        _symbol = string.concat("vcAv3-", IERC20Metadata(asset()).symbol());
 
         (address _aToken, , ) = IProtocolDataProvider(aaveDataProvider)
             .getReserveTokensAddresses(asset());
