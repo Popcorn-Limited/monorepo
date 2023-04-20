@@ -2,27 +2,27 @@ import { Fragment, useEffect, useState } from "react";
 import { Address, useAccount, useBalance, useContractRead, useToken } from "wagmi";
 import { BigNumber, constants } from "ethers";
 
-import { BalanceOf, TotalSupply, ValueOfBalance } from "@popcorn/components/lib/Erc20";
-import useVaultToken from "@popcorn/components/hooks/useVaultToken";
+import { BalanceOf, TotalSupply, ValueOfBalance } from "@popcorn/greenfield-app/lib/Erc20";
+import useVaultToken from "@popcorn/greenfield-app/hooks/useVaultToken";
 
 import { ChainId, formatAndRoundBigNumber } from "@popcorn/utils";
-import Title from "@popcorn/components/components/content/Title";
-import { Apy } from "@popcorn/components/lib/Staking";
+import Title from "@popcorn/greenfield-app/components/content/Title";
+import { Apy } from "@popcorn/greenfield-app/lib/Staking";
 import MarkdownRenderer from "./MarkdownRenderer";
 import AnimatedChevron from "./AnimatedChevron";
 import DepositWithdraw from "./DepositWithdraw";
 import Accordion from "../Accordion";
-import TokenIcon from "@popcorn/components/components/TokenIcon";
+import TokenIcon from "@popcorn/greenfield-app/components/TokenIcon";
 import { FetchTokenResult } from "wagmi/dist/actions";
-import { NetworkSticker } from "@popcorn/components/components/NetworkSticker";
-import { useBalanceOf, useTotalSupply } from "@popcorn/components/lib/Erc20/hooks";
-import { usePrice } from "@popcorn/components/lib/Price";
+import { NetworkSticker } from "@popcorn/greenfield-app/components/NetworkSticker";
+import { useBalanceOf, useTotalSupply } from "@popcorn/greenfield-app/lib/Erc20/hooks";
+import { usePrice } from "@popcorn/greenfield-app/lib/Price";
 import { parseUnits } from "ethers/lib/utils.js";
-import { useTotalAssets } from "@popcorn/components/lib/Vault/hooks";
+import { useTotalAssets } from "@popcorn/greenfield-app/lib/Vault/hooks";
 import { formatNumber } from "@popcorn/utils/formatBigNumber";
-import RightArrowIcon from "@popcorn/components/components/SVGIcons/RightArrowIcon";
-import { InfoIconWithTooltip } from "@popcorn/components/components/InfoIconWithTooltip";
-import useVaultMetadata from "@popcorn/components/lib/Vault/hooks/useVaultMetadata";
+import RightArrowIcon from "components/SVGIcons/RightArrowIcon";
+import { InfoIconWithTooltip } from "@popcorn/greenfield-app/components/InfoIconWithTooltip";
+import useVaultMetadata from "@popcorn/greenfield-app/lib/Vault/hooks/useVaultMetadata";
 
 const HUNDRED = constants.Zero.add(100);
 

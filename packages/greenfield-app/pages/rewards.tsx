@@ -2,12 +2,12 @@ import TabSelector from "components/TabSelector";
 import { useEffect, useState } from "react";
 import useSelectNetwork from "hooks/useNetworkFilter";
 import { useChainsWithStakingRewards } from "hooks/staking/useChainsWithStaking";
-import NetworkFilter from "@popcorn/components/components/NetworkFilter";
+import NetworkFilter from "@popcorn/greenfield-app/components/NetworkFilter";
 import { ChainId } from "@popcorn/utils";
 import AirDropClaim from "components/rewards/AirdropClaim";
 import StakingRewardsContainer from "components/rewards/StakingRewardsContainer";
 import VestingContainer from "components/vesting/VestingContainer";
-import { ConnectWallet } from "@popcorn/components/components/ConnectWallet";
+import { ConnectWallet } from "@popcorn/greenfield-app/components/ConnectWallet";
 import { useAccount } from "wagmi";
 import NoSSR from "react-no-ssr";
 

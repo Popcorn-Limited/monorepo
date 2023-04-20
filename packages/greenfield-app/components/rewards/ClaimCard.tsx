@@ -5,10 +5,10 @@ import Image from "next/image";
 import ContentLoader from "react-content-loader";
 
 import { ChainId, networkLogos } from "@popcorn/utils";
-import { Contract, Staking } from "@popcorn/components/lib";
-import { useClaim } from "@popcorn/components/lib/Staking/hooks";
-import MainActionButton from "@popcorn/components/components/MainActionButton";
-import TokenIcon from "@popcorn/components/components/TokenIcon";
+import { Contract, Staking } from "@popcorn/greenfield-app/lib";
+import { useClaim } from "@popcorn/greenfield-app/lib/Staking/hooks";
+import MainActionButton from "@popcorn/greenfield-app/components/MainActionButton";
+import TokenIcon from "@popcorn/greenfield-app/components/TokenIcon";
 import useClaimModal from "./useClaimModal";
 
 interface ClaimCardProps {

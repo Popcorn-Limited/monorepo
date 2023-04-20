@@ -1,14 +1,14 @@
 import { ChainId, networkMap } from "@popcorn/utils";
-import MainActionButton from "@popcorn/components/components/MainActionButton";
-import TokenIcon from "@popcorn/components/components/TokenIcon";
+import MainActionButton from "@popcorn/greenfield-app/components/MainActionButton";
+import TokenIcon from "@popcorn/greenfield-app/components/TokenIcon";
 import { StakingType } from "hooks/staking/useAllStakingAddresses";
 import { useRouter } from "next/router";
 import ContentLoader from "react-content-loader";
-import { Tvl } from "@popcorn/components/lib/Contract";
-import { Staking, Contract } from "@popcorn/components/lib";
-import { ValueOfBalance } from "@popcorn/components/lib/Erc20";
+import { Tvl } from "@popcorn/greenfield-app/lib/Contract";
+import { Staking, Contract } from "@popcorn/greenfield-app/lib";
+import { ValueOfBalance } from "@popcorn/greenfield-app/lib/Erc20";
 import { Address } from "wagmi";
-import { NetworkSticker } from "@popcorn/components/components/NetworkSticker";
+import { NetworkSticker } from "@popcorn/greenfield-app/components/NetworkSticker";
 
 interface StakeCardProps {
   stakingAddress: string;

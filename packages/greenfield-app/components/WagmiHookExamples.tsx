@@ -1,4 +1,4 @@
-import { useNamedAccounts } from "@popcorn/components/lib/utils";
+import { useNamedAccounts } from "@popcorn/greenfield-app/lib/utils";
 import {
   useErc20Read,
   useErc20BalanceOf,

@@ -1,7 +1,7 @@
 import Image from "next/image";
 import { useContext } from "react";
-import { setMultiChoiceActionModal } from "@popcorn/components/context/actions";
-import { store } from "@popcorn/components/context/store";
+import { setMultiChoiceActionModal } from "@popcorn/greenfield-app/context/actions";
+import { store } from "@popcorn/greenfield-app/context/store";
 
 export default function useClaimModal() {
   const { dispatch } = useContext(store);

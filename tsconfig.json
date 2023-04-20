@@ -26,8 +26,6 @@
     "downlevelIteration": true,
     "lib": ["dom", "es2019"],
     "paths": {
-      "@popcorn/components": ["../components"],
-      "@popcorn/components/*": ["../components/*"],
       "@popcorn/greenfield-app": ["../greenfield-app"],
       "@popcorn/greenfield-app/*": ["../greenfield-app/*"],
       "@popcorn/utils": ["../utils/src"],

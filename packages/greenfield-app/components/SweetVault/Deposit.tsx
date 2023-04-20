@@ -1,10 +1,10 @@
-import AssetInputWithAction from "@popcorn/components/components/AssetInputWithAction";
+import AssetInputWithAction from "components/AssetInputWithAction";
 import FeeBreakdown from "./FeeBreakdown";
-import { useAllowance } from "@popcorn/components/lib/Erc20/hooks";
+import { useAllowance } from "@popcorn/greenfield-app/lib/Erc20/hooks";
 import { Address, useAccount } from "wagmi";
-import { useNamedAccounts } from "@popcorn/components/lib/utils";
+import { useNamedAccounts } from "@popcorn/greenfield-app/lib/utils";
 import { BigNumber, constants } from "ethers";
-import TokenIcon from "@popcorn/components/components/TokenIcon";
+import TokenIcon from "@popcorn/greenfield-app/components/TokenIcon";
 
 function Deposit({
   vault,

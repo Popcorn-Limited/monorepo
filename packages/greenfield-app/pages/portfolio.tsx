@@ -1,20 +1,20 @@
 import type { NextPage } from "next";
-import type { Pop } from "@popcorn/components/lib/types";
+import type { Pop } from "@popcorn/greenfield-app/lib/types";
 import { useEffect, useMemo, useState } from "react";
 import { BigNumber, constants } from "ethers";
 import { useAccount } from "wagmi";
 import NoSSR from "react-no-ssr";
 
-import { useNamedAccounts } from "@popcorn/components/lib/utils/hooks";
-import Metadata from "@popcorn/components/lib/Contract/Metadata";
-import { Erc20 } from "@popcorn/components/lib";
+import { useNamedAccounts } from "@popcorn/greenfield-app/lib/utils/hooks";
+import Metadata from "@popcorn/greenfield-app/lib/Contract/Metadata";
+import { Erc20 } from "@popcorn/greenfield-app/lib";
 
 import { useChainsWithStakingRewards } from "../hooks/staking/useChainsWithStaking";
 import useNetworkFilter from "../hooks/useNetworkFilter";
-import PortfolioClaimableBalance from "@popcorn/components/components/Portfolio/PortfolioClaimableBalance";
-import PortfolioHero from "@popcorn/components/components/Portfolio/PortfolioHero";
-import PortfolioSection from "@popcorn/components/components/Portfolio/PortfolioSection";
-import AssetRow from "@popcorn/components/components/Portfolio/AssetRow";
+import PortfolioClaimableBalance from "@popcorn/greenfield-app/components/Portfolio/PortfolioClaimableBalance";
+import PortfolioHero from "@popcorn/greenfield-app/components/Portfolio/PortfolioHero";
+import PortfolioSection from "@popcorn/greenfield-app/components/Portfolio/PortfolioSection";
+import AssetRow from "@popcorn/greenfield-app/components/Portfolio/AssetRow";
 import { BalanceByKey, getItemKey, sortEntries, SortingType } from "@popcorn/utils";
 
 const sumUpBalances = (balances = {}, selectedNetworks: Array<any> = []) =>

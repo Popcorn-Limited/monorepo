@@ -4,11 +4,11 @@ import { BigNumber, constants } from "ethers";
 import { useEffect, useState } from "react";
 import ContentLoader from "react-content-loader";
 import Image from "next/image";
-import { useNamedAccounts } from "@popcorn/components/lib/utils";
+import { useNamedAccounts } from "@popcorn/greenfield-app/lib/utils";
 import { useAccount, useNetwork, useSwitchNetwork } from "wagmi";
-import { useEscrows } from "@popcorn/components/lib/Escrow";
+import { useEscrows } from "@popcorn/greenfield-app/lib/Escrow";
 import toast from "react-hot-toast";
-import { useClaimEscrow } from "@popcorn/components";
+import { useClaimEscrow } from "@popcorn/greenfield-app/hooks";
 
 interface VestingProps {
   chainId: ChainId;

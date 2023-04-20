@@ -5,10 +5,10 @@ import DesktopMenu from "../components/DesktopMenu";
 import MainActionButton from "../components/Common/MainActionButton";
 import StatusWithLabel from "components/Common/StatusWithLabel";
 import SliderContainer from "components/SliderContainer";
-import GithubIcon from "@popcorn/components/components/SVGIcons/GithubIcon";
-import DiscordIcon from "@popcorn/components/components/SVGIcons/DiscordIcon";
-import TwitterIcon from "@popcorn/components/components/SVGIcons/TwitterIcon";
-import MediumIcon from "@popcorn/components/components/SVGIcons/MediumIcon";
+import GithubIcon from "@popcorn/greenfield-app/components/SVGIcons/GithubIcon";
+import DiscordIcon from "@popcorn/greenfield-app/components/SVGIcons/DiscordIcon";
+import TwitterIcon from "@popcorn/greenfield-app/components/SVGIcons/TwitterIcon";
+import MediumIcon from "@popcorn/greenfield-app/components/SVGIcons/MediumIcon";
 
 const IndexPage = () => {
   const router = useRouter();

@@ -1,14 +1,14 @@
-import SliderContainer from "@popcorn/components/components/SliderContainer";
-import { InfoIconWithTooltip } from "@popcorn/components/components/InfoIconWithTooltip";
-import { ConnectWallet } from "@popcorn/components/components/ConnectWallet";
-import useTvl from "@popcorn/components/lib/Contract/hooks/useTvl";
-import TotalTVL from "@popcorn/components/lib/Contract/TotalTvl";
-import { useNamedAccounts } from "@popcorn/components/lib/utils";
+import SliderContainer from "@popcorn/greenfield-app/components/SliderContainer";
+import { InfoIconWithTooltip } from "@popcorn/greenfield-app/components/InfoIconWithTooltip";
+import { ConnectWallet } from "@popcorn/greenfield-app/components/ConnectWallet";
+import useTvl from "@popcorn/greenfield-app/lib/Contract/hooks/useTvl";
+import TotalTVL from "@popcorn/greenfield-app/lib/Contract/TotalTvl";
+import { useNamedAccounts } from "@popcorn/greenfield-app/lib/utils";
 import { ChainId } from "@popcorn/utils";
 import { constants } from "ethers";
 import { formatUnits } from "ethers/lib/utils.js";
 import { useAccount } from "wagmi";
-import useNetworth from "@popcorn/components/hooks/useNetworth";
+import useNetworth from "@popcorn/greenfield-app/hooks/useNetworth";
 
 const formatter: Intl.NumberFormat = Intl.NumberFormat("en", {
   //@ts-ignore

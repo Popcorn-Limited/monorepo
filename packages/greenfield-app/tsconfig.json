@@ -2,24 +2,21 @@
   "extends": "../../tsconfig",
   "compilerOptions": {
     "baseUrl": ".",
-    "module": "esnext",
-    "noEmit": false,
-    "outDir": "dist",
     "target": "ES2017",
-    "lib": ["es2019", "dom"],
+    "lib": ["dom", "dom.iterable", "esnext"],
+    "allowJs": true,
+    "skipLibCheck": true,
+    "strict": false,
+    "forceConsistentCasingInFileNames": true,
+    "noEmit": true,
+    "esModuleInterop": true,
+    "module": "esnext",
+    "moduleResolution": "node",
+    "resolveJsonModule": true,
     "isolatedModules": true,
-    "incremental": true,
-    "strict": false
+    "jsx": "preserve",
+    "incremental": true
   },
   "exclude": ["dist", ".next", "out", "next.config.js"],
-  "include": [
-    "next-env.d.ts",
-    "**/*.ts",
-    "**/*.tsx",
-    "../components/components/ConnectWallet.tsx",
-    "../components/components/NetworkFilter.tsx",
-    "../components/components/NetworkIconList.tsx",
-    "../components/components/Modal/MobilePopupSelect.tsx",
-    "../components/components/ScrollableSelect.tsx"
-  ]
+  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx"]
 }

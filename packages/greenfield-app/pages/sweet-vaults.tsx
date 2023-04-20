@@ -1,9 +1,9 @@
 import type { NextPage } from "next";
-import { useAllVaults } from "@popcorn/components/hooks/vaults";
+import { useAllVaults } from "@popcorn/greenfield-app/hooks/vaults";
 import SweetVault from "../components/SweetVault";
 import { ChainId, formatAndRoundBigNumber } from "@popcorn/utils";
 import NoSSR from "react-no-ssr";
-import HeroSection from "@popcorn/components/components/HeroSection";
+import HeroSection from "@popcorn/greenfield-app/components/HeroSection";
 import useNetworkFilter from "hooks/useNetworkFilter";
 import { MagnifyingGlassIcon } from "@heroicons/react/24/outline";
 import { useState } from "react";

@@ -1,5 +1,5 @@
-import { setSingleActionModal } from "@popcorn/components/context/actions";
-import { store } from "@popcorn/components/context/store";
+import { setSingleActionModal } from "@popcorn/greenfield-app/context/actions";
+import { store } from "@popcorn/greenfield-app/context/store";
 import { useContext, useEffect, useState } from "react";
 import { useAccount, useDisconnect } from "wagmi";
 

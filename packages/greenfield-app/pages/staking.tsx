@@ -2,7 +2,7 @@ import StakeCard from "components/staking/StakeCard";
 import React, { useMemo } from "react";
 import useNetworkFilter from "hooks/useNetworkFilter";
 import { useChainsWithStaking } from "hooks/staking/useChainsWithStaking";
-import NetworkFilter from "@popcorn/components/components/NetworkFilter";
+import NetworkFilter from "@popcorn/greenfield-app/components/NetworkFilter";
 import useAllStakingAddresses from "hooks/staking/useAllStakingAddresses";
 import NoSSR from "react-no-ssr";
 

@@ -1,4 +1,4 @@
-import MainActionButton from "@popcorn/components/components/MainActionButton";
+import MainActionButton from "@popcorn/greenfield-app/components/MainActionButton";
 import Link from "next/link";
 import { useRouter } from "next/router";
 
