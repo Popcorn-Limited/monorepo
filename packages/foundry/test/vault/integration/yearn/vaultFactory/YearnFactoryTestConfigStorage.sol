@@ -7,6 +7,7 @@ import { ITestConfigStorage } from "../../abstract/ITestConfigStorage.sol";
 
 struct YearnFactoryTestConfig {
   address asset;
+  uint256 maxLoss;
 }
 
 contract YearnFactoryTestConfigStorage is ITestConfigStorage {
@@ -14,14 +15,14 @@ contract YearnFactoryTestConfigStorage is ITestConfigStorage {
 
   constructor() {
     // USDC
-    testConfigs.push(YearnFactoryTestConfig(0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48));
+    testConfigs.push(YearnFactoryTestConfig(0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48, 1));
 
     // WETH
     // testConfigs.push(YearnTestConfig(0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2));
   }
 
   function getTestConfig(uint256 i) public view returns (bytes memory) {
-    return abi.encode(testConfigs[i].asset);
+    return abi.encode(testConfigs[i].asset, testConfigs[i].maxLoss);
   }
 
   function getTestConfigLength() public view returns (uint256) {
