@@ -64,7 +64,7 @@ const SweetVaults: NextPage = () => {
     <NoSSR>
       <HeroSection
         title="Sweet Vaults"
-        description="Add liquidity to earn stablecoin rewards and be part at creating social impact."
+        description="Deposit your crypto to optimize your yield while funding public goods."
         info1={{ title: 'TVL', value: `$${formatAndRoundBigNumber(Object.keys(tvl).reduce((total, key) => total.add(tvl[key]), constants.Zero), 18)}` }}
         info2={{ title: 'Deposits', value: `$${account ? formatAndRoundBigNumber(Object.keys(deposit).reduce((total, key) => total.add(deposit[key]), constants.Zero), 18) : "-"}` }}
         backgroundColorTailwind="bg-red-400"

@@ -2,7 +2,7 @@ import type { NextPage } from "next";
 import type { Pop } from "@popcorn/greenfield-app/lib/types";
 import { useEffect, useMemo, useState } from "react";
 import { BigNumber, constants } from "ethers";
-import { useAccount } from "wagmi";
+import { Address, useAccount } from "wagmi";
 import NoSSR from "react-no-ssr";
 
 import { useNamedAccounts } from "@popcorn/greenfield-app/lib/utils/hooks";
@@ -15,7 +15,9 @@ import PortfolioClaimableBalance from "@popcorn/greenfield-app/components/Portfo
 import PortfolioHero from "@popcorn/greenfield-app/components/Portfolio/PortfolioHero";
 import PortfolioSection from "@popcorn/greenfield-app/components/Portfolio/PortfolioSection";
 import AssetRow from "@popcorn/greenfield-app/components/Portfolio/AssetRow";
-import { BalanceByKey, getItemKey, sortEntries, SortingType } from "@popcorn/utils";
+import { BalanceByKey, ChainId, getItemKey, sortEntries, SortingType } from "@popcorn/utils";
+import { useAllVaults } from "@popcorn/greenfield-app/hooks/vaults";
+import SweetVaultRow from "@popcorn/greenfield-app/components/portfolio/SweetVaultRow";
 
 const sumUpBalances = (balances = {}, selectedNetworks: Array<any> = []) =>
   Object.keys(balances).reduce((total, key) => {
@@ -27,10 +29,11 @@ const sumUpBalances = (balances = {}, selectedNetworks: Array<any> = []) =>
 const filterByChainId = (contracts: Array<any>, chainId, selectedNetworks) =>
   selectedNetworks.includes(chainId) ? contracts : [];
 
-export const SECTIONS = ["Assets", "Claimable", "Vesting"];
+export const SECTIONS = ["Assets", "Sweet Vaults", "Claimable", "Vesting"];
 
 const INIT_BALANCE_STATE = {
   pop: {} as BalanceByKey,
+  sweetVaults: {} as BalanceByKey,
   claimable: {} as BalanceByKey,
   vesting: {} as BalanceByKey,
 };
@@ -66,6 +69,18 @@ export const PortfolioPage: NextPage = () => {
   const contractsArbitrum = useNamedAccounts("42161", ["pop", "xPop"]);
   const contractsOp = useNamedAccounts("10", ["pop", "popUsdcArrakisVault"]);
 
+  const { data: ethVaults = [] } = useAllVaults(selectedNetworks.includes(ChainId.Ethereum) ? ChainId.Ethereum : undefined);
+  const { data: polyVaults = [] } = useAllVaults(selectedNetworks.includes(ChainId.Polygon) ? ChainId.Polygon : undefined);
+  const { data: ftmVaults = [] } = useAllVaults(selectedNetworks.includes(ChainId.Fantom) ? ChainId.Fantom : undefined);
+  const { data: opVaults = [] } = useAllVaults(selectedNetworks.includes(ChainId.Optimism) ? ChainId.Optimism : undefined);
+  const allVaults = [
+    ...ethVaults.map(vault => { return { address: vault, chainId: ChainId.Ethereum } }),
+    ...polyVaults.map(vault => { return { address: vault, chainId: ChainId.Polygon } }),
+    ...ftmVaults.map(vault => { return { address: vault, chainId: ChainId.Fantom } }),
+    ...opVaults.map(vault => { return { address: vault, chainId: ChainId.Optimism } })
+  ]
+
+
   const [rewardContracts, escrowContracts] = useMemo(() => {
     const allContracts = [
       ...filterByChainId(contractsEth, 1, selectedNetworks),
@@ -90,7 +105,7 @@ export const PortfolioPage: NextPage = () => {
     // @ts-lint:disable-next-line
   }, [account]);
 
-  const addToBalances = (key, type: "claimable" | "pop" | "vesting", chainId: number, value?: BigNumber) => {
+  const addToBalances = (key, type: "claimable" | "pop" | "vesting" | "sweetVaults", chainId: number, value?: BigNumber) => {
     if (value?.gt(0)) {
       setBalances((balances) => ({
         ...balances,
@@ -104,11 +119,12 @@ export const PortfolioPage: NextPage = () => {
 
   const totalBalance = {
     pop: sumUpBalances(balances.pop, selectedNetworks),
+    sweetVaults: sumUpBalances(balances.sweetVaults, selectedNetworks),
     vesting: sumUpBalances(balances.vesting, selectedNetworks),
     claimable: sumUpBalances(balances.claimable, selectedNetworks),
   };
   const rewardsBalance = totalBalance.claimable.add(totalBalance.vesting);
-  const networth = totalBalance.pop.add(rewardsBalance);
+  const networth = totalBalance.pop.add(totalBalance.sweetVaults).add(rewardsBalance);
 
   return (
     <NoSSR>
@@ -158,7 +174,29 @@ export const PortfolioPage: NextPage = () => {
             );
           })}
       </PortfolioSection>
-
+      <PortfolioSection
+        selectedNetworks={selectedNetworks}
+        selectedSections={selectedSections}
+        networth={networth}
+        balance={totalBalance.sweetVaults}
+        title="Sweet Vaults"
+      >
+        {allVaults
+          .sort((a, b) => sortEntries(a, b, balances.sweetVaults, SortingType.BalDesc))
+          .map((vault) => {
+            const key = `${vault.chainId}:Vault:${vault.address}`
+            return (
+              <SweetVaultRow
+                key={key}
+                vaultAddress={vault.address}
+                chainId={vault.chainId}
+                account={account}
+                callback={(value) => addToBalances(key, "sweetVaults", vault.chainId, value)}
+                networth={networth}
+              />
+            );
+          })}
+      </PortfolioSection>
       <PortfolioSection
         selectedNetworks={selectedNetworks}
         selectedSections={selectedSections}
