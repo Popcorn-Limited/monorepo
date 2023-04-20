@@ -15,6 +15,8 @@ function MarkdownRenderer({ content = "" }) {
           return <h3 className="font-medium text-lg mb-1">{children}</h3>;
         },
       }}
+      breaks
+      gfm
     >
       {content}
     </MarkedReact>

@@ -16,7 +16,7 @@ const Yearn = {
 
 const BeefyStargateCompounder = {
   name: "Beefy Stargate Compounding",
-  description: "The vault deposits the user\'s StgUSDT in a Stargate farm, earning the platform\'s governance token. Earned token is swapped for more StgUSDT. To complete the compounding cycle, the new StgUSDT is added to the farm, ready to go for the next earning event. The transaction cost required to do all this is socialized among the vault's users.",
+  description: "The vault deposits the user\'s stgUSDT in a Stargate farm, earning the platform\'s governance token. Earned token is swapped for more stgUSDT. To complete the compounding cycle, the new stgUSDT is added to the farm, ready to go for the next earning event. The transaction cost required to do all this is socialized among the vault's users.",
 }
 
 
@@ -50,8 +50,8 @@ function getLocalMetadata(address: string): IpfsMetadata {
         },
         protocol: Yearn,
         strategy: {
-          name: "Yearn Compound Folding",
-          description: "The DAI Sweet Vault supplies and borrows DAI on Compound Finance simultaneously to earn COMP. Flashmints are then used to mint DAI from MakerDAO to flashlend and fold the position to boost APY. Earned tokens are then harvested, sold for more DAI, and then deposited back into the strategy."
+          name: "Yearn Strategies",
+          description: `The DAI Sweet Vault supplies and borrows DAI on Compound Finance simultaneously to earn COMP. Flashmints are then used to mint DAI from MakerDAO to flashlend and fold the position to boost APY. Earned tokens are then harvested, sold for more DAI, and then deposited back into the strategy.`
         }
       }
     case "0xc1D4a319dD7C44e332Bd54c724433C6067FeDd0D":
@@ -63,7 +63,10 @@ function getLocalMetadata(address: string): IpfsMetadata {
         protocol: Yearn,
         strategy: {
           name: "Yearn Compound Folding",
-          description: "Supplies and borrows USDC on Compound Finance simultaneously to earn COMP. Flashmints are then used to mint DAI from MakerDAO to flashlend and fold the position to boost APY. Earned tokens are then harvested, sold for more USDC, and then deposited back into the strategy."
+          description: `**Compound Folding** \- Supplies and borrows USDC on Compound Finance simultaneously to earn COMP. Flashmints are then used to mint DAI from MakerDAO to flashlend and fold the position to boost APY. Earned tokens are then harvested, sold for more USDC, and then deposited back into the strategy. 
+          **Idle Finance Reinvest** \- Supplies USDC to Idle Finance to earn IDLE and COMP. Earned tokens are harvested, sold for more USDC, and then deposited back into the strategy.
+          **Angle Reinvest** \- Provides USDC liquidity to Angle Protocol for sanTokens that are staked to earn ANGLE. Earned tokens are harvested, sold for more USDC, and deposited back into the strategy.
+          **Maker Folding** \- Supplies USDC to MakerDAO Peg Stability Module for a USDC-DAI ratio that is then deposited int the Uniswap v2 DAI-USDC liquidity pool. Flashmints are used to mint DAI from MakerDAO to flashlend and fold the position, boosting the APY. Earned tokens are harvested, sold for more USDC, and then deposited back into the strategy.`
         }
       }
   }

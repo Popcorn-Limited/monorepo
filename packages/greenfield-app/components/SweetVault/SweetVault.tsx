@@ -232,7 +232,7 @@ function SweetVault({ vaultAddress, chainId, searchString, addToTVL, addToDeposi
                 <div className="flex flex-row items-center">
                   <TokenIcon token={token?.address} chainId={chainId} imageSize="w-8 h-8" />
                   <Title level={2} as="span" className="text-gray-900 mt-1.5 ml-3">
-                    {vault?.name.slice(8, -6)}
+                    {token?.name}
                   </Title>
                 </div>
                 <div className="mt-8">
@@ -251,17 +251,17 @@ function SweetVault({ vaultAddress, chainId, searchString, addToTVL, addToDeposi
             <div className="flex flex-row items-center">
               <TokenIcon token={token?.address} chainId={chainId} imageSize="w-8 h-8" />
               <Title level={2} as="span" className="text-gray-900 mt-1.5 ml-3">
-                {vault?.name.slice(8, -6)}
+                {token?.name}
               </Title>
             </div>
             <div className="mt-8">
               <MarkdownRenderer content={`# ${vaultMetadata?.metadata?.token?.name} \n${vaultMetadata?.metadata?.token?.description}`} />
             </div>
             <div className="mt-8">
-              <MarkdownRenderer content={`# ${vaultMetadata?.metadata?.protocol?.name} \n${vaultMetadata?.metadata?.protocol?.description}`} />
+              <MarkdownRenderer content={`# Protocol Adapter \n${vaultMetadata?.metadata?.protocol?.description}`} />
             </div>
             <div className="mt-8">
-              <MarkdownRenderer content={`# Strategy \n${vaultMetadata?.metadata?.strategy?.description}`} />
+              <MarkdownRenderer content={`# Strategies \n${vaultMetadata?.metadata?.strategy?.description}`} />
             </div>
           </section>
         </div>
