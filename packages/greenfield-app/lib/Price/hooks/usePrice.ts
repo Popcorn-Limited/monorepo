@@ -1,10 +1,10 @@
 import useSWR from "swr";
 import { useProvider } from "wagmi";
 import { BigNumber } from "ethers";
-import { resolve_price } from "../../utils/resolvers/price-resolvers/resolve_price";
-import { Pop } from "../../types";
-import { popHookAdapter } from "../../utils/hooks/swrPopHookAdapter";
-import { useNamedAccounts } from "../../utils";
+import { resolve_price } from "@popcorn/greenfield-app/lib/utils/resolvers/price-resolvers/resolve_price";
+import { Pop } from "@popcorn/greenfield-app/lib/types";
+import { popHookAdapter } from "@popcorn/greenfield-app/lib/utils/hooks/swrPopHookAdapter";
+import { useNamedAccounts } from "@popcorn/greenfield-app/lib/utils";
 
 interface Props extends Pop.StdProps {
   resolver?: string;

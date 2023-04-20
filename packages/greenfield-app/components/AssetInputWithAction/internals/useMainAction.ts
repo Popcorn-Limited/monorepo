@@ -1,7 +1,6 @@
 import type { ContractWriteArgs } from "@popcorn/greenfield-app/lib/types";
-import type { BigNumber } from "ethers";
-import { ChainId } from "@popcorn/utils";
 import { constants } from "ethers";
+import { ChainId } from "@popcorn/greenfield-app/lib/utils/connectors";
 import { useContractWrite, usePrepareContractWrite } from "wagmi";
 
 // TODO: remove hard-coded gas

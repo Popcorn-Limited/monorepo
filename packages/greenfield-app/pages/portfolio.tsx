@@ -15,9 +15,10 @@ import PortfolioClaimableBalance from "@popcorn/greenfield-app/components/Portfo
 import PortfolioHero from "@popcorn/greenfield-app/components/Portfolio/PortfolioHero";
 import PortfolioSection from "@popcorn/greenfield-app/components/Portfolio/PortfolioSection";
 import AssetRow from "@popcorn/greenfield-app/components/Portfolio/AssetRow";
-import { BalanceByKey, ChainId, getItemKey, sortEntries, SortingType } from "@popcorn/utils";
+import { ChainId, getItemKey, sortEntries, SortingType } from "@popcorn/greenfield-app/lib/utils";
 import { useAllVaults } from "@popcorn/greenfield-app/hooks/vaults";
 import SweetVaultRow from "@popcorn/greenfield-app/components/portfolio/SweetVaultRow";
+import { BalanceByKey } from "@popcorn/greenfield-app/lib/utils/sortEntries";
 
 const sumUpBalances = (balances = {}, selectedNetworks: Array<any> = []) =>
   Object.keys(balances).reduce((total, key) => {

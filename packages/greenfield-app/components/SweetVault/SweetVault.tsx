@@ -5,7 +5,7 @@ import { BigNumber, constants } from "ethers";
 import { BalanceOf, TotalSupply, ValueOfBalance } from "@popcorn/greenfield-app/lib/Erc20";
 import useVaultToken from "@popcorn/greenfield-app/hooks/useVaultToken";
 
-import { ChainId, formatAndRoundBigNumber } from "@popcorn/utils";
+import { ChainId, formatAndRoundBigNumber } from "@popcorn/greenfield-app/lib/utils";
 import Title from "@popcorn/greenfield-app/components/content/Title";
 import { Apy } from "@popcorn/greenfield-app/lib/Staking";
 import MarkdownRenderer from "./MarkdownRenderer";
@@ -19,7 +19,7 @@ import { useBalanceOf, useTotalSupply } from "@popcorn/greenfield-app/lib/Erc20/
 import { usePrice } from "@popcorn/greenfield-app/lib/Price";
 import { parseUnits } from "ethers/lib/utils.js";
 import { useTotalAssets } from "@popcorn/greenfield-app/lib/Vault/hooks";
-import { formatNumber } from "@popcorn/utils/formatBigNumber";
+import { formatNumber } from "@popcorn/greenfield-app/lib/utils/formatBigNumber";
 import RightArrowIcon from "components/SVGIcons/RightArrowIcon";
 import { InfoIconWithTooltip } from "@popcorn/greenfield-app/components/InfoIconWithTooltip";
 import useVaultMetadata from "@popcorn/greenfield-app/lib/Vault/hooks/useVaultMetadata";

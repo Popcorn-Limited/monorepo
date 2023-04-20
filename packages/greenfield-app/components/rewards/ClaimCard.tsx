@@ -4,7 +4,7 @@ import toast from "react-hot-toast";
 import Image from "next/image";
 import ContentLoader from "react-content-loader";
 
-import { ChainId, networkLogos } from "@popcorn/utils";
+import { ChainId, networkLogos } from "@popcorn/greenfield-app/lib/utils";
 import { Contract, Staking } from "@popcorn/greenfield-app/lib";
 import { useClaim } from "@popcorn/greenfield-app/lib/Staking/hooks";
 import MainActionButton from "@popcorn/greenfield-app/components/MainActionButton";

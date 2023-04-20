@@ -11,8 +11,8 @@ import InputTokenWithError from "@popcorn/greenfield-app/components/InputTokenWi
 import { useContractMetadata } from "@popcorn/greenfield-app/lib/Contract";
 import useMainAction from "./internals/useMainAction";
 import MainActionButton from "@popcorn/greenfield-app/components/MainActionButton";
-import { formatAndRoundBigNumber, useConsistentRepolling } from "@popcorn/utils";
 import { formatUnits, parseUnits } from "ethers/lib/utils.js";
+import { useConsistentRepolling } from "@popcorn/greenfield-app/lib/utils";
 
 const BALANCE_ROUNDING = parseUnits("1", 8);
 

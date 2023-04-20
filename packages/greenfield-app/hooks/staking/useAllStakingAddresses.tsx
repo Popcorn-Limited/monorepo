@@ -1,5 +1,5 @@
 import { useNamedAccounts } from "@popcorn/greenfield-app/lib/utils";
-import { ChainId } from "@popcorn/utils";
+import { ChainId } from "@popcorn/greenfield-app/lib/utils/connectors";
 
 export enum StakingType {
   PopLocker,

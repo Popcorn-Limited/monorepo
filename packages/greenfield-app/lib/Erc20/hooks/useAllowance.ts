@@ -1,6 +1,6 @@
 import { BigNumber } from "ethers";
 import { useAccount, useContractRead } from "wagmi";
-import { formatAndRoundBigNumber, useConsistentRepolling } from "@popcorn/utils";
+import { formatAndRoundBigNumber, useConsistentRepolling } from "@popcorn/greenfield-app/lib/utils";
 import { BigNumberWithFormatted, Pop } from "../../types";
 
 export const useAllowance: Pop.Hook<BigNumberWithFormatted> = ({ address: target, account: spender, chainId }) => {

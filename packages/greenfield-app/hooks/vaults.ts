@@ -3,7 +3,7 @@ import type { BigNumber } from "ethers";
 import { constants } from "ethers";
 import { Address, useContractWrite, usePrepareContractWrite } from "wagmi";
 import { useNamedAccounts } from "@popcorn/greenfield-app/lib/utils/hooks";
-import { ChainId } from "@popcorn/utils";
+import { ChainId } from "@popcorn/greenfield-app/lib/utils/connectors";
 import { useTypedReadCall } from "./wagmi";
 
 // TODO: remove hard-coded gas

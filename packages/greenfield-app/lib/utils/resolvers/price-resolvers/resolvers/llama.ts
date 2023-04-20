@@ -1,4 +1,4 @@
-import { networkMap } from "@popcorn/utils";
+import { networkMap } from "@popcorn/greenfield-app/lib/utils";
 import { BigNumber, constants } from "ethers";
 import { PriceResolver } from "../types";
 

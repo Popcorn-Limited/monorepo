@@ -1,5 +1,5 @@
 import { BigNumber } from "ethers";
-import { formatAndRoundBigNumber, getNamedAccounts } from "@popcorn/utils";
+import { formatAndRoundBigNumber, getNamedAccounts } from "@popcorn/greenfield-app/lib/utils";
 import { ApyResolvers } from ".";
 
 interface ResolveApyProps {

@@ -1,4 +1,4 @@
-import { ChainId } from "@popcorn/utils";
+import { ChainId } from "@popcorn/greenfield-app/lib/utils/connectors";
 import { useEffect, useState } from "react";
 
 export default function useNetworkFilter(availableNetworks: ChainId[]): [ChainId[], (chainId: ChainId) => void] {

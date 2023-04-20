@@ -1,9 +1,8 @@
 import { BigNumber } from "ethers";
 import { useContractRead } from "wagmi";
-import { Pop } from "../../types";
-import { useNamedAccounts } from "../../utils";
-import useLog from "../../utils/hooks/useLog";
-import { useMultiStatus } from "../../utils/hooks/useMultiStatus";
+import { Pop } from "@popcorn/greenfield-app/lib/types";
+import { useMultiStatus, useNamedAccounts } from "@popcorn/greenfield-app/lib/utils";
+import useLog from "@popcorn/greenfield-app/lib/utils/hooks/useLog";
 
 export const useTvlResolver: Pop.Hook<BigNumber> = ({ address, chainId, enabled }) => {
   const [metadata] = useNamedAccounts(chainId as any, (!!address && [address]) || []);

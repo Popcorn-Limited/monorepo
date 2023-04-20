@@ -1,4 +1,4 @@
-import { ChainId } from "@popcorn/utils";
+import { ChainId } from "@popcorn/greenfield-app/lib/utils/connectors";
 import { BigNumber } from "ethers";
 import { UPDATE_TOKEN, UPDATE_WALLET } from "./actions";
 

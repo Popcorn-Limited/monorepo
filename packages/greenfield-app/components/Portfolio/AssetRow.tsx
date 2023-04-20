@@ -4,7 +4,7 @@ import { useState } from "react";
 
 import { NetworkSticker } from "@popcorn/greenfield-app/components/NetworkSticker";
 import TokenIcon from "@popcorn/greenfield-app/components/TokenIcon";
-import { formatAndRoundBigNumber } from "@popcorn/utils";
+import { formatAndRoundBigNumber } from "@popcorn/greenfield-app/lib/utils";
 
 import { getPercentage } from "@popcorn/greenfield-app/lib/utils/numbers";
 import { Contract } from "@popcorn/greenfield-app/lib";

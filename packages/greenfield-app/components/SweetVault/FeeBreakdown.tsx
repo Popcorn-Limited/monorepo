@@ -1,4 +1,4 @@
-import { formatAndRoundBigNumber } from "@popcorn/utils";
+import { formatAndRoundBigNumber } from "@popcorn/greenfield-app/lib/utils";
 import { constants } from "ethers";
 import useVaultFees from "hooks/vaults/useVaultFees";
 

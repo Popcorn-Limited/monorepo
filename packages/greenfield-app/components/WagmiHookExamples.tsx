@@ -20,7 +20,7 @@ import { useSigner } from "wagmi";
 import { useCallback, useEffect, useMemo } from "react";
 import { BigNumber, constants } from "ethers";
 import { useContractWrite, usePrepareContractWrite } from "wagmi";
-import { formatAndRoundBigNumber } from "@popcorn/utils";
+import { formatAndRoundBigNumber } from "@popcorn/greenfield-app/lib/utils";
 
 export default function FoundryHookExample() {
   const { address } = useAccount();

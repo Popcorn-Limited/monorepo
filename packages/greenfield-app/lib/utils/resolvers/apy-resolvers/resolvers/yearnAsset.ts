@@ -1,6 +1,6 @@
 import { BigNumber, Contract } from "ethers";
 import { apy } from "@popcorn/greenfield-app/lib/Yearn";
-import { ChainId } from "@popcorn/utils";
+import { ChainId } from "@popcorn/greenfield-app/lib/utils/connectors";
 import QueryVaultByAsset from "./QueryVaultByAsset";
 
 const store = {};

@@ -1,4 +1,4 @@
-import { ChainId } from "@popcorn/utils";
+import { ChainId } from "@popcorn/greenfield-app/lib/utils/connectors";
 import * as Icon from "react-feather";
 import { useNamedAccounts } from "@popcorn/greenfield-app/lib/utils";
 import AssetInputWithAction from "components/AssetInputWithAction";

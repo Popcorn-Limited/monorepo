@@ -1,4 +1,4 @@
-import { ChainId } from "@popcorn/utils";
+import { ChainId } from "@popcorn/greenfield-app/lib/utils/connectors";
 import NetworkFilter from "./NetworkFilter";
 import HeroBgMobile from "./HeroBgMobile";
 import HeroBg from "./HeroBg";

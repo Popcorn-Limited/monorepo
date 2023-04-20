@@ -1,5 +1,5 @@
-import { formatDate } from "@popcorn/utils/src/DateTime";
-import { LockedBalance } from "@popcorn/utils/types";
+import { formatDate } from "@popcorn/greenfield-app/lib/utils";
+import { LockedBalance } from "@popcorn/greenfield-app/lib/types";
 import { useState } from "react";
 import * as Icon from "react-feather";
 

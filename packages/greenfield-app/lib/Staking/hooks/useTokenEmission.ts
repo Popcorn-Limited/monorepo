@@ -1,8 +1,8 @@
 import { BigNumber } from "ethers";
 import { useContractRead } from "wagmi";
-import { formatAndRoundBigNumber } from "@popcorn/utils";
-import { useNamedAccounts } from "../../utils";
-import { BigNumberWithFormatted, Pop } from "../../types";
+import { formatAndRoundBigNumber } from "@popcorn/greenfield-app/lib/utils";
+import { useNamedAccounts } from "@popcorn/greenfield-app/lib/utils";
+import { BigNumberWithFormatted, Pop } from "@popcorn/greenfield-app/lib/types";
 
 export const useTokenEmission: Pop.Hook<BigNumberWithFormatted> = ({ chainId, address }) => {
   const [metadata] = useNamedAccounts(chainId as any, (!!address && [address]) || []);

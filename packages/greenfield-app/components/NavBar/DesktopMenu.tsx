@@ -13,9 +13,9 @@ import YoutubeIcon from "components/SVGIcons/YoutubeIcon";
 import NavbarLink from "@popcorn/greenfield-app/components/NavBar/NavbarLinks";
 import { useNetwork, useAccount } from "wagmi";
 import { useChainModal, useConnectModal } from "@rainbow-me/rainbowkit";
-import { networkLogos } from "@popcorn/utils";
 import { useMemo, useRef, useState, Fragment, useCallback } from "react";
 import { useProductLinks } from "@popcorn/greenfield-app/hooks/useProductLinks";
+import { networkLogos } from "@popcorn/greenfield-app/lib/utils";
 
 export default function DesktopMenu(): JSX.Element {
   const { openConnectModal } = useConnectModal();

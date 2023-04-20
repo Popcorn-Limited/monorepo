@@ -3,7 +3,7 @@ import { useContext } from "react";
 import { constants } from "ethers";
 
 import useVaultFees from "hooks/vaults/useVaultFees";
-import { formatAndRoundBigNumber } from "@popcorn/utils";
+import { formatAndRoundBigNumber } from "@popcorn/greenfield-app/lib/utils";
 import { setSingleActionModal } from "@popcorn/greenfield-app/context/actions";
 import { store } from "@popcorn/greenfield-app/context/store";
 import asset_fee from "@popcorn/greenfield-app/assets/fee.svg";

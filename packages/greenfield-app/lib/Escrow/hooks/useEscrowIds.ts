@@ -1,6 +1,6 @@
 import { useContractRead } from "wagmi";
-import { Pop } from "../../types";
-import { useIsMounted, useNamedAccounts } from "../../utils";
+import { Pop } from "@popcorn/greenfield-app/lib/types";
+import { useIsMounted, useNamedAccounts } from "@popcorn/greenfield-app/lib/utils";
 
 /**
  * useEscrowBalance returns the balance a user has in a given pop escrow contract

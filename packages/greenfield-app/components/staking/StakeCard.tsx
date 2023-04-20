@@ -1,4 +1,4 @@
-import { ChainId, networkMap } from "@popcorn/utils";
+import { ChainId, networkMap } from "@popcorn/greenfield-app/lib/utils";
 import MainActionButton from "@popcorn/greenfield-app/components/MainActionButton";
 import TokenIcon from "@popcorn/greenfield-app/components/TokenIcon";
 import { StakingType } from "hooks/staking/useAllStakingAddresses";

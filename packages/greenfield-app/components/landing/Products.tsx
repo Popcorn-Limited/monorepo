@@ -1,7 +1,7 @@
 import React, { Fragment } from "react";
 import { formatUnits } from "ethers/lib/utils";
 
-import { ChainId } from "@popcorn/utils";
+import { ChainId } from "@popcorn/greenfield-app/lib/utils/connectors";
 import Product from "@popcorn/greenfield-app/components/landing/Product";
 import { useNamedAccounts } from "@popcorn/greenfield-app/lib/utils/hooks";
 import { useFeatures } from "@popcorn/greenfield-app/hooks/useFeatures";

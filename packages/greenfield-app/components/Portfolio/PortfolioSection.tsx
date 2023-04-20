@@ -1,6 +1,6 @@
 import { BigNumber, constants } from "ethers";
 import { InfoIconWithTooltip } from "@popcorn/greenfield-app/components/InfoIconWithTooltip";
-import { formatAndRoundBigNumber } from "@popcorn/utils";
+import { formatAndRoundBigNumber } from "@popcorn/greenfield-app/lib/utils";
 
 import { NotAvailable } from "@popcorn/greenfield-app/components/NotAvailable";
 import NetworkIconList from "@popcorn/greenfield-app/components/NetworkIconList";

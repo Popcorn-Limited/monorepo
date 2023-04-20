@@ -1,7 +1,7 @@
 import { useToken as _useToken } from "wagmi";
-import { Pop } from "../../types";
-import { useNamedAccounts } from "../../utils";
-import useLog from "../../utils/hooks/useLog";
+import { Pop } from "@popcorn/greenfield-app/lib/types";
+import { useNamedAccounts } from "@popcorn/greenfield-app/lib/utils";
+import useLog from "@popcorn/greenfield-app/lib/utils/hooks/useLog";
 
 /**
  * useContractMetadata will return metadata from namedAccounts.json and merge it with fetched ERC20 metadata.

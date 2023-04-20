@@ -1,5 +1,5 @@
 import { NotAvailable } from "@popcorn/greenfield-app/components/NotAvailable";
-import { ChainId } from "@popcorn/utils";
+import { ChainId } from "@popcorn/greenfield-app/lib/utils/connectors";
 import { constants } from "ethers";
 import useAllStakingAddresses from "hooks/staking/useAllStakingAddresses";
 import { useSum } from "@popcorn/greenfield-app/hooks";

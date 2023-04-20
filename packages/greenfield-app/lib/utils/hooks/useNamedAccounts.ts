@@ -1,5 +1,5 @@
 import { useMemo } from "react";
-import { DeploymentChainIds, DeploymentContractsKeys, getNamedAccounts } from "@popcorn/utils";
+import { DeploymentChainIds, DeploymentContractsKeys, getNamedAccounts  } from "@popcorn/greenfield-app/lib/utils";
 import { Pop } from "../../types";
 /**
  * useNamedAccounts retrieves contract metadata from namedAccounts.json

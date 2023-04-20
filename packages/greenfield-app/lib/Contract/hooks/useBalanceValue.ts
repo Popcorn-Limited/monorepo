@@ -1,7 +1,7 @@
 import { BigNumber } from "ethers";
 import { parseUnits } from "ethers/lib/utils";
 import { useMemo } from "react";
-import { formatAndRoundBigNumber } from "@popcorn/utils/src/formatBigNumber";
+import { formatAndRoundBigNumber } from "@popcorn/greenfield-app/lib/utils/formatBigNumber";
 import { Pop, BigNumberWithFormatted } from "../../types";
 
 /**

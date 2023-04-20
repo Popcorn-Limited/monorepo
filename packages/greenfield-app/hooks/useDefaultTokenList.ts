@@ -1,4 +1,4 @@
-import { ChainId } from "@popcorn/utils";
+import { ChainId } from "@popcorn/greenfield-app/lib/utils/connectors";
 import { useNamedAccounts } from "@popcorn/greenfield-app/lib/utils";
 import { useMemo } from "react";
 

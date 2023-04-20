@@ -1,12 +1,12 @@
 import { ChevronDownIcon } from "@heroicons/react/outline";
-import { ChainId } from "@popcorn/utils";
-import { Token } from "@popcorn/utils/types";
+import { ChainId } from "@popcorn/greenfield-app/lib/utils/connectors";
 import PopUpModal from "components/Modal/PopUpModal";
 import SingleActionModal from "components/Modal/SingleActionModal";
 import TokenIcon from "@popcorn/greenfield-app/components/TokenIcon";
 import Image from "next/image";
 import { useState } from "react";
 import { SearchToken } from "@popcorn/greenfield-app/components/SearchToken";
+import { Token } from "@popcorn/greenfield-app/lib/types";
 
 export interface SelectTokenProps {
   allowSelection: boolean;

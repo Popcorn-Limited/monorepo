@@ -2,7 +2,7 @@ import { BigNumber, constants } from "ethers";
 import { useNamedAccounts } from "@popcorn/greenfield-app/lib/utils";
 import { BigNumberWithFormatted, Pop } from "../../types";
 import { Address, useContractRead } from "wagmi";
-import { formatAndRoundBigNumber } from "@popcorn/utils";
+import { formatAndRoundBigNumber } from "@popcorn/greenfield-app/lib/utils";
 
 export const useClaimableBalance: Pop.Hook<BigNumberWithFormatted> = ({
   chainId,

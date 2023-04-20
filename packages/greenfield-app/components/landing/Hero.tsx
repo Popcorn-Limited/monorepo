@@ -4,7 +4,7 @@ import { ConnectWallet } from "@popcorn/greenfield-app/components/ConnectWallet"
 import useTvl from "@popcorn/greenfield-app/lib/Contract/hooks/useTvl";
 import TotalTVL from "@popcorn/greenfield-app/lib/Contract/TotalTvl";
 import { useNamedAccounts } from "@popcorn/greenfield-app/lib/utils";
-import { ChainId } from "@popcorn/utils";
+import { ChainId } from "@popcorn/greenfield-app/lib/utils/connectors";
 import { constants } from "ethers";
 import { formatUnits } from "ethers/lib/utils.js";
 import { useAccount } from "wagmi";

@@ -1,11 +1,11 @@
 import { useProvider } from "wagmi";
 import useSWR from "swr";
-import { resolve_apy } from "../../utils/resolvers/apy-resolvers/resolve_apy";
+import { resolve_apy } from "@popcorn/greenfield-app/lib/utils/resolvers/apy-resolvers/resolve_apy";
 import { useMemo } from "react";
-import { popHookAdapter } from "../../utils/hooks/swrPopHookAdapter";
-import { BigNumberWithFormatted, Pop } from "../../types";
-import { useNamedAccounts } from "../../utils";
-import useLog from "../../utils/hooks/useLog";
+import { popHookAdapter } from "@popcorn/greenfield-app/lib/utils/hooks/swrPopHookAdapter";
+import { BigNumberWithFormatted, Pop } from "@popcorn/greenfield-app/lib/types";
+import { useNamedAccounts } from "@popcorn/greenfield-app/lib/utils";
+import useLog from "@popcorn/greenfield-app/lib/utils/hooks/useLog";
 
 interface UseApyProps extends Pop.StdProps {
   resolver?: string;

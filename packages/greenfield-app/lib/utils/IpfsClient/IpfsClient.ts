@@ -1,5 +1,5 @@
 import axios, { AxiosResponse } from "axios";
-import { getIpfsHashFromBytes32 } from "../ipfsHashManipulation";
+import { getIpfsHashFromBytes32 } from "./ipfsHashManipulation";
 
 export interface IIpfsClient {
   get: <T>(cid: string) => Promise<T>;

@@ -1,4 +1,4 @@
-import { ChainId } from "@popcorn/utils";
+import { ChainId } from "@popcorn/greenfield-app/lib/utils/connectors";
 import { Contract } from "ethers";
 import { parseEther } from "ethers/lib/utils";
 import { resolve_price } from "../resolve_price";

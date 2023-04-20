@@ -1,5 +1,5 @@
 import { BigNumber } from "ethers";
-import { ChainId } from "@popcorn/utils";
+import { ChainId } from "@popcorn/greenfield-app/lib/utils/connectors";
 
 export type PriceResolver = (
   address: string,

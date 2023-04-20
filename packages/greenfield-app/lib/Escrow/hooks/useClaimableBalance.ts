@@ -1,5 +1,5 @@
 import { useNamedAccounts } from "@popcorn/greenfield-app/lib/utils";
-import { formatAndRoundBigNumber } from "@popcorn/utils/src/formatBigNumber";
+import { formatAndRoundBigNumber } from "@popcorn/greenfield-app/lib/utils/formatBigNumber";
 import { Pop, BigNumberWithFormatted } from "../../types";
 import { BigNumber, constants } from "ethers/lib/ethers";
 import { useContractReads } from 'wagmi'

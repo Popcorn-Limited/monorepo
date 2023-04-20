@@ -1,4 +1,4 @@
-import { IpfsClient } from "@popcorn/utils";
+import { IpfsClient  } from "@popcorn/greenfield-app/lib/utils";
 import { BigNumber } from "ethers";
 import { useVaultRegistry } from "@popcorn/greenfield-app/hooks/vaults";
 import { useEffect, useState } from "react";

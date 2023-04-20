@@ -1,4 +1,4 @@
-import { ChainId } from "@popcorn/utils";
+import { ChainId } from "@popcorn/greenfield-app/lib/utils/connectors";
 import { BigNumber, constants } from "ethers/lib/ethers";
 import { useCallback } from "react";
 import { useAccount } from "wagmi";

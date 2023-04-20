@@ -1,7 +1,7 @@
 import { useEffect, useState, useRef, useCallback } from "react";
 import { BigNumber, constants } from "ethers";
 import useLog from "@popcorn/greenfield-app/lib/utils/hooks/useLog";
-import { formatAndRoundBigNumber } from "@popcorn/utils";
+import { formatAndRoundBigNumber } from "@popcorn/greenfield-app/lib/utils";
 
 export const useSum2 = ({
   expected: _expected,

@@ -1,7 +1,7 @@
 import React, { Fragment } from "react";
 import { ChevronDownIcon } from "@heroicons/react/24/solid";
 import { Menu, Transition } from "@headlessui/react";
-import { SortingType } from "@popcorn/utils";
+import { SortingType } from "@popcorn/greenfield-app/lib/utils";
 
 // TODO make generalized
 interface DropdownProps {

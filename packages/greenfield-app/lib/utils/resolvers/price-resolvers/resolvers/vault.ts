@@ -1,5 +1,5 @@
 import { BigNumber, Contract, constants } from "ethers";
-import { ChainId } from "@popcorn/utils";
+import { ChainId } from "@popcorn/greenfield-app/lib/utils/connectors";
 import { defi_llama } from "./llama";
 import { parseUnits } from "ethers/lib/utils.js";
 

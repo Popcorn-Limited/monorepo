@@ -1,4 +1,4 @@
-import type { BigNumber } from "ethers";
+import type { BigNumber, Contract } from "ethers";
 import type { useContractWrite } from "wagmi";
 
 export namespace Pop {
@@ -83,3 +83,18 @@ export interface LockedBalance {
   boosted: BigNumber;
   unlockTime: number;
 }
+
+export type Token = {
+  contract: Contract;
+  address: string;
+  name: string;
+  symbol: string;
+  decimals: number;
+  balance?: BigNumber;
+  allowance?: BigNumber;
+  description?: string;
+  icon?: string;
+  claimableBalance?: BigNumber;
+  price?: BigNumber;
+  [key: string]: any;
+};

@@ -1,8 +1,8 @@
-import { ChainId, PRC_PROVIDERS } from "@popcorn/utils";
 import { BigNumber, Contract, constants } from "ethers";
 import useSWR, { SWRResponse } from "swr";
 import { usePrice } from "@popcorn/greenfield-app/lib/Price";
 import { useNamedAccounts } from "@popcorn/greenfield-app/lib/utils";
+import { ChainId, PRC_PROVIDERS } from "@popcorn/greenfield-app/lib/utils/connectors";
 
 const REFETCH_INTERVAL = 10 * 1_000;
 

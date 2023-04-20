@@ -1,4 +1,4 @@
-import { ChainId, getNamedAccounts } from "@popcorn/utils";
+import  { ChainId, getNamedAccounts } from "@popcorn/greenfield-app/lib/utils";
 import { Contract } from "ethers/lib/ethers";
 import { resolve_price } from "../resolve_price";
 import { PriceResolver } from "../types";

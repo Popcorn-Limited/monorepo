@@ -2,10 +2,10 @@ import Image from "next/image";
 import { BigNumber } from "ethers";
 import HeroBgMobile from "@popcorn/greenfield-app/public/images/portfolioHeroBgmobile.svg";
 import HeroBg from "@popcorn/greenfield-app/public/images/portfolioHeroBg.svg";
-import { ChainId, formatAndRoundBigNumber } from "@popcorn/utils";
 import NetworkFilter from "@popcorn/greenfield-app/components/NetworkFilter";
 
 import { Tabs, TabsProps } from "../Tabs";
+import { ChainId, formatAndRoundBigNumber } from "@popcorn/greenfield-app/lib/utils";
 
 export interface PortfolioHeroProps {
   selectedNetworks: ChainId[];

@@ -1,5 +1,5 @@
 import type { BigNumber } from "ethers/lib/ethers";
-import { ChainId } from "@popcorn/utils";
+import { ChainId } from "@popcorn/greenfield-app/lib/utils/connectors";
 import { formatUnits } from "ethers/lib/utils";
 import useVariadicSum from "@popcorn/greenfield-app/hooks/useVariadicSum";
 import usePoolTVL from "@popcorn/greenfield-app/hooks/usePoolTvl";

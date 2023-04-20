@@ -1,6 +1,6 @@
 import { ChevronDownIcon } from "@heroicons/react/24/solid";
 import PseudoRadioButton from "@popcorn/greenfield-app/components/PseudoRadioButton";
-import { ChainId, networkLogos, networkMap } from "@popcorn/utils";
+import { ChainId, networkLogos, networkMap } from "@popcorn/greenfield-app/lib/utils";
 import Image from "next/image";
 import { useState } from "react";
 import { MobilePopupSelect } from "../../greenfield-app/components/Modal/MobilePopupSelect";

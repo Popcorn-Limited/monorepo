@@ -1,4 +1,4 @@
-import { networkLogos } from "@popcorn/utils";
+import { networkLogos } from "@popcorn/greenfield-app/lib/utils";
 import Image from "next/image";
 
 type NetworkIconListProps = {

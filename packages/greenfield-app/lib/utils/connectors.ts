@@ -125,30 +125,3 @@ export const PRC_PROVIDERS = {
   [ChainId.Optimism]: new ethers.providers.JsonRpcProvider(RPC_URLS[ChainId.Optimism], ChainId.Optimism),
   [ChainId.Fantom]: new ethers.providers.JsonRpcProvider(RPC_URLS[ChainId.Fantom], ChainId.Fantom),
 };
-
-export type HardhatConfigNetworks = {
-  mainnet?: string;
-  goerli?: string;
-  bsc?: string;
-  polygon?: string;
-  hardhat?: string;
-  arbitrum?: string;
-  optimism?: string;
-  fantom?: string;
-  localhost?: string;
-  remote_fork?: string;
-};
-
-export const HardhatConfigNetworksChainIdMapping = {
-  mainnet: ChainId.Ethereum,
-  ethereum: ChainId.Ethereum,
-  goerli: ChainId.Goerli,
-  bsc: ChainId.BNB,
-  bnb: ChainId.BNB,
-  polygon: ChainId.Polygon,
-  hardhat: ChainId.Hardhat,
-  localhost: ChainId.Localhost,
-  arbitrum: ChainId.Arbitrum,
-  fantom: ChainId.Fantom,
-  remote_fork: ChainId.RemoteFork,
-};

@@ -3,7 +3,7 @@ import { useEffect } from "react";
 import { BigNumber, constants } from "ethers";
 import { parseUnits } from "ethers/lib/utils";
 
-import { formatAndRoundBigNumber } from "@popcorn/utils";
+import { formatAndRoundBigNumber } from "@popcorn/greenfield-app/lib/utils";
 import { withLoading } from "../utils";
 
 interface Props {

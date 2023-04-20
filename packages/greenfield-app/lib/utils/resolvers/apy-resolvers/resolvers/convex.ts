@@ -1,6 +1,6 @@
 import { BigNumber, Contract } from "ethers";
 import { parseEther } from "ethers/lib/utils";
-import { ChainId } from "@popcorn/utils";
+import { ChainId } from "@popcorn/greenfield-app/lib/utils/connectors";
 
 export async function convex(address, chainId, rpc?): Promise<{ value: BigNumber; decimals: number }> {
   const contract = new Contract(

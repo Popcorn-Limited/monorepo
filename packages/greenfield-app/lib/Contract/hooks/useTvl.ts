@@ -1,13 +1,13 @@
 import { parseEther } from "ethers/lib/utils";
 import { usePrice } from "../../Price/hooks/usePrice";
 import { useTotalSupply } from "../../Erc20/hooks/useTotalSupply";
-import { formatAndRoundBigNumber } from "@popcorn/utils/src/formatBigNumber";
+import { formatAndRoundBigNumber } from "@popcorn/greenfield-app/lib/utils/formatBigNumber";
 import { BigNumber } from "ethers";
 import { BigNumberWithFormatted, Pop } from "../../types";
-import useNamedAccounts from "../../utils/hooks/useNamedAccounts";
-import { useMultiStatus } from "../../utils/hooks/useMultiStatus";
+import useNamedAccounts from "@popcorn/greenfield-app/lib/utils/hooks/useNamedAccounts";
+import { useMultiStatus } from "@popcorn/greenfield-app/lib/utils/hooks/useMultiStatus";
 import { useTvlResolver } from "./useTvlResolver";
-import useLog from "../../utils/hooks/useLog";
+import useLog from "@popcorn/greenfield-app/lib/utils/hooks/useLog";
 
 interface Props {
   chainId: number;

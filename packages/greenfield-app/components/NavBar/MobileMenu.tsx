@@ -1,5 +1,5 @@
 import { Dialog, Transition } from "@headlessui/react";
-import { ChainId, networkLogos, networkMap } from "@popcorn/utils";
+import { ChainId, networkLogos, networkMap } from "@popcorn/greenfield-app/lib/utils";
 import MainActionButton from "@popcorn/greenfield-app/components/MainActionButton";
 import PopUpModal from "components/Modal/PopUpModal";
 import DiscordIcon from "components/SVGIcons/DiscordIcon";

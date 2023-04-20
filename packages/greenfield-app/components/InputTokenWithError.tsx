@@ -1,11 +1,10 @@
 import type { HTMLProps } from "react";
-import type { Token } from "@popcorn/utils/types";
-import Image from "next/image";
 import { constants } from "ethers";
 
-import { formatAndRoundBigNumber } from "@popcorn/utils";
+import { formatAndRoundBigNumber } from "@popcorn/greenfield-app/lib/utils";
 import SelectToken from "@popcorn/greenfield-app/components/SelectToken";
 import InputNumber from "./InputNumber";
+import { Token } from "@popcorn/greenfield-app/lib/types";
 
 const ZERO = constants.Zero;
 function InputTokenWithError({

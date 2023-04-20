@@ -1,4 +1,4 @@
-import { ChainId } from "@popcorn/utils";
+import { ChainId } from "@popcorn/greenfield-app/lib/utils/connectors";
 import { useRouter } from "next/router";
 import { useEffect, useMemo, useState } from "react";
 import { useAccount, useNetwork } from "wagmi";

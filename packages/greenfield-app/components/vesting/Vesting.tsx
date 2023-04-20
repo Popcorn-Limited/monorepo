@@ -1,5 +1,5 @@
 import RewardSummaryCard from "./RewardSummaryCard";
-import { ChainId, formatAndRoundBigNumber, networkLogos } from "@popcorn/utils";
+import { ChainId, formatAndRoundBigNumber, networkLogos } from "@popcorn/greenfield-app/lib/utils";
 import { BigNumber, constants } from "ethers";
 import { useEffect, useState } from "react";
 import ContentLoader from "react-content-loader";

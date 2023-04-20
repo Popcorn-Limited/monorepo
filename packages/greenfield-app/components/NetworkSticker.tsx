@@ -1,6 +1,6 @@
 import { FC } from "react";
 import Image from "next/image";
-import { ChainId, networkLogos } from "@popcorn/utils";
+import { ChainId, networkLogos } from "@popcorn/greenfield-app/lib/utils";
 
 interface NetworkStickerProps {
   chainId?: ChainId;

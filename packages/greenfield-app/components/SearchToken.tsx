@@ -1,9 +1,9 @@
 import { SearchIcon } from "@heroicons/react/outline";
-import { ChainId } from "@popcorn/utils";
-import { Token } from "@popcorn/utils/types";
+import { ChainId } from "@popcorn/greenfield-app/lib/utils/connectors";
 import TokenIcon from "@popcorn/greenfield-app/components/TokenIcon";
 import { FC, useState } from "react";
 import { useDefaultTokenList } from "@popcorn/greenfield-app/hooks/useDefaultTokenList";
+import { Token } from "@popcorn/greenfield-app/lib/types";
 
 interface SearchTokenProps {
   selectToken: (token: Token) => void;

@@ -1,4 +1,4 @@
-import { formatAndRoundBigNumber } from "@popcorn/utils";
+import { formatAndRoundBigNumber } from "@popcorn/greenfield-app/lib/utils";
 import { UpdateNetworthActionProps } from "../../reducers/portfolio";
 import { BigNumber, constants } from "ethers";
 import { useComponentState } from "../utils/hooks/useComponentState";

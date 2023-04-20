@@ -1,5 +1,5 @@
 import type { ContractWriteArgs } from "@popcorn/greenfield-app/lib/types";
-import type { ChainId } from "@popcorn/utils";
+import { ChainId } from "@popcorn/greenfield-app/lib/utils";
 import { useContractWrite, usePrepareContractWrite } from "wagmi";
 import { constants } from "ethers";
 

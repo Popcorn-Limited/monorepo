@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 import useSelectNetwork from "hooks/useNetworkFilter";
 import { useChainsWithStakingRewards } from "hooks/staking/useChainsWithStaking";
 import NetworkFilter from "@popcorn/greenfield-app/components/NetworkFilter";
-import { ChainId } from "@popcorn/utils";
+import { ChainId } from "@popcorn/greenfield-app/lib/utils/connectors";
 import AirDropClaim from "components/rewards/AirdropClaim";
 import StakingRewardsContainer from "components/rewards/StakingRewardsContainer";
 import VestingContainer from "components/vesting/VestingContainer";

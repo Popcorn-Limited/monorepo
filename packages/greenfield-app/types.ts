@@ -1,4 +1,4 @@
-import { ChainId } from "@popcorn/utils";
+import { ChainId } from "@popcorn/greenfield-app/lib/utils/connectors";
 import { useContractWrite } from "wagmi";
 
 export type MinimalContractMetadata = { chainId: number; priceResolver?: string; address: string };
