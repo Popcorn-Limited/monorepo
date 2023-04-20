@@ -1,4 +1,4 @@
-import deployments from "@popcorn/hardhat/lib/utils/exporter/out/deployments.json";
+import deployments from "@popcorn/greenfield-app/lib/deployments/deployments.json";
 
 export type Deployments = typeof deployments;
 

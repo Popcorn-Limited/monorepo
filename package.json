@@ -7,8 +7,6 @@
   "scripts": {
     "dev": "yarn lerna run --parallel dev",
     "build": "yarn lerna run build",
-    "app:build": "cd packages/hardhat; yarn build; cd ../app; yarn build",
-    "grants:build": "cd packages/hardhat; yarn build; cd ../grants; yarn build",
     "pretify": "prettier --write .",
     "test": "yarn lerna run test",
     "nuke": "rm -r node_modules; for d in packages/*/node_modules; do echo $d; rm -r $d; done; for d in packages/*/.next; do echo $d; rm -r $d; done",
@@ -19,7 +17,7 @@
     "coverage": "yarn lerna run coverage",
     "prepare": "husky install",
     "circulating-supply": "yarn lerna run circulating-supply --stream",
-    "netlify-build": "cd packages/hardhat; yarn build; cd ../greenfield-app; yarn build"
+    "netlify-build": "cd packages/greenfield-app; yarn build"
   },
   "lint-staged": {
     "*.{sol,ts,tsx}": "prettier --write"

@@ -1,4 +1,4 @@
 {
   "installCommand": "yarn",
-  "buildCommand": "yarn lerna run --scope={@popcorn/hardhat,landing} build"
+  "buildCommand": "yarn lerna run --scope={landing} build"
 }
