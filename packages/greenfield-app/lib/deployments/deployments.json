@@ -126,9 +126,7 @@
           "apyResolver": "synthetix",
           "claimableTokenAdapter": {
             "tokenFunction": "rewardsToken",
-            "tokenFunctionAbi": [
-              "function rewardsToken() external view returns (address)"
-            ],
+            "tokenFunctionAbi": ["function rewardsToken() external view returns (address)"],
             "type": "synthetix"
           },
           "contractName": "ButterStaking",
@@ -186,9 +184,7 @@
           "apyResolver": "synthetix",
           "claimableTokenAdapter": {
             "tokenFunction": "rewardsToken",
-            "tokenFunctionAbi": [
-              "function rewardsToken() external view returns (address)"
-            ],
+            "tokenFunctionAbi": ["function rewardsToken() external view returns (address)"],
             "type": "synthetix"
           },
           "contractName": "ThreeXStaking",
@@ -245,9 +241,7 @@
           "apyResolver": "synthetix",
           "claimableTokenAdapter": {
             "tokenFunction": "rewardsToken",
-            "tokenFunctionAbi": [
-              "function rewardsToken() external view returns (address)"
-            ],
+            "tokenFunctionAbi": ["function rewardsToken() external view returns (address)"],
             "type": "synthetix"
           },
           "icons": ["/images/tokens/usdc.svg", "/images/icons/POP.svg"],
@@ -528,9 +522,7 @@
           "balanceResolver": "escrowBalance",
           "claimableTokenAdapter": {
             "tokenFunction": "POP",
-            "tokenFunctionAbi": [
-              "function POP() external view returns (address)"
-            ],
+            "tokenFunctionAbi": ["function POP() external view returns (address)"],
             "type": "escrow"
           },
           "isERC20": false,
@@ -538,9 +530,7 @@
           "symbol": "POP",
           "tvlResolver": {
             "tokenFunction": "POP",
-            "tokenFunctionAbi": [
-              "function POP() external view returns (address)"
-            ],
+            "tokenFunctionAbi": ["function POP() external view returns (address)"],
             "type": "escrow"
           }
         }
@@ -631,9 +621,7 @@
           "apyResolver": "synthetix",
           "claimableTokenAdapter": {
             "tokenFunction": "rewardsToken",
-            "tokenFunctionAbi": [
-              "function rewardsToken() external view returns (address)"
-            ],
+            "tokenFunctionAbi": ["function rewardsToken() external view returns (address)"],
             "type": "synthetix"
           },
           "icons": ["/images/tokens/xen.png", "/images/icons/POP.svg"],
@@ -648,9 +636,7 @@
         "metadata": {
           "apyResolver": "convex",
           "balanceOfAdapter": {
-            "functionAbi": [
-              "function lockedBalanceOf(address) external view returns (uint256)"
-            ],
+            "functionAbi": ["function lockedBalanceOf(address) external view returns (uint256)"],
             "functionName": "lockedBalanceOf(address)"
           },
           "contractName": "PopLocker",
@@ -737,9 +723,7 @@
           "apyResolver": "synthetix",
           "claimableTokenAdapter": {
             "tokenFunction": "rewardsToken",
-            "tokenFunctionAbi": [
-              "function rewardsToken() external view returns (address)"
-            ],
+            "tokenFunctionAbi": ["function rewardsToken() external view returns (address)"],
             "type": "synthetix"
           },
           "contractName": "ButterStaking",
@@ -1002,9 +986,7 @@
         "metadata": {
           "apyResolver": "convex",
           "balanceOfAdapter": {
-            "functionAbi": [
-              "function lockedBalanceOf(address) external view returns (uint256)"
-            ],
+            "functionAbi": ["function lockedBalanceOf(address) external view returns (uint256)"],
             "functionName": "lockedBalanceOf(address)"
           },
           "contractName": "PopLocker",
@@ -1031,9 +1013,7 @@
           "apyResolver": "synthetix",
           "claimableTokenAdapter": {
             "tokenFunction": "rewardsToken",
-            "tokenFunctionAbi": [
-              "function rewardsToken() external view returns (address)"
-            ],
+            "tokenFunctionAbi": ["function rewardsToken() external view returns (address)"],
             "type": "synthetix"
           },
           "icons": ["/images/tokens/usdc.svg", "/images/icons/POP.svg"],
@@ -1071,9 +1051,7 @@
           "balanceResolver": "escrowBalance",
           "claimableTokenAdapter": {
             "tokenFunction": "POP",
-            "tokenFunctionAbi": [
-              "function POP() external view returns (address)"
-            ],
+            "tokenFunctionAbi": ["function POP() external view returns (address)"],
             "type": "escrow"
           },
           "isERC20": false,
@@ -1081,9 +1059,7 @@
           "symbol": "POP",
           "tvlResolver": {
             "tokenFunction": "POP",
-            "tokenFunctionAbi": [
-              "function POP() external view returns (address)"
-            ],
+            "tokenFunctionAbi": ["function POP() external view returns (address)"],
             "type": "escrow"
           }
         }
@@ -1207,9 +1183,7 @@
           "apyResolver": "synthetix",
           "claimableTokenAdapter": {
             "tokenFunction": "rewardsToken",
-            "tokenFunctionAbi": [
-              "function rewardsToken() external view returns (address)"
-            ],
+            "tokenFunctionAbi": ["function rewardsToken() external view returns (address)"],
             "type": "synthetix"
           },
           "contractName": "ThreeXStaking",
@@ -1293,9 +1267,7 @@
           "apyResolver": "synthetix",
           "claimableTokenAdapter": {
             "tokenFunction": "rewardsToken",
-            "tokenFunctionAbi": [
-              "function rewardsToken() external view returns (address)"
-            ],
+            "tokenFunctionAbi": ["function rewardsToken() external view returns (address)"],
             "type": "synthetix"
           },
           "icons": ["/images/tokens/xen.png", "/images/icons/POP.svg"],
@@ -1444,9 +1416,7 @@
         "metadata": {
           "apyResolver": "convex",
           "balanceOfAdapter": {
-            "functionAbi": [
-              "function lockedBalanceOf(address) external view returns (uint256)"
-            ],
+            "functionAbi": ["function lockedBalanceOf(address) external view returns (uint256)"],
             "functionName": "lockedBalanceOf(address)"
           },
           "contractName": "PopLocker",
@@ -1464,9 +1434,7 @@
           "balanceResolver": "escrowBalance",
           "claimableTokenAdapter": {
             "tokenFunction": "POP",
-            "tokenFunctionAbi": [
-              "function POP() external view returns (address)"
-            ],
+            "tokenFunctionAbi": ["function POP() external view returns (address)"],
             "type": "escrow"
           },
           "isERC20": false,
@@ -1474,9 +1442,7 @@
           "symbol": "POP",
           "tvlResolver": {
             "tokenFunction": "POP",
-            "tokenFunctionAbi": [
-              "function POP() external view returns (address)"
-            ],
+            "tokenFunctionAbi": ["function POP() external view returns (address)"],
             "type": "escrow"
           }
         }
@@ -1531,9 +1497,7 @@
         "metadata": {
           "apyResolver": "convex",
           "balanceOfAdapter": {
-            "functionAbi": [
-              "function lockedBalanceOf(address) external view returns (uint256)"
-            ],
+            "functionAbi": ["function lockedBalanceOf(address) external view returns (uint256)"],
             "functionName": "lockedBalanceOf(address)"
           },
           "contractName": "PopLocker",
@@ -1576,9 +1540,7 @@
           "balanceResolver": "escrowBalance",
           "claimableTokenAdapter": {
             "tokenFunction": "POP",
-            "tokenFunctionAbi": [
-              "function POP() external view returns (address)"
-            ],
+            "tokenFunctionAbi": ["function POP() external view returns (address)"],
             "type": "escrow"
           },
           "isERC20": false,
@@ -1586,9 +1548,7 @@
           "symbol": "POP",
           "tvlResolver": {
             "tokenFunction": "POP",
-            "tokenFunctionAbi": [
-              "function POP() external view returns (address)"
-            ],
+            "tokenFunctionAbi": ["function POP() external view returns (address)"],
             "type": "escrow"
           }
         }
@@ -1750,9 +1710,7 @@
           "apyResolver": "synthetix",
           "claimableTokenAdapter": {
             "tokenFunction": "rewardsToken",
-            "tokenFunctionAbi": [
-              "function rewardsToken() external view returns (address)"
-            ],
+            "tokenFunctionAbi": ["function rewardsToken() external view returns (address)"],
             "type": "synthetix"
           },
           "contractName": "ButterStaking",
@@ -1810,9 +1768,7 @@
           "apyResolver": "synthetix",
           "claimableTokenAdapter": {
             "tokenFunction": "rewardsToken",
-            "tokenFunctionAbi": [
-              "function rewardsToken() external view returns (address)"
-            ],
+            "tokenFunctionAbi": ["function rewardsToken() external view returns (address)"],
             "type": "synthetix"
           },
           "contractName": "ThreeXStaking",
@@ -1869,9 +1825,7 @@
           "apyResolver": "synthetix",
           "claimableTokenAdapter": {
             "tokenFunction": "rewardsToken",
-            "tokenFunctionAbi": [
-              "function rewardsToken() external view returns (address)"
-            ],
+            "tokenFunctionAbi": ["function rewardsToken() external view returns (address)"],
             "type": "synthetix"
           },
           "icons": ["/images/tokens/usdc.svg", "/images/icons/POP.svg"],
@@ -2163,9 +2117,7 @@
           "balanceResolver": "escrowBalance",
           "claimableTokenAdapter": {
             "tokenFunction": "POP",
-            "tokenFunctionAbi": [
-              "function POP() external view returns (address)"
-            ],
+            "tokenFunctionAbi": ["function POP() external view returns (address)"],
             "type": "escrow"
           },
           "isERC20": false,
@@ -2173,9 +2125,7 @@
           "symbol": "POP",
           "tvlResolver": {
             "tokenFunction": "POP",
-            "tokenFunctionAbi": [
-              "function POP() external view returns (address)"
-            ],
+            "tokenFunctionAbi": ["function POP() external view returns (address)"],
             "type": "escrow"
           }
         }
@@ -2255,9 +2205,7 @@
           "apyResolver": "synthetix",
           "claimableTokenAdapter": {
             "tokenFunction": "rewardsToken",
-            "tokenFunctionAbi": [
-              "function rewardsToken() external view returns (address)"
-            ],
+            "tokenFunctionAbi": ["function rewardsToken() external view returns (address)"],
             "type": "synthetix"
           },
           "icons": ["/images/tokens/xen.png", "/images/icons/POP.svg"],
@@ -2272,9 +2220,7 @@
         "metadata": {
           "apyResolver": "convex",
           "balanceOfAdapter": {
-            "functionAbi": [
-              "function lockedBalanceOf(address) external view returns (uint256)"
-            ],
+            "functionAbi": ["function lockedBalanceOf(address) external view returns (uint256)"],
             "functionName": "lockedBalanceOf(address)"
           },
           "contractName": "PopLocker",
@@ -2361,9 +2307,7 @@
           "apyResolver": "synthetix",
           "claimableTokenAdapter": {
             "tokenFunction": "rewardsToken",
-            "tokenFunctionAbi": [
-              "function rewardsToken() external view returns (address)"
-            ],
+            "tokenFunctionAbi": ["function rewardsToken() external view returns (address)"],
             "type": "synthetix"
           },
           "contractName": "ButterStaking",
@@ -2626,9 +2570,7 @@
         "metadata": {
           "apyResolver": "convex",
           "balanceOfAdapter": {
-            "functionAbi": [
-              "function lockedBalanceOf(address) external view returns (uint256)"
-            ],
+            "functionAbi": ["function lockedBalanceOf(address) external view returns (uint256)"],
             "functionName": "lockedBalanceOf(address)"
           },
           "contractName": "PopLocker",
@@ -2655,9 +2597,7 @@
           "apyResolver": "synthetix",
           "claimableTokenAdapter": {
             "tokenFunction": "rewardsToken",
-            "tokenFunctionAbi": [
-              "function rewardsToken() external view returns (address)"
-            ],
+            "tokenFunctionAbi": ["function rewardsToken() external view returns (address)"],
             "type": "synthetix"
           },
           "icons": ["/images/tokens/usdc.svg", "/images/icons/POP.svg"],
@@ -2695,9 +2635,7 @@
           "balanceResolver": "escrowBalance",
           "claimableTokenAdapter": {
             "tokenFunction": "POP",
-            "tokenFunctionAbi": [
-              "function POP() external view returns (address)"
-            ],
+            "tokenFunctionAbi": ["function POP() external view returns (address)"],
             "type": "escrow"
           },
           "isERC20": false,
@@ -2705,9 +2643,7 @@
           "symbol": "POP",
           "tvlResolver": {
             "tokenFunction": "POP",
-            "tokenFunctionAbi": [
-              "function POP() external view returns (address)"
-            ],
+            "tokenFunctionAbi": ["function POP() external view returns (address)"],
             "type": "escrow"
           }
         }
@@ -2831,9 +2767,7 @@
           "apyResolver": "synthetix",
           "claimableTokenAdapter": {
             "tokenFunction": "rewardsToken",
-            "tokenFunctionAbi": [
-              "function rewardsToken() external view returns (address)"
-            ],
+            "tokenFunctionAbi": ["function rewardsToken() external view returns (address)"],
             "type": "synthetix"
           },
           "contractName": "ThreeXStaking",
@@ -2917,9 +2851,7 @@
           "apyResolver": "synthetix",
           "claimableTokenAdapter": {
             "tokenFunction": "rewardsToken",
-            "tokenFunctionAbi": [
-              "function rewardsToken() external view returns (address)"
-            ],
+            "tokenFunctionAbi": ["function rewardsToken() external view returns (address)"],
             "type": "synthetix"
           },
           "icons": ["/images/tokens/xen.png", "/images/icons/POP.svg"],
@@ -3128,9 +3060,7 @@
           "balanceResolver": "escrowBalance",
           "claimableTokenAdapter": {
             "tokenFunction": "POP",
-            "tokenFunctionAbi": [
-              "function POP() external view returns (address)"
-            ],
+            "tokenFunctionAbi": ["function POP() external view returns (address)"],
             "type": "escrow"
           },
           "isERC20": false,
@@ -3138,9 +3068,7 @@
           "symbol": "POP",
           "tvlResolver": {
             "tokenFunction": "POP",
-            "tokenFunctionAbi": [
-              "function POP() external view returns (address)"
-            ],
+            "tokenFunctionAbi": ["function POP() external view returns (address)"],
             "type": "escrow"
           }
         }
@@ -3163,9 +3091,7 @@
           "apyResolver": "synthetix",
           "claimableTokenAdapter": {
             "tokenFunction": "rewardsToken",
-            "tokenFunctionAbi": [
-              "function rewardsToken() external view returns (address)"
-            ],
+            "tokenFunctionAbi": ["function rewardsToken() external view returns (address)"],
             "type": "synthetix"
           },
           "icons": ["/images/tokens/usdc.svg", "/images/icons/POP.svg"],
@@ -3189,9 +3115,7 @@
           "apyResolver": "synthetix",
           "claimableTokenAdapter": {
             "tokenFunction": "rewardsToken",
-            "tokenFunctionAbi": [
-              "function rewardsToken() external view returns (address)"
-            ],
+            "tokenFunctionAbi": ["function rewardsToken() external view returns (address)"],
             "type": "synthetix"
           },
           "icons": ["/images/tokens/usdc.svg", "/images/icons/POP.svg"],
@@ -3216,9 +3140,7 @@
         "metadata": {
           "apyResolver": "convex",
           "balanceOfAdapter": {
-            "functionAbi": [
-              "function lockedBalanceOf(address) external view returns (uint256)"
-            ],
+            "functionAbi": ["function lockedBalanceOf(address) external view returns (uint256)"],
             "functionName": "lockedBalanceOf(address)"
           },
           "contractName": "PopLocker",
@@ -3282,9 +3204,7 @@
         "metadata": {
           "apyResolver": "convex",
           "balanceOfAdapter": {
-            "functionAbi": [
-              "function lockedBalanceOf(address) external view returns (uint256)"
-            ],
+            "functionAbi": ["function lockedBalanceOf(address) external view returns (uint256)"],
             "functionName": "lockedBalanceOf(address)"
           },
           "contractName": "PopLocker",
@@ -3311,9 +3231,7 @@
           "apyResolver": "synthetix",
           "claimableTokenAdapter": {
             "tokenFunction": "rewardsToken",
-            "tokenFunctionAbi": [
-              "function rewardsToken() external view returns (address)"
-            ],
+            "tokenFunctionAbi": ["function rewardsToken() external view returns (address)"],
             "type": "synthetix"
           },
           "icons": ["/images/tokens/usdc.svg", "/images/icons/POP.svg"],
@@ -3330,9 +3248,7 @@
           "apyResolver": "synthetix",
           "claimableTokenAdapter": {
             "tokenFunction": "rewardsToken",
-            "tokenFunctionAbi": [
-              "function rewardsToken() external view returns (address)"
-            ],
+            "tokenFunctionAbi": ["function rewardsToken() external view returns (address)"],
             "type": "synthetix"
           },
           "icons": ["/images/tokens/usdc.svg", "/images/icons/POP.svg"],
@@ -3368,9 +3284,7 @@
           "balanceResolver": "escrowBalance",
           "claimableTokenAdapter": {
             "tokenFunction": "POP",
-            "tokenFunctionAbi": [
-              "function POP() external view returns (address)"
-            ],
+            "tokenFunctionAbi": ["function POP() external view returns (address)"],
             "type": "escrow"
           },
           "isERC20": false,
@@ -3378,9 +3292,7 @@
           "symbol": "POP",
           "tvlResolver": {
             "tokenFunction": "POP",
-            "tokenFunctionAbi": [
-              "function POP() external view returns (address)"
-            ],
+            "tokenFunctionAbi": ["function POP() external view returns (address)"],
             "type": "escrow"
           }
         }
@@ -3532,9 +3444,7 @@
           "apyResolver": "synthetix",
           "claimableTokenAdapter": {
             "tokenFunction": "rewardsToken",
-            "tokenFunctionAbi": [
-              "function rewardsToken() external view returns (address)"
-            ],
+            "tokenFunctionAbi": ["function rewardsToken() external view returns (address)"],
             "type": "synthetix"
           },
           "icons": ["/images/tokens/usdc.svg", "/images/icons/POP.svg"],
@@ -3687,9 +3597,7 @@
         "metadata": {
           "apyResolver": "convex",
           "balanceOfAdapter": {
-            "functionAbi": [
-              "function lockedBalanceOf(address) external view returns (uint256)"
-            ],
+            "functionAbi": ["function lockedBalanceOf(address) external view returns (uint256)"],
             "functionName": "lockedBalanceOf(address)"
           },
           "contractName": "PopLocker",
@@ -3717,9 +3625,7 @@
           "balanceResolver": "escrowBalance",
           "claimableTokenAdapter": {
             "tokenFunction": "POP",
-            "tokenFunctionAbi": [
-              "function POP() external view returns (address)"
-            ],
+            "tokenFunctionAbi": ["function POP() external view returns (address)"],
             "type": "escrow"
           },
           "isERC20": false,
@@ -3727,9 +3633,7 @@
           "symbol": "POP",
           "tvlResolver": {
             "tokenFunction": "POP",
-            "tokenFunctionAbi": [
-              "function POP() external view returns (address)"
-            ],
+            "tokenFunctionAbi": ["function POP() external view returns (address)"],
             "type": "escrow"
           }
         }
@@ -3899,9 +3803,7 @@
         "metadata": {
           "apyResolver": "convex",
           "balanceOfAdapter": {
-            "functionAbi": [
-              "function lockedBalanceOf(address) external view returns (uint256)"
-            ],
+            "functionAbi": ["function lockedBalanceOf(address) external view returns (uint256)"],
             "functionName": "lockedBalanceOf(address)"
           },
           "contractName": "PopLocker",
@@ -3930,9 +3832,7 @@
           "apyResolver": "synthetix",
           "claimableTokenAdapter": {
             "tokenFunction": "rewardsToken",
-            "tokenFunctionAbi": [
-              "function rewardsToken() external view returns (address)"
-            ],
+            "tokenFunctionAbi": ["function rewardsToken() external view returns (address)"],
             "type": "synthetix"
           },
           "icons": ["/images/tokens/usdc.svg", "/images/icons/POP.svg"],
@@ -3953,9 +3853,7 @@
           "balanceResolver": "escrowBalance",
           "claimableTokenAdapter": {
             "tokenFunction": "POP",
-            "tokenFunctionAbi": [
-              "function POP() external view returns (address)"
-            ],
+            "tokenFunctionAbi": ["function POP() external view returns (address)"],
             "type": "escrow"
           },
           "isERC20": false,
@@ -3963,9 +3861,7 @@
           "symbol": "POP",
           "tvlResolver": {
             "tokenFunction": "POP",
-            "tokenFunctionAbi": [
-              "function POP() external view returns (address)"
-            ],
+            "tokenFunctionAbi": ["function POP() external view returns (address)"],
             "type": "escrow"
           }
         }
@@ -4364,9 +4260,7 @@
           "balanceResolver": "escrowBalance",
           "claimableTokenAdapter": {
             "tokenFunction": "POP",
-            "tokenFunctionAbi": [
-              "function POP() external view returns (address)"
-            ],
+            "tokenFunctionAbi": ["function POP() external view returns (address)"],
             "type": "escrow"
           },
           "isERC20": false,
@@ -4374,9 +4268,7 @@
           "symbol": "POP",
           "tvlResolver": {
             "tokenFunction": "POP",
-            "tokenFunctionAbi": [
-              "function POP() external view returns (address)"
-            ],
+            "tokenFunctionAbi": ["function POP() external view returns (address)"],
             "type": "escrow"
           }
         }
@@ -4438,9 +4330,7 @@
           "apyResolver": "synthetix",
           "claimableTokenAdapter": {
             "tokenFunction": "rewardsToken",
-            "tokenFunctionAbi": [
-              "function rewardsToken() external view returns (address)"
-            ],
+            "tokenFunctionAbi": ["function rewardsToken() external view returns (address)"],
             "type": "synthetix"
           },
           "icons": ["/images/tokens/usdc.svg", "/images/icons/POP.svg"],
@@ -4481,9 +4371,7 @@
         "metadata": {
           "apyResolver": "convex",
           "balanceOfAdapter": {
-            "functionAbi": [
-              "function lockedBalanceOf(address) external view returns (uint256)"
-            ],
+            "functionAbi": ["function lockedBalanceOf(address) external view returns (uint256)"],
             "functionName": "lockedBalanceOf(address)"
           },
           "contractName": "PopLocker",
@@ -4501,9 +4389,7 @@
           "apyResolver": "synthetix",
           "claimableTokenAdapter": {
             "tokenFunction": "rewardsToken",
-            "tokenFunctionAbi": [
-              "function rewardsToken() external view returns (address)"
-            ],
+            "tokenFunctionAbi": ["function rewardsToken() external view returns (address)"],
             "type": "synthetix"
           },
           "icons": ["/images/tokens/usdc.svg", "/images/icons/POP.svg"],
@@ -4519,9 +4405,7 @@
           "balanceResolver": "escrowBalance",
           "claimableTokenAdapter": {
             "tokenFunction": "POP",
-            "tokenFunctionAbi": [
-              "function POP() external view returns (address)"
-            ],
+            "tokenFunctionAbi": ["function POP() external view returns (address)"],
             "type": "escrow"
           },
           "isERC20": false,
@@ -4529,9 +4413,7 @@
           "symbol": "POP",
           "tvlResolver": {
             "tokenFunction": "POP",
-            "tokenFunctionAbi": [
-              "function POP() external view returns (address)"
-            ],
+            "tokenFunctionAbi": ["function POP() external view returns (address)"],
             "type": "escrow"
           }
         }
