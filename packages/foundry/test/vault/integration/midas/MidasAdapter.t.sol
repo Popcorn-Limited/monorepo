@@ -6,22 +6,24 @@ pragma solidity ^0.8.15;
 import { Test } from "forge-std/Test.sol";
 
 import { CompoundV2Adapter, SafeERC20, IERC20, IERC20Metadata, Math, ICToken, IComptroller } from "../../../../../src/vault/adapter/compound/compoundV2/CompoundV2Adapter.sol";
-import { FluxTestConfigStorage, FluxTestConfig } from "./FluxTestConfigStorage.sol";
+import { MidasTestConfigStorage, MidasTestConfig } from "./MidasTestConfigStorage.sol";
 import { AbstractAdapterTest, ITestConfigStorage, IAdapter } from "../../abstract/AbstractAdapterTest.sol";
 
-contract FluxAdapterTest is AbstractAdapterTest {
+contract MidasAdapterTest is AbstractAdapterTest {
   using Math for uint256;
 
-  ICToken fToken;
+  ICToken cToken;
   IComptroller comptroller;
 
-  uint256 fluxDefaultAmount = 1e18;
+  uint256 pid;
+
+  uint256 compoundDefaultAmount = 1e18;
 
   function setUp() public {
     uint256 forkId = vm.createSelectFork(vm.rpcUrl("mainnet"));
     vm.selectFork(forkId);
 
-    testConfigStorage = ITestConfigStorage(address(new FluxTestConfigStorage()));
+    testConfigStorage = ITestConfigStorage(address(new CompoundV2TestConfigStorage()));
 
     _setUpTest(testConfigStorage.getTestConfig(0));
   }
@@ -31,18 +33,21 @@ contract FluxAdapterTest is AbstractAdapterTest {
   }
 
   function _setUpTest(bytes memory testConfig) internal {
-    address _fToken = abi.decode(testConfig, (address));
+    (address _cToken) = abi.decode(testConfig,(uint256, address));
+    cToken = ICToken(_cToken);
+    asset = IERC20(cToken.underlying());
+    comptroller = IComptroller(cToken.comptroller());
 
-    fToken = ICToken(_fToken);
-    asset = IERC20(fToken.underlying());
-    comptroller = IComptroller(fToken.comptroller());
-
-    (bool isListed, , ) = comptroller.markets(address(fToken));
+// make sure c token aligns with asset
+// check midas works with plugins - used for funds that are not borrowed
+// ctoken.plugin - if successful gives us address of 4626 that they use to YF
+// ctoken is accruing deposit income as well as YF income
+    (bool isListed, , ) = comptroller.markets(address(cToken));
     assertEq(isListed, true, "InvalidAsset");
 
     setUpBaseTest(IERC20(asset), address(new CompoundV2Adapter()), address(comptroller), 10, "CompoundV2", true);
 
-    vm.label(address(fToken), "fToken");
+    vm.label(address(cToken), "cToken");
     vm.label(address(comptroller), "comptroller");
     vm.label(address(asset), "asset");
     vm.label(address(this), "test");
@@ -55,15 +60,16 @@ contract FluxAdapterTest is AbstractAdapterTest {
     //////////////////////////////////////////////////////////////*/
 
   function increasePricePerShare(uint256 amount) public override {
-    deal(address(asset), address(fToken), asset.balanceOf(address(fToken)) + amount);
+    deal(address(asset), address(cToken), asset.balanceOf(address(cToken)) + amount);
   }
 
   function iouBalance() public view override returns (uint256) {
-    return fToken.balanceOf(address(adapter));
+    return cToken.balanceOf(address(adapter));
   }
 
   // Verify that totalAssets returns the expected amount
   function verify_totalAssets() public override {
+    // Make sure totalAssets isn't 0
     deal(address(asset), bob, defaultAmount);
     vm.startPrank(bob);
     asset.approve(address(adapter), defaultAmount);
@@ -82,7 +88,7 @@ contract FluxAdapterTest is AbstractAdapterTest {
     //////////////////////////////////////////////////////////////*/
 
   function verify_adapterInit() public override {
-    assertEq(adapter.asset(), fToken.underlying(), "asset");
+    assertEq(adapter.asset(), cToken.underlying(), "asset");
     assertEq(
       IERC20Metadata(address(adapter)).symbol(),
       string.concat("popB-", IERC20Metadata(address(asset)).symbol()),
@@ -94,7 +100,7 @@ contract FluxAdapterTest is AbstractAdapterTest {
       "symbol"
     );
 
-    assertEq(asset.allowance(address(adapter), address(fToken)), type(uint256).max, "allowance");
+    assertEq(asset.allowance(address(adapter), address(cToken)), type(uint256).max, "allowance");
   }
 
   /*//////////////////////////////////////////////////////////////
@@ -102,26 +108,26 @@ contract FluxAdapterTest is AbstractAdapterTest {
     //////////////////////////////////////////////////////////////*/
 
   function test__RT_deposit_withdraw() public override {
-    _mintAssetAndApproveForAdapter(fluxDefaultAmount, bob);
+    _mintAssetAndApproveForAdapter(compoundDefaultAmount, bob);
 
     vm.startPrank(bob);
-    uint256 shares1 = adapter.deposit(fluxDefaultAmount, bob);
+    uint256 shares1 = adapter.deposit(compoundDefaultAmount, bob);
     uint256 shares2 = adapter.withdraw(adapter.maxWithdraw(bob), bob, bob);
     vm.stopPrank();
 
-    // We compare assets here with maxWithdraw since the shares of withdraw will always be lower than `fluxDefaultAmount`
+    // We compare assets here with maxWithdraw since the shares of withdraw will always be lower than `compoundDefaultAmount`
     // This tests the same assumption though. As long as you can withdraw less or equal assets to the input amount you cant round trip
-    assertGe(fluxDefaultAmount, adapter.maxWithdraw(bob), testId);
+    assertGe(compoundDefaultAmount, adapter.maxWithdraw(bob), testId);
   }
 
   function test__RT_mint_withdraw() public override {
-    _mintAssetAndApproveForAdapter(adapter.previewMint(fluxDefaultAmount), bob);
+    _mintAssetAndApproveForAdapter(adapter.previewMint(compoundDefaultAmount), bob);
 
     vm.startPrank(bob);
-    uint256 assets = adapter.mint(fluxDefaultAmount, bob);
+    uint256 assets = adapter.mint(compoundDefaultAmount, bob);
     uint256 shares = adapter.withdraw(adapter.maxWithdraw(bob), bob, bob);
     vm.stopPrank();
-    // We compare assets here with maxWithdraw since the shares of withdraw will always be lower than `fluxDefaultAmount`
+    // We compare assets here with maxWithdraw since the shares of withdraw will always be lower than `compoundDefaultAmount`
     // This tests the same assumption though. As long as you can withdraw less or equal assets to the input amount you cant round trip
     assertGe(assets, adapter.maxWithdraw(bob), testId);
   }
