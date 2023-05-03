@@ -1,14 +1,14 @@
 import { Address, useAccount, useNetwork, useSwitchNetwork } from "wagmi";
-import { BigNumber, constants } from "ethers";
+import { BigNumber, constants, ethers, Contract as EthersContract } from "ethers";
 import toast from "react-hot-toast";
 import Image from "next/image";
 import ContentLoader from "react-content-loader";
 
-import { ChainId, networkLogos } from "@popcorn/utils";
-import { Contract, Staking } from "@popcorn/components/lib";
-import { useClaim } from "@popcorn/components/lib/Staking/hooks";
-import MainActionButton from "@popcorn/app/components/MainActionButton";
-import TokenIcon from "@popcorn/app/components/TokenIcon";
+import { ChainId, networkLogos } from "@popcorn/greenfield-app/lib/utils";
+import { Contract, Staking } from "@popcorn/greenfield-app/lib";
+import { useClaim } from "@popcorn/greenfield-app/lib/Staking/hooks";
+import MainActionButton from "@popcorn/greenfield-app/components/MainActionButton";
+import TokenIcon from "@popcorn/greenfield-app/components/TokenIcon";
 import useClaimModal from "./useClaimModal";
 
 interface ClaimCardProps {

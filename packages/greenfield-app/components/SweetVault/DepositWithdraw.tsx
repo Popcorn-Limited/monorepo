@@ -1,11 +1,11 @@
-import type { Pop } from "@popcorn/components/lib/types";
+import type { Pop } from "@popcorn/greenfield-app/lib/types";
 import { Fragment, useState } from "react";
 
 import TabSelector from "@popcorn/greenfield-app/components/TabSelector";
 import Deposit from "./Deposit";
 import Withdraw from "./Withdraw";
 import FeeBreakdown from "./FeeBreakdown";
-import TokenIcon from "@popcorn/app/components/TokenIcon";
+import TokenIcon from "@popcorn/greenfield-app/components/TokenIcon";
 import { ArrowDownIcon } from "@heroicons/react/24/outline";
 
 const TAB_DEPOSIT = "Deposit";

@@ -1,10 +1,10 @@
 import { Address, useAccount } from "wagmi";
 import { constants } from "ethers";
-import { useNamedAccounts } from "@popcorn/components/lib/utils";
-import AssetInputWithAction from "@popcorn/components/components/AssetInputWithAction";
+import { useNamedAccounts } from "@popcorn/greenfield-app/lib/utils";
+import AssetInputWithAction from "components/AssetInputWithAction";
 import FeeBreakdown from "./FeeBreakdown";
-import { useAllowance } from "@popcorn/components/lib/Erc20/hooks";
-import TokenIcon from "@popcorn/app/components/TokenIcon";
+import { useAllowance } from "@popcorn/greenfield-app/lib/Erc20/hooks";
+import TokenIcon from "@popcorn/greenfield-app/components/TokenIcon";
 
 function Withdraw({
   vault,

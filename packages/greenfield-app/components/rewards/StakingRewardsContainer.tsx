@@ -1,8 +1,8 @@
-import { NotAvailable } from "@popcorn/app/components/Rewards/NotAvailable";
-import { ChainId } from "@popcorn/utils";
+import { NotAvailable } from "@popcorn/greenfield-app/components/NotAvailable";
+import { ChainId } from "@popcorn/greenfield-app/lib/utils/connectors";
 import { constants } from "ethers";
 import useAllStakingAddresses from "hooks/staking/useAllStakingAddresses";
-import { useSum } from "@popcorn/components";
+import { useSum } from "@popcorn/greenfield-app/hooks";
 import { useEffect, useState } from "react";
 import ClaimCard from "./ClaimCard";
 import { Address } from "wagmi";

@@ -1,26 +1,27 @@
-import SliderContainer from "@popcorn/app/components/Common/SliderContainer";
-import { InfoIconWithTooltip } from "@popcorn/app/components/InfoIconWithTooltip";
-import useNetWorth from "@popcorn/app/hooks/useNetWorth";
-import { ConnectWallet } from "@popcorn/components/components/ConnectWallet";
-import useTvl from "@popcorn/components/lib/Contract/hooks/useTvl";
-import TotalTVL from "@popcorn/components/lib/Contract/TotalTvl";
-import { useNamedAccounts } from "@popcorn/components/lib/utils";
-import { ChainId } from "@popcorn/utils";
+import SliderContainer from "@popcorn/greenfield-app/components/SliderContainer";
+import { InfoIconWithTooltip } from "@popcorn/greenfield-app/components/InfoIconWithTooltip";
+import { ConnectWallet } from "@popcorn/greenfield-app/components/ConnectWallet";
+import useTvl from "@popcorn/greenfield-app/lib/Contract/hooks/useTvl";
+import TotalTVL from "@popcorn/greenfield-app/lib/Contract/TotalTvl";
+import { useNamedAccounts } from "@popcorn/greenfield-app/lib/utils";
+import { ChainId } from "@popcorn/greenfield-app/lib/utils/connectors";
 import { constants } from "ethers";
-import { formatUnits, parseUnits } from "ethers/lib/utils.js";
+import { formatUnits } from "ethers/lib/utils.js";
 import { useAccount } from "wagmi";
+import useNetworth from "@popcorn/greenfield-app/hooks/useNetworth";
+
+const formatter: Intl.NumberFormat = Intl.NumberFormat("en", {
+  //@ts-ignore
+  notation: "compact",
+});
 
 export default function Hero(): JSX.Element {
   const { address: account } = useAccount();
-  const { totalNetWorth } = useNetWorth();
+  const { totalNetWorth } = useNetworth();
   const [butter, threeX] = useNamedAccounts("1", ["butter", "threeX"]);
   const { data: butterTVL } = useTvl({ chainId: ChainId.Ethereum, address: butter.address });
   const { data: threeXTVL } = useTvl({ chainId: ChainId.Ethereum, address: threeX.address });
 
-  const formatter: Intl.NumberFormat = Intl.NumberFormat("en", {
-    //@ts-ignore
-    notation: "compact",
-  });
 
   return (
     <section className="grid grid-cols-12 md:gap-8">

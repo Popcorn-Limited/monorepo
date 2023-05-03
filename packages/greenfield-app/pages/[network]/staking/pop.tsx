@@ -2,31 +2,30 @@ import { ChevronLeftIcon } from "@heroicons/react/24/outline";
 import Link from "next/link";
 import { useRouter } from "next/router";
 
-import StatusWithLabel from "@popcorn/app/components/Common/StatusWithLabel";
-import { InfoIconWithTooltip } from "@popcorn/app/components/InfoIconWithTooltip";
-import { NetworkSticker } from "@popcorn/app/components/NetworkSticker";
-import TokenIcon from "@popcorn/app/components/TokenIcon";
-import { Erc20, Staking } from "@popcorn/components";
-import SecondaryActionButton from "@popcorn/components/components/SecondaryActionButton";
-import { Tvl } from "@popcorn/components/lib/Contract";
-import MobileCardSlider from "@popcorn/app/components/Common/MobileCardSlider";
-import { useChainIdFromUrl } from "@popcorn/app/hooks/useChainIdFromUrl";
+import StatusWithLabel from "@popcorn/greenfield-app/components/StatusWithLabel";
+import { InfoIconWithTooltip } from "@popcorn/greenfield-app/components/InfoIconWithTooltip";
+import { NetworkSticker } from "@popcorn/greenfield-app/components/NetworkSticker";
+import TokenIcon from "@popcorn/greenfield-app/components/TokenIcon";
+import { Erc20, Staking } from "@popcorn/greenfield-app/lib";
+import SecondaryActionButton from "@popcorn/greenfield-app/components/SecondaryActionButton";
+import { Tvl } from "@popcorn/greenfield-app/lib/Contract";
+import MobileCardSlider from "@popcorn/greenfield-app/components/MobileCardSlider";
+import { useChainIdFromUrl } from "@popcorn/greenfield-app/hooks/useChainIdFromUrl";
 import { Address, useAccount, useContractRead } from "wagmi";
 import TabSelector from "components/TabSelector";
 import { useEffect, useState } from "react";
-import AssetInputWithAction from "@popcorn/components/components/AssetInputWithAction";
-import useTokenAllowance from "@popcorn/app/hooks/tokens/useTokenAllowance";
+import AssetInputWithAction from "components/AssetInputWithAction";
 import { constants } from "ethers";
-import TermsAndConditions from "@popcorn/app/components/StakingTermsAndConditions";
-import { useNamedAccounts } from "@popcorn/components/lib/utils";
-import MainActionButton from "@popcorn/components/components/MainActionButton";
-import VestingRecordDropDown from "@popcorn/app/components/staking/VestingRecordDropDown";
-import { ChainId, formatAndRoundBigNumber } from "@popcorn/utils";
-import { formatDate } from "@popcorn/utils/DateTime";
-import { useLockedBalances } from "@popcorn/components/lib/PopLocker/hooks";
-import useRestake from "@popcorn/components/hooks/useRestake";
+import StakingTermsAndConditions from "@popcorn/greenfield-app/components/StakingTermsAndConditions";
+import { formatDate, useNamedAccounts } from "@popcorn/greenfield-app/lib/utils";
+import MainActionButton from "@popcorn/greenfield-app/components/MainActionButton";
+import VestingRecordDropDown from "@popcorn/greenfield-app/components/staking/VestingRecordDropDown";
+import { ChainId, formatAndRoundBigNumber } from "@popcorn/greenfield-app/lib/utils";
+import { useLockedBalances } from "@popcorn/greenfield-app/lib/PopLocker/hooks";
+import useRestake from "@popcorn/greenfield-app/hooks/useRestake";
 import NoSSR from "react-no-ssr";
-import { ValueOfBalance } from "@popcorn/components/lib/Erc20";
+import { ValueOfBalance } from "@popcorn/greenfield-app/lib/Erc20";
+import { useAllowance } from "@popcorn/greenfield-app/lib/Erc20/hooks";
 
 const TAB_DEPOSIT = "Deposit";
 const TAB_WITHDRAW = "Withdraw";
@@ -39,7 +38,8 @@ export default function Index(): JSX.Element {
   const [activeTab, setActiveTab] = useState(TAB_DEPOSIT);
   const isDeposit = activeTab === TAB_DEPOSIT;
   const [pop, popStaking] = useNamedAccounts(chainId as any, ["pop", "popStaking"]);
-  const { data: allowance } = useTokenAllowance(pop?.address, chainId, account, popStaking?.address);
+  const { data: allowance } = useAllowance({ address: pop?.address, account: popStaking?.address, chainId });
+
   const [termsAccepted, setTermsAccepted] = useState(false);
   const { data: lockedBalances, status } = useLockedBalances({ address: popStaking?.address, chainId, account });
   const [chosenLock, setChosenLock] = useState({ amount: constants.Zero, boosted: constants.Zero, unlockTime: 0 });
@@ -64,7 +64,7 @@ export default function Index(): JSX.Element {
       <div className="grid grid-cols-12 mt-10">
         <div className="col-span-12 md:col-span-5">
           <div className="relative ml-4">
-            <NetworkSticker />
+            <NetworkSticker chainId={chainId} />
             <TokenIcon token={pop?.address} chainId={chainId} />
           </div>
           <h1 className="text-black text-5xl md:text-6xl leading-12 mt-9">{pop?.name}</h1>
@@ -136,11 +136,11 @@ export default function Index(): JSX.Element {
                   };
                 }}
                 disabled={!termsAccepted}
-                allowance={isDeposit ? allowance : constants.MaxUint256}
+                allowance={isDeposit ? allowance?.value : constants.MaxUint256}
               >
                 {({ ActionableComponent }) => (
                   <div className="mt-6">
-                    <TermsAndConditions
+                    <StakingTermsAndConditions
                       isDisabled={!isDeposit}
                       termsAccepted={termsAccepted}
                       setTermsAccepted={() => setTermsAccepted(() => !termsAccepted)}
@@ -234,7 +234,7 @@ export default function Index(): JSX.Element {
             <div className="rounded-lg border border-customLightGray p-6 pb-4 col-span-12 md:col-span-6">
               <div className="flex gap-6 md:gap-0 md:space-x-6 items-center pb-6">
                 <div className="relative ml-4">
-                  <NetworkSticker />
+                  <NetworkSticker chainId={chainId} />
                   <TokenIcon token={pop?.address} chainId={chainId} imageSize="w-12 h-12" />
                 </div>
                 <div>
@@ -257,7 +257,7 @@ export default function Index(): JSX.Element {
             <div className="rounded-lg border border-customLightGray p-6 pb-4 col-span-12 md:col-span-6">
               <div className="flex gap-6 md:gap-0 md:space-x-6 items-center pb-6">
                 <div className="relative ml-4">
-                  <NetworkSticker />
+                  <NetworkSticker chainId={chainId} />
                   <TokenIcon token={pop?.address} chainId={chainId} imageSize="w-12 h-12" />
                 </div>
                 <div>
@@ -289,7 +289,7 @@ export default function Index(): JSX.Element {
                 <div className="rounded-lg border border-customLightGray p-6 col-span-12 md:col-span-6">
                   <div className="flex gap-6 md:gap-0 md:space-x-6">
                     <div className="relative ml-4">
-                      <NetworkSticker />
+                      <NetworkSticker chainId={chainId} />
                       <TokenIcon token={pop?.address} chainId={chainId} />
                     </div>
                     <div className="pb-6">
@@ -315,7 +315,7 @@ export default function Index(): JSX.Element {
                 <div className="rounded-lg border border-customLightGray p-6 col-span-12 md:col-span-6">
                   <div className="flex gap-6 md:gap-0 md:space-x-6">
                     <div className="relative ml-4">
-                      <NetworkSticker />
+                      <NetworkSticker chainId={chainId} />
                       <TokenIcon token={pop?.address} chainId={chainId} />
                     </div>
                     <div className="pb-6">

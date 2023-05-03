@@ -1,5 +1,5 @@
 const { join } = require("path");
-require("../utils/src/envLoader");
+require("./lib/utils/env/envLoader");
 
 const workspace = join(__dirname, "..");
 

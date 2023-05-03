@@ -1,23 +1,23 @@
-import Page from "@popcorn/components/components/Page";
-import { FeatureTogglePanel } from "@popcorn/components/components/FeatureTogglePanel";
-import { DualActionModalContainer } from "@popcorn/components/components/Modal/DualActionModalContainer";
-import { MultiChoiceActionModalContainer } from "@popcorn/components/components/Modal/MultiChoiceActionModalContainer";
-import { SingleActionModalContainer } from "@popcorn/components/components/Modal/SingleActionModalContainer";
-import OfacCheck from "@popcorn/app/components/OfacCheck";
-import { FeatureToggleProvider } from "@popcorn/components/context/FeatureToggleContext";
+import Page from "@popcorn/greenfield-app/components/Page";
+import { FeatureTogglePanel } from "@popcorn/greenfield-app/components/FeatureTogglePanel";
+import { DualActionModalContainer } from "components/Modal/DualActionModalContainer";
+import { MultiChoiceActionModalContainer } from "components/Modal/MultiChoiceActionModalContainer";
+import { SingleActionModalContainer } from "components/Modal/SingleActionModalContainer";
+import { FeatureToggleProvider } from "@popcorn/greenfield-app/context/FeatureToggleContext";
 import Head from "next/head";
 import Router from "next/router";
 import React, { useEffect, useState } from "react";
-import { GlobalLinearProgressAndLoading } from "@popcorn/components/components/GlobalLinearProgressAndLoading";
-import { StateProvider } from "@popcorn/components/context/store";
-import { RainbowKitProvider, getDefaultWallets, Chain } from "@rainbow-me/rainbowkit";
+import { GlobalLinearProgressAndLoading } from "@popcorn/greenfield-app/components/GlobalLinearProgressAndLoading";
+import { StateProvider } from "@popcorn/greenfield-app/context/store";
+import { RainbowKitProvider, getDefaultWallets } from "@rainbow-me/rainbowkit";
 import { configureChains, createClient, WagmiConfig } from "wagmi";
 import { mainnet, polygon, optimism, arbitrum, goerli, localhost, bsc, fantom } from "wagmi/chains";
 import { alchemyProvider } from "wagmi/providers/alchemy";
 import { jsonRpcProvider } from "wagmi/providers/jsonRpc";
 import "@rainbow-me/rainbowkit/styles.css";
 import "../styles/globals.css";
-import { NetworthContextProvider } from "@popcorn/components/context/Networth";
+import { NetworthContextProvider } from "@popcorn/greenfield-app/context/Networth";
+import OfacCheck from "components/OfacCheck";
 
 const { chains, provider, webSocketProvider } = configureChains(
   [
@@ -125,9 +125,9 @@ export default function MyApp(props) {
         <link rel="preconnect" href="https://fonts.gstatic.com" />
       </Head>
       <StateProvider>
-        <GlobalLinearProgressAndLoading loading={loading} setLoading={setLoading} />
-        <FeatureToggleProvider>
-          <WagmiConfig client={wagmiClient}>
+        <WagmiConfig client={wagmiClient}>
+          <GlobalLinearProgressAndLoading loading={loading} setLoading={setLoading} />
+          <FeatureToggleProvider>
             <RainbowKitProvider chains={chains}>
               <NetworthContextProvider>
                 <OfacCheck />
@@ -138,8 +138,8 @@ export default function MyApp(props) {
                 <FeatureTogglePanel />
               </NetworthContextProvider>
             </RainbowKitProvider>
-          </WagmiConfig>
-        </FeatureToggleProvider>
+          </FeatureToggleProvider>
+        </WagmiConfig >
       </StateProvider>
     </React.Fragment>
   );

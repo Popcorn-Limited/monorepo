@@ -2,12 +2,12 @@ import TabSelector from "components/TabSelector";
 import { useEffect, useState } from "react";
 import useSelectNetwork from "hooks/useNetworkFilter";
 import { useChainsWithStakingRewards } from "hooks/staking/useChainsWithStaking";
-import NetworkFilter from "@popcorn/components/components/NetworkFilter";
-import { ChainId } from "@popcorn/utils";
+import NetworkFilter from "@popcorn/greenfield-app/components/NetworkFilter";
+import { ChainId } from "@popcorn/greenfield-app/lib/utils/connectors";
 import AirDropClaim from "components/rewards/AirdropClaim";
 import StakingRewardsContainer from "components/rewards/StakingRewardsContainer";
 import VestingContainer from "components/vesting/VestingContainer";
-import { ConnectWallet } from "@popcorn/components/components/ConnectWallet";
+import { ConnectWallet } from "@popcorn/greenfield-app/components/ConnectWallet";
 import { useAccount } from "wagmi";
 import NoSSR from "react-no-ssr";
 
@@ -98,13 +98,9 @@ export default function RewardsPage(): JSX.Element {
             <div className={`${isSelected(Tabs.Staking) ? "" : "hidden"}`}>
               <StakingRewardsContainer selectedNetworks={selectedNetworks} />
             </div>
-
-            <div
-              className={`mt-8 ${isSelected(Tabs.Airdrop) && shouldAirdropVisible(selectedNetworks) ? "" : "hidden"}`}
-            >
+            <div className={`mt-8 ${isSelected(Tabs.Airdrop) && shouldAirdropVisible(selectedNetworks) ? "" : "hidden"}`}>
               <AirDropClaim chainId={selectedNetworks[0]} />
             </div>
-
             <div className={`flex flex-col h-full mt-4 ${isSelected(Tabs.Vesting) ? "" : "hidden"}`}>
               <VestingContainer selectedNetworks={selectedNetworks} />
             </div>

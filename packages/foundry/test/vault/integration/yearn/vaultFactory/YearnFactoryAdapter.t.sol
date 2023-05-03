@@ -28,7 +28,9 @@ contract YearnFactoryAdapterTest is AbstractAdapterTest {
   }
 
   function _setUpTest(bytes memory testConfig) internal {
-    address _asset = abi.decode(testConfig, (address));
+    (address _asset, uint256 _maxLoss) = abi.decode(testConfig, (address, uint256));
+
+    emit log_uint(_maxLoss);
 
     setUpBaseTest(
       IERC20(_asset),
@@ -45,9 +47,13 @@ contract YearnFactoryAdapterTest is AbstractAdapterTest {
     vm.label(address(asset), "asset");
     vm.label(address(this), "test");
 
-    adapter.initialize(abi.encode(asset, address(this), address(0), 0, sigs, ""), externalRegistry, "");
+    adapter.initialize(
+      abi.encode(asset, address(this), address(0), 0, sigs, ""),
+      externalRegistry,
+      abi.encode(_maxLoss)
+    );
 
-    defaultAmount = 10**IERC20Metadata(address(asset)).decimals();
+    defaultAmount = 10 ** IERC20Metadata(address(asset)).decimals();
     minFuzz = defaultAmount * 10_000;
     raise = defaultAmount * 100_000_000;
     maxAssets = defaultAmount * 1_000_000;
@@ -84,7 +90,11 @@ contract YearnFactoryAdapterTest is AbstractAdapterTest {
 
     assertApproxEqAbs(
       adapter.totalAssets(),
-      iouBalance().mulDiv(yearnVault.pricePerShare(), 10**IERC20Metadata(address(asset)).decimals(), Math.Rounding.Up),
+      iouBalance().mulDiv(
+        yearnVault.pricePerShare(),
+        10 ** IERC20Metadata(address(asset)).decimals(),
+        Math.Rounding.Up
+      ),
       _delta_,
       string.concat("totalAssets != yearn assets", baseTestId)
     );
@@ -94,16 +104,48 @@ contract YearnFactoryAdapterTest is AbstractAdapterTest {
                           INITIALIZATION
     //////////////////////////////////////////////////////////////*/
 
+  function test__initialization() public override {
+    createAdapter();
+    uint256 callTime = block.timestamp;
+
+    (, uint256 maxLoss) = abi.decode(testConfigStorage.getTestConfig(0), (address, uint256));
+
+    if (address(strategy) != address(0)) {
+      vm.expectEmit(false, false, false, true, address(strategy));
+      emit SelectorsVerified();
+      vm.expectEmit(false, false, false, true, address(strategy));
+      emit AdapterVerified();
+      vm.expectEmit(false, false, false, true, address(strategy));
+      emit StrategySetup();
+    }
+    vm.expectEmit(false, false, false, true, address(adapter));
+    emit Initialized(uint8(1));
+
+    adapter.initialize(abi.encode(asset, address(this), strategy, 0, sigs, ""), externalRegistry, abi.encode(maxLoss));
+
+    assertEq(adapter.owner(), address(this), "owner");
+    assertEq(adapter.strategy(), address(strategy), "strategy");
+    assertEq(adapter.harvestCooldown(), 0, "harvestCooldown");
+    assertEq(adapter.strategyConfig(), "", "strategyConfig");
+    assertEq(
+      IERC20Metadata(address(adapter)).decimals(),
+      IERC20Metadata(address(asset)).decimals() + adapter.decimalOffset(),
+      "decimals"
+    );
+
+    verify_adapterInit();
+  }
+
   function verify_adapterInit() public override {
     assertEq(adapter.asset(), yearnVault.token(), "asset");
     assertEq(
       IERC20Metadata(address(adapter)).name(),
-      string.concat("Popcorn Yearn", IERC20Metadata(address(asset)).name(), " Adapter"),
+      string.concat("VaultCraft Yearn ", IERC20Metadata(address(asset)).name(), " Adapter"),
       "name"
     );
     assertEq(
       IERC20Metadata(address(adapter)).symbol(),
-      string.concat("popY-", IERC20Metadata(address(asset)).symbol()),
+      string.concat("vcY-", IERC20Metadata(address(asset)).symbol()),
       "symbol"
     );
 

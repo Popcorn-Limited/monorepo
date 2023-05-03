@@ -1,4 +1,0 @@
-mocks
-externals
-test_helpers
-core/interfaces

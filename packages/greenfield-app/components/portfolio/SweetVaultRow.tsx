@@ -1,17 +1,16 @@
-import { NetworkSticker } from "@popcorn/app/components/NetworkSticker";
-import TokenIcon from "@popcorn/app/components/TokenIcon";
-import AssetCell from "@popcorn/components/components/Portfolio/AssetCell";
-import useVaultToken from "@popcorn/components/hooks/useVaultToken";
-import { useBalanceOf, useTotalSupply } from "@popcorn/components/lib/Erc20/hooks";
-import { usePrice } from "@popcorn/components/lib/Price";
-import { useTotalAssets } from "@popcorn/components/lib/Vault/hooks";
-import useVaultMetadata from "@popcorn/components/lib/Vault/hooks/useVaultMetadata";
-import { getPercentage } from "@popcorn/components/lib/utils/numbers";
-import { ChainId, formatAndRoundBigNumber } from "@popcorn/utils";
+import AssetCell from "@popcorn/greenfield-app/components/Portfolio/AssetCell";
+import useVaultToken from "@popcorn/greenfield-app/hooks/useVaultToken";
+import { useBalanceOf, useTotalSupply } from "@popcorn/greenfield-app/lib/Erc20/hooks";
+import { usePrice } from "@popcorn/greenfield-app/lib/Price";
+import { useTotalAssets } from "@popcorn/greenfield-app/lib/Vault/hooks";
+import useVaultMetadata from "@popcorn/greenfield-app/lib/Vault/hooks/useVaultMetadata";
+import { getPercentage } from "@popcorn/greenfield-app/lib/utils/numbers";
+import { NetworkSticker } from "components/NetworkSticker";
+import TokenIcon from "components/TokenIcon";
 import { BigNumber, constants } from "ethers";
 import { parseUnits } from "ethers/lib/utils.js";
 import { useEffect, useState } from "react";
-import { Address, useToken } from "wagmi";
+import { Address } from "wagmi";
 
 export default function SweetVaultRow({ vaultAddress, chainId, account, callback, networth }): any {
   const { data: token } = useVaultToken(vaultAddress, chainId);
@@ -53,7 +52,7 @@ export default function SweetVaultRow({ vaultAddress, chainId, account, callback
       <td className="md:bg-customLightGray md:bg-opacity-[10%] rounded-l-2xl py-2 md:py-4 pl-2 md:pl-10">
         <div className="flex items-center gap-4">
           <div className="relative">
-            <NetworkSticker selectedChainId={chainId} />
+            <NetworkSticker chainId={chainId} />
             <TokenIcon token={token?.address || ""} chainId={chainId} />
           </div>
           <div className="flex space-x-[6px] md:space-x-[52px]">

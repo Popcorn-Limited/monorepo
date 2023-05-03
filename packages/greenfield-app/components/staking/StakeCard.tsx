@@ -1,24 +1,22 @@
-import { ChainId, networkMap } from "@popcorn/utils";
-import Badge, { Badge as BadgeType } from "@popcorn/app/components/Common/Badge";
-import MainActionButton from "@popcorn/app/components/MainActionButton";
-import TokenIcon from "@popcorn/app/components/TokenIcon";
+import { ChainId, networkMap } from "@popcorn/greenfield-app/lib/utils";
+import MainActionButton from "@popcorn/greenfield-app/components/MainActionButton";
+import TokenIcon from "@popcorn/greenfield-app/components/TokenIcon";
 import { StakingType } from "hooks/staking/useAllStakingAddresses";
 import { useRouter } from "next/router";
 import ContentLoader from "react-content-loader";
-import { NetworkSticker } from "@popcorn/app/components/NetworkSticker";
-import { Tvl } from "@popcorn/components/lib/Contract";
-import { Staking, Contract } from "@popcorn/components/lib";
-import { ValueOfBalance } from "@popcorn/components/lib/Erc20";
+import { Tvl } from "@popcorn/greenfield-app/lib/Contract";
+import { Staking, Contract } from "@popcorn/greenfield-app/lib";
+import { ValueOfBalance } from "@popcorn/greenfield-app/lib/Erc20";
 import { Address } from "wagmi";
+import { NetworkSticker } from "@popcorn/greenfield-app/components/NetworkSticker";
 
 interface StakeCardProps {
   stakingAddress: string;
   stakingType: StakingType;
   chainId: ChainId;
-  badge?: BadgeType;
 }
 
-const StakeCard: React.FC<StakeCardProps> = ({ stakingAddress, stakingType, chainId, badge }) => {
+const StakeCard: React.FC<StakeCardProps> = ({ stakingAddress, stakingType, chainId }) => {
   const router = useRouter();
 
   function onSelectPool() {
@@ -51,18 +49,13 @@ const StakeCard: React.FC<StakeCardProps> = ({ stakingAddress, stakingType, chai
                   <div className="flex flex-row items-center justify-between pl-4 md:pl-0">
                     <div className="flex items-center">
                       <div className="relative">
-                        <NetworkSticker selectedChainId={chainId} />
+                        <NetworkSticker chainId={chainId} />
                         <TokenIcon token={stakingToken} chainId={chainId} fullsize />
                       </div>
                       <div className="flex flex-col md:flex-row md:items-center ml-2 md:ml-0">
                         <h3 className="text-3xl md:text-4xl md:ml-2 mb-2 md:mb-0 font-normal leading-9">
                           {metadata?.name}
                         </h3>
-                        {badge && (
-                          <div className="md:pl-2">
-                            <Badge badge={badge} />
-                          </div>
-                        )}
                       </div>
                     </div>
                     <div className="hidden smmd:block">

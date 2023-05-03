@@ -1,17 +1,17 @@
-import { NotAvailable } from "@popcorn/app/components/Rewards/NotAvailable";
-import useWeb3 from "@popcorn/app/hooks/useWeb3";
-import { ChainId } from "@popcorn/utils";
+import { NotAvailable } from "@popcorn/greenfield-app/components/NotAvailable";
+import { ChainId } from "@popcorn/greenfield-app/lib/utils/connectors";
 import { constants } from "ethers";
-import { useSum } from "@popcorn/components";
+import { useSum } from "@popcorn/greenfield-app/hooks";
 import { useEffect, useState } from "react";
 import Vesting from "./Vesting";
+import { useAccount } from "wagmi";
 
 interface VestingContainerProps {
   selectedNetworks: ChainId[];
 }
 
 export default function VestingContainer({ selectedNetworks }: VestingContainerProps): JSX.Element {
-  const { account } = useWeb3();
+  const { address: account } = useAccount();
   const [prevAccount, setPrevAccount] = useState(account);
   const { loading, sum, add, reset } = useSum({ expected: selectedNetworks?.length || 1 });
 

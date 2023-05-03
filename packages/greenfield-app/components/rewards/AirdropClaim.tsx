@@ -1,10 +1,10 @@
-import { ChainId } from "@popcorn/utils";
+import { ChainId } from "@popcorn/greenfield-app/lib/utils/connectors";
 import * as Icon from "react-feather";
-import { useNamedAccounts } from "@popcorn/components/lib/utils";
-import AssetInputWithAction from "@popcorn/components/components/AssetInputWithAction";
-import useTokenAllowance from "@popcorn/app/hooks/tokens/useTokenAllowance";
-import { useAccount } from "wagmi";
-import TokenIcon from "@popcorn/app/components/TokenIcon";
+import { useNamedAccounts } from "@popcorn/greenfield-app/lib/utils";
+import AssetInputWithAction from "components/AssetInputWithAction";
+import { Address, useAccount } from "wagmi";
+import TokenIcon from "@popcorn/greenfield-app/components/TokenIcon";
+import { useAllowance } from "@popcorn/greenfield-app/lib/Erc20/hooks";
 
 interface AirDropClaimProps {
   chainId: ChainId;
@@ -13,7 +13,7 @@ interface AirDropClaimProps {
 const AirDropClaim: React.FC<AirDropClaimProps> = ({ chainId }) => {
   const { address: account } = useAccount();
   const [pop, xPop, xPopRedemption] = useNamedAccounts(chainId as any, ["pop", "xPop", "xPopRedemption"]);
-  const { data: allowance } = useTokenAllowance(xPop?.address, chainId, account, xPopRedemption?.address);
+  const { data: allowance } = useAllowance({ address: xPop?.address, account: xPopRedemption?.address as Address, chainId });
 
   return (
     <div className="bg-white rounded-3xl px-5 pt-14 pb-6 border border-gray-200 shadow-custom">
@@ -28,7 +28,7 @@ const AirDropClaim: React.FC<AirDropClaimProps> = ({ chainId }) => {
             functionName: "redeem",
             successMessage: "Redemption successful!",
           }}
-          allowance={allowance}
+          allowance={allowance?.value}
         >
           {({ ActionableComponent, data }) => {
             return (
